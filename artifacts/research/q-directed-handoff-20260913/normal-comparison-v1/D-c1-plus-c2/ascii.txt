@@ -1,0 +1,30 @@
+==============================================================================
+TASK  fold c1+c2 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates
+  legality True
+     |
+     v  route reuse offers 0 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 0
+     |
+     v   Pareto fronts [], no weighting and no total
+  SELECTED  c1 + c2  dim 4  front 1
+     |   basis    ['c1 + c2', 'F11 + F12 - F31 - F32 + c1 + c2', 'F11 + F12 + F31 + F32 + c1 + c2', 'F21 + F22 + F31 + F32 + c1 + c2']
+     |   readout  qbar(z) = ['1', '0', '0', '0'] . z
+     |
+     v   layered DP, merging on the certified observation, multiplicity carried
+  n=3   enumeration v_max=   5 count=4        | agrees True dist True | 84 -> 65 nodes
+  n=5   enumeration v_max=   9 count=4        | agrees True dist True | 1364 -> 413 nodes
+  n=6   DP only       v_max=  11 count=4        | NOT enumerated | 717 nodes, 100 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  c1-plus-c2: entry 83fa63a17c5bf1b7487d15f1 (c1 + c2, dim 4), acquired again: False, prover calls: 0
+      n=9  v_max=17 count=4  2205 nodes, 172 classes, 0.77s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+

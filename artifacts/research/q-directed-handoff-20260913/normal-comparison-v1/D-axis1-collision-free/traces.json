@@ -1,0 +1,96 @@
+{
+  "tasks": {
+    "axis1-collision-free": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement, collision-free words only",
+      "task_contract": {
+        "goal": "the maximum of c1 over collision-free words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task",
+        "legality": "False"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2
+      },
+      "candidates_offered": [],
+      "route": "reuse",
+      "reused": false,
+      "reason": "no stored representation carries a certificate admitting it for this task",
+      "stored_entries": 1,
+      "lookup_cost": {
+        "wall_time": 0.015224,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 0
+      },
+      "stopped": "no stored representation carries a certificate admitting it for this task",
+      "costs": {
+        "reuse": {
+          "wall_time": 0.015224,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "acquisition": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "certification": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "verification": {
+          "wall_time": 0,
+          "search_nodes": 0
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 0.000561,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "wall_time": 0.015785
+    }
+  },
+  "reuse": {
+    "axis1-collision-free": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement, collision-free words only",
+      "reused": false,
+      "reason": "no stored representation carries a certificate admitting it for this task",
+      "stored_entries": 1,
+      "lookup_cost": {
+        "wall_time": 0.003911,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 0
+      }
+    }
+  }
+}

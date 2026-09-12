@@ -1,0 +1,931 @@
+{
+  "tasks": {
+    "c1-plus-c2": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold c1+c2 displacement",
+      "task_contract": {
+        "goal": "the maximum of c1 + c2 over all words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "the twelve coordinates",
+        "legality": "declared vacuous by the task",
+        "notes": "every word of the length is legal"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2,
+        "coefficients": [
+          1,
+          -1
+        ],
+        "limit": null,
+        "source": "fold_observable_system.candidate_observables",
+        "note": "the enumeration and its order are the grammar's; nothing is injected or excluded here"
+      },
+      "tie_break": "within one Pareto front, and only there: acquisition cost plus the cost of running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both counted in primitive calls, then the earlier candidate in the grammar's fixed enumeration order. Stated here rather than decided per run.\nWhy this and not the cheaper acquisition: a probe at a small length measures the wrong thing. An acquisition is paid once and the saving grows with the length actually asked for, so a tie-break on acquisition alone would hand every task to the route that learns nothing, whatever the task goes on to ask. Both sides of the ledger are measured over the same declared workload instead.\nThis does not reintroduce a weighting across the Pareto components: it is one quantity in one unit, used only to order candidates that the frontier has already declared incomparable.",
+      "premise": {
+        "exact": true,
+        "identities_checked": 96,
+        "frames_checked": 24,
+        "centre": "symbolic; every integer centre is covered",
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre",
+        "cost": {
+          "wall_time": 0.528456,
+          "primitive_calls": 748
+        }
+      },
+      "candidates_offered": [
+        "c1 + c2"
+      ],
+      "required_observables": [
+        "c1 + c2"
+      ],
+      "closure_method": "task-directed minimal common invariant linear space",
+      "refused_at_closure": [],
+      "refused_by_certificate": [],
+      "admitted": [
+        "c1 + c2"
+      ],
+      "acquisition_cost": {
+        "acquisition_time": 1.876894,
+        "acquisition_primitive_calls": 765,
+        "acquisition_proof_calls": 1,
+        "acquisition_peak_memory": 1360270,
+        "acquisition_search_nodes": 1,
+        "candidates_enumerated": 1,
+        "candidates_refused_at_closure": 0,
+        "candidates_refused_by_certificate": 0,
+        "includes": "the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.",
+        "excludes": "the probe measurements below, which are comparison work and are reported separately"
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 1.276406,
+          "prover_calls": 1,
+          "task_certifier_calls": 0,
+          "primitive_calls": 17,
+          "search_nodes": 1
+        },
+        "certification": {
+          "wall_time": 0.600488,
+          "prover_calls": 0,
+          "task_certifier_calls": 1,
+          "primitive_calls": 748,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.214529,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 2296,
+          "search_nodes": 2297
+        },
+        "reuse": {
+          "wall_time": 0.011132,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "acquisition includes the closure prover's polynomial identities; certification is kinematics correspondence plus task sufficiency",
+        "verification": {
+          "wall_time": 0.033537,
+          "search_nodes": 2486
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 0.635142,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "span_classes": [
+        {
+          "representative": "c1 + c2",
+          "dimension": 4,
+          "members": [
+            "c1 + c2"
+          ],
+          "size": 1
+        }
+      ],
+      "span_class_note": "candidates spanning the same linear space are one representation, decided by exact rank on shared monomial coordinates. Only one member of each class is measured.",
+      "probe_length": 3,
+      "tie_break_workload": {
+        "lengths": [
+          6
+        ],
+        "measured": {
+          "c1 + c2": {
+            "acquisition_primitive_calls": 765,
+            "workload_primitive_calls": 0,
+            "workload_nodes": 717,
+            "workload_wall_time": 0.236082,
+            "lengths": [
+              6
+            ],
+            "total_primitive_calls": 765,
+            "acquisition_wall_time": 1.876894,
+            "total_wall_time": 2.112976,
+            "primitive_count_note": "zero here means the primitives this route uses are not instrumented, not that it did no work; read workload_nodes"
+          },
+          "existing exact route: merge equal concrete states": {
+            "acquisition_primitive_calls": 0,
+            "workload_primitive_calls": 2296,
+            "workload_nodes": 2297,
+            "workload_wall_time": 0.211086,
+            "lengths": [
+              6
+            ],
+            "total_primitive_calls": 2296,
+            "acquisition_wall_time": 0.0,
+            "total_wall_time": 0.211086,
+            "primitive_count_note": null
+          }
+        },
+        "rule": "acquisition plus workload, in wall time, smallest first; then grammar order",
+        "order_by_wall_time": [
+          "existing exact route: merge equal concrete states",
+          "c1 + c2"
+        ],
+        "order_by_workload_nodes": [
+          "c1 + c2",
+          "existing exact route: merge equal concrete states"
+        ],
+        "units_disagree": true,
+        "units_disagree_note": "the two units put a different candidate first. The stated rule uses wall time; the node order is kept here so the disagreement is visible rather than settled silently",
+        "note": "only front-one candidates are measured this way; the Pareto frontier has already decided which candidates are incomparable and this orders those. One measurement each, so a small gap is not a ranking -- `scripts/measure_routes.py` is where a repeated timing lives"
+      },
+      "existing_route_candidate": {
+        "name": "existing exact route: merge equal concrete states",
+        "probe_length": 3,
+        "nodes": 85,
+        "wall_time": 0.010479,
+        "acquisition_primitive_calls": 0,
+        "why_it_competes": "it is exact with nothing learned, so it is a candidate and not only a baseline. A run that picks it is a correct run"
+      },
+      "selection": {
+        "front_sizes": [
+          2
+        ],
+        "order": "Pareto fronts; within a front, active before dormant. No component is weighted against another and there is no total",
+        "gate": "a representation without an admitting certificate for this task is not offered at all, rather than ranked low",
+        "tie_break": "within one Pareto front, and only there: acquisition cost plus the cost of running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both counted in primitive calls, then the earlier candidate in the grammar's fixed enumeration order. Stated here rather than decided per run.\nWhy this and not the cheaper acquisition: a probe at a small length measures the wrong thing. An acquisition is paid once and the saving grows with the length actually asked for, so a tie-break on acquisition alone would hand every task to the route that learns nothing, whatever the task goes on to ask. Both sides of the ledger are measured over the same declared workload instead.\nThis does not reintroduce a weighting across the Pareto components: it is one quantity in one unit, used only to order candidates that the frontier has already declared incomparable.",
+        "offered": [
+          {
+            "observable": "existing exact route: merge equal concrete states",
+            "front": 1,
+            "dimension": 12,
+            "status": "active",
+            "grammar_order": null,
+            "objectives": {
+              "description_gain_bits": 0,
+              "state_dimension_ratio": 1.0,
+              "primitive_calls_eliminated": 0,
+              "search_nodes_eliminated": -1,
+              "search_candidates_eliminated": 8,
+              "depth_reduction_ratio": 1.0,
+              "wall_time_saved": -0.000143,
+              "reuse_successes": 1,
+              "cheap_acquisition": 0
+            }
+          },
+          {
+            "observable": "c1 + c2",
+            "front": 1,
+            "dimension": 4,
+            "status": "active",
+            "grammar_order": 0,
+            "objectives": {
+              "description_gain_bits": -3520,
+              "state_dimension_ratio": 3.0,
+              "primitive_calls_eliminated": 84,
+              "search_nodes_eliminated": 19,
+              "search_candidates_eliminated": 32,
+              "depth_reduction_ratio": 1.0,
+              "wall_time_saved": -0.029783,
+              "reuse_successes": 1,
+              "cheap_acquisition": -765
+            }
+          }
+        ],
+        "not_admissible": []
+      },
+      "selected": {
+        "observable": "existing exact route: merge equal concrete states",
+        "dimension": 12,
+        "basis": null,
+        "readout": null,
+        "front": 1,
+        "kind": "existing exact route",
+        "why": "the existing exact route is on the first Pareto front and is cheaper over this task own declared workload once acquisition is counted, so the stated tie-break gives it the task. Acquisition was nevertheless paid in full.",
+        "workload": {
+          "acquisition_primitive_calls": 0,
+          "workload_primitive_calls": 2296,
+          "workload_nodes": 2297,
+          "workload_wall_time": 0.211086,
+          "lengths": [
+            6
+          ],
+          "total_primitive_calls": 2296,
+          "acquisition_wall_time": 0.0,
+          "total_wall_time": 0.211086,
+          "primitive_count_note": null
+        }
+      },
+      "verification": [
+        {
+          "length": 3,
+          "by_enumeration": {
+            "v_max": "5",
+            "count_max": 4,
+            "total_words": 64,
+            "distinct_values": 7
+          },
+          "by_representation": {
+            "v_max": "5",
+            "count_max": 4,
+            "total_words": 64,
+            "distinct_values": 7
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-1": 12,
+            "0": 4,
+            "1": 12,
+            "2": 8,
+            "3": 20,
+            "4": 4,
+            "5": 4
+          },
+          "nodes_enumerating": 84,
+          "nodes_with_representation": 85
+        },
+        {
+          "length": 5,
+          "by_enumeration": {
+            "v_max": "9",
+            "count_max": 4,
+            "total_words": 1024,
+            "distinct_values": 15
+          },
+          "by_representation": {
+            "v_max": "9",
+            "count_max": 4,
+            "total_words": 1024,
+            "distinct_values": 15
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-5": 4,
+            "-4": 4,
+            "-3": 68,
+            "-2": 40,
+            "-1": 108,
+            "0": 76,
+            "1": 188,
+            "2": 80,
+            "3": 156,
+            "4": 76,
+            "5": 124,
+            "6": 40,
+            "7": 52,
+            "8": 4,
+            "9": 4
+          },
+          "nodes_enumerating": 1364,
+          "nodes_with_representation": 953
+        }
+      ],
+      "verification_wall_time": 0.033537,
+      "answers": [
+        {
+          "length": 6,
+          "answer": {
+            "v_max": "11",
+            "count_max": 4,
+            "total_words": 4096,
+            "distinct_values": 19
+          },
+          "distribution": {
+            "-7": 4,
+            "-6": 4,
+            "-5": 68,
+            "-4": 72,
+            "-3": 272,
+            "-2": 176,
+            "-1": 400,
+            "0": 296,
+            "1": 600,
+            "2": 344,
+            "3": 600,
+            "4": 280,
+            "5": 400,
+            "6": 176,
+            "7": 272,
+            "8": 56,
+            "9": 68,
+            "10": 4,
+            "11": 4
+          },
+          "search_nodes": 2297,
+          "classes_expanded": 692,
+          "wall_time": 0.214529,
+          "proof_calls": 0,
+          "primitive_calls": 2296,
+          "words_this_stands_for": 4096,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "scope": "the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.",
+      "learned_alternatives": [
+        {
+          "observable": "c1 + c2",
+          "front": 1,
+          "dimension": 4
+        }
+      ],
+      "ledger_entries": 1,
+      "reuse_lookup": {
+        "schema": "mortra.self-directed-search.v2",
+        "task": "fold c1+c2 displacement",
+        "reused": false,
+        "reason": "no stored representation carries a certificate admitting it for this task",
+        "stored_entries": 0,
+        "lookup_cost": {
+          "wall_time": 0.011132,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        }
+      },
+      "route": "q-directed",
+      "wall_time": 2.771234
+    }
+  },
+  "reuse": {
+    "c1-plus-c2": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold c1+c2 displacement",
+      "reused": true,
+      "from_entry": "83fa63a17c5bf1b7487d15f1",
+      "observable": "c1 + c2",
+      "basis": [
+        "c1 + c2",
+        "F11 + F12 - F31 - F32 + c1 + c2",
+        "F11 + F12 + F31 + F32 + c1 + c2",
+        "F21 + F22 + F31 + F32 + c1 + c2"
+      ],
+      "readout": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "reuse_contract": {
+        "source_task": "fold c1+c2 displacement",
+        "source_key": "07d0c4ede9b2ae6fd4d6be064d6655e27e7586e34ea04606b01838ed38c16144",
+        "new_key": "07d0c4ede9b2ae6fd4d6be064d6655e27e7586e34ea04606b01838ed38c16144",
+        "scope": {
+          "centre_domain": "Z^3",
+          "coefficient_field": "QQ",
+          "frames": [
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ]
+          ],
+          "kind": "all_finite_words",
+          "maximum_length": null,
+          "seed": [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        },
+        "readout_check": "exact polynomial span membership"
+      },
+      "dimension": 4,
+      "certificate_verdict": "admitted, proved",
+      "acquired_again": false,
+      "cost": {
+        "wall_time": 0.795063,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 2205,
+        "proof_calls": 0
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "certification": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.697275,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 2205
+        },
+        "reuse": {
+          "wall_time": 0.080217,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "reuse cost is lookup and exact readout checking; answer separate"
+      },
+      "verification": [],
+      "verification_wall_time": 1e-06,
+      "answers": [
+        {
+          "length": 9,
+          "answer": {
+            "v_max": "17",
+            "count_max": 4,
+            "total_words": 262144,
+            "distinct_values": 31
+          },
+          "distribution": {
+            "-13": 4,
+            "-12": 4,
+            "-11": 116,
+            "-10": 104,
+            "-9": 1100,
+            "-8": 860,
+            "-7": 4284,
+            "-6": 2928,
+            "-5": 9076,
+            "-4": 6292,
+            "-3": 18020,
+            "-2": 10776,
+            "-1": 24540,
+            "0": 14604,
+            "1": 30604,
+            "2": 15904,
+            "3": 30220,
+            "4": 14604,
+            "5": 24796,
+            "6": 10776,
+            "7": 17764,
+            "8": 6292,
+            "9": 9140,
+            "10": 2928,
+            "11": 4220,
+            "12": 860,
+            "13": 1100,
+            "14": 104,
+            "15": 116,
+            "16": 4,
+            "17": 4
+          },
+          "search_nodes": 2205,
+          "classes_expanded": 172,
+          "wall_time": 0.697275,
+          "proof_calls": 0,
+          "primitive_calls": 0,
+          "words_this_stands_for": 262144,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "sense": "the basis and the action matrices came out of the stored entry. No closure prover ran, no candidate was enumerated, and the acquisition cost of this call is whatever the figures above say -- not the original acquisition, which was paid once."
+    }
+  }
+}

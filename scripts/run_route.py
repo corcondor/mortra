@@ -37,7 +37,7 @@ def build(route, task, ledger_path):
     if route == "concrete":
         return lambda length: benchmarks.concrete_merge_rung(task, length), None
     book = ledgers.Ledger.load(Path(ledger_path))
-    entries = book.admissible_for(task.name)
+    entries = book.admissible_for(task)
     if not entries:
         raise SystemExit(json.dumps({
             "route": route, "task": task.name, "ran": False,
@@ -45,15 +45,9 @@ def build(route, task, ledger_path):
                        "admitting it for this task"),
             "stored_entries": len(book.entries)}, indent=1))
     entry = entries[0]
-    certificate = policy.certificate_for(entry, task.name)
+    certificate = entry["matched_certificate"]
     representation = entry["representation"]
-    record = {"observable": representation["observable"],
-              "basis": representation["basis"],
-              "action_matrices": representation["action_matrices"],
-              "dimension": representation["dimension"],
-              "identity_residuals_all_zero": True,
-              "closure_scope": "read from the ledger"}
-    closure = observables.closure_from_record(record)
+    closure = observables.closure_from_record(representation)
     used = {"from_entry": entry["id"],
             "observable": representation["observable"],
             "dimension": representation["dimension"],

@@ -1,0 +1,297 @@
+{
+  "tasks": {
+    "axis1-collision-free": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement, collision-free words only",
+      "task_contract": {
+        "goal": "the maximum of c1 over collision-free words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task",
+        "legality": "a predicate on the state",
+        "notes": "legality here is a genuine function of THIS state. A representation refused for it is refused against a state that does decide legality, which says something about that representation and nothing about every representation"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2,
+        "coefficients": [
+          1,
+          -1
+        ],
+        "limit": null,
+        "source": "fold_observable_system.candidate_observables",
+        "note": "the enumeration and its order are the grammar's; nothing is injected or excluded here"
+      },
+      "tie_break": "within one Pareto front, and only there: acquisition cost plus the cost of running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both counted in primitive calls, then the earlier candidate in the grammar's fixed enumeration order. Stated here rather than decided per run.\nWhy this and not the cheaper acquisition: a probe at a small length measures the wrong thing. An acquisition is paid once and the saving grows with the length actually asked for, so a tie-break on acquisition alone would hand every task to the route that learns nothing, whatever the task goes on to ask. Both sides of the ledger are measured over the same declared workload instead.\nThis does not reintroduce a weighting across the Pareto components: it is one quantity in one unit, used only to order candidates that the frontier has already declared incomparable.",
+      "premise": {
+        "exact": true,
+        "identities_checked": 96,
+        "frames_checked": 24,
+        "centre": "symbolic; every integer centre is covered",
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre",
+        "cost": {
+          "wall_time": 0.638735,
+          "primitive_calls": 748
+        }
+      },
+      "candidates_offered": [
+        "c1"
+      ],
+      "required_observables": [
+        "c1"
+      ],
+      "closure_method": "task-directed minimal common invariant linear space",
+      "refused_at_closure": [],
+      "refused_by_certificate": [
+        {
+          "observable": "c1",
+          "dimension": 4,
+          "order": 0,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "admitted": [],
+      "acquisition_cost": {
+        "acquisition_time": 1.720564,
+        "acquisition_primitive_calls": 1033,
+        "acquisition_proof_calls": 1,
+        "acquisition_peak_memory": 2933686,
+        "acquisition_search_nodes": 1,
+        "candidates_enumerated": 1,
+        "candidates_refused_at_closure": 0,
+        "candidates_refused_by_certificate": 1,
+        "includes": "the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.",
+        "excludes": "the probe measurements below, which are comparison work and are reported separately"
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 0.93699,
+          "prover_calls": 1,
+          "task_certifier_calls": 0,
+          "primitive_calls": 17,
+          "search_nodes": 1
+        },
+        "certification": {
+          "wall_time": 0.783574,
+          "prover_calls": 0,
+          "task_certifier_calls": 1,
+          "primitive_calls": 1016,
+          "search_nodes": 25
+        },
+        "answer": {
+          "wall_time": 4.202307,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 10036,
+          "search_nodes": 5125
+        },
+        "reuse": {
+          "wall_time": 0.007622,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "acquisition includes the closure prover's polynomial identities; certification is kinematics correspondence plus task sufficiency",
+        "verification": {
+          "wall_time": 0.267252,
+          "search_nodes": 2834
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 0.011102,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "verification": [
+        {
+          "length": 3,
+          "by_enumeration": {
+            "v_max": "3",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "by_representation": {
+            "v_max": "3",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-1": 8,
+            "0": 24,
+            "1": 8,
+            "2": 16,
+            "3": 8
+          },
+          "nodes_enumerating": 84,
+          "nodes_with_representation": 85
+        },
+        {
+          "length": 5,
+          "by_enumeration": {
+            "v_max": "5",
+            "count_max": 32,
+            "total_words": 948,
+            "distinct_values": 9
+          },
+          "by_representation": {
+            "v_max": "5",
+            "count_max": 32,
+            "total_words": 948,
+            "distinct_values": 9
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-3": 32,
+            "-2": 96,
+            "-1": 88,
+            "0": 210,
+            "1": 74,
+            "2": 224,
+            "3": 96,
+            "4": 96,
+            "5": 32
+          },
+          "nodes_enumerating": 1332,
+          "nodes_with_representation": 1333
+        }
+      ],
+      "verification_wall_time": 0.267252,
+      "answers": [
+        {
+          "length": 6,
+          "answer": {
+            "v_max": "6",
+            "count_max": 64,
+            "total_words": 3632,
+            "distinct_values": 11
+          },
+          "distribution": {
+            "-4": 64,
+            "-3": 192,
+            "-2": 432,
+            "-1": 208,
+            "0": 662,
+            "1": 354,
+            "2": 760,
+            "3": 256,
+            "4": 448,
+            "5": 192,
+            "6": 64
+          },
+          "search_nodes": 5125,
+          "classes_expanded": 3632,
+          "wall_time": 4.202307,
+          "proof_calls": 0,
+          "primitive_calls": 10036,
+          "words_this_stands_for": 3632,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "scope": "the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.",
+      "selected": {
+        "observable": "existing exact route: merge equal concrete states",
+        "dimension": 13,
+        "basis": null,
+        "front": 1,
+        "why": "q-closure refused; exact concrete fallback"
+      },
+      "selection": {
+        "front_sizes": [],
+        "offered": []
+      },
+      "fallback": true,
+      "reuse_lookup": {
+        "schema": "mortra.self-directed-search.v2",
+        "task": "fold axis 1 displacement, collision-free words only",
+        "reused": false,
+        "reason": "no stored representation carries a certificate admitting it for this task",
+        "stored_entries": 0,
+        "lookup_cost": {
+          "wall_time": 0.007622,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        }
+      },
+      "route": "q-directed",
+      "wall_time": 6.208847
+    }
+  },
+  "reuse": {
+    "axis1-collision-free": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement, collision-free words only",
+      "reused": false,
+      "reason": "no stored representation carries a certificate admitting it for this task",
+      "stored_entries": 1,
+      "lookup_cost": {
+        "wall_time": 0.003956,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 0
+      }
+    }
+  }
+}

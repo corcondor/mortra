@@ -1,0 +1,29 @@
+task   : fold c1+c2 displacement
+goal   : the maximum of c1 + c2 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates
+legal  : True
+
+premise: exact=None None identities over None frames
+grammar: degree 1, 2 term(s) -> 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+Pareto fronts: []
+
+selected: c1 + c2 dim 4
+          basis   ['c1 + c2', 'F11 + F12 - F31 - F32 + c1 + c2', 'F11 + F12 + F31 + F32 + c1 + c2', 'F21 + F22 + F31 + F32 + c1 + c2']
+          readout qbar(z) = ['1', '0', '0', '0'] . z
+          compatible stored certificate; no acquisition
+
+length  3  enumeration v_max=5 count=4 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 65)
+length  5  enumeration v_max=9 count=4 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 413)
+
+length 12  v_max=23 count=4 words=16777216
+            4557 nodes, 244 classes, 1.507888s, not enumerated
+
+scope: 

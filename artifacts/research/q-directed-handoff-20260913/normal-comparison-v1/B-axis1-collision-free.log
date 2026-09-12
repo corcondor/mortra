@@ -1,0 +1,67 @@
+
+=== axis1-collision-free: fold axis 1 displacement, collision-free words only ===
+candidate 1/144: c1; closed=True; admitted=False
+candidate 24/144: -F21 + c1; closed=True; admitted=False
+candidate 48/144: -F23 + c2; closed=True; admitted=False
+candidate 72/144: -F33 + c3; closed=True; admitted=False
+candidate 96/144: F12 - F23; closed=True; admitted=False
+candidate 120/144: F21 - F31; closed=True; admitted=False
+candidate 144/144: F32 - F33; closed=True; admitted=False
+task   : fold axis 1 displacement, collision-free words only
+goal   : the maximum of c1 over collision-free words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+legal  : a predicate on the state
+
+premise: exact=True 96 identities over 24 frames
+grammar: degree 1, 2 term(s) -> 144 candidates
+
+refused at closure    : 0
+refused by certificate: 144
+    c1             dim 4   refused by ['legality']
+    c2             dim 4   refused by ['observable', 'legality']
+    c3             dim 4   refused by ['observable', 'legality']
+    F11            dim 3   refused by ['observable', 'legality']
+    F12            dim 3   refused by ['observable', 'legality']
+    F13            dim 3   refused by ['observable', 'legality']
+admitted              : 0
+acquisition cost      : 44048 primitive calls, 229.262641s over 144 candidates (rejected ones included)
+
+
+stopped: no candidate in this grammar both closed and preserved what the task needs
+    candidates_enumerated: 144
+    refused_by: ['legality', 'observable']
+    exact: this is a statement about this grammar at this degree and these coefficients, and about the certificate depth used. Widening any of them is a different question
+
+scope: 
+
+=== reuse from the store, no acquisition ===
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
+==============================================================================
+TASK  fold axis 1 displacement, collision-free words only
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+  legality a predicate on the state
+     |
+     v  route enumerate offers 144 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 144
+     |       legality: 144
+     |       observable: 125
+     |       one counterexample: legality at length 3, 'AAG' -> True vs 'AAT' -> False
+     |   admitted                      : 0
+     |
+  STOPPED  no candidate in this grammar both closed and preserved what the task needs
+     |   candidates_enumerated: 144
+     |   refused_by: ['legality', 'observable']
+     |   exact: this is a statement about this grammar at this degree and these coefficients, and about the certificate depth used. Widening any of them is a different question
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\normal-comparison-v1\B-axis1-collision-free

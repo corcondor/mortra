@@ -1,0 +1,36 @@
+==============================================================================
+TASK  fold axis 1 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+  legality declared vacuous by the task
+     |
+     v  grammar, in its own order, offers 12 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 11
+     |       observable: 11
+     |   admitted                      : 1
+     v   spanning 1 distinct space(s)
+  SPACE  c1 (dim 4) <- 1 candidate(s)
+     |
+     v   Pareto fronts [2], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   nothing learned: the concrete state is merged with itself, which needs no certificate
+     |   tie-break over the declared workload n=[8] (wall time, then grammar order):
+     |       existing exact route: merge equal concre   0.00s acquire +   2.12s run =   2.12s      9545 nodes
+     |       c1                                        19.30s acquire +   0.22s run =  19.52s       505 nodes
+     |       units disagree -- by wall time existing exact route: merge equal , by nodes c1
+     |   learned alternative left on front 1: c1 dim 4
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=5   enumeration v_max=   5 count=32       | agrees True dist True | 1364 -> 953 nodes
+  n=8   DP only       v_max=   8 count=256      | NOT enumerated | 9545 nodes, 1836 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1: entry 0a08111773ccaed30dc2fa2c (c1, dim 4), acquired again: False, prover calls: 0
+      n=9  v_max=9 count=512  673 nodes, 46 classes, 0.48s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+

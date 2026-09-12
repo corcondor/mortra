@@ -136,11 +136,7 @@ class FoldObservableDomain:
                 "minimality": ("smallest generator-invariant linear space "
                                "containing this observable; not a claim of "
                                "minimality over all representations"),
-                "step_premise": {"exact": verification.get("exact"),
-                                 "frames_checked": verification.get("frames_checked"),
-                                 "identities_checked": verification.get(
-                                     "identities_checked"),
-                                 "scope": verification.get("scope")},
+                "step_premise": dict(verification),
                 "acquisition_cost": {
                     "acquisition_time": measured["wall_time"],
                     "acquisition_primitive_calls": measured["primitive_calls"],

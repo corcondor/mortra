@@ -230,7 +230,7 @@ class ReadoutTests(unittest.TestCase):
                       found["identity_residuals_all_zero"],
                   "closure_scope": found["scope"]}
         task = T.displacement_task(axis=0)                # evaluates c1
-        verdict = C.certify(record, task, depth=3)
+        verdict = C.certify(record, task, depth=3, premise=F.verify_step(system))
         if not verdict["admissible"]:
             self.skipTest("this closure does not determine c1; nothing to check")
         self.assertNotEqual(verdict["readout"], ["1", "0", "0", "0"],

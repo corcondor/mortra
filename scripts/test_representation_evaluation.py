@@ -228,7 +228,7 @@ class ComparisonTests(unittest.TestCase):
         from math_os_prototype import representation_certificate as certificates
         cls.task = fold_tasks.displacement_task(axis=0)
         cls.certificate = certificates.certify(cls.closure_record, cls.task,
-                                               depth=4)
+                                               depth=4, premise=F.verify_step(system))
 
     def test_the_differential_comparison_agrees_and_eliminates_the_derivative(self):
         record = B.differential_comparison("d", PRODUCT, sp.exp(X) / (1 - X),

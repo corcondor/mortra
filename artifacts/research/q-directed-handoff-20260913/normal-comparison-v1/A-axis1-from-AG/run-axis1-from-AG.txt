@@ -1,0 +1,27 @@
+task   : fold axis 1 displacement from AG
+goal   : the maximum of c1 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+legal  : True
+
+premise: exact=None None identities over None frames
+grammar: degree 1, 2 term(s) -> 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+Pareto fronts: []
+
+selected: existing exact route: merge equal concrete states dim 12
+          existing exact route requested
+
+length  3  enumeration v_max=5 count=8 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 85)
+length  5  enumeration v_max=7 count=32 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 953)
+
+length  6  v_max=8 count=64 words=4096
+            2297 nodes, 692 classes, 0.198979s, not enumerated
+
+scope: the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.

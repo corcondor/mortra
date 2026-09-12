@@ -1,0 +1,44 @@
+
+=== axis1-collision-free: fold axis 1 displacement, collision-free words only ===
+task   : fold axis 1 displacement, collision-free words only
+goal   : the maximum of c1 over collision-free words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+legal  : False
+
+premise: exact=None None identities over None frames
+grammar: degree 1, 2 term(s) -> 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+
+stopped: no stored representation carries a certificate admitting it for this task
+
+scope: 
+
+=== reuse from the store, no acquisition ===
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
+==============================================================================
+TASK  fold axis 1 displacement, collision-free words only
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+  legality False
+     |
+     v  route reuse offers 0 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 0
+     |
+  STOPPED  no stored representation carries a certificate admitting it for this task
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\normal-comparison-v1\D-axis1-collision-free

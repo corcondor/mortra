@@ -1,4 +1,9 @@
-"""One task in, an answer out, with nothing picked by hand.
+"""One task in, a certified answer out, with no mid-run candidate injection.
+
+The q-directed route starts from the task's evaluation, not a discovered question.
+The existing closure prover derives its auxiliary basis, actions and readout.
+The enumeration route instead searches a configured observation grammar. These
+are distinct capabilities; neither chooses its own research objective.
 
 The point of this module is to be checkable rather than impressive. A task is
 handed in stating only its own contract -- states and start, labels and update,
@@ -31,6 +36,7 @@ enough of each step that all three would be visible.
 from __future__ import annotations
 
 import sympy as sp
+import time
 
 from math_os_prototype import fold_observable_system as observables
 from math_os_prototype import fold_tasks
@@ -48,7 +54,7 @@ SCHEMA = "mortra.self-directed-search.v2"
 TIE_BREAK = (
     "within one Pareto front, and only there: acquisition cost plus the cost of "
     "running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both "
-    "counted in primitive calls, then the earlier candidate in the grammar's "
+    "measured in wall time, then the earlier candidate in the grammar's "
     "fixed enumeration order. Stated here rather than decided per run.\n"
     "Why this and not the cheaper acquisition: a probe at a small length "
     "measures the wrong thing. An acquisition is paid once and the saving grows "
@@ -149,17 +155,135 @@ def _closure_record(found, premise):
 
 
 def _representation_of(record):
-    return {"kind": "observation representation",
+    return {**record, "kind": "observation representation",
             "observable": record["observable"], "basis": record["basis"],
             "dimension": record["dimension"],
             "action_matrices": record["action_matrices"],
             "identity": "Phi(T_g(x)) = B_g Phi(x)"}
 
 
-def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
+def _cost(rows=(), *, search_nodes=None):
+    rows = list(rows)
+    return {"wall_time": round(sum(r.get("wall_time", 0) for r in rows), 6),
+            "prover_calls": sum(r.get("proof_calls", 0) for r in rows),
+            "task_certifier_calls": sum(r.get("task_certifier_calls", 0) for r in rows),
+            "primitive_calls": sum(r.get("primitive_calls", 0) for r in rows),
+            "search_nodes": (sum(r.get("search_nodes") or 0 for r in rows)
+                             if search_nodes is None else search_nodes)}
+
+
+def _finish_costs(trace, started):
+    trace["wall_time"] = round(time.perf_counter() - started, 6)
+    costs = trace.setdefault("costs", {})
+    for phase in ("acquisition", "certification", "answer", "reuse"):
+        costs.setdefault(phase, _cost())
+    costs["verification"] = {"wall_time": trace.get("verification_wall_time", 0),
+                              "search_nodes": sum(c["nodes_enumerating"] +
+                                                  c["nodes_with_representation"]
+                                                  for c in trace.get("verification", []))}
+    accounted = sum(costs[p]["wall_time"] for p in
+                    ("acquisition", "certification", "answer", "reuse", "verification"))
+    costs["comparison_and_bookkeeping"] = {
+        "wall_time": round(max(0, trace["wall_time"] - accounted), 6),
+        "note": "residual: probes, workload comparison, grouping, record construction; "
+                "not acquisition or answer time"}
+    costs["units"] = {
+        "wall_time": "seconds, includes tracing overhead",
+        "acquisition.search_nodes": "observation candidates offered",
+        "certification.search_nodes": "words compared in finite congruence checks",
+        "answer.search_nodes": "DP states expanded, including terminal layer",
+        "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+        "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+        "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"}
+    return trace
+
+
+def acquire_task_closure(system, task, dimension_cap):
+    """Call the existing common-invariant-space prover on the task's row space."""
+    from math_os_prototype import finite_generator_problem_dna as dna
+    expressions = [task.observable_expression, *task.required_observables]
+    if any(q is None for q in expressions):
+        return {"closed": False, "reason": "task has no polynomial evaluation"}
+    try:
+        for q in expressions:
+            polynomial = sp.Poly(q, *system.variables)
+            if task.coefficient_field != "QQ" or any(c.is_Rational is not True
+                                                       for c in polynomial.coeffs()):
+                raise ValueError("the fold task adapter currently supports QQ only")
+        found = dna.discover_action_observable_basis(
+            system, expressions, maximum_dimension=dimension_cap)
+    except (ValueError, AssertionError, sp.PolynomialError) as exc:
+        return {"closed": False, "reason": str(exc)}
+    return {"closed": found["certificate_passed"],
+            "observable": str(task.observable_expression),
+            "basis": [str(b) for b in found["basis"]],
+            "dimension": len(found["basis"]),
+            "action_matrices": {name: [[str(v) for v in row] for row in matrix.tolist()]
+                                for name, matrix in zip(found["generator_names"],
+                                                        found["action_matrices"])},
+            "identity_residuals_all_zero": all(all(v == 0 for v in residual)
+                                               for residual in found["identity_residuals"]),
+            "scope": found["scope"]}
+
+
+def solve(task, *, route="enumerate", **kwargs):
+    """Normal routing: lookup first for q-directed tasks, otherwise acquire once.
+
+    The Python API keeps its historical enumeration default. The CLI defaults
+    to q-directed. Explicit enumeration is the unchanged comparison condition B.
+    """
+    started = time.perf_counter()
+    book = kwargs.get("ledger")
+    book = book if book is not None else ledgers.Ledger()
+    kwargs["ledger"] = book
+    verify = tuple(kwargs.get("verify_lengths", (5, 6, 7)))
+    answer = tuple(kwargs.get("answer_lengths", (10, 12)))
+    base = {"schema": SCHEMA, "task": task.name,
+            "task_contract": {"goal": task.goal, "counted": task.counted,
+                              "length_means": task.length_means,
+                              "state": task.state_contract, "legality": str(task.legal_always)},
+            "grammar": {"degree": kwargs.get("degree", 1),
+                        "max_terms": kwargs.get("max_terms", 1)},
+            "candidates_offered": [], "route": route}
+    if route not in ("existing", "enumerate", "q-directed", "reuse"):
+        raise ValueError(f"unknown route {route!r}")
+    reuse = None
+    if route in ("q-directed", "reuse"):
+        reuse = solve_from_store(task, book, verify_lengths=verify, answer_lengths=answer)
+        if reuse["reused"]:
+            base.update(reuse)
+            base["selected"] = {"observable": reuse["observable"],
+                                "dimension": reuse["dimension"], "front": 1,
+                                "basis": reuse["basis"], "readout": reuse["readout"],
+                                "why": "compatible stored certificate; no acquisition"}
+            base["selection"] = {"front_sizes": [], "offered": []}
+            return _finish_costs(base, started), book
+        if route == "reuse":
+            base.update(reuse, stopped=reuse["reason"])
+            base["costs"] = {"reuse": reuse["lookup_cost"]}
+            return _finish_costs(base, started), book
+    if route == "existing":
+        result = answer_with_concrete(task, verify_lengths=verify, answer_lengths=answer)
+        base.update(result)
+        base.update(selected={"observable": EXISTING_ROUTE, "dimension": len(task.seed_state),
+                              "basis": None, "front": 1, "why": "existing exact route requested"},
+                    selection={"front_sizes": [], "offered": []},
+                    costs={"acquisition": _cost(), "certification": _cost(),
+                           "answer": _cost(result["answers"]), "reuse": _cost()})
+        trace = base
+    else:
+        trace, book = _solve(task, route=route, **kwargs)
+        if reuse:
+            trace["reuse_lookup"] = reuse
+            trace.setdefault("costs", {})["reuse"] = reuse["lookup_cost"]
+    trace["route"] = route
+    return _finish_costs(trace, started), book
+
+
+def _solve(task, *, degree=1, max_terms=1, coefficients=(1,),
           candidate_limit=None, dimension_cap=64, certificate_depth=5,
           probe_length=5, verify_lengths=(5, 6, 7), answer_lengths=(10, 12),
-          ledger=None, frame_depth=4):
+          ledger=None, frame_depth=4, route="enumerate", progress=None):
     """Work the task through, and record every decision on the way."""
     trace = {"schema": SCHEMA, "task": task.name,
              "task_contract": {"goal": task.goal, "counted": task.counted,
@@ -180,8 +304,12 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
     book = ledger if ledger is not None else ledgers.Ledger()
 
     # 1. the premise
-    premise_run = E.measure(lambda: {"value": observables.verify_step(
-        observables.fold_system(), depth=frame_depth)})
+    prepared = {}
+    def prepare():
+        prepared["system"] = observables.fold_system()
+        return {"value": observables.verify_step(prepared["system"], depth=frame_depth)}
+    premise_run = E.measure(prepare)
+    system = prepared["system"]
     premise = premise_run["value"]
     trace["premise"] = {"exact": premise["exact"],
                         "identities_checked": premise["identities_checked"],
@@ -189,27 +317,38 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
                         "centre": premise["centre"], "scope": premise["scope"],
                         "cost": {"wall_time": premise_run["wall_time"],
                                  "primitive_calls": premise_run["primitive_calls"]}}
-    if not premise["exact"]:
+    if not premise["exact"] or not premise.get("frames_closed"):
         trace["stopped"] = "the one-step correspondence is not exact"
         return trace, book
-    system = observables.fold_system()
 
     # 2. candidates, from the grammar
-    offered = observables.candidate_observables(
-        degree=degree, max_terms=max_terms, coefficients=tuple(coefficients),
-        limit=candidate_limit)
+    generation = E.measure(lambda: {"value": (
+        [task.observable_expression] if route == "q-directed"
+        else observables.candidate_observables(
+            degree=degree, max_terms=max_terms, coefficients=tuple(coefficients),
+            limit=candidate_limit))})
+    offered = generation["value"]
     trace["candidates_offered"] = [str(c) for c in offered]
+    trace["required_observables"] = [str(q) for q in
+                                     (task.observable_expression, *task.required_observables)]
+    trace["closure_method"] = ("task-directed minimal common invariant linear space"
+                               if route == "q-directed" else "candidate enumeration")
+    if route == "q-directed":
+        trace["grammar"].update(
+            source="TaskSpec.observable_expression and required_observables",
+            note="legacy grammar settings are not executed by this route; "
+                 "the evaluations are task inputs, not discovered questions")
+    acquisition_runs, certification_runs = [generation], [premise_run]
 
     # 3 and 4. closure, then the certificate for this task. Every candidate
     # costs something whether it survives or not, and all of it is acquisition.
     survivors, refused_closure, refused_certificate = [], [], []
-    search_cost = {"wall_time": premise_run["wall_time"],
-                   "primitive_calls": premise_run["primitive_calls"],
-                   "proof_calls": premise_run["proof_calls"],
-                   "peak_memory": premise_run["peak_memory"]}
+    search_cost = {key: premise_run[key] + generation[key] for key in
+                   ("wall_time", "primitive_calls", "proof_calls", "peak_memory")}
     for order, candidate in enumerate(offered):
-        acquisition = E.measure(lambda: {"value": observables.acquire_closure(
-            system, candidate, maximum_dimension=dimension_cap)})
+        acquisition = E.measure(lambda: {"value": (
+            acquire_task_closure(system, task, dimension_cap) if route == "q-directed"
+            else observables.acquire_closure(system, candidate, maximum_dimension=dimension_cap))})
         found = acquisition["value"]
         certificate = None
         if found["closed"]:
@@ -217,11 +356,19 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
             certification = E.measure(lambda: {"value": certificates.certify(
                 record, task, depth=certificate_depth, premise=premise)})
             certificate = certification["value"]
+            certification["task_certifier_calls"] = 1
+            certification["search_nodes"] = sum(c.get("words_compared", 0)
+                                                  for c in certificate["checks"])
         else:
             certification = {"wall_time": 0.0, "primitive_calls": 0,
                              "proof_calls": 0, "peak_memory": 0}
         for key in ("wall_time", "primitive_calls", "proof_calls", "peak_memory"):
             search_cost[key] += acquisition[key] + certification[key]
+        acquisition_runs.append(acquisition)
+        certification_runs.append(certification)
+        if progress and (order == 0 or (order + 1) % 24 == 0 or order + 1 == len(offered)):
+            progress(f"candidate {order + 1}/{len(offered)}: {candidate}; "
+                     f"closed={found['closed']}; admitted={certificates.admissible(certificate)}")
 
         if not found["closed"]:
             refused_closure.append({"observable": str(candidate),
@@ -234,6 +381,16 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
                 "refused_by": certificate["refused_by"],
                 "counterexample": policy._first_counterexample(certificate)})
             book.note_certificate(_representation_of(record), certificate)
+            continue
+        from math_os_prototype.representation_reuse import ensure_scope
+        try:
+            for length in (probe_length, *verify_lengths, *answer_lengths):
+                ensure_scope(certificate, task, length)
+        except ValueError as exc:
+            refused_certificate.append({"observable": found["observable"],
+                                        "dimension": found["dimension"], "order": order,
+                                        "refused_by": ["requested scope"],
+                                        "counterexample": None, "reason": str(exc)})
             continue
         survivors.append({"order": order, "record": record,
                           "certificate": certificate})
@@ -255,7 +412,23 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
                      "it rejects."),
         "excludes": ("the probe measurements below, which are comparison work "
                      "and are reported separately")}
+    trace["costs"] = {"acquisition": _cost(acquisition_runs, search_nodes=len(offered)),
+                      "certification": _cost(certification_runs),
+                      "answer": _cost(), "reuse": _cost(),
+                      "note": "acquisition includes the closure prover's polynomial identities; "
+                              "certification is kinematics correspondence plus task sufficiency"}
     if not survivors:
+        if route == "q-directed":
+            result = answer_with_concrete(task, verify_lengths=verify_lengths,
+                                          answer_lengths=answer_lengths)
+            trace.update(result)
+            trace["selected"] = {"observable": EXISTING_ROUTE, "dimension": len(task.seed_state),
+                                 "basis": None, "front": 1,
+                                 "why": "q-closure refused; exact concrete fallback"}
+            trace["selection"] = {"front_sizes": [], "offered": []}
+            trace["costs"]["answer"] = _cost(result["answers"])
+            trace["fallback"] = True
+            return trace, book
         trace["stopped"] = ("no candidate in this grammar both closed and "
                             "preserved what the task needs")
         trace["stopping_point"] = {
@@ -306,13 +479,11 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
     # be measured against: if nothing beats it on every component it stays on
     # the first front, and costing nothing to acquire it then wins the tie.
     existing, existing_runs = _existing_route_entry(task, probe_length, book)
-    entries = book.admissible_for(task.name) + [existing]
-    chosen = policy.select(entries, task=task.name)
     order_of = {s["record"]["observable"]: s["order"] for s in survivors}
-    cost_of = {s["record"]["observable"]:
-               trace["acquisition_cost"]["acquisition_primitive_calls"]
-               for s in survivors}
-    cost_of[EXISTING_ROUTE] = 0
+    entries = [entry for entry in book.admissible_for(
+        task, lengths=(probe_length, *verify_lengths, *answer_lengths))
+        if entry["representation"]["observable"] in order_of] + [existing]
+    chosen = policy.select(entries, task=task.name)
     # the tie-break: what each front-one candidate would cost over the workload
     # this task declares, plus what it cost to acquire. Measured, not assumed.
     workload = {}
@@ -410,11 +581,12 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
             "why": ("the existing exact route is on the first Pareto front and "
                     "is cheaper over this task own declared workload once "
                     "acquisition is counted, so the stated tie-break gives it "
-                    "the task. Nothing learned was needed here."),
+                    "the task. Acquisition was nevertheless paid in full."),
             "workload": workload.get(EXISTING_ROUTE)}
         result = answer_with_concrete(task, verify_lengths=verify_lengths,
                                       answer_lengths=answer_lengths)
         trace.update(result)
+        trace["costs"]["answer"] = _cost(result["answers"])
         trace["learned_alternatives"] = [
             {"observable": row["observable"], "front": row["front"],
              "dimension": row["dimension"]}
@@ -441,12 +613,14 @@ def solve(task, *, degree=1, max_terms=1, coefficients=(1,),
                          verify_lengths=verify_lengths,
                          answer_lengths=answer_lengths)
     trace.update(result)
+    trace["costs"]["answer"] = _cost(result["answers"])
     trace["ledger_entries"] = len(book.entries)
     return trace, book
 
 
 def answer_with_concrete(task, *, verify_lengths, answer_lengths):
     """Answer with the existing exact route. Same DP, merging on the state."""
+    verification_start = time.perf_counter()
     checks = []
     for length in verify_lengths:
         independent = fold_tasks.enumerate_answer(task, length)
@@ -461,6 +635,7 @@ def answer_with_concrete(task, *, verify_lengths, answer_lengths):
             "distribution": independent["distribution"],
             "nodes_enumerating": independent["nodes"],
             "nodes_with_representation": merged["search_nodes"]})
+    verification_wall_time = round(time.perf_counter() - verification_start, 6)
     answers = []
     for length in answer_lengths:
         run = E.measure(lambda: benchmarks.concrete_merge_rung(task, length))
@@ -469,9 +644,12 @@ def answer_with_concrete(task, *, verify_lengths, answer_lengths):
                         "search_nodes": run["search_nodes"],
                         "classes_expanded": run["candidates_generated"],
                         "wall_time": run["wall_time"],
+                        "proof_calls": run["proof_calls"],
+                        "primitive_calls": run["primitive_calls"],
                         "words_this_stands_for": run["value"]["total_words"],
                         "enumerated": False})
-    return {"verification": checks, "answers": answers,
+    return {"verification": checks, "verification_wall_time": verification_wall_time,
+            "answers": answers,
             "all_checks_agree": all(c["answers_agree"] and c["distributions_agree"]
                                     for c in checks),
             "scope": ("the answers at the longer lengths were computed by the "
@@ -483,6 +661,7 @@ def answer_with_concrete(task, *, verify_lengths, answer_lengths):
 def answer_with(record, certificate, task, *, verify_lengths, answer_lengths):
     """Answer the task with one admitted representation, and check where possible."""
     closure = observables.closure_from_record(record)
+    verification_start = time.perf_counter()
     checks = []
     for length in verify_lengths:
         independent = fold_tasks.enumerate_answer(task, length)
@@ -498,6 +677,7 @@ def answer_with(record, certificate, task, *, verify_lengths, answer_lengths):
             "distribution": independent["distribution"],
             "nodes_enumerating": independent["nodes"],
             "nodes_with_representation": represented["search_nodes"]})
+    verification_wall_time = round(time.perf_counter() - verification_start, 6)
     answers = []
     for length in answer_lengths:
         run = E.measure(lambda: benchmarks.represented_rung(
@@ -507,9 +687,11 @@ def answer_with(record, certificate, task, *, verify_lengths, answer_lengths):
                         "search_nodes": run["search_nodes"],
                         "classes_expanded": run["candidates_generated"],
                         "wall_time": run["wall_time"],
+                        "proof_calls": run["proof_calls"],
+                        "primitive_calls": run["primitive_calls"],
                         "words_this_stands_for": run["value"]["total_words"],
                         "enumerated": False})
-    return {"verification": checks,
+    return {"verification": checks, "verification_wall_time": verification_wall_time,
             "answers": answers,
             "all_checks_agree": all(c["answers_agree"] and c["distributions_agree"]
                                     for c in checks),
@@ -530,35 +712,38 @@ def solve_from_store(task, book, *, verify_lengths=(), answer_lengths=(12,)):
     the stored entries carries an admitting certificate for this task, that is
     the answer.
     """
-    entries = book.admissible_for(task.name)
+    started = time.perf_counter()
+    lookup = E.measure(lambda: {"value": book.admissible_for(
+        task, lengths=tuple(verify_lengths) + tuple(answer_lengths))})
+    entries = lookup["value"]
     if not entries:
         return {"schema": SCHEMA, "task": task.name, "reused": False,
                 "reason": ("no stored representation carries a certificate "
                            "admitting it for this task"),
-                "stored_entries": len(book.entries)}
+                "stored_entries": len(book.entries), "lookup_cost": _cost([lookup])}
     entry = entries[0]
     representation = entry["representation"]
-    certificate = policy.certificate_for(entry, task.name)
-    record = {"observable": representation["observable"],
-              "basis": representation["basis"],
-              "action_matrices": representation["action_matrices"],
-              "dimension": representation["dimension"],
-              "identity_residuals_all_zero": True,
-              "closure_scope": "read from the ledger"}
-    measured = E.measure(lambda: {"value": answer_with(
-        record, certificate, task, verify_lengths=verify_lengths,
-        answer_lengths=answer_lengths)})
-    result = measured["value"]
+    certificate = entry["matched_certificate"]
+    result = answer_with(representation, certificate, task, verify_lengths=verify_lengths,
+                         answer_lengths=answer_lengths)
+    answer_cost = _cost(result["answers"])
+    cost = _cost([lookup, *result["answers"]])
+    cost["wall_time"] = round(time.perf_counter() - started, 6)
+    cost["proof_calls"] = cost["prover_calls"]
     return {"schema": SCHEMA, "task": task.name, "reused": True,
             "from_entry": entry["id"],
             "observable": representation["observable"],
+            "basis": representation["basis"], "readout": certificate["readout"],
+            "reuse_contract": certificate["reused_certificate"],
             "dimension": representation["dimension"],
             "certificate_verdict": certificate.get("verdict"),
             "acquired_again": False,
-            "cost": {"wall_time": measured["wall_time"],
-                     "primitive_calls": measured["primitive_calls"],
-                     "proof_calls": measured["proof_calls"]},
+            "cost": cost,
+            "costs": {"acquisition": _cost(), "certification": _cost(),
+                      "answer": answer_cost, "reuse": _cost([lookup]),
+                      "note": "reuse cost is lookup and exact readout checking; answer separate"},
             "verification": result["verification"],
+            "verification_wall_time": result["verification_wall_time"],
             "answers": result["answers"],
             "all_checks_agree": result["all_checks_agree"],
             "sense": ("the basis and the action matrices came out of the stored "
@@ -580,11 +765,13 @@ def render(trace):
     lines.append(f"legal  : {contract.get('legality')}")
     lines.append("")
     premise = trace.get("premise", {})
-    lines.append(f"premise: exact={premise.get('exact')} "
-                 f"{premise.get('identities_checked')} identities over "
-                 f"{premise.get('frames_checked')} frames")
-    lines.append(f"grammar: degree {trace['grammar']['degree']}, "
-                 f"{trace['grammar']['max_terms']} term(s) -> "
+    if trace.get("reused"):
+        lines.append("premise: stored certificate; no new closure or task certification")
+    elif premise:
+        lines.append(f"premise: exact={premise.get('exact')} "
+                     f"{premise.get('identities_checked')} identities over "
+                     f"{premise.get('frames_checked')} frames")
+    lines.append(f"route: {trace.get('route', 'enumerate')}; "
                  f"{len(trace['candidates_offered'])} candidates")
     lines.append("")
     lines.append(f"refused at closure    : {len(trace.get('refused_at_closure', []))}")
@@ -670,5 +857,11 @@ def render(trace):
         for key, value in trace.get("stopping_point", {}).items():
             lines.append(f"    {key}: {value}")
     lines.append("")
-    lines.append(f"scope: {trace.get('scope', '')}")
+    scope = trace.get("scope")
+    if not scope and trace.get("reused"):
+        stored_scope = trace["reuse_contract"]["scope"]
+        scope = (f"stored certificate: {stored_scope['kind']}; "
+                 f"maximum length={stored_scope['maximum_length']}; "
+                 "initial-state domain checked before reuse")
+    lines.append(f"scope: {scope or 'see stopped or route record'}")
     return "\n".join(lines)

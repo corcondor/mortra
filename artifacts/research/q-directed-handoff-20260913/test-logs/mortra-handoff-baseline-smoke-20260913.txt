@@ -1,0 +1,83 @@
+
+=== axis1: fold axis 1 displacement ===
+task   : fold axis 1 displacement
+goal   : the maximum of c1 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+legal  : declared vacuous by the task
+
+premise: exact=True 96 identities over 24 frames
+grammar: degree 1, 1 term(s) -> 12 candidates
+
+refused at closure    : 0
+refused by certificate: 11
+    c2             dim 4   refused by ['observable']
+    c3             dim 4   refused by ['observable']
+    F11            dim 3   refused by ['observable']
+    F12            dim 3   refused by ['observable']
+    F13            dim 3   refused by ['observable']
+    F21            dim 3   refused by ['observable']
+admitted              : 1
+acquisition cost      : 820 primitive calls, 19.301998s over 12 candidates (rejected ones included)
+
+1 distinct spaces among 1 admitted candidates
+
+Pareto fronts: [2]
+    front 1  existing exact route: merge equal concrete states dim 12: {'description_gain_bits': 0, 'state_dimension_ratio': 1.0, 'primitive_calls_eliminated': 32, 'search_nodes_eliminated': 31, 'search_candidates_eliminated': 95, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.009099, 'reuse_successes': 1, 'cheap_acquisition': 0}
+    front 1  c1             dim 4: {'description_gain_bits': -3016, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 340, 'search_nodes_eliminated': 251, 'search_candidates_eliminated': 238, 'depth_reduction_ratio': 1.0, 'wall_time_saved': -0.006431, 'reuse_successes': 1, 'cheap_acquisition': -820}
+
+selected: existing exact route: merge equal concrete states dim 12
+          workload n=[8]: c1                               19.30s acquire + 0.22s run = 19.52s   (505 nodes)
+          workload n=[8]: existing exact route: merge equa 0.00s acquire + 2.12s run = 2.12s   (9545 nodes)
+          units disagree: by time existing exact route: merge eq, by nodes c1
+          learned alternative on front 1: c1 dim 4
+          the existing exact route is on the first Pareto front and is cheaper over this task own declared workload once acquisition is counted, so the stated tie-break gives it the task. Nothing learned was needed here.
+
+length  5  enumeration v_max=5 count=32 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 953)
+
+length  8  v_max=8 count=256 words=65536
+            9545 nodes, 1836 classes, 1.413955s, not enumerated
+
+scope: the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.
+
+=== reuse from the store, no acquisition ===
+  axis1: c1 from entry 0a08111773ccaed30dc2fa2c, n=9 -> v_max=9 count=512
+
+==============================================================================
+TASK  fold axis 1 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+  legality declared vacuous by the task
+     |
+     v  grammar, in its own order, offers 12 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 11
+     |       observable: 11
+     |   admitted                      : 1
+     v   spanning 1 distinct space(s)
+  SPACE  c1 (dim 4) <- 1 candidate(s)
+     |
+     v   Pareto fronts [2], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   nothing learned: the concrete state is merged with itself, which needs no certificate
+     |   tie-break over the declared workload n=[8] (wall time, then grammar order):
+     |       existing exact route: merge equal concre   0.00s acquire +   2.12s run =   2.12s      9545 nodes
+     |       c1                                        19.30s acquire +   0.22s run =  19.52s       505 nodes
+     |       units disagree -- by wall time existing exact route: merge equal , by nodes c1
+     |   learned alternative left on front 1: c1 dim 4
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=5   enumeration v_max=   5 count=32       | agrees True dist True | 1364 -> 953 nodes
+  n=8   DP only       v_max=   8 count=256      | NOT enumerated | 9545 nodes, 1836 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1: entry 0a08111773ccaed30dc2fa2c (c1, dim 4), acquired again: False, prover calls: 0
+      n=9  v_max=9 count=512  673 nodes, 46 classes, 0.48s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\baseline-smoke

@@ -1,0 +1,61 @@
+
+=== axis1: fold axis 1 displacement ===
+task   : fold axis 1 displacement
+goal   : the maximum of c1 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+legal  : True
+
+premise: exact=None None identities over None frames
+grammar: degree 1, 2 term(s) -> 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+Pareto fronts: []
+
+selected: existing exact route: merge equal concrete states dim 12
+          existing exact route requested
+
+length  3  enumeration v_max=3 count=8 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 85)
+length  5  enumeration v_max=5 count=32 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 953)
+
+length  6  v_max=6 count=64 words=4096
+            2297 nodes, 692 classes, 0.205011s, not enumerated
+
+scope: the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.
+
+=== reuse from the store, no acquisition ===
+  axis1: not reused -- no stored representation carries a certificate admitting it for this task
+
+==============================================================================
+TASK  fold axis 1 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+  legality True
+     |
+     v  route existing offers 0 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 0
+     |
+     v   Pareto fronts [], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   concrete answer selected; any acquisition paid before selection remains in the acquisition record
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=3   enumeration v_max=   3 count=8        | agrees True dist True | 84 -> 85 nodes
+  n=5   enumeration v_max=   5 count=32       | agrees True dist True | 1364 -> 953 nodes
+  n=6   DP only       v_max=   6 count=64       | NOT enumerated | 2297 nodes, 692 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1: not reused -- no stored representation carries a certificate admitting it for this task
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\normal-comparison-v1\A-axis1

@@ -1,0 +1,37 @@
+==============================================================================
+TASK  fold c1+c2 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates
+  legality declared vacuous by the task
+     |
+     v  route enumerate offers 144 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 143
+     |       observable: 143
+     |   admitted                      : 1
+     v   spanning 1 distinct space(s)
+  SPACE  c1 + c2 (dim 4) <- 1 candidate(s)
+     |
+     v   Pareto fronts [2], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   concrete answer selected; any acquisition paid before selection remains in the acquisition record
+     |   tie-break over the declared workload n=[6] (wall time, then grammar order):
+     |       existing exact route: merge equal concre   0.00s acquire +   0.25s run =   0.25s      2297 nodes
+     |       c1 + c2                                  233.27s acquire +   0.27s run = 233.54s       717 nodes
+     |       units disagree -- by wall time existing exact route: merge equal , by nodes c1 + c2
+     |   learned alternative left on front 1: c1 + c2 dim 4
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=3   enumeration v_max=   5 count=4        | agrees True dist True | 84 -> 85 nodes
+  n=5   enumeration v_max=   9 count=4        | agrees True dist True | 1364 -> 953 nodes
+  n=6   DP only       v_max=  11 count=4        | NOT enumerated | 2297 nodes, 692 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  c1-plus-c2: entry 83fa63a17c5bf1b7487d15f1 (c1 + c2, dim 4), acquired again: False, prover calls: 0
+      n=9  v_max=17 count=4  2205 nodes, 172 classes, 1.10s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+

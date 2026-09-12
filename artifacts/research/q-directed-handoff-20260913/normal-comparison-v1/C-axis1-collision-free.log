@@ -1,0 +1,66 @@
+
+=== axis1-collision-free: fold axis 1 displacement, collision-free words only ===
+candidate 1/1: c1; closed=True; admitted=False
+task   : fold axis 1 displacement, collision-free words only
+goal   : the maximum of c1 over collision-free words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+legal  : a predicate on the state
+
+premise: exact=True 96 identities over 24 frames
+grammar: degree 1, 2 term(s) -> 1 candidates
+
+refused at closure    : 0
+refused by certificate: 1
+    c1             dim 4   refused by ['legality']
+admitted              : 0
+acquisition cost      : 1033 primitive calls, 1.720564s over 1 candidates (rejected ones included)
+
+Pareto fronts: []
+
+selected: existing exact route: merge equal concrete states dim 13
+          q-closure refused; exact concrete fallback
+
+length  3  enumeration v_max=3 count=8 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 85)
+length  5  enumeration v_max=5 count=32 words=948
+            representation agrees True, distribution agrees True  (1332 nodes -> 1333)
+
+length  6  v_max=6 count=64 words=3632
+            5125 nodes, 3632 classes, 4.202307s, not enumerated
+
+scope: the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.
+
+=== reuse from the store, no acquisition ===
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
+==============================================================================
+TASK  fold axis 1 displacement, collision-free words only
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+  legality a predicate on the state
+     |
+     v  route q-directed offers 1 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 1
+     |       legality: 1
+     |       one counterexample: legality at length 3, 'AAG' -> True vs 'AAT' -> False
+     |   admitted                      : 0
+     |
+     v   Pareto fronts [], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 13  front 1
+     |   concrete answer selected; any acquisition paid before selection remains in the acquisition record
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=3   enumeration v_max=   3 count=8        | agrees True dist True | 84 -> 85 nodes
+  n=5   enumeration v_max=   5 count=32       | agrees True dist True | 1332 -> 1333 nodes
+  n=6   DP only       v_max=   6 count=64       | NOT enumerated | 5125 nodes, 3632 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\normal-comparison-v1\C-axis1-collision-free

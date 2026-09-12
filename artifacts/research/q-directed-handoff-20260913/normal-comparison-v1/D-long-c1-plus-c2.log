@@ -1,0 +1,66 @@
+
+=== c1-plus-c2: fold c1+c2 displacement ===
+task   : fold c1+c2 displacement
+goal   : the maximum of c1 + c2 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates
+legal  : True
+
+premise: exact=None None identities over None frames
+grammar: degree 1, 2 term(s) -> 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+Pareto fronts: []
+
+selected: c1 + c2 dim 4
+          basis   ['c1 + c2', 'F11 + F12 - F31 - F32 + c1 + c2', 'F11 + F12 + F31 + F32 + c1 + c2', 'F21 + F22 + F31 + F32 + c1 + c2']
+          readout qbar(z) = ['1', '0', '0', '0'] . z
+          compatible stored certificate; no acquisition
+
+length  3  enumeration v_max=5 count=4 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 65)
+length  5  enumeration v_max=9 count=4 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 413)
+
+length 12  v_max=23 count=4 words=16777216
+            4557 nodes, 244 classes, 1.507888s, not enumerated
+
+scope: 
+
+=== reuse from the store, no acquisition ===
+  c1-plus-c2: c1 + c2 from entry 83fa63a17c5bf1b7487d15f1, n=14 -> v_max=27 count=4
+
+==============================================================================
+TASK  fold c1+c2 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates
+  legality True
+     |
+     v  route q-directed offers 0 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 0
+     |
+     v   Pareto fronts [], no weighting and no total
+  SELECTED  c1 + c2  dim 4  front 1
+     |   basis    ['c1 + c2', 'F11 + F12 - F31 - F32 + c1 + c2', 'F11 + F12 + F31 + F32 + c1 + c2', 'F21 + F22 + F31 + F32 + c1 + c2']
+     |   readout  qbar(z) = ['1', '0', '0', '0'] . z
+     |
+     v   layered DP, merging on the certified observation, multiplicity carried
+  n=3   enumeration v_max=   5 count=4        | agrees True dist True | 84 -> 65 nodes
+  n=5   enumeration v_max=   9 count=4        | agrees True dist True | 1364 -> 413 nodes
+  n=12  DP only       v_max=  23 count=4        | NOT enumerated | 4557 nodes, 244 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  c1-plus-c2: entry 83fa63a17c5bf1b7487d15f1 (c1 + c2, dim 4), acquired again: False, prover calls: 0
+      n=14  v_max=27 count=4  6605 nodes, 292 classes, 2.29s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\normal-comparison-v1\D-long-c1-plus-c2

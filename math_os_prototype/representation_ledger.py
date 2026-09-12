@@ -230,8 +230,21 @@ class Ledger:
     def all_entries(self):
         return list(self.entries.values())
 
-    def admissible_for(self, task_name):
+    def admissible_for(self, task_name, *, lengths=()):
         """Only those whose certificate for this task admits them."""
+        if not isinstance(task_name, str):
+            from math_os_prototype.representation_reuse import compatible_certificate
+            out = []
+            for entry in self.entries.values():
+                for certificate in reversed(entry["certificates"]):
+                    compatible = compatible_certificate(entry["representation"], certificate,
+                                                        task_name, lengths)
+                    if compatible:
+                        offered = deepcopy(entry)
+                        offered["matched_certificate"] = compatible
+                        out.append(offered)
+                        break
+            return out
         out = []
         for entry in self.entries.values():
             for certificate in reversed(entry["certificates"]):

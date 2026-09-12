@@ -1,0 +1,7884 @@
+{
+  "tasks": {
+    "axis1-collision-free": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement, collision-free words only",
+      "task_contract": {
+        "goal": "the maximum of c1 over collision-free words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task",
+        "legality": "a predicate on the state",
+        "notes": "legality here is a genuine function of THIS state. A representation refused for it is refused against a state that does decide legality, which says something about that representation and nothing about every representation"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2,
+        "coefficients": [
+          1,
+          -1
+        ],
+        "limit": null,
+        "source": "fold_observable_system.candidate_observables",
+        "note": "the enumeration and its order are the grammar's; nothing is injected or excluded here"
+      },
+      "tie_break": "within one Pareto front, and only there: acquisition cost plus the cost of running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both counted in primitive calls, then the earlier candidate in the grammar's fixed enumeration order. Stated here rather than decided per run.\nWhy this and not the cheaper acquisition: a probe at a small length measures the wrong thing. An acquisition is paid once and the saving grows with the length actually asked for, so a tie-break on acquisition alone would hand every task to the route that learns nothing, whatever the task goes on to ask. Both sides of the ledger are measured over the same declared workload instead.\nThis does not reintroduce a weighting across the Pareto components: it is one quantity in one unit, used only to order candidates that the frontier has already declared incomparable.",
+      "premise": {
+        "exact": true,
+        "identities_checked": 96,
+        "frames_checked": 24,
+        "centre": "symbolic; every integer centre is covered",
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre",
+        "cost": {
+          "wall_time": 0.702467,
+          "primitive_calls": 748
+        }
+      },
+      "candidates_offered": [
+        "c1",
+        "c2",
+        "c3",
+        "F11",
+        "F12",
+        "F13",
+        "F21",
+        "F22",
+        "F23",
+        "F31",
+        "F32",
+        "F33",
+        "c1 + c2",
+        "c1 - c2",
+        "c1 + c3",
+        "c1 - c3",
+        "F11 + c1",
+        "-F11 + c1",
+        "F12 + c1",
+        "-F12 + c1",
+        "F13 + c1",
+        "-F13 + c1",
+        "F21 + c1",
+        "-F21 + c1",
+        "F22 + c1",
+        "-F22 + c1",
+        "F23 + c1",
+        "-F23 + c1",
+        "F31 + c1",
+        "-F31 + c1",
+        "F32 + c1",
+        "-F32 + c1",
+        "F33 + c1",
+        "-F33 + c1",
+        "c2 + c3",
+        "c2 - c3",
+        "F11 + c2",
+        "-F11 + c2",
+        "F12 + c2",
+        "-F12 + c2",
+        "F13 + c2",
+        "-F13 + c2",
+        "F21 + c2",
+        "-F21 + c2",
+        "F22 + c2",
+        "-F22 + c2",
+        "F23 + c2",
+        "-F23 + c2",
+        "F31 + c2",
+        "-F31 + c2",
+        "F32 + c2",
+        "-F32 + c2",
+        "F33 + c2",
+        "-F33 + c2",
+        "F11 + c3",
+        "-F11 + c3",
+        "F12 + c3",
+        "-F12 + c3",
+        "F13 + c3",
+        "-F13 + c3",
+        "F21 + c3",
+        "-F21 + c3",
+        "F22 + c3",
+        "-F22 + c3",
+        "F23 + c3",
+        "-F23 + c3",
+        "F31 + c3",
+        "-F31 + c3",
+        "F32 + c3",
+        "-F32 + c3",
+        "F33 + c3",
+        "-F33 + c3",
+        "F11 + F12",
+        "F11 - F12",
+        "F11 + F13",
+        "F11 - F13",
+        "F11 + F21",
+        "F11 - F21",
+        "F11 + F22",
+        "F11 - F22",
+        "F11 + F23",
+        "F11 - F23",
+        "F11 + F31",
+        "F11 - F31",
+        "F11 + F32",
+        "F11 - F32",
+        "F11 + F33",
+        "F11 - F33",
+        "F12 + F13",
+        "F12 - F13",
+        "F12 + F21",
+        "F12 - F21",
+        "F12 + F22",
+        "F12 - F22",
+        "F12 + F23",
+        "F12 - F23",
+        "F12 + F31",
+        "F12 - F31",
+        "F12 + F32",
+        "F12 - F32",
+        "F12 + F33",
+        "F12 - F33",
+        "F13 + F21",
+        "F13 - F21",
+        "F13 + F22",
+        "F13 - F22",
+        "F13 + F23",
+        "F13 - F23",
+        "F13 + F31",
+        "F13 - F31",
+        "F13 + F32",
+        "F13 - F32",
+        "F13 + F33",
+        "F13 - F33",
+        "F21 + F22",
+        "F21 - F22",
+        "F21 + F23",
+        "F21 - F23",
+        "F21 + F31",
+        "F21 - F31",
+        "F21 + F32",
+        "F21 - F32",
+        "F21 + F33",
+        "F21 - F33",
+        "F22 + F23",
+        "F22 - F23",
+        "F22 + F31",
+        "F22 - F31",
+        "F22 + F32",
+        "F22 - F32",
+        "F22 + F33",
+        "F22 - F33",
+        "F23 + F31",
+        "F23 - F31",
+        "F23 + F32",
+        "F23 - F32",
+        "F23 + F33",
+        "F23 - F33",
+        "F31 + F32",
+        "F31 - F32",
+        "F31 + F33",
+        "F31 - F33",
+        "F32 + F33",
+        "F32 - F33"
+      ],
+      "required_observables": [
+        "c1"
+      ],
+      "closure_method": "candidate enumeration",
+      "refused_at_closure": [],
+      "refused_by_certificate": [
+        {
+          "observable": "c1",
+          "dimension": 4,
+          "order": 0,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c2",
+          "dimension": 4,
+          "order": 1,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c3",
+          "dimension": 4,
+          "order": 2,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11",
+          "dimension": 3,
+          "order": 3,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12",
+          "dimension": 3,
+          "order": 4,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13",
+          "dimension": 3,
+          "order": 5,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21",
+          "dimension": 3,
+          "order": 6,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22",
+          "dimension": 3,
+          "order": 7,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23",
+          "dimension": 3,
+          "order": 8,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31",
+          "dimension": 3,
+          "order": 9,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F32",
+          "dimension": 3,
+          "order": 10,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F33",
+          "dimension": 3,
+          "order": 11,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c1 + c2",
+          "dimension": 4,
+          "order": 12,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c1 - c2",
+          "dimension": 4,
+          "order": 13,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-3"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c1 + c3",
+          "dimension": 4,
+          "order": 14,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "C",
+            "observation": [
+              "0",
+              "-2",
+              "0",
+              "1"
+            ],
+            "word_a": "ACA",
+            "value_a": "True",
+            "state_a": [
+              3,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "word_b": "CCC",
+            "value_b": "False",
+            "state_b": [
+              -1,
+              0,
+              1,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c1 - c3",
+          "dimension": 4,
+          "order": 15,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "-2",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CAC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + c1",
+          "dimension": 4,
+          "order": 16,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "-1",
+              "-1",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F11 + c1",
+          "dimension": 4,
+          "order": 17,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "1",
+              "-1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + c1",
+          "dimension": 7,
+          "order": 18,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-2",
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F12 + c1",
+          "dimension": 7,
+          "order": 19,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-2",
+              "0",
+              "1",
+              "-3"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + c1",
+          "dimension": 7,
+          "order": 20,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "-2",
+              "-1",
+              "1",
+              "0",
+              "-2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F13 + c1",
+          "dimension": 7,
+          "order": 21,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-2",
+              "0",
+              "-2",
+              "-3",
+              "-1",
+              "2",
+              "-2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + c1",
+          "dimension": 4,
+          "order": 22,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-1",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F21 + c1",
+          "dimension": 4,
+          "order": 23,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + c1",
+          "dimension": 7,
+          "order": 24,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "-2",
+              "0",
+              "-2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F22 + c1",
+          "dimension": 7,
+          "order": 25,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-2",
+              "-1",
+              "-3",
+              "-2",
+              "0",
+              "-2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 + c1",
+          "dimension": 7,
+          "order": 26,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-2",
+              "0",
+              "-2",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F23 + c1",
+          "dimension": 7,
+          "order": 27,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-2",
+              "0",
+              "-2",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 + c1",
+          "dimension": 4,
+          "order": 28,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-2",
+              "0",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F31 + c1",
+          "dimension": 4,
+          "order": 29,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-2",
+              "0",
+              "-2"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F32 + c1",
+          "dimension": 7,
+          "order": 30,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-3",
+              "1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F32 + c1",
+          "dimension": 7,
+          "order": 31,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "-1",
+              "-1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F33 + c1",
+          "dimension": 7,
+          "order": 32,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "1",
+              "-3",
+              "-2",
+              "0",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F33 + c1",
+          "dimension": 7,
+          "order": 33,
+          "refused_by": [
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "-1",
+              "-1",
+              "-2",
+              "0",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "CCA",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              3,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c2 + c3",
+          "dimension": 4,
+          "order": 34,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "c2 - c3",
+          "dimension": 4,
+          "order": 35,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + c2",
+          "dimension": 7,
+          "order": 36,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "1",
+              "1",
+              "0",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F11 + c2",
+          "dimension": 7,
+          "order": 37,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "1",
+              "1",
+              "1",
+              "0",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + c2",
+          "dimension": 4,
+          "order": 38,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F12 + c2",
+          "dimension": 4,
+          "order": 39,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + c2",
+          "dimension": 7,
+          "order": 40,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "2",
+              "2",
+              "-1",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F13 + c2",
+          "dimension": 7,
+          "order": 41,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + c2",
+          "dimension": 7,
+          "order": 42,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "0",
+              "2",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F21 + c2",
+          "dimension": 7,
+          "order": 43,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "2",
+              "0",
+              "3",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + c2",
+          "dimension": 4,
+          "order": 44,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "1",
+              "1",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F22 + c2",
+          "dimension": 4,
+          "order": 45,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "-1",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 + c2",
+          "dimension": 7,
+          "order": 46,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "1",
+              "1",
+              "2",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F23 + c2",
+          "dimension": 7,
+          "order": 47,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "1",
+              "1",
+              "2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 + c2",
+          "dimension": 7,
+          "order": 48,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "1",
+              "1",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F31 + c2",
+          "dimension": 7,
+          "order": 49,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "1",
+              "1",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F32 + c2",
+          "dimension": 4,
+          "order": 50,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F32 + c2",
+          "dimension": 4,
+          "order": 51,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F33 + c2",
+          "dimension": 7,
+          "order": 52,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F33 + c2",
+          "dimension": 7,
+          "order": 53,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "1",
+              "1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + c3",
+          "dimension": 7,
+          "order": 54,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "1",
+              "-1",
+              "-1",
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F11 + c3",
+          "dimension": 7,
+          "order": 55,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "-1",
+              "1",
+              "-1",
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + c3",
+          "dimension": 7,
+          "order": 56,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "-1",
+              "-1",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F12 + c3",
+          "dimension": 7,
+          "order": 57,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "-1",
+              "-1",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + c3",
+          "dimension": 4,
+          "order": 58,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "-2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F13 + c3",
+          "dimension": 4,
+          "order": 59,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-2",
+              "0",
+              "-2",
+              "-2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + c3",
+          "dimension": 7,
+          "order": 60,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "-2",
+              "0",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F21 + c3",
+          "dimension": 7,
+          "order": 61,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0",
+              "-2",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + c3",
+          "dimension": 7,
+          "order": 62,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "1",
+              "-1",
+              "-1",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F22 + c3",
+          "dimension": 7,
+          "order": 63,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-2",
+              "-1",
+              "-1",
+              "-1",
+              "-1",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 + c3",
+          "dimension": 4,
+          "order": 64,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F23 + c3",
+          "dimension": 4,
+          "order": 65,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 + c3",
+          "dimension": 7,
+          "order": 66,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-2",
+              "0",
+              "0",
+              "-1",
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F31 + c3",
+          "dimension": 7,
+          "order": 67,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "-1",
+              "-1",
+              "-2",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F32 + c3",
+          "dimension": 7,
+          "order": 68,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "-2",
+              "0",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F32 + c3",
+          "dimension": 7,
+          "order": 69,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0",
+              "-2",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F33 + c3",
+          "dimension": 4,
+          "order": 70,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "1",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "-F33 + c3",
+          "dimension": 4,
+          "order": 71,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "1",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F12",
+          "dimension": 3,
+          "order": 72,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F12",
+          "dimension": 3,
+          "order": 73,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F13",
+          "dimension": 3,
+          "order": 74,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F13",
+          "dimension": 3,
+          "order": 75,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F21",
+          "dimension": 3,
+          "order": 76,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F21",
+          "dimension": 3,
+          "order": 77,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F22",
+          "dimension": 6,
+          "order": 78,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "2",
+              "0",
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F22",
+          "dimension": 6,
+          "order": 79,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-2",
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F23",
+          "dimension": 6,
+          "order": 80,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "0",
+              "0",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F23",
+          "dimension": 6,
+          "order": 81,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "0",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F31",
+          "dimension": 3,
+          "order": 82,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "-1",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F31",
+          "dimension": 3,
+          "order": 83,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "-1",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F32",
+          "dimension": 6,
+          "order": 84,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F32",
+          "dimension": 6,
+          "order": 85,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "1",
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 + F33",
+          "dimension": 6,
+          "order": 86,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "2",
+              "0",
+              "0",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F11 - F33",
+          "dimension": 6,
+          "order": 87,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "0",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F13",
+          "dimension": 3,
+          "order": 88,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F13",
+          "dimension": 3,
+          "order": 89,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F21",
+          "dimension": 6,
+          "order": 90,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F21",
+          "dimension": 6,
+          "order": 91,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "1",
+              "2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F22",
+          "dimension": 3,
+          "order": 92,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F22",
+          "dimension": 3,
+          "order": 93,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F23",
+          "dimension": 6,
+          "order": 94,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F23",
+          "dimension": 6,
+          "order": 95,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F31",
+          "dimension": 6,
+          "order": 96,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F31",
+          "dimension": 6,
+          "order": 97,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F32",
+          "dimension": 3,
+          "order": 98,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F32",
+          "dimension": 3,
+          "order": 99,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 + F33",
+          "dimension": 6,
+          "order": 100,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "0",
+              "0",
+              "2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F12 - F33",
+          "dimension": 6,
+          "order": 101,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "0",
+              "0",
+              "0",
+              "-2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + F21",
+          "dimension": 6,
+          "order": 102,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "0",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 - F21",
+          "dimension": 6,
+          "order": 103,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "2",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + F22",
+          "dimension": 6,
+          "order": 104,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "2",
+              "1",
+              "1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 - F22",
+          "dimension": 6,
+          "order": 105,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "-1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + F23",
+          "dimension": 3,
+          "order": 106,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 - F23",
+          "dimension": 3,
+          "order": 107,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + F31",
+          "dimension": 6,
+          "order": 108,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 - F31",
+          "dimension": 6,
+          "order": 109,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "2",
+              "0",
+              "1",
+              "1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + F32",
+          "dimension": 6,
+          "order": 110,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "2",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 - F32",
+          "dimension": 6,
+          "order": 111,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "2",
+              "0",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 + F33",
+          "dimension": 3,
+          "order": 112,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F13 - F33",
+          "dimension": 3,
+          "order": 113,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + F22",
+          "dimension": 3,
+          "order": 114,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 - F22",
+          "dimension": 3,
+          "order": 115,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + F23",
+          "dimension": 3,
+          "order": 116,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 - F23",
+          "dimension": 3,
+          "order": 117,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + F31",
+          "dimension": 3,
+          "order": 118,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 - F31",
+          "dimension": 3,
+          "order": 119,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "T",
+            "observation": [
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAG",
+            "value_a": "True",
+            "state_a": [
+              0,
+              1,
+              -3,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              -1,
+              0
+            ],
+            "word_b": "AAT",
+            "value_b": "False",
+            "state_b": [
+              0,
+              1,
+              -1,
+              -1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + F32",
+          "dimension": 6,
+          "order": 120,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "-2",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 - F32",
+          "dimension": 6,
+          "order": 121,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "0",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 + F33",
+          "dimension": 6,
+          "order": 122,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1",
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F21 - F33",
+          "dimension": 6,
+          "order": 123,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "1",
+              "-1",
+              "-2",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + F23",
+          "dimension": 3,
+          "order": 124,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 - F23",
+          "dimension": 3,
+          "order": 125,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + F31",
+          "dimension": 6,
+          "order": 126,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "1",
+              "0",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 - F31",
+          "dimension": 6,
+          "order": 127,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "2",
+              "1",
+              "1",
+              "0",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + F32",
+          "dimension": 3,
+          "order": 128,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 - F32",
+          "dimension": 3,
+          "order": 129,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "AAC",
+            "value_b": "True",
+            "state_b": [
+              -1,
+              0,
+              -3,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 + F33",
+          "dimension": 6,
+          "order": 130,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "2",
+              "0",
+              "0",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F22 - F33",
+          "dimension": 6,
+          "order": 131,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "2",
+              "0",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 + F31",
+          "dimension": 6,
+          "order": 132,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 - F31",
+          "dimension": 6,
+          "order": 133,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 + F32",
+          "dimension": 6,
+          "order": 134,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "-1",
+              "0",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 - F32",
+          "dimension": 6,
+          "order": 135,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "2"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 + F33",
+          "dimension": 3,
+          "order": 136,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F23 - F33",
+          "dimension": 3,
+          "order": 137,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 + F32",
+          "dimension": 3,
+          "order": 138,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 - F32",
+          "dimension": 3,
+          "order": 139,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "0",
+              "1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 + F33",
+          "dimension": 3,
+          "order": 140,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F31 - F33",
+          "dimension": 3,
+          "order": 141,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "-1",
+              "-1",
+              "0"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F32 + F33",
+          "dimension": 3,
+          "order": 142,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "observable": "F32 - F33",
+          "dimension": 3,
+          "order": 143,
+          "refused_by": [
+            "observable",
+            "legality"
+          ],
+          "counterexample": {
+            "check": "legality",
+            "length": 3,
+            "label": "A",
+            "observation": [
+              "0",
+              "-1",
+              "-1"
+            ],
+            "word_a": "AAA",
+            "value_a": "False",
+            "state_a": [
+              -1,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ],
+            "word_b": "ACC",
+            "value_b": "True",
+            "state_b": [
+              3,
+              0,
+              -1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              0,
+              -1,
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "admitted": [],
+      "acquisition_cost": {
+        "acquisition_time": 229.262641,
+        "acquisition_primitive_calls": 44048,
+        "acquisition_proof_calls": 144,
+        "acquisition_peak_memory": 123599203,
+        "acquisition_search_nodes": 144,
+        "candidates_enumerated": 144,
+        "candidates_refused_at_closure": 0,
+        "candidates_refused_by_certificate": 144,
+        "includes": "the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.",
+        "excludes": "the probe measurements below, which are comparison work and are reported separately"
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 202.919748,
+          "prover_calls": 144,
+          "task_certifier_calls": 0,
+          "primitive_calls": 2988,
+          "search_nodes": 144
+        },
+        "certification": {
+          "wall_time": 26.342893,
+          "prover_calls": 0,
+          "task_certifier_calls": 144,
+          "primitive_calls": 41060,
+          "search_nodes": 4030
+        },
+        "answer": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "reuse": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "acquisition includes the closure prover's polynomial identities; certification is kinematics correspondence plus task sufficiency",
+        "verification": {
+          "wall_time": 0,
+          "search_nodes": 0
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 0.365483,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "stopped": "no candidate in this grammar both closed and preserved what the task needs",
+      "stopping_point": {
+        "candidates_enumerated": 144,
+        "refused_by": [
+          "legality",
+          "observable"
+        ],
+        "exact": "this is a statement about this grammar at this degree and these coefficients, and about the certificate depth used. Widening any of them is a different question"
+      },
+      "route": "enumerate",
+      "wall_time": 229.628124
+    }
+  },
+  "reuse": {
+    "axis1-collision-free": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement, collision-free words only",
+      "reused": false,
+      "reason": "no stored representation carries a certificate admitting it for this task",
+      "stored_entries": 144,
+      "lookup_cost": {
+        "wall_time": 0.261717,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 0
+      }
+    }
+  }
+}

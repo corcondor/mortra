@@ -1,0 +1,27 @@
+==============================================================================
+TASK  fold axis 1 displacement from AG
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+  legality True
+     |
+     v  route existing offers 0 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 0
+     |
+     v   Pareto fronts [], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   concrete answer selected; any acquisition paid before selection remains in the acquisition record
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=3   enumeration v_max=   5 count=8        | agrees True dist True | 84 -> 85 nodes
+  n=5   enumeration v_max=   7 count=32       | agrees True dist True | 1364 -> 953 nodes
+  n=6   DP only       v_max=   8 count=64       | NOT enumerated | 2297 nodes, 692 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1-from-AG: not reused -- no stored representation carries a certificate admitting it for this task
+

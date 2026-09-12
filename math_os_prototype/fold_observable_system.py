@@ -174,7 +174,11 @@ def verify_step(system, *, depth=4):
                 residuals.append({"frame": repr(frame),
                                   "letter": generator.symbol,
                                   "residual": [str(e) for e in residual]})
+    closed = all(apply_fold_generator(frame, (0, 0, 0), g)[0] in frames
+                 for frame in frames for g in FOLD_GENERATORS)
     return {"exact": not residuals,
+            "frames_closed": closed,
+            "verified_frames": [[list(row) for row in frame] for frame in frames],
             "frames_checked": len(frames),
             "letters": len(FOLD_GENERATORS),
             "identities_checked": checks,

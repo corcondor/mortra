@@ -1,0 +1,2260 @@
+{
+  "tasks": {
+    "axis1-from-AG": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement from AG",
+      "task_contract": {
+        "goal": "the maximum of c1 over all words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here",
+        "legality": "declared vacuous by the task",
+        "notes": "every word of the length is legal"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2,
+        "coefficients": [
+          1,
+          -1
+        ],
+        "limit": null,
+        "source": "fold_observable_system.candidate_observables",
+        "note": "the enumeration and its order are the grammar's; nothing is injected or excluded here"
+      },
+      "tie_break": "within one Pareto front, and only there: acquisition cost plus the cost of running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both counted in primitive calls, then the earlier candidate in the grammar's fixed enumeration order. Stated here rather than decided per run.\nWhy this and not the cheaper acquisition: a probe at a small length measures the wrong thing. An acquisition is paid once and the saving grows with the length actually asked for, so a tie-break on acquisition alone would hand every task to the route that learns nothing, whatever the task goes on to ask. Both sides of the ledger are measured over the same declared workload instead.\nThis does not reintroduce a weighting across the Pareto components: it is one quantity in one unit, used only to order candidates that the frontier has already declared incomparable.",
+      "premise": {
+        "exact": true,
+        "identities_checked": 96,
+        "frames_checked": 24,
+        "centre": "symbolic; every integer centre is covered",
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre",
+        "cost": {
+          "wall_time": 0.723519,
+          "primitive_calls": 748
+        }
+      },
+      "candidates_offered": [
+        "c1",
+        "c2",
+        "c3",
+        "F11",
+        "F12",
+        "F13",
+        "F21",
+        "F22",
+        "F23",
+        "F31",
+        "F32",
+        "F33",
+        "c1 + c2",
+        "c1 - c2",
+        "c1 + c3",
+        "c1 - c3",
+        "F11 + c1",
+        "-F11 + c1",
+        "F12 + c1",
+        "-F12 + c1",
+        "F13 + c1",
+        "-F13 + c1",
+        "F21 + c1",
+        "-F21 + c1",
+        "F22 + c1",
+        "-F22 + c1",
+        "F23 + c1",
+        "-F23 + c1",
+        "F31 + c1",
+        "-F31 + c1",
+        "F32 + c1",
+        "-F32 + c1",
+        "F33 + c1",
+        "-F33 + c1",
+        "c2 + c3",
+        "c2 - c3",
+        "F11 + c2",
+        "-F11 + c2",
+        "F12 + c2",
+        "-F12 + c2",
+        "F13 + c2",
+        "-F13 + c2",
+        "F21 + c2",
+        "-F21 + c2",
+        "F22 + c2",
+        "-F22 + c2",
+        "F23 + c2",
+        "-F23 + c2",
+        "F31 + c2",
+        "-F31 + c2",
+        "F32 + c2",
+        "-F32 + c2",
+        "F33 + c2",
+        "-F33 + c2",
+        "F11 + c3",
+        "-F11 + c3",
+        "F12 + c3",
+        "-F12 + c3",
+        "F13 + c3",
+        "-F13 + c3",
+        "F21 + c3",
+        "-F21 + c3",
+        "F22 + c3",
+        "-F22 + c3",
+        "F23 + c3",
+        "-F23 + c3",
+        "F31 + c3",
+        "-F31 + c3",
+        "F32 + c3",
+        "-F32 + c3",
+        "F33 + c3",
+        "-F33 + c3",
+        "F11 + F12",
+        "F11 - F12",
+        "F11 + F13",
+        "F11 - F13",
+        "F11 + F21",
+        "F11 - F21",
+        "F11 + F22",
+        "F11 - F22",
+        "F11 + F23",
+        "F11 - F23",
+        "F11 + F31",
+        "F11 - F31",
+        "F11 + F32",
+        "F11 - F32",
+        "F11 + F33",
+        "F11 - F33",
+        "F12 + F13",
+        "F12 - F13",
+        "F12 + F21",
+        "F12 - F21",
+        "F12 + F22",
+        "F12 - F22",
+        "F12 + F23",
+        "F12 - F23",
+        "F12 + F31",
+        "F12 - F31",
+        "F12 + F32",
+        "F12 - F32",
+        "F12 + F33",
+        "F12 - F33",
+        "F13 + F21",
+        "F13 - F21",
+        "F13 + F22",
+        "F13 - F22",
+        "F13 + F23",
+        "F13 - F23",
+        "F13 + F31",
+        "F13 - F31",
+        "F13 + F32",
+        "F13 - F32",
+        "F13 + F33",
+        "F13 - F33",
+        "F21 + F22",
+        "F21 - F22",
+        "F21 + F23",
+        "F21 - F23",
+        "F21 + F31",
+        "F21 - F31",
+        "F21 + F32",
+        "F21 - F32",
+        "F21 + F33",
+        "F21 - F33",
+        "F22 + F23",
+        "F22 - F23",
+        "F22 + F31",
+        "F22 - F31",
+        "F22 + F32",
+        "F22 - F32",
+        "F22 + F33",
+        "F22 - F33",
+        "F23 + F31",
+        "F23 - F31",
+        "F23 + F32",
+        "F23 - F32",
+        "F23 + F33",
+        "F23 - F33",
+        "F31 + F32",
+        "F31 - F32",
+        "F31 + F33",
+        "F31 - F33",
+        "F32 + F33",
+        "F32 - F33"
+      ],
+      "required_observables": [
+        "c1"
+      ],
+      "closure_method": "candidate enumeration",
+      "refused_at_closure": [],
+      "refused_by_certificate": [
+        {
+          "observable": "c2",
+          "dimension": 4,
+          "order": 1,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c3",
+          "dimension": 4,
+          "order": 2,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11",
+          "dimension": 3,
+          "order": 3,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12",
+          "dimension": 3,
+          "order": 4,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13",
+          "dimension": 3,
+          "order": 5,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21",
+          "dimension": 3,
+          "order": 6,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22",
+          "dimension": 3,
+          "order": 7,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23",
+          "dimension": 3,
+          "order": 8,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31",
+          "dimension": 3,
+          "order": 9,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F32",
+          "dimension": 3,
+          "order": 10,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F33",
+          "dimension": 3,
+          "order": 11,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c1 + c2",
+          "dimension": 4,
+          "order": 12,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c1 - c2",
+          "dimension": 4,
+          "order": 13,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c1 + c3",
+          "dimension": 4,
+          "order": 14,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c1 - c3",
+          "dimension": 4,
+          "order": 15,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c2 + c3",
+          "dimension": 4,
+          "order": 34,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "c2 - c3",
+          "dimension": 4,
+          "order": 35,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + c2",
+          "dimension": 7,
+          "order": 36,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F11 + c2",
+          "dimension": 7,
+          "order": 37,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + c2",
+          "dimension": 4,
+          "order": 38,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F12 + c2",
+          "dimension": 4,
+          "order": 39,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + c2",
+          "dimension": 7,
+          "order": 40,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F13 + c2",
+          "dimension": 7,
+          "order": 41,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + c2",
+          "dimension": 7,
+          "order": 42,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F21 + c2",
+          "dimension": 7,
+          "order": 43,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 + c2",
+          "dimension": 4,
+          "order": 44,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F22 + c2",
+          "dimension": 4,
+          "order": 45,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 + c2",
+          "dimension": 7,
+          "order": 46,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F23 + c2",
+          "dimension": 7,
+          "order": 47,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31 + c2",
+          "dimension": 7,
+          "order": 48,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F31 + c2",
+          "dimension": 7,
+          "order": 49,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F32 + c2",
+          "dimension": 4,
+          "order": 50,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F32 + c2",
+          "dimension": 4,
+          "order": 51,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F33 + c2",
+          "dimension": 7,
+          "order": 52,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F33 + c2",
+          "dimension": 7,
+          "order": 53,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + c3",
+          "dimension": 7,
+          "order": 54,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F11 + c3",
+          "dimension": 7,
+          "order": 55,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + c3",
+          "dimension": 7,
+          "order": 56,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F12 + c3",
+          "dimension": 7,
+          "order": 57,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + c3",
+          "dimension": 4,
+          "order": 58,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F13 + c3",
+          "dimension": 4,
+          "order": 59,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + c3",
+          "dimension": 7,
+          "order": 60,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F21 + c3",
+          "dimension": 7,
+          "order": 61,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 + c3",
+          "dimension": 7,
+          "order": 62,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F22 + c3",
+          "dimension": 7,
+          "order": 63,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 + c3",
+          "dimension": 4,
+          "order": 64,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F23 + c3",
+          "dimension": 4,
+          "order": 65,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31 + c3",
+          "dimension": 7,
+          "order": 66,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F31 + c3",
+          "dimension": 7,
+          "order": 67,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F32 + c3",
+          "dimension": 7,
+          "order": 68,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F32 + c3",
+          "dimension": 7,
+          "order": 69,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F33 + c3",
+          "dimension": 4,
+          "order": 70,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "-F33 + c3",
+          "dimension": 4,
+          "order": 71,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F12",
+          "dimension": 3,
+          "order": 72,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F12",
+          "dimension": 3,
+          "order": 73,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F13",
+          "dimension": 3,
+          "order": 74,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F13",
+          "dimension": 3,
+          "order": 75,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F21",
+          "dimension": 3,
+          "order": 76,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F21",
+          "dimension": 3,
+          "order": 77,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F22",
+          "dimension": 6,
+          "order": 78,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F22",
+          "dimension": 6,
+          "order": 79,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F23",
+          "dimension": 6,
+          "order": 80,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F23",
+          "dimension": 6,
+          "order": 81,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F31",
+          "dimension": 3,
+          "order": 82,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F31",
+          "dimension": 3,
+          "order": 83,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F32",
+          "dimension": 6,
+          "order": 84,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F32",
+          "dimension": 6,
+          "order": 85,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 + F33",
+          "dimension": 6,
+          "order": 86,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F11 - F33",
+          "dimension": 6,
+          "order": 87,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F13",
+          "dimension": 3,
+          "order": 88,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F13",
+          "dimension": 3,
+          "order": 89,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F21",
+          "dimension": 6,
+          "order": 90,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F21",
+          "dimension": 6,
+          "order": 91,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F22",
+          "dimension": 3,
+          "order": 92,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F22",
+          "dimension": 3,
+          "order": 93,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F23",
+          "dimension": 6,
+          "order": 94,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F23",
+          "dimension": 6,
+          "order": 95,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F31",
+          "dimension": 6,
+          "order": 96,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F31",
+          "dimension": 6,
+          "order": 97,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F32",
+          "dimension": 3,
+          "order": 98,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F32",
+          "dimension": 3,
+          "order": 99,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 + F33",
+          "dimension": 6,
+          "order": 100,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F12 - F33",
+          "dimension": 6,
+          "order": 101,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + F21",
+          "dimension": 6,
+          "order": 102,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 - F21",
+          "dimension": 6,
+          "order": 103,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + F22",
+          "dimension": 6,
+          "order": 104,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 - F22",
+          "dimension": 6,
+          "order": 105,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + F23",
+          "dimension": 3,
+          "order": 106,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 - F23",
+          "dimension": 3,
+          "order": 107,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + F31",
+          "dimension": 6,
+          "order": 108,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 - F31",
+          "dimension": 6,
+          "order": 109,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + F32",
+          "dimension": 6,
+          "order": 110,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 - F32",
+          "dimension": 6,
+          "order": 111,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 + F33",
+          "dimension": 3,
+          "order": 112,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F13 - F33",
+          "dimension": 3,
+          "order": 113,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + F22",
+          "dimension": 3,
+          "order": 114,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 - F22",
+          "dimension": 3,
+          "order": 115,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + F23",
+          "dimension": 3,
+          "order": 116,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 - F23",
+          "dimension": 3,
+          "order": 117,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + F31",
+          "dimension": 3,
+          "order": 118,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 - F31",
+          "dimension": 3,
+          "order": 119,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + F32",
+          "dimension": 6,
+          "order": 120,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 - F32",
+          "dimension": 6,
+          "order": 121,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 + F33",
+          "dimension": 6,
+          "order": 122,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F21 - F33",
+          "dimension": 6,
+          "order": 123,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 + F23",
+          "dimension": 3,
+          "order": 124,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 - F23",
+          "dimension": 3,
+          "order": 125,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 + F31",
+          "dimension": 6,
+          "order": 126,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 - F31",
+          "dimension": 6,
+          "order": 127,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 + F32",
+          "dimension": 3,
+          "order": 128,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 - F32",
+          "dimension": 3,
+          "order": 129,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 + F33",
+          "dimension": 6,
+          "order": 130,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F22 - F33",
+          "dimension": 6,
+          "order": 131,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 + F31",
+          "dimension": 6,
+          "order": 132,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 - F31",
+          "dimension": 6,
+          "order": 133,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 + F32",
+          "dimension": 6,
+          "order": 134,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 - F32",
+          "dimension": 6,
+          "order": 135,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 + F33",
+          "dimension": 3,
+          "order": 136,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F23 - F33",
+          "dimension": 3,
+          "order": 137,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31 + F32",
+          "dimension": 3,
+          "order": 138,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31 - F32",
+          "dimension": 3,
+          "order": 139,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31 + F33",
+          "dimension": 3,
+          "order": 140,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F31 - F33",
+          "dimension": 3,
+          "order": 141,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F32 + F33",
+          "dimension": 3,
+          "order": 142,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        },
+        {
+          "observable": "F32 - F33",
+          "dimension": 3,
+          "order": 143,
+          "refused_by": [
+            "observable"
+          ],
+          "counterexample": null
+        }
+      ],
+      "admitted": [
+        "c1",
+        "F11 + c1",
+        "-F11 + c1",
+        "F12 + c1",
+        "-F12 + c1",
+        "F13 + c1",
+        "-F13 + c1",
+        "F21 + c1",
+        "-F21 + c1",
+        "F22 + c1",
+        "-F22 + c1",
+        "F23 + c1",
+        "-F23 + c1",
+        "F31 + c1",
+        "-F31 + c1",
+        "F32 + c1",
+        "-F32 + c1",
+        "F33 + c1",
+        "-F33 + c1"
+      ],
+      "acquisition_cost": {
+        "acquisition_time": 230.249788,
+        "acquisition_primitive_calls": 3736,
+        "acquisition_proof_calls": 144,
+        "acquisition_peak_memory": 104241085,
+        "acquisition_search_nodes": 144,
+        "candidates_enumerated": 144,
+        "candidates_refused_at_closure": 0,
+        "candidates_refused_by_certificate": 125,
+        "includes": "the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.",
+        "excludes": "the probe measurements below, which are comparison work and are reported separately"
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 216.118694,
+          "prover_calls": 144,
+          "task_certifier_calls": 0,
+          "primitive_calls": 2988,
+          "search_nodes": 144
+        },
+        "certification": {
+          "wall_time": 14.131094,
+          "prover_calls": 0,
+          "task_certifier_calls": 144,
+          "primitive_calls": 748,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.2205,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 2296,
+          "search_nodes": 2297
+        },
+        "reuse": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "acquisition includes the closure prover's polynomial identities; certification is kinematics correspondence plus task sufficiency",
+        "verification": {
+          "wall_time": 0.03286,
+          "search_nodes": 2486
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 2.232899,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "span_classes": [
+        {
+          "representative": "c1",
+          "dimension": 4,
+          "members": [
+            "c1",
+            "F11 + c1",
+            "-F11 + c1",
+            "F21 + c1",
+            "-F21 + c1",
+            "F31 + c1",
+            "-F31 + c1"
+          ],
+          "size": 7
+        },
+        {
+          "representative": "F12 + c1",
+          "dimension": 7,
+          "members": [
+            "F12 + c1",
+            "-F12 + c1",
+            "F22 + c1",
+            "-F22 + c1",
+            "F32 + c1",
+            "-F32 + c1"
+          ],
+          "size": 6
+        },
+        {
+          "representative": "F13 + c1",
+          "dimension": 7,
+          "members": [
+            "F13 + c1",
+            "-F13 + c1",
+            "F23 + c1",
+            "-F23 + c1",
+            "F33 + c1",
+            "-F33 + c1"
+          ],
+          "size": 6
+        }
+      ],
+      "span_class_note": "candidates spanning the same linear space are one representation, decided by exact rank on shared monomial coordinates. Only one member of each class is measured.",
+      "probe_length": 3,
+      "tie_break_workload": {
+        "lengths": [
+          6
+        ],
+        "measured": {
+          "c1": {
+            "acquisition_primitive_calls": 3736,
+            "workload_primitive_calls": 0,
+            "workload_nodes": 249,
+            "workload_wall_time": 0.086079,
+            "lengths": [
+              6
+            ],
+            "total_primitive_calls": 3736,
+            "acquisition_wall_time": 230.249788,
+            "total_wall_time": 230.335867,
+            "primitive_count_note": "zero here means the primitives this route uses are not instrumented, not that it did no work; read workload_nodes"
+          },
+          "existing exact route: merge equal concrete states": {
+            "acquisition_primitive_calls": 0,
+            "workload_primitive_calls": 2296,
+            "workload_nodes": 2297,
+            "workload_wall_time": 0.21225,
+            "lengths": [
+              6
+            ],
+            "total_primitive_calls": 2296,
+            "acquisition_wall_time": 0.0,
+            "total_wall_time": 0.21225,
+            "primitive_count_note": null
+          }
+        },
+        "rule": "acquisition plus workload, in wall time, smallest first; then grammar order",
+        "order_by_wall_time": [
+          "existing exact route: merge equal concrete states",
+          "c1"
+        ],
+        "order_by_workload_nodes": [
+          "c1",
+          "existing exact route: merge equal concrete states"
+        ],
+        "units_disagree": true,
+        "units_disagree_note": "the two units put a different candidate first. The stated rule uses wall time; the node order is kept here so the disagreement is visible rather than settled silently",
+        "note": "only front-one candidates are measured this way; the Pareto frontier has already decided which candidates are incomparable and this orders those. One measurement each, so a small gap is not a ranking -- `scripts/measure_routes.py` is where a repeated timing lives"
+      },
+      "existing_route_candidate": {
+        "name": "existing exact route: merge equal concrete states",
+        "probe_length": 3,
+        "nodes": 85,
+        "wall_time": 0.008656,
+        "acquisition_primitive_calls": 0,
+        "why_it_competes": "it is exact with nothing learned, so it is a candidate and not only a baseline. A run that picks it is a correct run"
+      },
+      "selection": {
+        "front_sizes": [
+          2,
+          1,
+          1
+        ],
+        "order": "Pareto fronts; within a front, active before dormant. No component is weighted against another and there is no total",
+        "gate": "a representation without an admitting certificate for this task is not offered at all, rather than ranked low",
+        "tie_break": "within one Pareto front, and only there: acquisition cost plus the cost of running the WORKLOAD THE TASK DECLARES -- its own answer lengths -- both counted in primitive calls, then the earlier candidate in the grammar's fixed enumeration order. Stated here rather than decided per run.\nWhy this and not the cheaper acquisition: a probe at a small length measures the wrong thing. An acquisition is paid once and the saving grows with the length actually asked for, so a tie-break on acquisition alone would hand every task to the route that learns nothing, whatever the task goes on to ask. Both sides of the ledger are measured over the same declared workload instead.\nThis does not reintroduce a weighting across the Pareto components: it is one quantity in one unit, used only to order candidates that the frontier has already declared incomparable.",
+        "offered": [
+          {
+            "observable": "existing exact route: merge equal concrete states",
+            "front": 1,
+            "dimension": 12,
+            "status": "active",
+            "grammar_order": null,
+            "objectives": {
+              "description_gain_bits": 0,
+              "state_dimension_ratio": 1.0,
+              "primitive_calls_eliminated": 0,
+              "search_nodes_eliminated": -1,
+              "search_candidates_eliminated": 8,
+              "depth_reduction_ratio": 1.0,
+              "wall_time_saved": 0.002992,
+              "reuse_successes": 1,
+              "cheap_acquisition": 0
+            }
+          },
+          {
+            "observable": "c1",
+            "front": 1,
+            "dimension": 4,
+            "status": "active",
+            "grammar_order": 0,
+            "objectives": {
+              "description_gain_bits": -3032,
+              "state_dimension_ratio": 3.0,
+              "primitive_calls_eliminated": 84,
+              "search_nodes_eliminated": 39,
+              "search_candidates_eliminated": 53,
+              "depth_reduction_ratio": 1.0,
+              "wall_time_saved": -0.015362,
+              "reuse_successes": 1,
+              "cheap_acquisition": -3736
+            }
+          },
+          {
+            "observable": "F12 + c1",
+            "front": 2,
+            "dimension": 7,
+            "status": "active",
+            "grammar_order": 18,
+            "objectives": {
+              "description_gain_bits": -8840,
+              "state_dimension_ratio": 1.7142857142857142,
+              "primitive_calls_eliminated": 84,
+              "search_nodes_eliminated": 15,
+              "search_candidates_eliminated": 42,
+              "depth_reduction_ratio": 1.0,
+              "wall_time_saved": -0.051553,
+              "reuse_successes": 1,
+              "cheap_acquisition": -3736
+            }
+          },
+          {
+            "observable": "F13 + c1",
+            "front": 3,
+            "dimension": 7,
+            "status": "active",
+            "grammar_order": 20,
+            "objectives": {
+              "description_gain_bits": -8840,
+              "state_dimension_ratio": 1.7142857142857142,
+              "primitive_calls_eliminated": 84,
+              "search_nodes_eliminated": 15,
+              "search_candidates_eliminated": 42,
+              "depth_reduction_ratio": 1.0,
+              "wall_time_saved": -0.052058,
+              "reuse_successes": 1,
+              "cheap_acquisition": -3736
+            }
+          }
+        ],
+        "not_admissible": []
+      },
+      "selected": {
+        "observable": "existing exact route: merge equal concrete states",
+        "dimension": 12,
+        "basis": null,
+        "readout": null,
+        "front": 1,
+        "kind": "existing exact route",
+        "why": "the existing exact route is on the first Pareto front and is cheaper over this task own declared workload once acquisition is counted, so the stated tie-break gives it the task. Acquisition was nevertheless paid in full.",
+        "workload": {
+          "acquisition_primitive_calls": 0,
+          "workload_primitive_calls": 2296,
+          "workload_nodes": 2297,
+          "workload_wall_time": 0.21225,
+          "lengths": [
+            6
+          ],
+          "total_primitive_calls": 2296,
+          "acquisition_wall_time": 0.0,
+          "total_wall_time": 0.21225,
+          "primitive_count_note": null
+        }
+      },
+      "verification": [
+        {
+          "length": 3,
+          "by_enumeration": {
+            "v_max": "5",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "by_representation": {
+            "v_max": "5",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "1": 8,
+            "2": 24,
+            "3": 8,
+            "4": 16,
+            "5": 8
+          },
+          "nodes_enumerating": 84,
+          "nodes_with_representation": 85
+        },
+        {
+          "length": 5,
+          "by_enumeration": {
+            "v_max": "7",
+            "count_max": 32,
+            "total_words": 1024,
+            "distinct_values": 9
+          },
+          "by_representation": {
+            "v_max": "7",
+            "count_max": 32,
+            "total_words": 1024,
+            "distinct_values": 9
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-1": 32,
+            "0": 96,
+            "1": 96,
+            "2": 256,
+            "3": 96,
+            "4": 224,
+            "5": 96,
+            "6": 96,
+            "7": 32
+          },
+          "nodes_enumerating": 1364,
+          "nodes_with_representation": 953
+        }
+      ],
+      "verification_wall_time": 0.03286,
+      "answers": [
+        {
+          "length": 6,
+          "answer": {
+            "v_max": "8",
+            "count_max": 64,
+            "total_words": 4096,
+            "distinct_values": 11
+          },
+          "distribution": {
+            "-2": 64,
+            "-1": 192,
+            "0": 448,
+            "1": 256,
+            "2": 896,
+            "3": 448,
+            "4": 832,
+            "5": 256,
+            "6": 448,
+            "7": 192,
+            "8": 64
+          },
+          "search_nodes": 2297,
+          "classes_expanded": 692,
+          "wall_time": 0.2205,
+          "proof_calls": 0,
+          "primitive_calls": 2296,
+          "words_this_stands_for": 4096,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "scope": "the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.",
+      "learned_alternatives": [
+        {
+          "observable": "c1",
+          "front": 1,
+          "dimension": 4
+        },
+        {
+          "observable": "F12 + c1",
+          "front": 2,
+          "dimension": 7
+        },
+        {
+          "observable": "F13 + c1",
+          "front": 3,
+          "dimension": 7
+        }
+      ],
+      "ledger_entries": 128,
+      "route": "enumerate",
+      "wall_time": 232.736047
+    }
+  },
+  "reuse": {
+    "axis1-from-AG": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement from AG",
+      "reused": true,
+      "from_entry": "348259ce61fca88b881d85ab",
+      "observable": "F12 + c1",
+      "basis": [
+        "F12 + c1",
+        "F11 - F31 - F32 + c1",
+        "F11 + F31 + F32 + c1",
+        "F12 + F21 + F31 + c1",
+        "F12 + F21 - F31 + c1",
+        "-F12 - 2*F31 + c1",
+        "F11 + 2*F21 + F22 + F31 + c1"
+      ],
+      "readout": [
+        "1/2",
+        "0",
+        "0",
+        "1/2",
+        "-1/2",
+        "1/2",
+        "0"
+      ],
+      "reuse_contract": {
+        "source_task": "fold axis 1 displacement from AG",
+        "source_key": "44f2c8ed1ec44bfeab5b09bead85bbe5daca599c512b1a670ac3a5a08687a548",
+        "new_key": "44f2c8ed1ec44bfeab5b09bead85bbe5daca599c512b1a670ac3a5a08687a548",
+        "scope": {
+          "centre_domain": "Z^3",
+          "coefficient_field": "QQ",
+          "frames": [
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ]
+          ],
+          "kind": "all_finite_words",
+          "maximum_length": null,
+          "seed": [
+            "2",
+            "1",
+            "-1",
+            "0",
+            "0",
+            "-1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "-1",
+            "0"
+          ]
+        },
+        "readout_check": "exact polynomial span membership"
+      },
+      "dimension": 7,
+      "certificate_verdict": "admitted, proved",
+      "acquired_again": false,
+      "cost": {
+        "wall_time": 1.316747,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 1325,
+        "proof_calls": 0
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "certification": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.751148,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 1325
+        },
+        "reuse": {
+          "wall_time": 0.517748,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "reuse cost is lookup and exact readout checking; answer separate"
+      },
+      "verification": [],
+      "verification_wall_time": 0.0,
+      "answers": [
+        {
+          "length": 9,
+          "answer": {
+            "v_max": "11",
+            "count_max": 512,
+            "total_words": 262144,
+            "distinct_values": 17
+          },
+          "distribution": {
+            "-5": 512,
+            "-4": 2560,
+            "-3": 5120,
+            "-2": 12800,
+            "-1": 9728,
+            "0": 28672,
+            "1": 18944,
+            "2": 43520,
+            "3": 18944,
+            "4": 43008,
+            "5": 18944,
+            "6": 28672,
+            "7": 9728,
+            "8": 12800,
+            "9": 5120,
+            "10": 2560,
+            "11": 512
+          },
+          "search_nodes": 1325,
+          "classes_expanded": 92,
+          "wall_time": 0.751148,
+          "proof_calls": 0,
+          "primitive_calls": 0,
+          "words_this_stands_for": 262144,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "sense": "the basis and the action matrices came out of the stored entry. No closure prover ran, no candidate was enumerated, and the acquisition cost of this call is whatever the figures above say -- not the original acquisition, which was paid once."
+    }
+  }
+}

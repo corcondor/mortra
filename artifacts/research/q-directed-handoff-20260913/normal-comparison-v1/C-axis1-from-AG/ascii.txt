@@ -1,0 +1,36 @@
+==============================================================================
+TASK  fold axis 1 displacement from AG
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+  legality declared vacuous by the task
+     |
+     v  route q-directed offers 1 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 1
+     v   spanning 1 distinct space(s)
+  SPACE  c1 (dim 4) <- 1 candidate(s)
+     |
+     v   Pareto fronts [2], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   concrete answer selected; any acquisition paid before selection remains in the acquisition record
+     |   tie-break over the declared workload n=[6] (wall time, then grammar order):
+     |       existing exact route: merge equal concre   0.00s acquire +   0.21s run =   0.21s      2297 nodes
+     |       c1                                         1.70s acquire +   0.09s run =   1.78s       249 nodes
+     |       units disagree -- by wall time existing exact route: merge equal , by nodes c1
+     |   learned alternative left on front 1: c1 dim 4
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=3   enumeration v_max=   5 count=8        | agrees True dist True | 84 -> 85 nodes
+  n=5   enumeration v_max=   7 count=32       | agrees True dist True | 1364 -> 953 nodes
+  n=6   DP only       v_max=   8 count=64       | NOT enumerated | 2297 nodes, 692 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1-from-AG: entry 4a97887388a3d12e8f5e31e1 (c1, dim 4), acquired again: False, prover calls: 0
+      n=9  v_max=11 count=512  673 nodes, 46 classes, 0.30s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+

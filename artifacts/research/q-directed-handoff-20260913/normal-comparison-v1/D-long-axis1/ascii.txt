@@ -1,0 +1,30 @@
+==============================================================================
+TASK  fold axis 1 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+  legality True
+     |
+     v  route q-directed offers 0 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 0
+     |   admitted                      : 0
+     |
+     v   Pareto fronts [], no weighting and no total
+  SELECTED  c1  dim 4  front 1
+     |   basis    ['c1', 'F11 - F31 + c1', 'F11 + F31 + c1', 'F21 + F31 + c1']
+     |   readout  qbar(z) = ['1', '0', '0', '0'] . z
+     |
+     v   layered DP, merging on the certified observation, multiplicity carried
+  n=3   enumeration v_max=   3 count=8        | agrees True dist True | 84 -> 45 nodes
+  n=5   enumeration v_max=   5 count=32       | agrees True dist True | 1364 -> 161 nodes
+  n=12  DP only       v_max=  12 count=4096     | NOT enumerated | 1305 nodes, 66 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1: entry 4a97887388a3d12e8f5e31e1 (c1, dim 4), acquired again: False, prover calls: 0
+      n=14  v_max=14 count=16384  1849 nodes, 78 classes, 0.67s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+

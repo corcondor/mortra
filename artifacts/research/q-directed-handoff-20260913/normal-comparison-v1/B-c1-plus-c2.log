@@ -1,0 +1,93 @@
+
+=== c1-plus-c2: fold c1+c2 displacement ===
+candidate 1/144: c1; closed=True; admitted=False
+candidate 24/144: -F21 + c1; closed=True; admitted=False
+candidate 48/144: -F23 + c2; closed=True; admitted=False
+candidate 72/144: -F33 + c3; closed=True; admitted=False
+candidate 96/144: F12 - F23; closed=True; admitted=False
+candidate 120/144: F21 - F31; closed=True; admitted=False
+candidate 144/144: F32 - F33; closed=True; admitted=False
+task   : fold c1+c2 displacement
+goal   : the maximum of c1 + c2 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates
+legal  : declared vacuous by the task
+
+premise: exact=True 96 identities over 24 frames
+grammar: degree 1, 2 term(s) -> 144 candidates
+
+refused at closure    : 0
+refused by certificate: 143
+    c1             dim 4   refused by ['observable']
+    c2             dim 4   refused by ['observable']
+    c3             dim 4   refused by ['observable']
+    F11            dim 3   refused by ['observable']
+    F12            dim 3   refused by ['observable']
+    F13            dim 3   refused by ['observable']
+admitted              : 1
+acquisition cost      : 3736 primitive calls, 233.274554s over 144 candidates (rejected ones included)
+
+1 distinct spaces among 1 admitted candidates
+
+Pareto fronts: [2]
+    front 1  existing exact route: merge equal concrete states dim 12: {'description_gain_bits': 0, 'state_dimension_ratio': 1.0, 'primitive_calls_eliminated': 0, 'search_nodes_eliminated': -1, 'search_candidates_eliminated': 8, 'depth_reduction_ratio': 1.0, 'wall_time_saved': -0.001645, 'reuse_successes': 1, 'cheap_acquisition': 0}
+    front 1  c1 + c2        dim 4: {'description_gain_bits': -3520, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 84, 'search_nodes_eliminated': 19, 'search_candidates_eliminated': 32, 'depth_reduction_ratio': 1.0, 'wall_time_saved': -0.023833, 'reuse_successes': 1, 'cheap_acquisition': -3736}
+
+selected: existing exact route: merge equal concrete states dim 12
+          workload n=[6]: c1 + c2                          233.27s acquire + 0.27s run = 233.54s   (717 nodes)
+          workload n=[6]: existing exact route: merge equa 0.00s acquire + 0.25s run = 0.25s   (2297 nodes)
+          units disagree: by time existing exact route: merge eq, by nodes c1 + c2
+          learned alternative on front 1: c1 + c2 dim 4
+          the existing exact route is on the first Pareto front and is cheaper over this task own declared workload once acquisition is counted, so the stated tie-break gives it the task. Acquisition was nevertheless paid in full.
+
+length  3  enumeration v_max=5 count=4 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 85)
+length  5  enumeration v_max=9 count=4 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 953)
+
+length  6  v_max=11 count=4 words=4096
+            2297 nodes, 692 classes, 0.246228s, not enumerated
+
+scope: the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.
+
+=== reuse from the store, no acquisition ===
+  c1-plus-c2: c1 + c2 from entry 83fa63a17c5bf1b7487d15f1, n=9 -> v_max=17 count=4
+
+==============================================================================
+TASK  fold c1+c2 displacement
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    the twelve coordinates
+  legality declared vacuous by the task
+     |
+     v  route enumerate offers 144 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 143
+     |       observable: 143
+     |   admitted                      : 1
+     v   spanning 1 distinct space(s)
+  SPACE  c1 + c2 (dim 4) <- 1 candidate(s)
+     |
+     v   Pareto fronts [2], no weighting and no total
+  SELECTED  existing exact route: merge equal concrete states  dim 12  front 1
+     |   concrete answer selected; any acquisition paid before selection remains in the acquisition record
+     |   tie-break over the declared workload n=[6] (wall time, then grammar order):
+     |       existing exact route: merge equal concre   0.00s acquire +   0.25s run =   0.25s      2297 nodes
+     |       c1 + c2                                  233.27s acquire +   0.27s run = 233.54s       717 nodes
+     |       units disagree -- by wall time existing exact route: merge equal , by nodes c1 + c2
+     |   learned alternative left on front 1: c1 + c2 dim 4
+     |
+     v   layered DP, merging on the concrete state, multiplicity carried
+  n=3   enumeration v_max=   5 count=4        | agrees True dist True | 84 -> 85 nodes
+  n=5   enumeration v_max=   9 count=4        | agrees True dist True | 1364 -> 953 nodes
+  n=6   DP only       v_max=  11 count=4        | NOT enumerated | 2297 nodes, 692 classes
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  c1-plus-c2: entry 83fa63a17c5bf1b7487d15f1 (c1 + c2, dim 4), acquired again: False, prover calls: 0
+      n=9  v_max=17 count=4  2205 nodes, 172 classes, 1.10s for the call
+      instrumented primitive calls for the call: 0 -- the matrix arithmetic this route uses is not wrapped, so read the node count, not this zero
+
+written to C:\Users\81808\.openclaw\workspace\mortra-codex-private-handoff-20260913\artifacts\research\q-directed-handoff-20260913\normal-comparison-v1\B-c1-plus-c2

@@ -1,0 +1,29 @@
+task   : fold axis 1 displacement from AG
+goal   : the maximum of c1 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+legal  : True
+
+premise: stored certificate; no new closure or task certification
+route: q-directed; 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+Pareto fronts: []
+
+selected: c1 dim 4
+          basis   ['c1', 'F11 - F31 + c1', 'F11 + F31 + c1', 'F21 + F31 + c1']
+          readout qbar(z) = ['1', '0', '0', '0'] . z
+          compatible stored certificate; no acquisition
+
+length  3  enumeration v_max=5 count=8 words=64
+            representation agrees True, distribution agrees True  (84 nodes -> 45)
+length  5  enumeration v_max=7 count=32 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 161)
+
+length 12  v_max=14 count=4096 words=16777216
+            1305 nodes, 66 classes, 0.372042s, not enumerated
+
+scope: stored certificate: all_finite_words; maximum length=None; initial-state domain checked before reuse

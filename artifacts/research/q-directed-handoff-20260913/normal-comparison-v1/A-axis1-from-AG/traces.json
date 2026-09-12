@@ -1,0 +1,188 @@
+{
+  "tasks": {
+    "axis1-from-AG": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement from AG",
+      "task_contract": {
+        "goal": "the maximum of c1 over all words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here",
+        "legality": "True"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2
+      },
+      "candidates_offered": [],
+      "route": "existing",
+      "verification": [
+        {
+          "length": 3,
+          "by_enumeration": {
+            "v_max": "5",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "by_representation": {
+            "v_max": "5",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "1": 8,
+            "2": 24,
+            "3": 8,
+            "4": 16,
+            "5": 8
+          },
+          "nodes_enumerating": 84,
+          "nodes_with_representation": 85
+        },
+        {
+          "length": 5,
+          "by_enumeration": {
+            "v_max": "7",
+            "count_max": 32,
+            "total_words": 1024,
+            "distinct_values": 9
+          },
+          "by_representation": {
+            "v_max": "7",
+            "count_max": 32,
+            "total_words": 1024,
+            "distinct_values": 9
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-1": 32,
+            "0": 96,
+            "1": 96,
+            "2": 256,
+            "3": 96,
+            "4": 224,
+            "5": 96,
+            "6": 96,
+            "7": 32
+          },
+          "nodes_enumerating": 1364,
+          "nodes_with_representation": 953
+        }
+      ],
+      "verification_wall_time": 0.027403,
+      "answers": [
+        {
+          "length": 6,
+          "answer": {
+            "v_max": "8",
+            "count_max": 64,
+            "total_words": 4096,
+            "distinct_values": 11
+          },
+          "distribution": {
+            "-2": 64,
+            "-1": 192,
+            "0": 448,
+            "1": 256,
+            "2": 896,
+            "3": 448,
+            "4": 832,
+            "5": 256,
+            "6": 448,
+            "7": 192,
+            "8": 64
+          },
+          "search_nodes": 2297,
+          "classes_expanded": 692,
+          "wall_time": 0.198979,
+          "proof_calls": 0,
+          "primitive_calls": 2296,
+          "words_this_stands_for": 4096,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "scope": "the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.",
+      "selected": {
+        "observable": "existing exact route: merge equal concrete states",
+        "dimension": 12,
+        "basis": null,
+        "front": 1,
+        "why": "existing exact route requested"
+      },
+      "selection": {
+        "front_sizes": [],
+        "offered": []
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "certification": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.198979,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 2296,
+          "search_nodes": 2297
+        },
+        "reuse": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "verification": {
+          "wall_time": 0.027403,
+          "search_nodes": 2486
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 0.001537,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "wall_time": 0.227919
+    }
+  },
+  "reuse": {
+    "axis1-from-AG": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement from AG",
+      "reused": false,
+      "reason": "no stored representation carries a certificate admitting it for this task",
+      "stored_entries": 0,
+      "lookup_cost": {
+        "wall_time": 0.002909,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 0
+      }
+    }
+  }
+}

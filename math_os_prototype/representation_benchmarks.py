@@ -384,6 +384,8 @@ def represented_rung(closure, certificate, task, length):
     Where the certificate admitted the observable by span membership the
     read-out is the exact linear combination it produced.
     """
+    from math_os_prototype.representation_reuse import ensure_scope
+    ensure_scope(certificate, task, length)
     routes = certificates.abstract_routes(closure, certificate, task)
     observe = certificates.compiled_observation(closure)
     found = quotient_counting.layered_count(

@@ -1,0 +1,17 @@
+task   : fold axis 1 displacement, collision-free words only
+goal   : the maximum of c1 over collision-free words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+legal  : False
+
+premise: exact=None None identities over None frames
+grammar: degree 1, 2 term(s) -> 0 candidates
+
+refused at closure    : 0
+refused by certificate: 0
+admitted              : 0
+
+
+stopped: no stored representation carries a certificate admitting it for this task
+
+scope: 

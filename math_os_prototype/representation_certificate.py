@@ -83,6 +83,8 @@ class TaskSpec:
     #: so it licenses a proof rather than a depth-bounded search.
     legal_always: bool = False
     notes: str = ""
+    coefficient_field: str = "QQ"
+    required_observables: tuple = ()
 
     def legal_word(self, word):
         """A word is legal when every step of it was."""
@@ -118,9 +120,9 @@ def layers(task, depth, *, legal_only=True):
 
 
 def compiled_observation(closure):
-    """`Phi` as integer arithmetic, compiled once from its polynomial form.
+    """`Phi` as exact rational arithmetic, compiled once from its polynomial form.
 
-    Exact: coefficients and state are integers throughout. Compiled because a
+    Integral coefficients use an integer fast path. Compiled because a
     certificate compares thousands of words, and a sympy substitution per basis
     element per word would cost more than the task it is certifying. Only the
     first twelve entries of a state are read, so a task that carries extra
@@ -129,7 +131,8 @@ def compiled_observation(closure):
     programs = []
     for expression in closure["_basis"]:
         polynomial = sp.Poly(sp.expand(expression), *observables.VARIABLES)
-        programs.append([(tuple(int(e) for e in monomial), int(coefficient))
+        programs.append([(tuple(int(e) for e in monomial),
+                          int(coefficient) if coefficient.is_Integer else sp.Rational(coefficient))
                          for monomial, coefficient
                          in zip(polynomial.monoms(), polynomial.coeffs())])
 
@@ -154,6 +157,8 @@ def compiled_observation(closure):
 def transition_check(closure_record, premise=None):
     """Read off the closure prover; not re-derived here."""
     exact = bool(closure_record.get("identity_residuals_all_zero"))
+    if premise is not None:
+        exact = exact and bool(premise.get("exact") and premise.get("frames_closed"))
     return {"name": "transition", "holds": exact,
             "kind": "proof" if exact else "refusal",
             "statement": "Phi(T_g(x)) = B_g Phi(x) for every label g",
@@ -286,6 +291,12 @@ def certify(closure_record, task, *, depth=5, premise=None):
     closure = observables.closure_from_record(closure_record)
     observe = compiled_observation(closure)
     checks = [transition_check(closure_record, premise)]
+    from math_os_prototype import fold_tasks
+    binding = task.step in (fold_tasks.step, fold_tasks.panel_step) and tuple(task.alphabet) == observables.ALPHABET
+    checks[0]["action_binding"] = {"supported_fold_adapter": binding,
+                                    "coefficient_field": task.coefficient_field}
+    if not binding or task.coefficient_field != "QQ":
+        checks[0].update(holds=False, kind="refusal")
     readout = None
 
     membership = span_membership(closure, task.observable_expression)
@@ -337,10 +348,19 @@ def certify(closure_record, task, *, depth=5, premise=None):
     checks.append({"name": "start", "holds": True, "kind": "proof",
                    "statement": "the start state maps to the observation the DP begins at",
                    "observation": [str(v) for v in start]})
+    if task.observable_expression is not None:
+        try:
+            value_matches = sp.expand(task.value(observables.VARIABLES)
+                                      - task.observable_expression) == 0
+        except (TypeError, ValueError, IndexError):
+            value_matches = False
+        checks[1]["evaluation_matches_declared_expression"] = value_matches
+        if not value_matches:
+            checks[1].update(holds=False, kind="refusal")
 
     refusals = [check for check in checks if not check["holds"]]
     proved = all(check["kind"] in ("proof", "structural") for check in checks)
-    return {
+    result = {
         "schema": SCHEMA, "task": task.name,
         "observable": closure_record.get("observable"),
         "dimension": len(closure_record["basis"]),
@@ -364,6 +384,19 @@ def certify(closure_record, task, *, depth=5, premise=None):
         "task_contract": {"state": task.state_contract, "counted": task.counted,
                           "length_means": task.length_means,
                           "goal": task.goal, "notes": task.notes}}
+    from math_os_prototype.representation_reuse import task_key, coverage, representation_key
+    result["reuse_key"] = task_key(task)
+    result["representation_key"] = representation_key(closure_record)
+    result["coverage"] = coverage(result, task, premise)
+    result["required_readouts"] = []
+    for expression in task.required_observables:
+        membership = span_membership(closure, expression)
+        result["required_readouts"].append(membership)
+        if not membership or not membership["member"]:
+            result["admissible"] = result["may_merge_states"] = False
+            result["verdict"] = "refused"
+            result["refused_by"].append("required observable")
+    return result
 
 
 def admissible(certificate):

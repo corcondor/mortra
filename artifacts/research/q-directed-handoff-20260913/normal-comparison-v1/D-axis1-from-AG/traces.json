@@ -1,0 +1,1186 @@
+{
+  "tasks": {
+    "axis1-from-AG": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement from AG",
+      "task_contract": {
+        "goal": "the maximum of c1 over all words of a given length, and how many attain it",
+        "counted": "words of the given length over the label alphabet",
+        "length_means": "that many folds",
+        "state": "the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here",
+        "legality": "True"
+      },
+      "grammar": {
+        "degree": 1,
+        "max_terms": 2
+      },
+      "candidates_offered": [],
+      "route": "reuse",
+      "reused": true,
+      "from_entry": "4a97887388a3d12e8f5e31e1",
+      "observable": "c1",
+      "basis": [
+        "c1",
+        "F11 - F31 + c1",
+        "F11 + F31 + c1",
+        "F21 + F31 + c1"
+      ],
+      "readout": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "reuse_contract": {
+        "source_task": "fold axis 1 displacement",
+        "source_key": "44f2c8ed1ec44bfeab5b09bead85bbe5daca599c512b1a670ac3a5a08687a548",
+        "new_key": "44f2c8ed1ec44bfeab5b09bead85bbe5daca599c512b1a670ac3a5a08687a548",
+        "scope": {
+          "centre_domain": "Z^3",
+          "coefficient_field": "QQ",
+          "frames": [
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ]
+          ],
+          "kind": "all_finite_words",
+          "maximum_length": null,
+          "seed": [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        },
+        "readout_check": "exact polynomial span membership"
+      },
+      "dimension": 4,
+      "certificate_verdict": "admitted, proved",
+      "acquired_again": false,
+      "cost": {
+        "wall_time": 0.363824,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 249,
+        "proof_calls": 0
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "certification": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.088605,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 249
+        },
+        "reuse": {
+          "wall_time": 0.218486,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "reuse cost is lookup and exact readout checking; answer separate",
+        "verification": {
+          "wall_time": 0.037248,
+          "search_nodes": 1654
+        },
+        "comparison_and_bookkeeping": {
+          "wall_time": 0.019624,
+          "note": "residual: probes, workload comparison, grouping, record construction; not acquisition or answer time"
+        },
+        "units": {
+          "wall_time": "seconds, includes tracing overhead",
+          "acquisition.search_nodes": "observation candidates offered",
+          "certification.search_nodes": "words compared in finite congruence checks",
+          "answer.search_nodes": "DP states expanded, including terminal layer",
+          "reuse.search_nodes": "no candidate search; exact membership checks are timed",
+          "prover_calls": "instrumented closure/identity prover entry calls, not scalar operations",
+          "task_certifier_calls": "task sufficiency certifier invocations, separate from closure"
+        }
+      },
+      "verification": [
+        {
+          "length": 3,
+          "by_enumeration": {
+            "v_max": "5",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "by_representation": {
+            "v_max": "5",
+            "count_max": 8,
+            "total_words": 64,
+            "distinct_values": 5
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "1": 8,
+            "2": 24,
+            "3": 8,
+            "4": 16,
+            "5": 8
+          },
+          "nodes_enumerating": 84,
+          "nodes_with_representation": 45
+        },
+        {
+          "length": 5,
+          "by_enumeration": {
+            "v_max": "7",
+            "count_max": 32,
+            "total_words": 1024,
+            "distinct_values": 9
+          },
+          "by_representation": {
+            "v_max": "7",
+            "count_max": 32,
+            "total_words": 1024,
+            "distinct_values": 9
+          },
+          "answers_agree": true,
+          "distributions_agree": true,
+          "distribution": {
+            "-1": 32,
+            "0": 96,
+            "1": 96,
+            "2": 256,
+            "3": 96,
+            "4": 224,
+            "5": 96,
+            "6": 96,
+            "7": 32
+          },
+          "nodes_enumerating": 1364,
+          "nodes_with_representation": 161
+        }
+      ],
+      "verification_wall_time": 0.037248,
+      "answers": [
+        {
+          "length": 6,
+          "answer": {
+            "v_max": "8",
+            "count_max": 64,
+            "total_words": 4096,
+            "distinct_values": 11
+          },
+          "distribution": {
+            "-2": 64,
+            "-1": 192,
+            "0": 448,
+            "1": 256,
+            "2": 896,
+            "3": 448,
+            "4": 832,
+            "5": 256,
+            "6": 448,
+            "7": 192,
+            "8": 64
+          },
+          "search_nodes": 249,
+          "classes_expanded": 30,
+          "wall_time": 0.088605,
+          "proof_calls": 0,
+          "primitive_calls": 0,
+          "words_this_stands_for": 4096,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "sense": "the basis and the action matrices came out of the stored entry. No closure prover ran, no candidate was enumerated, and the acquisition cost of this call is whatever the figures above say -- not the original acquisition, which was paid once.",
+      "selected": {
+        "observable": "c1",
+        "dimension": 4,
+        "front": 1,
+        "basis": [
+          "c1",
+          "F11 - F31 + c1",
+          "F11 + F31 + c1",
+          "F21 + F31 + c1"
+        ],
+        "readout": [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        "why": "compatible stored certificate; no acquisition"
+      },
+      "selection": {
+        "front_sizes": [],
+        "offered": []
+      },
+      "wall_time": 0.363963
+    }
+  },
+  "reuse": {
+    "axis1-from-AG": {
+      "schema": "mortra.self-directed-search.v2",
+      "task": "fold axis 1 displacement from AG",
+      "reused": true,
+      "from_entry": "4a97887388a3d12e8f5e31e1",
+      "observable": "c1",
+      "basis": [
+        "c1",
+        "F11 - F31 + c1",
+        "F11 + F31 + c1",
+        "F21 + F31 + c1"
+      ],
+      "readout": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "reuse_contract": {
+        "source_task": "fold axis 1 displacement",
+        "source_key": "44f2c8ed1ec44bfeab5b09bead85bbe5daca599c512b1a670ac3a5a08687a548",
+        "new_key": "44f2c8ed1ec44bfeab5b09bead85bbe5daca599c512b1a670ac3a5a08687a548",
+        "scope": {
+          "centre_domain": "Z^3",
+          "coefficient_field": "QQ",
+          "frames": [
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                -1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                -1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                -1
+              ],
+              [
+                0,
+                1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ]
+          ],
+          "kind": "all_finite_words",
+          "maximum_length": null,
+          "seed": [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        },
+        "readout_check": "exact polynomial span membership"
+      },
+      "dimension": 4,
+      "certificate_verdict": "admitted, proved",
+      "acquired_again": false,
+      "cost": {
+        "wall_time": 0.297737,
+        "prover_calls": 0,
+        "task_certifier_calls": 0,
+        "primitive_calls": 0,
+        "search_nodes": 673,
+        "proof_calls": 0
+      },
+      "costs": {
+        "acquisition": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "certification": {
+          "wall_time": 0,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "answer": {
+          "wall_time": 0.2195,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 673
+        },
+        "reuse": {
+          "wall_time": 0.060506,
+          "prover_calls": 0,
+          "task_certifier_calls": 0,
+          "primitive_calls": 0,
+          "search_nodes": 0
+        },
+        "note": "reuse cost is lookup and exact readout checking; answer separate"
+      },
+      "verification": [],
+      "verification_wall_time": 1e-06,
+      "answers": [
+        {
+          "length": 9,
+          "answer": {
+            "v_max": "11",
+            "count_max": 512,
+            "total_words": 262144,
+            "distinct_values": 17
+          },
+          "distribution": {
+            "-5": 512,
+            "-4": 2560,
+            "-3": 5120,
+            "-2": 12800,
+            "-1": 9728,
+            "0": 28672,
+            "1": 18944,
+            "2": 43520,
+            "3": 18944,
+            "4": 43008,
+            "5": 18944,
+            "6": 28672,
+            "7": 9728,
+            "8": 12800,
+            "9": 5120,
+            "10": 2560,
+            "11": 512
+          },
+          "search_nodes": 673,
+          "classes_expanded": 46,
+          "wall_time": 0.2195,
+          "proof_calls": 0,
+          "primitive_calls": 0,
+          "words_this_stands_for": 262144,
+          "enumerated": false
+        }
+      ],
+      "all_checks_agree": true,
+      "sense": "the basis and the action matrices came out of the stored entry. No closure prover ran, no candidate was enumerated, and the acquisition cost of this call is whatever the figures above say -- not the original acquisition, which was paid once."
+    }
+  }
+}

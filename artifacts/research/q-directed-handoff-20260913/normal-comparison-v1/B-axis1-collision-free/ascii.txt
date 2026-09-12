@@ -1,0 +1,26 @@
+==============================================================================
+TASK  fold axis 1 displacement, collision-free words only
+==============================================================================
+  counts   words of the given length over the label alphabet
+  state    twelve coordinates plus the placed panels. The panels are carried because legality consults them; a state of only the centre and frame would not decide this task
+  legality a predicate on the state
+     |
+     v  route enumerate offers 144 candidates
+  CANDIDATES
+     |   refused at the closure prover : 0
+     |   refused by the certificate    : 144
+     |       legality: 144
+     |       observable: 125
+     |       one counterexample: legality at length 3, 'AAG' -> True vs 'AAT' -> False
+     |   admitted                      : 0
+     |
+  STOPPED  no candidate in this grammar both closed and preserved what the task needs
+     |   candidates_enumerated: 144
+     |   refused_by: ['legality', 'observable']
+     |   exact: this is a statement about this grammar at this degree and these coefficients, and about the certificate depth used. Widening any of them is a different question
+
+==============================================================================
+REUSE: the same store, read back for another length
+==============================================================================
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+
