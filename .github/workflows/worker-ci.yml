@@ -2,11 +2,14 @@ name: Verify MORTRA Kernels
 
 on:
   push:
-    branches: [master, codex/q-directed-closure-20260913]
+    branches: [master, codex/q-directed-closure-20260913, codex/theory-formation-20260913]
     paths:
       - "math_os_prototype/**"
       - "scripts/*.py"
       - "configs/q-directed-verification.json"
+      - "configs/theory-*.json"
+      - "tests/test_theory_formation.py"
+      - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
       - "docs/handoff/Q-DIRECTED*.md"
@@ -34,6 +37,9 @@ on:
       - "math_os_prototype/**"
       - "scripts/*.py"
       - "configs/q-directed-verification.json"
+      - "configs/theory-*.json"
+      - "tests/test_theory_formation.py"
+      - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
       - "docs/handoff/Q-DIRECTED*.md"
@@ -59,9 +65,9 @@ on:
   workflow_dispatch:
     inputs:
       verification_suite:
-        description: Existing Worker checks or q-directed research reproduction
+        description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed]
+        options: [worker, q-directed, theory-formation]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -80,7 +86,9 @@ jobs:
     if: >-
       ${{ !(github.ref == 'refs/heads/codex/q-directed-closure-20260913' && github.event_name == 'push')
           && !(github.event_name == 'pull_request' && (github.head_ref == 'codex/q-directed-closure-20260913' || github.base_ref == 'codex/q-directed-closure-20260913'))
-          && !(github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'q-directed') }}
+          && !(github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913')
+          && !(github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
+          && !(github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     concurrency:
       group: mortra-worker-kernel-${{ github.ref }}
       cancel-in-progress: true
@@ -133,7 +141,9 @@ jobs:
     if: >-
       ${{ (github.event_name == 'push' && github.ref == 'refs/heads/codex/q-directed-closure-20260913')
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/q-directed-closure-20260913' || github.base_ref == 'codex/q-directed-closure-20260913'))
-          || (github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'q-directed') }}
+          || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913')
+          || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
+          || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
@@ -149,6 +159,7 @@ jobs:
       TARGET_REF: ${{ inputs.target_ref || github.sha }}
       EXPECTED_SHA: ${{ inputs.expected_sha || (!inputs.target_ref && github.sha) || '' }}
       REPORT_REF: ${{ inputs.target_ref || github.ref }}
+      THEORY_MODE: ${{ inputs.verification_suite == 'theory-formation' || github.ref == 'refs/heads/codex/theory-formation-20260913' || github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913' }}
     steps:
       - name: Set output location
         shell: bash
@@ -193,7 +204,38 @@ jobs:
         run: |
           python ci-control/scripts/verify_q_directed_ci.py --execute \
             --repo target --output "$VERIFY_OUTPUT"
+      - name: Test theory formation guards
+        if: env.THEORY_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: python -m unittest discover -s tests -p test_theory_formation.py -v 2>&1 | tee "$VERIFY_OUTPUT/theory-tests.log"
+      - name: Run frozen target-free experiments and ablations
+        if: env.THEORY_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          args=(--config configs/theory-ring.json --config configs/theory-fold-frames.json)
+          if [ -f configs/theory-heldout.json ]; then
+            args+=(--config configs/theory-heldout.json)
+          fi
+          python scripts/verify_theory_formation.py --output "$VERIFY_OUTPUT/theory" "${args[@]}" 2>&1 | tee "$VERIFY_OUTPUT/theory-run.log"
       - name: Publish machine-readable summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$VERIFY_OUTPUT/theory/verification.json" ]; then
+            echo '### Target-free theory formation' >> "$GITHUB_STEP_SUMMARY"
+            python - "$VERIFY_OUTPUT/theory/verification.json" >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json, sys
+          s = json.load(open(sys.argv[1]))
+          print("Infrastructure passed:", s["infrastructure_passed"])
+          print("Scientific criteria all met:", s["all_scientific_criteria_met"])
+          for name, row in s["experiments"].items():
+              print(name, row["comparative_criteria"])
+          print("Full outputs, paired costs and failed conditions are in the artifact.")
+          PY
+          fi
+      - name: Publish q-directed summary
         if: always()
         shell: bash
         run: |
