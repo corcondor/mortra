@@ -8,6 +8,8 @@ from unittest.mock import patch
 from test_theory_dsl import config
 from math_os_prototype.theory_domain import term
 from math_os_prototype.theory_formation import Theory
+from math_os_prototype import library_compression as lib
+from math_os_prototype.theory_vocabulary import context_operations
 
 
 def small(refresh=True):
@@ -19,6 +21,80 @@ def small(refresh=True):
 def record(e, n):
     p = term("const", value=str(n))
     e.vocabulary.record(p, p, evaluated=e.domain.evaluate(p))
+
+
+class CandidateSourceBudget(unittest.TestCase):
+    """Handwritten structural fixtures, not a source of runtime definitions."""
+
+    def test_source_count_is_an_upper_bound_for_every_small_generalisation(self):
+        e = small()
+        atoms = [term("var", name="x"), term("const", value="2"), term("const", value="3")]
+        terms = atoms + [term(op, a) for op in ("neg",) for a in atoms]
+        terms += [term("add", a, b) for a in terms[:6] for b in terms[:6]]
+        # Fixed definition references and shared arguments participate as syntax.
+        terms += [lib.use_node(0, lib.program_hole(0), {"f0": a}) for a in terms[:6]]
+        with lib.grammar(e.vocabulary.accepts):
+            checked = 0
+            for a in terms:
+                for b in terms:
+                    try:
+                        template, _ = lib.generalise(a, b)
+                    except (ValueError, TypeError, KeyError):
+                        continue
+                    checked += 1
+                    self.assertLessEqual(context_operations(template),
+                                         min(context_operations(a), context_operations(b)))
+            self.assertGreater(checked, 100)
+
+    def test_exhaustive_admissible_set_is_preserved_and_occurrences_not_removed(self):
+        e = small()
+        programs = [term("neg", term("neg", term("const", value=str(n)))) for n in range(4)]
+        corpus = [{"id": str(i), "program": p} for i, p in enumerate(programs*2)]
+        original = deepcopy(corpus)
+        with lib.grammar(e.vocabulary.accepts):
+            old = lib.candidates(corpus, pairs=10000)
+            new = lib.candidates(corpus, pairs=10000, source_filter=lambda t: context_operations(t) >= 2,
+                                 deduplicate_sources=True)
+            admissible = lambda rows: {lib.key(r["template"]) for r in rows["candidates"]
+                                       if context_operations(r["template"]) >= 2}
+            self.assertEqual(admissible(old), admissible(new))
+            self.assertTrue(admissible(new))
+            self.assertLess(new["pairs_tried"], old["pairs_tried"])
+            self.assertEqual(new["source_pool"]["stop_reason"], "source_pairs_exhausted")
+            self.assertGreater(new["source_pool"]["duplicates"], 0)
+            template = next(r["template"] for r in new["candidates"] if context_operations(r["template"]) >= 2)
+            self.assertEqual(lib.utility(corpus, template), lib.utility(original, template))
+        self.assertEqual(corpus, original)
+
+    def test_ineligible_sources_cannot_spend_the_whole_pair_budget(self):
+        e = small()
+        programs = [term("neg", term("const", value=str(n))) for n in range(80)]
+        programs += [term("neg", term("neg", term("const", value=str(n)))) for n in range(10)]
+        corpus = [{"id": str(i), "program": p} for i, p in enumerate(programs)]
+        with lib.grammar(e.vocabulary.accepts):
+            old = lib.learn(corpus, pairs=40, admissible=lambda t: context_operations(t) >= 2)
+            new = lib.learn(corpus, pairs=40, admissible=lambda t: context_operations(t) >= 2,
+                            source_filter=lambda t: context_operations(t) >= 2, deduplicate_sources=True)
+        self.assertEqual(old["evaluated"], 0)
+        self.assertGreater(new["evaluated"], 0)
+        self.assertEqual(new["pairs_tried"], old["pairs_tried"])
+        self.assertEqual(new["source_pool"]["stop_reason"], "pair_budget")
+        self.assertEqual(sum(new["source_pool"][k] for k in ("excluded", "duplicates", "retained")),
+                         new["source_pool"]["positions_scanned"])
+
+    def test_normal_entry_retains_flag_and_does_not_inject_templates(self):
+        e = Theory(config(), corpus_refresh=True, eligible_sources=True)
+        e.run(cycles=10)
+        self.assertTrue(e.state["dsl"]["attempts"])
+        for a in e.state["dsl"]["attempts"]:
+            self.assertIn("source_pools", a)
+        restored = Theory(e.config, state=e.snapshot(), **e.flags)
+        self.assertEqual(restored.flags, e.flags)
+        with self.assertRaises(ValueError):
+            Theory(e.config, state=e.snapshot(), corpus_refresh=True)
+        for d in e.state["dsl"]["definitions"]:
+            self.assertTrue(d["acquisition_sources"])
+            self.assertTrue(d["source_evidence"])
 
 
 class CorpusFeedback(unittest.TestCase):

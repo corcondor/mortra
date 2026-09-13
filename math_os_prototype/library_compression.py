@@ -778,11 +778,30 @@ def _spread(size):
             yield first, first + gap
 
 
-def candidates(corpus, *, pairs=4000, limit=6):
-    """Templates generalising two stored subterms, deduplicated by syntax."""
+def candidates(corpus, *, pairs=4000, limit=6, source_filter=None, deduplicate_sources=False):
+    """Templates generalising stored subterms, within a pair-attempt budget.
+
+    An optional source filter must be a necessary condition for either operand
+    of an admissible generalisation, not an arbitrary preference or evaluation
+    result. Corpus occurrences remain intact for utility and proof checks.
+    Exact source deduplication changes order under a finite budget, but cannot
+    remove a distinct generalisation from the exhaustive candidate set.
+    """
     pool = []
+    source_seen = set()
+    source_count, source_excluded, source_duplicates = 0, 0, 0
     for entry in corpus:
         for _, node in subterms(entry["program"]):
+            source_count += 1
+            if source_filter is not None and not source_filter(node):
+                source_excluded += 1
+                continue
+            if deduplicate_sources:
+                encoded = key(node)
+                if encoded in source_seen:
+                    source_duplicates += 1
+                    continue
+                source_seen.add(encoded)
             pool.append(node)
     seen, offered, tried = set(), [], 0
     # Pairs at increasing separation rather than lexicographic order: the first
@@ -802,17 +821,24 @@ def candidates(corpus, *, pairs=4000, limit=6):
         seen.add(encoded)
         offered.append({"id": digest(template)[:16], "template": template,
                         "samples": samples})
-    return {"candidates": offered, "pairs_tried": tried, "subterms": len(pool)}
+    return {"candidates": offered, "pairs_tried": tried, "subterms": source_count,
+            "source_pool": {"positions_scanned": source_count, "excluded": source_excluded,
+                            "duplicates": source_duplicates, "retained": len(pool),
+                            "possible_pairs": len(pool)*(len(pool)-1)//2,
+                            "stop_reason": ("pair_budget" if tried < len(pool)*(len(pool)-1)//2
+                                            else "source_pairs_exhausted")}}
 
 
-def learn(corpus, *, pairs=4000, limit=6, keep=8, admissible=None):
+def learn(corpus, *, pairs=4000, limit=6, keep=8, admissible=None,
+          source_filter=None, deduplicate_sources=False):
     """Rank candidates by the objective, pruning by the bound before evaluating.
 
     The bound is computed first because it is the cheap half: it needs the match
     locations but not the rewrite, the expansion or the re-costing.
     """
     precondition = bound_precondition(corpus)
-    offered = candidates(corpus, pairs=pairs, limit=limit)
+    offered = candidates(corpus, pairs=pairs, limit=limit, source_filter=source_filter,
+                         deduplicate_sources=deduplicate_sources)
     scored, pruned, audits, excluded = [], 0, [], []
     best = 0
     for entry in offered["candidates"]:
@@ -839,6 +865,7 @@ def learn(corpus, *, pairs=4000, limit=6, keep=8, admissible=None):
             "corpus_bits": sum(cost(e["program"]) for e in corpus),
             "offered": len(offered["candidates"]), "subterms": offered["subterms"],
             "pairs_tried": offered["pairs_tried"], "pruned_by_bound": pruned,
+            "source_pool": offered["source_pool"],
             "excluded_by_contract": excluded,
             "evaluated": len(scored), "bound_audit": audits,
             "bound_violations": [a for a in audits if not a["bound_holds"]],

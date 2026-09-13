@@ -151,7 +151,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 45 || 20 }}
+    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 60 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -268,14 +268,14 @@ jobs:
               --challenge-seed "$seed" --output "$VERIFY_OUTPUT/dsl-tasks-$seed" \
               2>&1 | tee "$VERIFY_OUTPUT/dsl-tasks-$seed.log"
           done
-      - name: Verify fixed-capacity experience refresh and frozen generalization
+      - name: Verify eligible abstraction sources and frozen generalization
         if: env.DSL_MODE == 'true'
         working-directory: target
         shell: bash
         run: |
-          python scripts/verify_theory_semantic_edit.py --plan configs/theory-corpus-feedback-evaluation.json \
-            --output "$VERIFY_OUTPUT/dsl-corpus-feedback" \
-            2>&1 | tee "$VERIFY_OUTPUT/dsl-corpus-feedback.log"
+          python scripts/verify_theory_semantic_edit.py --plan configs/theory-eligible-sources-evaluation.json \
+            --output "$VERIFY_OUTPUT/dsl-eligible-sources" \
+            2>&1 | tee "$VERIFY_OUTPUT/dsl-eligible-sources.log"
       - name: Measure frozen-baseline persistent learning
         if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true' && env.BOTTLENECK_MODE != 'true'
         shell: bash

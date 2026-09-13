@@ -95,6 +95,7 @@ def corpus_evidence(state):
         "post_capacity_chains": chains,
         "post_capacity_learning_inputs": [{"cycle": a["cycle"], "input_version": a["input_version"],
             "admitted_sources": [k for k in a["corpus_ids"] if admissions.get(k, {}).get("sequence", 0) > capacity],
+            "source_pools": a.get("source_pools", []),
             "offered": a["offered"], "evaluated": a["evaluated"], "accepted": a["accepted"]} for a in late],
         "all_acquired_sources_retained": all(k in d.get("source_evidence", {}) and
             d["source_evidence"][k] in archive for d in s["definitions"] for k in d["acquisition_sources"]),
@@ -177,9 +178,9 @@ def main():
     try:
         training = plan.get("training_conditions", {"old": [], "edited": ["--semantic-edits"]})
         if set(training) != {"old", "edited"} or any(
-                not isinstance(options, list) or set(options)-{"--semantic-edits", "--refresh-corpus"}
+                not isinstance(options, list) or set(options)-{"--semantic-edits", "--refresh-corpus", "--eligible-sources"}
                 for options in training.values()):
-            raise ValueError("training conditions may select only the fixed semantic/corpus mechanisms")
+            raise ValueError("training conditions may select only the fixed semantic/corpus/source mechanisms")
         for name, options in training.items():
             run(name+"-first", *options, "--cycles", config["budget"]["cycles"]//2)
             run(name+"-resumed", *options, "--resume", args.output/(name+"-first")/"state.json")

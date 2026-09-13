@@ -40,6 +40,8 @@ def main(argv=None):
     parser.add_argument("--semantic-edits", action="store_true")
     parser.add_argument("--refresh-corpus", action="store_true",
                         help="FIFO refresh of the bounded learning corpus; retain acquired source evidence")
+    parser.add_argument("--eligible-sources", action="store_true",
+                        help="deduplicate and prefilter abstraction sources by its existing composition contract")
     parser.add_argument("--uncached-syntax", action="store_true",
                         help="diagnostic ablation: rebuild definition tables and reparse literals")
     parser.add_argument("--execution-mode", choices=["legacy", "certified", "edited"], default="certified")
@@ -60,6 +62,7 @@ def main(argv=None):
                 "command": sys.argv, "generated_at": datetime.now(timezone.utc).isoformat(),
                 "semantic_edits": args.semantic_edits, "execution_mode": args.execution_mode,
                 "corpus_refresh": args.refresh_corpus,
+                "eligible_sources": args.eligible_sources,
                 "syntax_cache_enabled": not args.uncached_syntax,
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
@@ -75,13 +78,14 @@ def main(argv=None):
         if (prior["source_seal"] != source or prior["config"] != config or prior["condition"] != args.condition
                 or prior.get("semantic_edits", False) != args.semantic_edits
                 or prior.get("corpus_refresh", False) != args.refresh_corpus
+                or prior.get("eligible_sources", False) != args.eligible_sources
                 or prior.get("syntax_cache_enabled", True) != (not args.uncached_syntax)):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
                     dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits,
-                    corpus_refresh=args.refresh_corpus, state=old)
+                    corpus_refresh=args.refresh_corpus, eligible_sources=args.eligible_sources, state=old)
     engine.domain.syntax_cache_enabled = not args.uncached_syntax
     failure = None
     queries = None

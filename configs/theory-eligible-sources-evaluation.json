@@ -1,0 +1,16 @@
+{
+  "regression_seeds": [917334, 917335],
+  "fresh_seeds": [919071, 919072],
+  "training_config": "configs/theory-dsl-fold.json",
+  "training_conditions": {
+    "old": ["--semantic-edits", "--refresh-corpus"],
+    "edited": ["--semantic-edits", "--refresh-corpus", "--eligible-sources"]
+  },
+  "conditions": {
+    "A-initial": ["initial", "certified"],
+    "O-unfiltered-sources": ["old", "edited"],
+    "B-edited": ["edited", "edited"],
+    "C-edit-disabled": ["edited", "certified"],
+    "D-no-definitions": ["edited", "edited", "no-definitions"]
+  }
+}

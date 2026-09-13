@@ -37,7 +37,14 @@ def program_size(node):
 
 
 def context_operations(node):
-    """Exclude literal payloads and holes from compositional novelty."""
+    """Exclude literal payloads and holes from compositional novelty.
+
+    For every successful structural generalise(a, b), this count on the
+    template is <= min(count(a), count(b)): retained operation nodes already
+    occur in both operands, and holes contribute zero. The same necessary
+    condition can therefore filter sources before pairing, without changing
+    the admissible exhaustive template set. This is not a semantic theorem.
+    """
     if lib.is_hole(node):
         return 0
     if lib.is_call(node):
@@ -436,7 +443,10 @@ class Vocabulary:
             searches = []
             for corpus, edits in views:
                 found = lib.learn(corpus, pairs=e.budget["library_pairs"]//len(views), keep=8,
-                                  admissible=lambda t: context_operations(t) >= 2)
+                    admissible=lambda t: context_operations(t) >= 2,
+                    source_filter=(lambda t: context_operations(t) >= 2)
+                        if e.flags.get("eligible_sources") else None,
+                    deduplicate_sources=e.flags.get("eligible_sources", False))
                 offers.extend((candidate, corpus, edits) for candidate in found["ranked"])
                 searches.append(found)
             accepted = None
@@ -515,6 +525,7 @@ class Vocabulary:
             "corpus_arrivals": input_arrivals, "corpus_ids": [r["id"] for r in s["corpus"]],
             "pairs": sum(f["pairs_tried"] for f in searches), "offered": sum(f["offered"] for f in searches),
             "evaluated": sum(f["evaluated"] for f in searches), "equivalent_views": len(views), "view_cost": view_cost,
+            "source_pools": [f["source_pool"] for f in searches],
             "operation_aliases_excluded": [x for f in searches for x in f["excluded_by_contract"]],
             "accepted": accepted["id"] if accepted else None,
             "seconds": time.perf_counter()-began})
@@ -525,6 +536,9 @@ class Vocabulary:
         s["last_learn_knowledge"] = self.knowledge_input()
         e.charge("library_acquisition", pairs=sum(f["pairs_tried"] for f in searches),
                  candidates=sum(f["evaluated"] for f in searches), seconds=time.perf_counter()-began-certification_seconds,
+                 source_positions=sum(f["source_pool"]["positions_scanned"] for f in searches),
+                 source_excluded=sum(f["source_pool"]["excluded"] for f in searches),
+                 source_duplicates=sum(f["source_pool"]["duplicates"] for f in searches),
                  **view_cost)
 
     def synthesize(self):
