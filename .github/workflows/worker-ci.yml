@@ -10,6 +10,7 @@ on:
       - "configs/theory-*.json"
       - "tests/test_theory_formation.py"
       - "tests/test_theory_dsl.py"
+      - "tests/test_theory_semantic_edit.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -41,6 +42,7 @@ on:
       - "configs/theory-*.json"
       - "tests/test_theory_formation.py"
       - "tests/test_theory_dsl.py"
+      - "tests/test_theory_semantic_edit.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -243,7 +245,7 @@ jobs:
         working-directory: target
         shell: bash
         run: |
-          python -m pytest tests/test_theory_dsl.py scripts/test_library_compression.py \
+          python -m pytest tests/test_theory_dsl.py tests/test_theory_semantic_edit.py scripts/test_library_compression.py \
             scripts/test_expand_for_execution.py scripts/test_call_candidate_dedup.py -q \
             2>&1 | tee "$VERIFY_OUTPUT/dsl-tests.log"
       - name: Run persistent DSL acquisition, reuse and held-out ablation
@@ -264,6 +266,13 @@ jobs:
               --challenge-seed "$seed" --output "$VERIFY_OUTPUT/dsl-tasks-$seed" \
               2>&1 | tee "$VERIFY_OUTPUT/dsl-tasks-$seed.log"
           done
+      - name: Verify acquired-definition semantic editing and frozen generalization
+        if: env.DSL_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python scripts/verify_theory_semantic_edit.py --output "$VERIFY_OUTPUT/dsl-semantic-edit" \
+            2>&1 | tee "$VERIFY_OUTPUT/dsl-semantic-edit.log"
       - name: Measure frozen-baseline persistent learning
         if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true' && env.BOTTLENECK_MODE != 'true'
         shell: bash

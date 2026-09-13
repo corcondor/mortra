@@ -58,6 +58,9 @@ class Vocabulary:
         self.state.setdefault("recurrence_operations", {})
         self.state.setdefault("natural_cursor", 0)
         self.state.setdefault("composition_cursor", 0)
+        self.state.setdefault("semantic_relations", [])
+        self.state.setdefault("semantic_discoveries", [])
+        self.state.setdefault("semantic_uses", [])
         # Interpreter caches, not learned knowledge; rebuilding them is charged.
         self._compiled_spaces = {}
         self._observation_values = {}
@@ -155,6 +158,7 @@ class Vocabulary:
             return lib.expand_for_execution(node, self.table(), stats=counter, charge=charge)
 
     def primitive(self, node, *, counter=None, charge=None):
+        """Independent replay lowering. Never required just to size a candidate."""
         node = self.expand(node, counter=counter, charge=charge)
         def walk(t):
             if t["op"] == "recurrence":
@@ -176,6 +180,65 @@ class Vocabulary:
                 return q
             return dict(t, args=[walk(a) for a in t.get("args", [])])
         return walk(node)
+
+    def execution_shape(self, program, *, counter=None, charge=None):
+        """Exact old lowered AST size, without evaluating an observation.
+
+        Recurrence lowering produces one constant regardless of n. Keep that
+        same size policy, but estimate/charge its interpreter work separately.
+        """
+        node = self.expand(program, counter=counter, charge=charge)
+        def walk(t):
+            if charge:
+                charge("shape_visits", 1)
+            if counter is not None:
+                counter["shape_visits"] = counter.get("shape_visits", 0)+1
+            if t["op"] == "recurrence":
+                return 1
+            if t["op"] == "represented":
+                c = self.theory.state["concepts"][self.theory.state["representations"][t["binding"]]["concept"]]
+                return len(t["args"][0]["letters"])+size(c["definition"])
+            return 1+sum(walk(a) for a in t.get("args", []))
+        return walk(node)
+
+    def execution_estimate(self, program, *, counter=None, charge=None):
+        """Cold arithmetic work estimate, not a claim about wall-clock time."""
+        node = self.expand(program, counter=counter, charge=charge)
+        states = len(self.domain.models)
+        def walk(t):
+            if charge:
+                charge("cost_model_visits", 1)
+            if counter is not None:
+                counter["cost_model_visits"] = counter.get("cost_model_visits", 0)+1
+            if t["op"] == "recurrence":
+                _, law = self.law(t["procedure"])
+                return states+max(0, int(t["args"][0]["value"])+1-law["order"])*law["order"]
+            if t["op"] == "represented":
+                r = materialize(self.theory.state, t["binding"])
+                return states+len(t["args"][0]["letters"])*r["dimension"]**2+r["dimension"]*r["ambient_dimension"]
+            return states+sum(walk(a) for a in t.get("args", []))
+        return walk(node), lib.cost(program)
+
+    def edit(self, program, *, counter=None, charge=None):
+        from math_os_prototype.theory_semantic_edit import rewrite
+        return rewrite(self, program, counter=counter, charge=charge)
+
+    def active_definitions(self, editing):
+        if not editing:
+            return self.state["definitions"]
+        from math_os_prototype.theory_semantic_edit import validate
+        projections = set()
+        equivalent = set()
+        for r in self.state["semantic_relations"]:
+            validate(self, r)
+            if r["kind"] == "projection":
+                projections.add(r["definition_index"])
+            # One syntactic branch per proved operator alias. Both implementations
+            # remain archived, and concrete-call editing still compares costs.
+            if any(d["index"] < r["definition_index"] and d["template"] == r["right"]
+                   and d["signature"] == r["signature"] for d in self.state["definitions"]):
+                equivalent.add(r["definition_index"])
+        return [d for d in self.state["definitions"] if d["index"] not in projections | equivalent]
 
     def evaluate(self, program, *, requirements=None, charge=None, counter=None):
         if requirements and any(v not in (None, False, "unrestricted") for v in requirements.values()):
@@ -269,11 +332,32 @@ class Vocabulary:
         s, e = self.state, self.theory
         s["last_learn_size"] = len(s["corpus"])
         began = time.perf_counter()
+        certification_seconds = 0
+        view_cost = {}
+        views = [(s["corpus"], [])]
+        if e.flags.get("semantic_edits") and s["semantic_relations"]:
+            alternative, uses = [], []
+            for row in s["corpus"]:
+                program, proofs = self.edit(row["program"], counter=view_cost)
+                alternative.append(dict(row, program=program,
+                    primitive=self.primitive(program,
+                        charge=lambda k, n: view_cost.__setitem__(k, view_cost.get(k, 0)+n)) if proofs else row["primitive"]))
+                uses.append({"source": row["id"], "before": row["program"], "after": program,
+                             "proofs": proofs})
+            if any(u["proofs"] for u in uses):
+                views.append((alternative, uses))
         with lib.grammar(self.accepts):
-            found = lib.learn(s["corpus"], pairs=e.budget["library_pairs"], keep=8,
-                              admissible=lambda t: context_operations(t) >= 2)
+            offers = []
+            searches = []
+            for corpus, edits in views:
+                found = lib.learn(corpus, pairs=e.budget["library_pairs"]//len(views), keep=8,
+                                  admissible=lambda t: context_operations(t) >= 2)
+                offers.extend((candidate, corpus, edits) for candidate in found["ranked"])
+                searches.append(found)
             accepted = None
-            for candidate in found["ranked"]:
+            # Each alternative is scored on one copy of each original program;
+            # equivalent views are never counted as extra training examples.
+            for candidate, corpus, edits in sorted(offers, key=lambda row: -row[0]["verdict"]["utility_bits"]):
                 template = candidate["template"]
                 if any(d["template"] == template for d in s["definitions"]):
                     continue
@@ -282,7 +366,7 @@ class Vocabulary:
                 except ValueError:
                     continue
                 index = len(s["definitions"])
-                verdict = lib.utility(s["corpus"], template, index=index)
+                verdict = lib.utility(corpus, template, index=index)
                 if verdict["utility_bits"] <= 0 or verdict["failures"]:
                     continue
                 dependencies = sorted(references(template))
@@ -293,24 +377,44 @@ class Vocabulary:
                     "definition_bits": verdict["definition_bits"], "utility_bits": verdict["utility_bits"],
                     "reuse_count": 0, "acquisition_sources": [r["id"] for r in verdict["rewritten"] if r["sites"]],
                     "certificate": "capture-free definitional expansion with typed shared arguments"}
+                if edits:
+                    definition["semantic_sources"] = [u for u in edits if u["proofs"]]
                 s["definitions"].append(definition)
                 # Check every changed program against its original primitive meaning.
-                for row, rewritten in zip(s["corpus"], verdict["rewritten"]):
-                    if self.primitive(rewritten["program"]) != row["primitive"]:
+                for row, source, rewritten in zip(s["corpus"], corpus, verdict["rewritten"]):
+                    if self.primitive(rewritten["program"]) != source["primitive"]:
                         raise AssertionError("library abstraction changed primitive computation")
+                    if row["primitive"] != source["primitive"]:
+                        row.setdefault("semantic_history", []).append({"program": row["program"],
+                            "primitive": row["primitive"], "edits": [u for u in edits if u["source"] == row["id"]]})
+                        row["primitive"] = source["primitive"]
                     row["program"] = rewritten["program"]
                 accepted = definition
                 s["grammar_versions"].append({"cycle": e.state["cycle"], "table": self.table(),
                                                "new_definition": definition["id"]})
                 e.event("dsl_definition_acquired", definition=definition)
+                if e.flags.get("semantic_edits"):
+                    from math_os_prototype.theory_semantic_edit import discover
+                    discovery = discover(self, definition)
+                    s["semantic_discoveries"].append(discovery)
+                    s["semantic_relations"].extend(discovery["relations"])
+                    certification_seconds += discovery["seconds"]
+                    e.charge("dsl_semantic_certification", seconds=discovery["certification_seconds"], **discovery["costs"])
+                    e.charge("dsl_semantic_discovery", seconds=discovery["discovery_seconds"])
+                    s["grammar_versions"].append({"cycle": e.state["cycle"],
+                        "active_definition_indices": [d["index"] for d in self.active_definitions(True)],
+                        "new_equations": [r["id"] for r in discovery["relations"]]})
+                    e.event("dsl_semantic_relation_search", discovery=discovery)
                 break
         s["attempts"].append({"cycle": e.state["cycle"], "corpus": len(s["corpus"]),
-            "pairs": found["pairs_tried"], "offered": found["offered"], "evaluated": found["evaluated"],
-            "operation_aliases_excluded": found["excluded_by_contract"],
+            "pairs": sum(f["pairs_tried"] for f in searches), "offered": sum(f["offered"] for f in searches),
+            "evaluated": sum(f["evaluated"] for f in searches), "equivalent_views": len(views), "view_cost": view_cost,
+            "operation_aliases_excluded": [x for f in searches for x in f["excluded_by_contract"]],
             "accepted": accepted["id"] if accepted else None,
             "seconds": time.perf_counter()-began})
-        e.charge("library_acquisition", pairs=found["pairs_tried"],
-                 candidates=found["evaluated"], seconds=time.perf_counter()-began)
+        e.charge("library_acquisition", pairs=sum(f["pairs_tried"] for f in searches),
+                 candidates=sum(f["evaluated"] for f in searches), seconds=time.perf_counter()-began-certification_seconds,
+                 **view_cost)
 
     def synthesize(self):
         e, s = self.theory, self.state
@@ -328,7 +432,7 @@ class Vocabulary:
         by_sort = {}
         for p in pool:
             by_sort.setdefault(self.accepts(p), []).append(p)
-        ranked = sorted(s["definitions"], key=lambda d: (
+        ranked = sorted(self.active_definitions(e.flags.get("semantic_edits", False)), key=lambda d: (
             -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), -d["utility_bits"], d["index"]))
         search_cost = {}
         arguments = {d["index"]: {name: by_sort.get(sort, [])
@@ -387,20 +491,43 @@ class Vocabulary:
             if digest(program) in s["seen_calls"]:
                 continue
             s["seen_calls"].append(digest(program))
-            primitive = self.primitive(program)
-            if size(primitive) > e.budget["expanded_size"] or program_size(program) > e.budget["term_size"]:
+            shape_counter = {}
+            shape_size = self.execution_shape(program, counter=shape_counter)
+            e.charge("dsl_candidate_validation", **shape_counter)
+            if shape_size > e.budget["expanded_size"] or program_size(program) > e.budget["term_size"]:
                 e.charge("dsl_search", size_refusals=1)
                 continue
+            original = deepcopy(program)
+            edit_counter, proofs = {}, []
+            edit_started = time.perf_counter()
+            if e.flags.get("semantic_edits"):
+                program, proofs = self.edit(program, counter=edit_counter)
+            e.charge("dsl_semantic_optimization", seconds=time.perf_counter()-edit_started, **edit_counter)
+            evaluation_started = time.perf_counter()
             actual, counter = self.evaluate(program)
-            expected = self.domain.evaluate(primitive)
+            counter["seconds"] = time.perf_counter()-evaluation_started
+            replay_started = time.perf_counter()
+            replay_counter = {}
+            def replay_charge(k, n):
+                replay_counter[k] = replay_counter.get(k, 0)+n
+            original_primitive = self.primitive(original, charge=replay_charge)
+            expected = self.domain.evaluate(original_primitive, charge=replay_charge)
+            primitive = self.primitive(program, charge=replay_charge) if proofs else original_primitive
+            e.charge("dsl_independent_replay", seconds=time.perf_counter()-replay_started, **replay_counter)
             if self.domain.semantic_key(actual) != self.domain.semantic_key(expected):
                 raise AssertionError("DSL execution differs from independent primitive execution")
             row = {"cycle": e.state["cycle"], "program": program, "primitive": primitive,
+                "original_program": original, "semantic_proofs": proofs,
+                "independent_replay_cost": replay_counter,
                 "definitions": sorted(references(program)), "agree": True,
                 "result": [str(v) for v in actual] if isinstance(actual, tuple) else str(actual),
                 "execution_cost": counter, "call_bits": lib.cost(program),
                 "expanded_bits": lib.cost(primitive), "origin": "self_generated"}
             s["executions"].append(row)
+            if proofs:
+                s["semantic_uses"].append({"cycle": e.state["cycle"], "before": original,
+                    "after": program, "proofs": proofs, "result": row["result"],
+                    "execution_cost": counter, "replay_cost": replay_counter})
             for ref in row["definitions"]:
                 s["definitions"][int(ref)]["reuse_count"] += 1
                 definition = s["definitions"][int(ref)]
@@ -423,7 +550,7 @@ class Vocabulary:
             out.append(("synthesize", e.budget["batch"]))
         return out
 
-    def solve_observation(self, task, *, acquired=True, definitions_enabled=True):
+    def solve_observation(self, task, *, acquired=True, definitions_enabled=True, execution_mode="certified"):
         """Synthesize a program from its exact finite-model specification.
 
         This is a goal adapter for the existing typed planner. No witness or
@@ -431,6 +558,8 @@ class Vocabulary:
         is a congruence for the declared pure operations, not for legality.
         """
         start = time.perf_counter()
+        if execution_mode not in {"legacy", "certified", "edited"}:
+            raise ValueError("unknown execution mode")
         from math_os_prototype.runtime_typed_planner import (
             initial_fact, RuntimePrimitive, PrimitiveResult, synthesize_typed_plan)
         if self.domain.scope["kind"] != "complete_finite_model":
@@ -459,6 +588,8 @@ class Vocabulary:
                    "candidate_build_seconds": 0, "verification_seconds": 0,
                    "rewrite_matching_checks": 0}
         work = {"used": 0, "limit": budget.get("work"), "categories": {}}
+        replay_work = {"used": 0, "categories": {}}
+        rewrite_trace = []
         class WorkLimit(RuntimeError):
             pass
         def charge(kind, count):
@@ -472,22 +603,29 @@ class Vocabulary:
                 return None
             began = time.perf_counter()
             try:
-                expanded = self.primitive(program, counter=counter, charge=charge)
+                expanded_size = size(self.primitive(program, counter=counter, charge=charge)) if execution_mode == "legacy" else self.execution_shape(program, counter=counter, charge=charge)
             finally:
                 counter["primitive_expansion_seconds"] += time.perf_counter()-began
-            if size(expanded) > budget["expanded_size"]:
+            if expanded_size > budget["expanded_size"]:
                 counter["size_refusals"] += 1
                 return None
             sort = self.accepts(program, counter=counter)
             if sort in {"action_word", "natural"}:
                 return {"program": program, "values": program}
+            original = program
+            if execution_mode == "edited":
+                began = time.perf_counter()
+                program, proofs = self.edit(program, counter=counter, charge=charge)
+                counter["semantic_edit_seconds"] = counter.get("semantic_edit_seconds", 0)+time.perf_counter()-began
+                if proofs:
+                    rewrite_trace.append({"before": original, "after": program, "proofs": proofs})
             began = time.perf_counter()
             try:
                 result, _ = self.evaluate(program, counter=counter, charge=charge)
                 counter["candidate_evaluations"] += 1
             finally:
                 counter["evaluation_seconds"] += time.perf_counter()-began
-            return {"program": program, "values": [str(v) for v in result]}
+            return {"program": program, "original_program": original, "values": [str(v) for v in result]}
         def primitive(name, inputs, output, build):
             def execute(args):
                 counter["attempted_applications"] += 1
@@ -511,7 +649,7 @@ class Vocabulary:
         facts = []
         operations = []
         if acquired:
-            definitions = sorted(self.state["definitions"] if definitions_enabled else [], key=lambda d: (
+            definitions = sorted(self.active_definitions(execution_mode == "edited") if definitions_enabled else [], key=lambda d: (
                 -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), d["index"]))
             for d in definitions:
                 names = list(d["signature"]["parameters"])
@@ -551,8 +689,12 @@ class Vocabulary:
             if solution is not None:
                 began = time.perf_counter()
                 try:
-                    expanded = self.primitive(solution.value["program"], counter=counter, charge=charge)
-                    independent = [str(v) for v in self.domain.evaluate(expanded, charge=charge)]
+                    def replay_charge(kind, count):
+                        charge(kind, count)
+                        replay_work["used"] += count
+                        replay_work["categories"][kind] = replay_work["categories"].get(kind, 0)+count
+                    expanded = self.primitive(solution.value.get("original_program", solution.value["program"]), counter=counter, charge=replay_charge)
+                    independent = [str(v) for v in self.domain.evaluate(expanded, charge=replay_charge)]
                     counter["verification_checks"] += len(target)
                     if independent != target:
                         raise AssertionError("synthesized solution fails independent finite-model replay")
@@ -568,15 +710,18 @@ class Vocabulary:
         structural_bits = sum(lib.cost(d) for d in bodies)
         certified_bits = sum(lib.cost(self.theory.state.get(k, {})) for k in
                              ("observable_spaces", "representations", "procedures"))
-        active_bits = (structural_bits if acquired and definitions_enabled else 0)+(certified_bits if acquired else 0)
+        equation_bits = lib.cost(self.state["semantic_relations"])
+        active_bits = (structural_bits if acquired and definitions_enabled else 0)+(certified_bits if acquired else 0)+(equation_bits if execution_mode == "edited" else 0)
         return {"task": task["id"], "solved": program is not None, "program": program,
             "definitions_used": sorted(references(program)),
             "states_explored": len(seeds)+counter["attempted_applications"], "costs": counter,
-            "work": work, "archive_digest": before,
+            "work": work, "independent_replay_work": replay_work,
+            "normal_work_used": work["used"]-replay_work["used"],
+            "semantic_rewrite_trace": rewrite_trace, "execution_mode": execution_mode, "archive_digest": before,
             "enabled_operations": [o.name for o in operations],
             "library_cost": {"structural_definition_bits": structural_bits,
                 "certified_operation_bits": certified_bits, "active_bits": active_bits,
-                "stored_bits": structural_bits+certified_bits},
+                "semantic_equation_bits": equation_bits, "stored_bits": structural_bits+certified_bits+equation_bits},
             "seconds": time.perf_counter()-start, "archive_unchanged": True,
             "proof": {"kind": "complete_finite_model_replay", "scope": self.domain.scope,
                       "checks": len(target)} if program else None,

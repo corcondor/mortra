@@ -91,12 +91,15 @@ def rewrite(t, rules, scope, domain=None):
 
 
 class Theory:
-    def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, dsl_reuse=True, state=None):
+    def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, dsl_reuse=True,
+                 semantic_edits=False, state=None):
         self.config = configure(config)
         self.domain = Domain(self.config["domain"])
         self.budget = self.config["budget"]
         self.flags = {"theorem_reuse": theorem_reuse, "representation_reuse": representation_reuse,
                       "dsl_reuse": dsl_reuse}
+        if semantic_edits:
+            self.flags["semantic_edits"] = True
         if state is not None:
             state = deepcopy(state)
             seal = state.pop("sha256", None)

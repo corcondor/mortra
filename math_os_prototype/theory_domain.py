@@ -179,9 +179,15 @@ class Domain:
             return {"op": "diff", "child": self.program(a[0])}
         raise ValueError("not a differential scalar term")
 
-    def evaluate(self, t, counter=None, *, charge=None):
+    def evaluate(self, t, counter=None, *, charge=None, symbolic_sensors=None):
         """Count actual syntax operations, including repeated subexpressions."""
         self.type_of(t)
+        if symbolic_sensors is not None:
+            if self.kind == "differential_ring" or self.type_of(t) != "scalar":
+                raise ValueError("symbolic finite-model evaluation supports scalar polynomials only")
+            if set(symbolic_sensors) - set(self.names) or any(
+                    len(v) != len(self.models) for v in symbolic_sensors.values()):
+                raise ValueError("symbolic sensor scope mismatch")
         if charge is not None:
             charge("model_node_evaluations", size(t)*len(self.models))
         if counter is not None:
@@ -196,6 +202,8 @@ class Domain:
         def ev(node):
             op, a = node["op"], node["args"]
             if op == "var":
+                if symbolic_sensors is not None and node["name"] in symbolic_sensors:
+                    return tuple(symbolic_sensors[node["name"]])
                 return tuple(sp.Rational(str(v)) for v in self.sensors[node["name"]])
             if op == "const":
                 return (sp.Rational(node["value"]),) * len(self.models)

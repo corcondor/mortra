@@ -22,7 +22,9 @@ def write(path, value):
 
 def source_seal():
     files = sorted([*ROOT.joinpath("math_os_prototype").glob("*.py"),
-                    ROOT/"scripts/run_theory_formation.py", ROOT/"scripts/verify_theory_formation.py"])
+                    ROOT/"scripts/run_theory_formation.py", ROOT/"scripts/verify_theory_formation.py",
+                    ROOT/"scripts/verify_theory_tasks.py", ROOT/"scripts/verify_theory_dsl.py",
+                    ROOT/"scripts/verify_theory_semantic_edit.py"])
     return {str(p.relative_to(ROOT)): digest(p.read_text(encoding="utf-8")) for p in files}
 
 
@@ -34,6 +36,8 @@ def main(argv=None):
     parser.add_argument("--cycles", type=int)
     parser.add_argument("--queries", type=Path)
     parser.add_argument("--knowledge", type=Path)
+    parser.add_argument("--semantic-edits", action="store_true")
+    parser.add_argument("--execution-mode", choices=["legacy", "certified", "edited"], default="certified")
     parser.add_argument("--condition", choices=["learn", "no-theorems", "no-representations", "no-dsl", "initial-only"], default="learn")
     args = parser.parse_args(argv)
     if args.knowledge and (not args.queries or args.resume):
@@ -49,6 +53,7 @@ def main(argv=None):
                 "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
                 "repository": os.environ.get("GITHUB_REPOSITORY"),
                 "command": sys.argv, "generated_at": datetime.now(timezone.utc).isoformat(),
+                "semantic_edits": args.semantic_edits, "execution_mode": args.execution_mode,
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
     write(args.output/"input.json", metadata)
@@ -60,12 +65,13 @@ def main(argv=None):
         old = json.loads(args.knowledge.read_text(encoding="utf-8"))
     if args.resume:
         prior = json.loads((args.resume.parent/"input.json").read_text(encoding="utf-8"))
-        if prior["source_seal"] != source or prior["config"] != config or prior["condition"] != args.condition:
+        if (prior["source_seal"] != source or prior["config"] != config or prior["condition"] != args.condition
+                or prior.get("semantic_edits", False) != args.semantic_edits):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
-                    dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, state=old)
+                    dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits, state=old)
     failure = None
     queries = None
     try:
@@ -75,7 +81,7 @@ def main(argv=None):
             queries = []
             for t in tasks:
                 row = engine.vocabulary.solve_observation(t, acquired=args.condition != "initial-only",
-                    definitions_enabled=args.condition != "no-dsl")
+                    definitions_enabled=args.condition != "no-dsl", execution_mode=args.execution_mode)
                 queries.append(row)
                 write(args.output/"queries.json", queries)
                 print(json.dumps({"task": t["id"], "solved": row["solved"],
