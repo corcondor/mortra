@@ -224,3 +224,8 @@ minimal ordered rule-index proposal, see
 lookup overhead, not a promise of new mathematics. The current evidence still
 does not isolate a single proven cause of the capability plateau. A larger
 corpus or a faster lookup alone must not be presented as solving that problem.
+
+Subsequent read-only source and artifact analysis identifies why the particular
+representation branch stopped offering work after cycle79. See
+`docs/research/THEORY-FEEDBACK-BOUNDARY-20260913.md`. That analysis is not another
+learner run and does not change the measured scores above.
