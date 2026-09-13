@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT))
 from scripts.run_theory_formation import write, source_seal
 from scripts.verify_theory_tasks import freeze
 from math_os_prototype.theory_domain import Domain
-from math_os_prototype.representation_progress import digest
+from math_os_prototype.representation_progress import digest, encoding
 
 
 def read(path):
@@ -56,6 +56,51 @@ def evidence(state):
         "projections": sum(r["kind"] == "projection" for r in relations.values()),
         "abstraction_from_equivalent_view": sum(bool(d.get("semantic_sources")) for d in dsl["definitions"]),
         "fold_structure_nonclaim": "No panel-structure procedure use is demonstrated by frame observations."}
+
+
+def corpus_evidence(state):
+    s = state["dsl"]
+    events = s.get("corpus_events", [])
+    capacity = state["config"]["budget"]["library_corpus"]
+    late = [a for a in s["attempts"] if a.get("corpus_arrivals", 0) > capacity]
+    archive = s.get("acquisition_evidence", {})
+    admissions = {e["experience"]: e for e in events if e.get("admitted")}
+    late_definitions = [d for d in s["definitions"] if d.get("corpus_arrivals", 0) > capacity]
+    chains = []
+    for d in late_definitions:
+        for k in d["acquisition_sources"]:
+            source = archive[d["source_evidence"][k]]
+            if source["sequence"] <= capacity:
+                continue
+            chains.append({"definition": d["id"], "source": source,
+                "admission": admissions[k], "proof": d["certificate"],
+                "later_calls": [i for i, r in enumerate(s["executions"])
+                    if r["cycle"] > d["born"] and str(d["index"]) in r["definitions"]],
+                "later_edits": [u for u in s["semantic_uses"] if u["cycle"] > d["born"] and
+                    any(r["id"] in u["proofs"] and r["definition"] == d["id"] for r in s["semantic_relations"])]})
+    partitions = {"active_sample": s["corpus"], "existing_execution_history": s["executions"],
+                  "acquisition_source_evidence": archive, "admission_journal": events,
+                  "deduplication_index": s["seen_programs"], "learning_attempts": s["attempts"],
+                  "existing_event_history": state["events"]}
+    return {"capacity": capacity, "experience_count": s.get("experience_count"), "active_size": len(s["corpus"]),
+        "arrivals": s.get("corpus_arrivals"), "storage": {k: {"count": len(v), "bytes": len(encoding(v))}
+                                                         for k, v in partitions.items()},
+        "version": s.get("corpus_version"), "last_learn_version": s.get("last_learn_version"),
+        "refresh_enabled": state["flags"].get("corpus_refresh", False),
+        "full_at": next((e for e in events if e.get("active_size") == capacity), None),
+        "admitted_after_capacity": sum(e.get("admitted", False) for e in events if e.get("sequence", 0) > capacity),
+        "refused_after_capacity": sum(e["status"] == "refused_capacity" for e in events if e.get("sequence", 0) > capacity),
+        "duplicate_count": sum(e["status"] == "duplicate" for e in events),
+        "post_capacity_attempts": len(late), "post_capacity_definitions": late_definitions,
+        "post_capacity_chains": chains,
+        "post_capacity_learning_inputs": [{"cycle": a["cycle"], "input_version": a["input_version"],
+            "admitted_sources": [k for k in a["corpus_ids"] if admissions.get(k, {}).get("sequence", 0) > capacity],
+            "offered": a["offered"], "evaluated": a["evaluated"], "accepted": a["accepted"]} for a in late],
+        "all_acquired_sources_retained": all(k in d.get("source_evidence", {}) and
+            d["source_evidence"][k] in archive for d in s["definitions"] for k in d["acquisition_sources"]),
+        "sample_bounded": all(e.get("active_size", 0) <= capacity for e in events),
+        "active_semantic_keys": sorted({r.get("evaluation", {}).get("semantic_key", "unrecorded") for r in s["corpus"]}),
+        "costs": state["costs"].get("corpus_feedback", {})}
 
 
 def render(t):
@@ -130,7 +175,12 @@ def main():
         if not read(args.output/name/"verification.json")["sources_unchanged"]:
             raise AssertionError("normal run source changed")
     try:
-        for name, options in [("old", []), ("edited", ["--semantic-edits"])]:
+        training = plan.get("training_conditions", {"old": [], "edited": ["--semantic-edits"]})
+        if set(training) != {"old", "edited"} or any(
+                not isinstance(options, list) or set(options)-{"--semantic-edits", "--refresh-corpus"}
+                for options in training.values()):
+            raise ValueError("training conditions may select only the fixed semantic/corpus mechanisms")
+        for name, options in training.items():
             run(name+"-first", *options, "--cycles", config["budget"]["cycles"]//2)
             run(name+"-resumed", *options, "--resume", args.output/(name+"-first")/"state.json")
         old, edited = [read(args.output/(n+"-resumed")/"state.json") for n in ("old", "edited")]
@@ -145,6 +195,11 @@ def main():
         record["acquisition"] = {n: {"seconds": s["seconds"], "costs": s["costs"], "definitions": len(s["dsl"]["definitions"]),
             "execution_count": len(s["dsl"]["executions"]), "dependency_depth": max([d["depth"] for d in s["dsl"]["definitions"]] or [0])}
                                 for n, s in [("old", old), ("edited", edited)]}
+        record["corpus_feedback"] = {n: corpus_evidence(s) for n, s in [("old", old), ("edited", edited)]}
+        record["persistence"] = {n: read(args.output/n/"persistence.json") for n in
+                                 ("old-first", "old-resumed", "edited-first", "edited-resumed")}
+        if not all(s["sample_bounded"] and s["all_acquired_sources_retained"] for s in record["corpus_feedback"].values()):
+            raise AssertionError("sample capacity or acquired evidence retention failed")
         record["cohorts"] = {}
         domain = Domain(config["domain"])
         training_values = {}
@@ -155,16 +210,19 @@ def main():
         for seed, tasks in challenges.items():
             rows = {}
             for name, condition in plan["conditions"].items():
-                if len(condition) not in (2, 3) or (len(condition) == 3 and condition[2] != "uncached"):
-                    raise ValueError("condition is archive, execution mode, optional uncached syntax")
+                if len(condition) not in (2, 3) or (len(condition) == 3 and condition[2] not in {"uncached", "no-definitions"}):
+                    raise ValueError("condition is archive, execution mode, optional syntax/definition ablation")
                 archive, mode = condition[:2]
                 options = ["--execution-mode", mode, "--queries", args.output/f"challenge-{seed}.json"]
                 if len(condition) == 3:
-                    options += ["--uncached-syntax"]
+                    options += ["--uncached-syntax"] if condition[2] == "uncached" else ["--condition", "no-dsl"]
                 if archive == "initial":
                     options += ["--condition", "initial-only"]
                 else:
-                    options += ["--knowledge", args.output/(archive+"-resumed")/"state.json"]
+                    if archive not in {"old", "edited", "old-first", "edited-first"}:
+                        raise ValueError("unknown frozen training archive")
+                    directory = archive if archive.endswith("-first") else archive+"-resumed"
+                    options += ["--knowledge", args.output/directory/"state.json"]
                 run(f"{seed}-{name}", *options)
                 rows[name] = read(args.output/f"{seed}-{name}"/"queries.json")
             b, c = rows["B-edited"], rows["C-edit-disabled"]
@@ -185,11 +243,19 @@ def main():
                     "bits_with_library": rs[0]["library_cost"]["active_bits"]+sum(rs[i]["program_bits"] for i in common)} for n, rs in rows.items()},
                 "semantically_unseen": {n: {"count": len(unseen), "solved": sum(rs[i]["solved"] for i in unseen)} for n, rs in rows.items()}}
             cohort["interpreter_only_pairs"] = []
+            cohort["definition_only_pairs"] = []
             for name, condition in plan["conditions"].items():
                 if len(condition) != 3:
                     continue
                 for other, base in plan["conditions"].items():
                     if base != condition[:2]:
+                        continue
+                    if condition[2] == "no-definitions":
+                        cohort["definition_only_pairs"].append({"enabled": other, "disabled": name,
+                            "same_archive": all(a["archive_digest"] == b["archive_digest"] for a, b in zip(rows[other], rows[name])),
+                            "only_definition_operations_removed": all(
+                                [o for o in a["enabled_operations"] if not o.startswith("definition:")] == b["enabled_operations"]
+                                for a, b in zip(rows[other], rows[name]))})
                         continue
                     checked_fields = ("solved", "program", "states_explored", "work", "semantic_rewrite_trace")
                     cohort["interpreter_only_pairs"].append({"cached": other, "uncached": name,
@@ -200,6 +266,7 @@ def main():
         record["sources_unchanged"] = seal == source_seal() and harness == hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
         record["passed"] = record["sources_unchanged"] and all(
             c["same_archive_edit_ablation"] and c["budget_respected"] and c["size_bounds_nonbinding"] and
+            all(p["same_archive"] and p["only_definition_operations_removed"] for p in c["definition_only_pairs"]) and
             all(p["same_archive"] and p["same_computation"] for p in c["interpreter_only_pairs"])
             for c in record["cohorts"].values())
     except Exception as exc:
@@ -209,7 +276,12 @@ def main():
     record["artifact_sha256"] = {str(p.relative_to(args.output)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in sorted(args.output.rglob("*.json")) if p.name != "verification.json"}
     write(args.output/"verification.json", record)
-    print(json.dumps({k: v for k, v in record.items() if k not in {"source_seal", "commands", "artifact_sha256"}}, indent=2))
+    # Full input/source traces belong in the artifact, not megabytes of console.
+    print(json.dumps({k: record[k] for k in ("sha", "workflow_run_id", "passed", "errors", "wall_seconds")}, indent=2))
+    for seed, cohort in record.get("cohorts", {}).items():
+        print(json.dumps({"seed": seed, "conditions": {
+            name: {k: row[k] for k in ("solved", "tasks", "states", "normal_work", "seconds")}
+            for name, row in cohort["conditions"].items()}}, indent=2))
     return 0 if record["passed"] else 1
 
 

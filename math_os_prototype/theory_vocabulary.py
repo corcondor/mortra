@@ -61,6 +61,18 @@ class Vocabulary:
         self.state.setdefault("semantic_relations", [])
         self.state.setdefault("semantic_discoveries", [])
         self.state.setdefault("semantic_uses", [])
+        # Bodies live in the bounded sample or existing execution records.
+        # Only sources of accepted definitions get additional immutable copies.
+        self.state.setdefault("acquisition_evidence", {})
+        self.state.setdefault("experience_count", len(self.state["seen_programs"]))
+        self.state.setdefault("corpus_arrivals", len(self.state["corpus"]))
+        self.state.setdefault("corpus_version", len(self.state["corpus"]))
+        self.state.setdefault("last_learn_version", self.state["last_learn_size"])
+        self.state.setdefault("last_learn_arrivals", self.state["last_learn_size"])
+        self.state.setdefault("last_learn_knowledge", None)
+        self.state.setdefault("last_synthesis_generation", self.state["last_synthesis_size"])
+        self.state.setdefault("corpus_events", [])
+        self._seen_programs = set(self.state["seen_programs"])
         # Interpreter caches, not learned knowledge; rebuilding them is charged.
         self._compiled_spaces = {}
         self._observation_values = {}
@@ -331,18 +343,63 @@ class Vocabulary:
         result = domain.evaluate(walk(node), counter, charge=charge)
         return result, counter
 
-    def record(self, program, primitive, parents=()):
+    def record(self, program, primitive, parents=(), *, evaluated=None, execution=None):
         if not self.theory.budget["definitions"]:
             return
-        key = digest(program)
-        if key in self.state["seen_programs"]:
-            return
-        if len(self.state["corpus"]) >= self.theory.budget["library_corpus"]:
-            return
-        self.state["seen_programs"].append(key)
-        self.state["corpus"].append({"id": key, "program": deepcopy(program),
-             "primitive": deepcopy(primitive), "parents": list(parents),
-             "cycle": self.theory.state["cycle"], "source": "self_generated_execution"})
+        began = time.perf_counter()
+        e, s = self.theory, self.state
+        e.charge("corpus_feedback", record_calls=1)
+        try:
+            key = digest(program)
+            if key in self._seen_programs:
+                e.charge("corpus_feedback", duplicate_experiences=1)
+                s["corpus_events"].append({"cycle": e.state["cycle"], "experience": key,
+                    "status": "duplicate", "execution": execution, "version": s["corpus_version"]})
+                return
+            self._seen_programs.add(key)
+            s["seen_programs"].append(key)
+            s["experience_count"] += 1
+            row = {"id": key, "program": deepcopy(program), "primitive": deepcopy(primitive),
+                "parents": list(parents), "cycle": e.state["cycle"],
+                "source": "self_generated_execution", "sequence": s["experience_count"],
+                "execution": execution}
+            if evaluated is not None:
+                row["evaluation"] = {"semantic_key": self.domain.semantic_key(evaluated),
+                    "scope": deepcopy(self.domain.scope), "kind": "exact_domain_evaluation"}
+            full = len(s["corpus"]) >= e.budget["library_corpus"]
+            admitted = not full or e.flags.get("corpus_refresh", False)
+            retired = s["corpus"].pop(0)["id"] if admitted and full else None
+            if admitted:
+                s["corpus"].append(row)
+                s["corpus_version"] += 1
+                s["corpus_arrivals"] += 1
+                e.charge("corpus_feedback", sample_bytes_written=len(encoding(row)))
+            e.charge("corpus_feedback", admitted=int(admitted), retired=int(retired is not None),
+                     refused_capacity=int(not admitted))
+            s["corpus_events"].append({"cycle": e.state["cycle"], "experience": key,
+                "sequence": row["sequence"], "admitted": admitted, "retired": retired,
+                "status": "admitted" if admitted else "refused_capacity", "execution": execution,
+                "active_size": len(s["corpus"]), "version": s["corpus_version"]})
+        finally:
+            e.charge("corpus_feedback", seconds=time.perf_counter()-began)
+
+    def knowledge_input(self):
+        s = self.state
+        return digest({"definitions": [{k: d[k] for k in ("template", "signature", "scope")}
+                                       for d in s["definitions"]],
+            "observations": s["observation_operations"], "recurrences": s["recurrence_operations"],
+            "relations": s["semantic_relations"]})
+
+    def generation(self):
+        e, s = self.theory, self.state
+        if not e.flags.get("corpus_refresh"):
+            return len(s["corpus"])+len(s["definitions"])+len(e.state["representations"])
+        began = time.perf_counter()
+        result = digest({"corpus": s["corpus_version"], "knowledge": self.knowledge_input(),
+            "active": [e.state["concepts"][cid]["definition"] for cid in e.state["active_concepts"]],
+            "executions": len(s["executions"])})
+        e.charge("corpus_input_matching", seconds=time.perf_counter()-began, checks=1)
+        return result
 
     def signature(self, template, samples):
         parameters = {}
@@ -357,6 +414,8 @@ class Vocabulary:
     def learn(self):
         s, e = self.state, self.theory
         s["last_learn_size"] = len(s["corpus"])
+        input_version = s["corpus_version"]
+        input_arrivals = s["corpus_arrivals"]
         began = time.perf_counter()
         certification_seconds = 0
         view_cost = {}
@@ -402,12 +461,29 @@ class Vocabulary:
                     "dependencies": dependencies, "depth": depth, "born": e.state["cycle"],
                     "definition_bits": verdict["definition_bits"], "utility_bits": verdict["utility_bits"],
                     "reuse_count": 0, "acquisition_sources": [r["id"] for r in verdict["rewritten"] if r["sites"]],
+                    "corpus_version": s["corpus_version"],
+                    "corpus_arrivals": input_arrivals,
                     "certificate": "capture-free definitional expansion with typed shared arguments"}
                 if edits:
                     definition["semantic_sources"] = [u for u in edits if u["proofs"]]
+                # Retain exactly the source rows needed by this acquisition,
+                # keyed by full snapshot, not by a mutable corpus row's ID.
+                evidence_start = time.perf_counter()
+                used = set(definition["acquisition_sources"]) | {u["source"] for u in definition.get("semantic_sources", [])}
+                definition["source_evidence"] = {}
+                for row in s["corpus"]:
+                    if row["id"] in used:
+                        evidence_id = digest(row)
+                        if evidence_id not in s["acquisition_evidence"]:
+                            s["acquisition_evidence"][evidence_id] = deepcopy(row)
+                            e.charge("corpus_proof_storage", rows=1, bytes=len(encoding(row)))
+                        definition["source_evidence"][row["id"]] = evidence_id
+                e.charge("corpus_proof_storage", seconds=time.perf_counter()-evidence_start)
                 s["definitions"].append(definition)
+                changed = False
                 # Check every changed program against its original primitive meaning.
                 for row, source, rewritten in zip(s["corpus"], corpus, verdict["rewritten"]):
+                    changed |= row["program"] != rewritten["program"] or row["primitive"] != source["primitive"]
                     if self.primitive(rewritten["program"]) != source["primitive"]:
                         raise AssertionError("library abstraction changed primitive computation")
                     if row["primitive"] != source["primitive"]:
@@ -415,6 +491,8 @@ class Vocabulary:
                             "primitive": row["primitive"], "edits": [u for u in edits if u["source"] == row["id"]]})
                         row["primitive"] = source["primitive"]
                     row["program"] = rewritten["program"]
+                if changed:
+                    s["corpus_version"] += 1
                 accepted = definition
                 s["grammar_versions"].append({"cycle": e.state["cycle"], "table": self.table(),
                                                "new_definition": definition["id"]})
@@ -433,11 +511,18 @@ class Vocabulary:
                     e.event("dsl_semantic_relation_search", discovery=discovery)
                 break
         s["attempts"].append({"cycle": e.state["cycle"], "corpus": len(s["corpus"]),
+            "input_version": input_version, "corpus_version": s["corpus_version"],
+            "corpus_arrivals": input_arrivals, "corpus_ids": [r["id"] for r in s["corpus"]],
             "pairs": sum(f["pairs_tried"] for f in searches), "offered": sum(f["offered"] for f in searches),
             "evaluated": sum(f["evaluated"] for f in searches), "equivalent_views": len(views), "view_cost": view_cost,
             "operation_aliases_excluded": [x for f in searches for x in f["excluded_by_contract"]],
             "accepted": accepted["id"] if accepted else None,
             "seconds": time.perf_counter()-began})
+        # Consume the learner's own equivalent edits too, but never count them
+        # as incoming experience or as a reason to immediately learn again.
+        s["last_learn_version"] = s["corpus_version"]
+        s["last_learn_arrivals"] = s["corpus_arrivals"]
+        s["last_learn_knowledge"] = self.knowledge_input()
         e.charge("library_acquisition", pairs=sum(f["pairs_tried"] for f in searches),
                  candidates=sum(f["evaluated"] for f in searches), seconds=time.perf_counter()-began-certification_seconds,
                  **view_cost)
@@ -445,6 +530,7 @@ class Vocabulary:
     def synthesize(self):
         e, s = self.theory, self.state
         s["last_synthesis_size"] = len(s["corpus"])+len(s["definitions"])+len(e.state["representations"])
+        s["last_synthesis_generation"] = self.generation()
         pool = [e.state["concepts"][cid]["definition"] for cid in e.state["active_concepts"]]
         pool += [row["program"] for row in s["executions"][-e.budget["batch"]:]]
         words = list(islice(chain.from_iterable(product(self.domain.actions, repeat=n)
@@ -560,7 +646,7 @@ class Vocabulary:
                 definition["downstream_saved_bits"] = definition.get("downstream_saved_bits", 0) + row["expanded_bits"]-row["call_bits"]
             e.charge("dsl_execution", **counter)
             e.charge("dsl_shadow_audit", semantic_nodes=size(primitive))
-            self.record(program, primitive)
+            self.record(program, primitive, evaluated=actual, execution=len(s["executions"])-1)
             e.state["pending_terms"].append({"term": primitive, "program": program, "parents": []})
             e.event("dsl_program_executed", **{k: v for k, v in row.items() if k != "cycle"})
 
@@ -569,11 +655,16 @@ class Vocabulary:
         if not e.budget["definitions"]:
             return []
         out = []
-        if len(s["definitions"]) < e.budget["definitions"] and len(s["corpus"])-s["last_learn_size"] >= e.budget["library_interval"]:
+        began = time.perf_counter()
+        new_experience = (s["corpus_arrivals"]-s["last_learn_arrivals"] if e.flags.get("corpus_refresh")
+                          else len(s["corpus"])-s["last_learn_size"])
+        knowledge_changed = (e.flags.get("corpus_refresh") and s["last_learn_knowledge"] is not None
+                             and self.knowledge_input() != s["last_learn_knowledge"])
+        if len(s["definitions"]) < e.budget["definitions"] and (new_experience >= e.budget["library_interval"] or knowledge_changed):
             out.append(("abstract", e.budget["library_pairs"]))
-        generation = len(s["corpus"])+len(s["definitions"])+len(e.state["representations"])
-        if e.flags["dsl_reuse"] and generation != s["last_synthesis_size"] and (s["definitions"] or e.state["representations"]):
+        if e.flags["dsl_reuse"] and self.generation() != s["last_synthesis_generation"] and (s["definitions"] or e.state["representations"]):
             out.append(("synthesize", e.budget["batch"]))
+        e.charge("corpus_eligibility", seconds=time.perf_counter()-began, checks=1)
         return out
 
     def solve_observation(self, task, *, acquired=True, definitions_enabled=True, execution_mode="certified"):

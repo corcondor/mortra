@@ -6,6 +6,7 @@ import os
 import platform
 import subprocess
 import sys
+import time
 import traceback
 from datetime import datetime, timezone
 
@@ -37,6 +38,8 @@ def main(argv=None):
     parser.add_argument("--queries", type=Path)
     parser.add_argument("--knowledge", type=Path)
     parser.add_argument("--semantic-edits", action="store_true")
+    parser.add_argument("--refresh-corpus", action="store_true",
+                        help="FIFO refresh of the bounded learning corpus; retain acquired source evidence")
     parser.add_argument("--uncached-syntax", action="store_true",
                         help="diagnostic ablation: rebuild definition tables and reparse literals")
     parser.add_argument("--execution-mode", choices=["legacy", "certified", "edited"], default="certified")
@@ -56,6 +59,7 @@ def main(argv=None):
                 "repository": os.environ.get("GITHUB_REPOSITORY"),
                 "command": sys.argv, "generated_at": datetime.now(timezone.utc).isoformat(),
                 "semantic_edits": args.semantic_edits, "execution_mode": args.execution_mode,
+                "corpus_refresh": args.refresh_corpus,
                 "syntax_cache_enabled": not args.uncached_syntax,
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
@@ -70,12 +74,14 @@ def main(argv=None):
         prior = json.loads((args.resume.parent/"input.json").read_text(encoding="utf-8"))
         if (prior["source_seal"] != source or prior["config"] != config or prior["condition"] != args.condition
                 or prior.get("semantic_edits", False) != args.semantic_edits
+                or prior.get("corpus_refresh", False) != args.refresh_corpus
                 or prior.get("syntax_cache_enabled", True) != (not args.uncached_syntax)):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
-                    dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits, state=old)
+                    dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits,
+                    corpus_refresh=args.refresh_corpus, state=old)
     engine.domain.syntax_cache_enabled = not args.uncached_syntax
     failure = None
     queries = None
@@ -103,11 +109,15 @@ def main(argv=None):
         engine.state["stop_reason"] = "exception"
         state = engine.snapshot()
         write(args.output/"failure.json", {"traceback": failure})
+    persistence_start = time.perf_counter()
     write(args.output/"state.json", state)
     for field in ["events", "concepts", "conjectures", "counterexamples", "theorems", "representations",
                   "procedures", "proof_dependencies", "representation_dependencies", "decisions", "downstream",
                   "observable_spaces", "dsl"]:
         write(args.output/(field+".json"), state[field])
+    storage = {"seconds": time.perf_counter()-persistence_start,
+               "files": {p.name: p.stat().st_size for p in args.output.glob("*.json")}}
+    write(args.output/"persistence.json", storage)
     result = assess(state)
     result["sources_unchanged"] = source == source_seal()
     result["execution_completed"] = failure is None

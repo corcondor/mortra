@@ -11,6 +11,7 @@ on:
       - "tests/test_theory_formation.py"
       - "tests/test_theory_dsl.py"
       - "tests/test_theory_semantic_edit.py"
+      - "tests/test_theory_corpus.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -43,6 +44,7 @@ on:
       - "tests/test_theory_formation.py"
       - "tests/test_theory_dsl.py"
       - "tests/test_theory_semantic_edit.py"
+      - "tests/test_theory_corpus.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -149,7 +151,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || inputs.verification_suite == 'dsl-feedback' && 45 || 20 }}
+    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 45 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -245,7 +247,7 @@ jobs:
         working-directory: target
         shell: bash
         run: |
-          python -m pytest tests/test_theory_dsl.py tests/test_theory_semantic_edit.py scripts/test_library_compression.py \
+          python -m pytest tests/test_theory_dsl.py tests/test_theory_semantic_edit.py tests/test_theory_corpus.py scripts/test_library_compression.py \
             scripts/test_expand_for_execution.py scripts/test_call_candidate_dedup.py -q \
             2>&1 | tee "$VERIFY_OUTPUT/dsl-tests.log"
       - name: Run persistent DSL acquisition, reuse and held-out ablation
@@ -266,14 +268,14 @@ jobs:
               --challenge-seed "$seed" --output "$VERIFY_OUTPUT/dsl-tasks-$seed" \
               2>&1 | tee "$VERIFY_OUTPUT/dsl-tasks-$seed.log"
           done
-      - name: Verify acquired-definition semantic editing and frozen generalization
+      - name: Verify fixed-capacity experience refresh and frozen generalization
         if: env.DSL_MODE == 'true'
         working-directory: target
         shell: bash
         run: |
-          python scripts/verify_theory_semantic_edit.py --plan configs/theory-semantic-runtime-evaluation.json \
-            --output "$VERIFY_OUTPUT/dsl-semantic-edit" \
-            2>&1 | tee "$VERIFY_OUTPUT/dsl-semantic-edit.log"
+          python scripts/verify_theory_semantic_edit.py --plan configs/theory-corpus-feedback-evaluation.json \
+            --output "$VERIFY_OUTPUT/dsl-corpus-feedback" \
+            2>&1 | tee "$VERIFY_OUTPUT/dsl-corpus-feedback.log"
       - name: Measure frozen-baseline persistent learning
         if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true' && env.BOTTLENECK_MODE != 'true'
         shell: bash

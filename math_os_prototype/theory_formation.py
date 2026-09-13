@@ -92,7 +92,7 @@ def rewrite(t, rules, scope, domain=None):
 
 class Theory:
     def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, dsl_reuse=True,
-                 semantic_edits=False, state=None):
+                 semantic_edits=False, corpus_refresh=False, state=None):
         self.config = configure(config)
         self.domain = Domain(self.config["domain"])
         self.budget = self.config["budget"]
@@ -100,6 +100,8 @@ class Theory:
                       "dsl_reuse": dsl_reuse}
         if semantic_edits:
             self.flags["semantic_edits"] = True
+        if corpus_refresh:
+            self.flags["corpus_refresh"] = True
         if state is not None:
             state = deepcopy(state)
             seal = state.pop("sha256", None)
@@ -219,8 +221,8 @@ class Theory:
                 continue
             s["seen"].append(digest(original))
             # Only actually evaluated computations enter the learning corpus.
-            self.domain.evaluate(original)
-            self.vocabulary.record(row.get("program", original), original, parents)
+            evaluated = self.domain.evaluate(original)
+            self.vocabulary.record(row.get("program", original), original, parents, evaluated=evaluated)
             t, deps, checks = rewrite(original, self.rules(), self.domain.scope, self.domain)
             self.charge("rewrite", rule_matches_checked=checks)
             if deps:
