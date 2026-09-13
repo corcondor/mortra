@@ -29,8 +29,8 @@ gh workflow run worker-ci.yml --repo corcondor/mortra --ref codex/theory-formati
 ```
 
 The workflow checked out the control and mathematical commits separately.
-Its study command was `python control/scripts/measure_theory_bottleneck.py
---plan control/configs/theory-bottleneck-study.json --output "$OUT/bottleneck-study"`,
+Its study command was `python ci-control/scripts/measure_theory_bottleneck.py
+--plan ci-control/configs/theory-bottleneck-study.json --output "$VERIFY_OUTPUT/bottleneck-study"`,
 with `MORTRA_BASELINE_ROOT` pointing at the target checkout. The exact expanded
 normal-entry commands are in `bottleneck-study/verification.json`; each calls
 `observe_theory_run.py`, which executes the unchanged `run_theory_formation.main`.

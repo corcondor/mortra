@@ -1,5 +1,10 @@
 # Concept Archive Capacity: Fixed-Code Study
 
+Historical stage1 protocol: use control commit
+`4c06d309105495debba6598210e6c42b8f215e69` for the term-size9 plans below.
+The current branch's capacity plans are stage2, at term-size12; see
+[the configuration-only interaction protocol](ARCHIVE-TERM-INTERACTION-20260913.md).
+
 ## Decision being tested
 
 The frontier connection experiment (Actions 34723806396) reactivated acquired
