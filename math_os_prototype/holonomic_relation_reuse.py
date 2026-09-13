@@ -76,10 +76,16 @@ def build_library(certificates, provenance):
 
 
 def occurrences(p, path=()):
-    yield path, p
-    for field in sorted(p):
-        if isinstance(p[field], dict):
-            yield from occurrences(p[field], path + (field,))
+    if isinstance(p, dict):
+        yield path, p
+        children = ((field, p[field]) for field in sorted(p))
+    elif isinstance(p, list):
+        children = enumerate(p)
+    else:
+        return
+    for field, value in children:
+        if isinstance(value, (dict, list)):
+            yield from occurrences(value, path + (field,))
 
 
 def replace_at(p, path, replacement):

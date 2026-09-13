@@ -67,7 +67,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
+        options: [worker, q-directed, theory-formation, dsl-feedback, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -145,7 +145,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || 20 }}
+    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || inputs.verification_suite == 'dsl-feedback' && 45 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -164,6 +164,7 @@ jobs:
       FRONTIER_MODE: ${{ inputs.verification_suite == 'frontier-reconnection' }}
       CAPACITY_MODE: ${{ inputs.verification_suite == 'capacity-study' }}
       BOTTLENECK_MODE: ${{ inputs.verification_suite == 'bottleneck-study' }}
+      DSL_MODE: ${{ inputs.verification_suite == 'dsl-feedback' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
     steps:
       - name: Set output location
         shell: bash
@@ -235,6 +236,19 @@ jobs:
         working-directory: ci-control
         shell: bash
         run: python -m unittest discover -s tests -p test_persistent_learning_measurement.py -v 2>&1 | tee "$VERIFY_OUTPUT/measurement-tests.log"
+      - name: Test executable DSL and exact space-sharing guards
+        if: env.DSL_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: python -m pytest tests/test_theory_dsl.py -q 2>&1 | tee "$VERIFY_OUTPUT/dsl-tests.log"
+      - name: Run persistent DSL acquisition, reuse and held-out ablation
+        if: env.DSL_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python scripts/verify_theory_dsl.py --config configs/theory-dsl-ring.json \
+            --config configs/theory-dsl-fold.json --output "$VERIFY_OUTPUT/dsl-feedback" \
+            2>&1 | tee "$VERIFY_OUTPUT/dsl-feedback.log"
       - name: Measure frozen-baseline persistent learning
         if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true' && env.BOTTLENECK_MODE != 'true'
         shell: bash

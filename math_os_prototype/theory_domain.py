@@ -25,6 +25,22 @@ def term(op, *args, **fields):
     return dict(op=op, args=list(args), **fields)
 
 
+def recurrence_value(law, n):
+    """Initial generic interpreter; the certified parameters are acquired data."""
+    if type(n) is not int or n < 0 or not law.get("certificate_passed"):
+        raise ValueError("certified recurrence and nonnegative integer required")
+    values = [sp.Rational(v) for v in law["initial_values"]]
+    weights = [sp.Rational(v) for v in law["coefficients"]]
+    order = law["order"]
+    if len(weights) != order or len(values) < order:
+        raise ValueError("invalid recurrence dimensions")
+    if order == 0:
+        return sp.S.Zero
+    while len(values) <= n:
+        values.append(sum(w*v for w, v in zip(weights, values[-order:])))
+    return values[n]
+
+
 def linear_readout(basis, expression, variables):
     polys = [sp.Poly(p, *variables, domain=sp.QQ) for p in [*basis, expression]]
     support = sorted({m for p in polys for m in p.monoms()})

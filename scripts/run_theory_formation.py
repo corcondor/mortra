@@ -32,7 +32,7 @@ def main(argv=None):
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--resume", type=Path)
     parser.add_argument("--cycles", type=int)
-    parser.add_argument("--condition", choices=["learn", "no-theorems", "no-representations"], default="learn")
+    parser.add_argument("--condition", choices=["learn", "no-theorems", "no-representations", "no-dsl", "initial-only"], default="learn")
     args = parser.parse_args(argv)
     args.output.mkdir(parents=True, exist_ok=False)
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -53,10 +53,14 @@ def main(argv=None):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, theorem_reuse=args.condition != "no-theorems",
-                    representation_reuse=args.condition != "no-representations", state=old)
+                    representation_reuse=args.condition != "no-representations",
+                    dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, state=old)
     failure = None
     try:
-        state = engine.run(cycles=args.cycles)
+        state = engine.run(cycles=args.cycles) if args.condition != "initial-only" else engine.snapshot()
+        if args.condition == "initial-only":
+            engine.state["stop_reason"] = "initial_knowledge_comparison"
+            state = engine.snapshot()
     except Exception:
         failure = traceback.format_exc()
         engine.state["stop_reason"] = "exception"
@@ -64,7 +68,8 @@ def main(argv=None):
         write(args.output/"failure.json", {"traceback": failure})
     write(args.output/"state.json", state)
     for field in ["events", "concepts", "conjectures", "counterexamples", "theorems", "representations",
-                  "procedures", "proof_dependencies", "representation_dependencies", "decisions", "downstream"]:
+                  "procedures", "proof_dependencies", "representation_dependencies", "decisions", "downstream",
+                  "observable_spaces", "dsl"]:
         write(args.output/(field+".json"), state[field])
     result = assess(state)
     result["sources_unchanged"] = source == source_seal()

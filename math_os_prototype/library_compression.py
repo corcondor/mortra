@@ -213,8 +213,12 @@ def generalise(first, second, *, limit=6):
     """
     counters = {"value": 0, "program": 0}
     samples = {}
+    shared = {}
 
     def fresh(kind, left, right):
+        pair = (kind, key(left), key(right))
+        if pair in shared:
+            return deepcopy(shared[pair])
         if counters["value"] + counters["program"] >= limit:
             raise ValueError("too many holes for one candidate")
         if kind == "value":
@@ -226,6 +230,7 @@ def generalise(first, second, *, limit=6):
             counters["program"] += 1
             name = node["series_parameter"]
         samples[name] = [left, right]
+        shared[pair] = node
         return node
 
     def walk(a, b):
@@ -249,6 +254,12 @@ def generalise(first, second, *, limit=6):
             return str(left) if left == right else fresh("value", str(left), str(right))
         if isinstance(a, dict) and isinstance(b, dict) and set(a) == set(b):
             if a.get("op") == b.get("op"):
+                # Symbol names are structural, but differing leaves may be
+                # abstracted as whole typed programs, never as arbitrary strings.
+                if a.get("op") == "var" and a != b:
+                    _ACCEPTS(a)
+                    _ACCEPTS(b)
+                    return fresh("program", deepcopy(a), deepcopy(b))
                 return {f: walk(a[f], b[f]) for f in sorted(a)}
         if isinstance(a, list) and isinstance(b, list) and len(a) == len(b):
             return [walk(x, y) for x, y in zip(a, b)]
@@ -1054,7 +1065,7 @@ def _offers_of(entry, program_pool, value_pool, excluded, seen, table,
 
 
 def call_candidates(library, program_pool, *, limit=12, exclude=(), value_pool=None,
-                    table=None, normalise=None, scan=None, revisits=None):
+                    table=None, normalise=None, scan=None, revisits=None, stats=None):
     """Calls of the learned definitions, with arguments taken from a pool.
 
     The arguments are drawn from what the search already has -- its own seeds and
@@ -1086,6 +1097,11 @@ def call_candidates(library, program_pool, *, limit=12, exclude=(), value_pool=N
     normalise = normalise or (lambda program: program)
     excluded = set(exclude)
     budget = [int(scan) if scan is not None else max(200, 50 * int(limit))]
+    initial_budget = budget[0]
+    def measured(result):
+        if stats is not None:
+            stats.update(expansions_examined=initial_budget-budget[0], offers=len(result))
+        return result
     # the environment a call is expanded in is the one its own library defines
     if table is None:
         table = definition_table({entry["index"]: entry["template"]
@@ -1109,9 +1125,9 @@ def call_candidates(library, program_pool, *, limit=12, exclude=(), value_pool=N
                 continue
             alive.append(stream)
             if len(offered) >= limit:
-                return offered
+                return measured(offered)
         streams = alive
-    return offered
+    return measured(offered)
 
 
 def _combinations(pools):

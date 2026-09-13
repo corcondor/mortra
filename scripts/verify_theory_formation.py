@@ -51,6 +51,12 @@ def replay(state):
         from math_os_prototype.finite_generator_problem_dna import pullback
         for rid, r in state["representations"].items():
             checked += 1
+            from math_os_prototype.theory_spaces import materialize
+            try:
+                r = materialize(state, rid)
+            except ValueError:
+                failures.append(rid)
+                continue
             basis = [sp.sympify(x) for x in r["basis"]]
             good = r["scope"] == d.scope and r["system_key"] == d.key
             c = state["concepts"][r["concept"]]
@@ -64,7 +70,8 @@ def replay(state):
         if p["kind"] == "certified_scalar_recurrence":
             checked += 1
             e = Theory(state["config"], theorem_reuse=state["flags"]["theorem_reuse"],
-                       representation_reuse=state["flags"]["representation_reuse"], state=state)
+                       representation_reuse=state["flags"]["representation_reuse"],
+                       dsl_reuse=state["flags"].get("dsl_reuse", True), state=state)
             try: e.use_procedure(tid)
             except (ValueError, AssertionError): failures.append(tid)
     return {"checks": checked, "failures": failures, "passed": not failures,
@@ -90,7 +97,8 @@ def compare(learn, no_theorems, no_representations):
                        "without_theorems_prover_input_ast_nodes": nodes(right)})
     before = no_representations["costs"].get("reacquisition", {})
     rkeys = set(learn["representations"]) & set(no_representations["representations"])
-    matching_representations = all(learn["representations"][k]["basis"] == no_representations["representations"][k]["basis"] for k in rkeys)
+    from math_os_prototype.theory_spaces import materialize
+    matching_representations = all(materialize(learn, k)["basis"] == materialize(no_representations, k)["basis"] for k in rkeys)
     requests = lambda s: {qid: q for qid, q in s["conjectures"].items()
                           if q["kind"] == "recurrence" and q["attempts"]}
     lreq, nreq = requests(learn), requests(no_representations)
@@ -100,7 +108,10 @@ def compare(learn, no_theorems, no_representations):
         rid = a["representation"]
         if rid not in rkeys:
             continue
-        lr, nr = learn["representations"][rid], no_representations["representations"][rid]
+        try:
+            lr, nr = materialize(learn, rid), materialize(no_representations, rid)
+        except ValueError:
+            continue
         same = all(lr[k] == nr[k] for k in ["basis", "action_matrices", "readout", "scope", "system_key"])
         paired.append({"query": qid, "same_certified_representation": same,
                        "same_outcome": a["status"] == b["status"]})

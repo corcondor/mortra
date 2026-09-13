@@ -13,13 +13,16 @@ import time
 import sympy as sp
 
 from math_os_prototype.representation_progress import digest, description_bits
-from math_os_prototype.theory_domain import Domain, size, linear_readout
+from math_os_prototype.theory_domain import Domain, size, recurrence_value
 from math_os_prototype.library_compression import grammar, match_term, instantiate_term
 
 SCHEMA = "mortra.theory-state.v1"
 DEFAULT_BUDGET = {"cycles": 180, "seconds": 180, "term_size": 7,
                   "concepts": 64, "active_concepts": 24, "candidates": 1800,
-                  "batch": 12, "representations": 2, "dimension": 24}
+                  "batch": 12, "representations": 2, "dimension": 24,
+                  "shared_spaces": 0, "definitions": 0, "library_pairs": 2000,
+                  "library_corpus": 512, "library_interval": 32,
+                  "expanded_size": 40, "word_length": 6}
 
 
 def configure(config):
@@ -30,7 +33,8 @@ def configure(config):
     if set(config["budget"]) - set(DEFAULT_BUDGET):
         raise ValueError("unknown budget key")
     budget = dict(DEFAULT_BUDGET, **config["budget"])
-    if any(type(v) is not int or v < 1 for v in budget.values()):
+    if any(type(v) is not int or v < (0 if k in {"shared_spaces", "definitions"} else 1)
+           for k, v in budget.items()):
         raise ValueError("positive integer resource bounds required")
     return dict(deepcopy(config), budget=budget)
 
@@ -87,11 +91,12 @@ def rewrite(t, rules, scope, domain=None):
 
 
 class Theory:
-    def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, state=None):
+    def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, dsl_reuse=True, state=None):
         self.config = configure(config)
         self.domain = Domain(self.config["domain"])
         self.budget = self.config["budget"]
-        self.flags = {"theorem_reuse": theorem_reuse, "representation_reuse": representation_reuse}
+        self.flags = {"theorem_reuse": theorem_reuse, "representation_reuse": representation_reuse,
+                      "dsl_reuse": dsl_reuse}
         if state is not None:
             state = deepcopy(state)
             seal = state.pop("sha256", None)
@@ -102,6 +107,8 @@ class Theory:
             if state["domain_key"] != self.domain.key:
                 raise ValueError("model scope changed")
             self.state = state
+            from math_os_prototype.theory_vocabulary import Vocabulary
+            self.vocabulary = Vocabulary(self)
             self.event("restored", actor="fixed infrastructure", previous_cycle=state["cycle"])
             return
         self.state = {
@@ -110,7 +117,7 @@ class Theory:
             "seed_primitives": self.domain.seeds(), "axioms": self.domain.scope,
             "exact_models": getattr(self.domain, "models", []), "premise": self.domain.premise,
             "concepts": {}, "conjectures": {}, "counterexamples": {},
-            "theorems": {}, "representations": {}, "procedures": {},
+            "theorems": {}, "representations": {}, "observable_spaces": {}, "space_providers": {}, "procedures": {},
             "rewrite_rules": [], "active_rules": [], "active_concepts": [],
             "proof_dependencies": {}, "representation_dependencies": {},
             "pending_terms": [], "expanded": [], "seen": [], "events": [],
@@ -119,6 +126,8 @@ class Theory:
             "task_origins": {"external": [], "self_generated": [], "replay_regression": []},
             "capability_growth_claim": False,
         }
+        from math_os_prototype.theory_vocabulary import Vocabulary
+        self.vocabulary = Vocabulary(self)
         for t in self.domain.seeds():
             self.add_concept(t, [], seed=True)
         self.event("initial_knowledge", actor="development-time human",
@@ -206,6 +215,9 @@ class Theory:
             if digest(original) in s["seen"]:
                 continue
             s["seen"].append(digest(original))
+            # Only actually evaluated computations enter the learning corpus.
+            self.domain.evaluate(original)
+            self.vocabulary.record(row.get("program", original), original, parents)
             t, deps, checks = rewrite(original, self.rules(), self.domain.scope, self.domain)
             self.charge("rewrite", rule_matches_checked=checks)
             if deps:
@@ -309,6 +321,8 @@ class Theory:
             self.event("unknown", conjecture=qid, reason=proof.get("reason"))
 
     def acquire(self, cid):
+        if self.budget["shared_spaces"]:
+            return self.acquire_shared(cid)
         c = self.state["concepts"][cid]
         qid = self.structural_query("closure", concept=cid)
         started = time.perf_counter()
@@ -335,12 +349,69 @@ class Theory:
         c["theorems"].append(tid)
         self.event("representation_acquired", concept=cid, representation=rid,
                    dimension=record["dimension"], certificate=record["certificate"])
+        self.vocabulary.register_observation(rid)
+
+    def acquire_shared(self, cid):
+        from math_os_prototype.theory_spaces import canonical_space, readout, bind
+        s, c = self.state, self.state["concepts"][cid]
+        if "R-"+cid[2:] in s["representations"]:
+            return
+        qid = self.structural_query("closure", concept=cid)
+        began = time.perf_counter()
+        found, coefficients = None, None
+        for space in s["observable_spaces"].values():
+            coefficients = readout(self.domain, space, c["definition"])
+            self.charge("space_retrieval", exact_membership_checks=1)
+            if coefficients is not None:
+                found = space
+                break
+        self.charge("space_retrieval", seconds=time.perf_counter()-began)
+        reused = found is not None
+        if found is None:
+            if len(s["observable_spaces"]) >= self.budget["representations"]:
+                c["space_miss_at"] = len(s["observable_spaces"])
+                self.finish_query(qid, "unknown", reason="distinct-space budget; readout not in archive")
+                return
+            began = time.perf_counter()
+            try:
+                acquired = self.domain.acquire(c["definition"], self.budget["dimension"])
+                found = canonical_space(self.domain, acquired)
+                coefficients = readout(self.domain, found, c["definition"])
+                assert coefficients is not None
+            except (ValueError, AssertionError) as exc:
+                c["closure_refusal"] = str(exc)
+                self.finish_query(qid, "unknown", reason=str(exc))
+                return
+            finally:
+                self.charge("acquisition", closure_calls=1, seconds=time.perf_counter()-began)
+            s["observable_spaces"][found["id"]] = found
+        record = bind(self.domain, s, cid, found, coefficients, s["cycle"])
+        rid, tid = record["id"], record["theorem"]
+        dependencies = [s["space_providers"][found["id"]]] if reused else []
+        if not reused:
+            s["space_providers"][found["id"]] = tid
+        s["representations"][rid] = record
+        s["representation_dependencies"][rid] = [cid, found["id"], tid]
+        s["theorems"][tid] = {"id": tid, "kind": "closure", "conjecture": qid,
+            "concepts": [cid], "certificate": record["certificate"], "scope": self.domain.scope,
+            "dependencies": dependencies, "born": s["cycle"], "reuse_count": 0, "novelty": "unassessed"}
+        s["proof_dependencies"][tid] = dependencies
+        c["theorems"].append(tid)
+        self.finish_query(qid, "proved", theorem=tid)
+        self.event("readout_bound" if reused else "representation_acquired", concept=cid,
+                   representation=rid, space=found["id"], dimension=found["dimension"],
+                   closure_reused=reused, certificate=record["certificate"])
+        self.vocabulary.register_observation(rid)
+
+    def representation(self, rid):
+        from math_os_prototype.theory_spaces import materialize
+        return materialize(self.state, rid)
 
     def derive(self, rid, label):
         stored = self.state["representations"][rid]
         qid = self.structural_query("recurrence", representation=rid, label=label)
         started = time.perf_counter()
-        representation = stored
+        representation = self.representation(rid)
         reuse = self.flags["representation_reuse"] and self.flags["theorem_reuse"]
         if not reuse:
             representation = self.domain.acquire(self.state["concepts"][stored["concept"]]["definition"], self.budget["dimension"])
@@ -370,6 +441,7 @@ class Theory:
         self.state["procedures"][tid] = {"kind": "certified_scalar_recurrence", "body": found,
             "representation": rid, "born": self.state["cycle"], "reuse_count": 0,
             "algorithm_claim": "derived recurrence parameters; evaluator supplied in development"}
+        self.vocabulary.register_recurrence(tid)
         self.event("recurrence_derived", theorem=tid, dependency=stored["theorem"],
                    closure_reused=reuse, certificate=found)
         if reuse:
@@ -403,16 +475,8 @@ class Theory:
         r = self.state["representations"][p["representation"]]
         if law["scope"]["domain"] != self.domain.key or not law["certificate_passed"]:
             raise ValueError("uncertified recurrence refused")
-        values = [sp.Rational(v) for v in law["initial_values"]]
-        weights = [sp.Rational(v) for v in law["coefficients"]]
-        order = law["order"]
         n = 3*r["dimension"] + 2 + p["reuse_count"]
-        if order == 0:
-            actual = sp.S.Zero
-        else:
-            while len(values) <= n:
-                values.append(sum(w*v for w, v in zip(weights, values[-order:])))
-            actual = values[n]
+        actual = recurrence_value(law, n)
         index = 0
         for _ in range(n):
             index = self.domain.actions[law["label"]][index]
@@ -455,9 +519,11 @@ class Theory:
                 offer("settle", q["id"], size(q["left"])+size(q["right"]), 0, 1)
                 break
         acquired = {r["concept"] for r in s["representations"].values()}
-        if self.domain.actions and len(acquired) < self.budget["representations"]:
+        if self.domain.actions and (self.budget["shared_spaces"] or len(acquired) < self.budget["representations"]):
             for c in s["concepts"].values():
                 if not c["seed"] and c["type"] == "scalar" and c["id"] not in acquired and "closure_refusal" not in c:
+                    if c.get("space_miss_at") == len(s["observable_spaces"]):
+                        continue
                     if len(set(self.domain.evaluate(c["definition"]))) > 1:
                         offer("acquire", c["id"], len(self.domain.models), 1, 1)
                         break
@@ -470,6 +536,8 @@ class Theory:
             if p["kind"] == "certified_scalar_recurrence" and p["reuse_count"] < 2:
                 offer("use", pid, len(p["body"]["coefficients"]), 0, 0)
                 break
+        for kind, cost in self.vocabulary.options():
+            offer(kind, None, cost, 1, 1)
         return options
 
     def step(self):
@@ -488,6 +556,8 @@ class Theory:
         elif kind == "acquire": self.acquire(payload)
         elif kind == "derive": self.derive(*payload)
         elif kind == "use": self.use_procedure(payload)
+        elif kind == "abstract": self.vocabulary.learn()
+        elif kind == "synthesize": self.vocabulary.synthesize()
         self.state["seconds"] += time.perf_counter()-started
         return True
 
