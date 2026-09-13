@@ -1,5 +1,8 @@
 # Structural definitions and program-search capability
 
+Completed Actions results are recorded separately in
+[DSL-SYNTHESIS-RESULTS-20260913.md](DSL-SYNTHESIS-RESULTS-20260913.md).
+
 This experiment preserves the working DSL acquisition/execution/dependency
 cycle. It changes the evaluation, not the learner's target selection or its
 definition bodies. It starts from code commit
