@@ -1,5 +1,7 @@
 # Fixed-capacity experience feedback
 
+Fresh shared-CI outcomes are in [the results record](DSL-CORPUS-FEEDBACK-RESULTS-20260913.md).
+
 ## Scope and baseline
 
 Baseline code: `76bf26b065df6c512bbf897f82afbf5e11fae988`.
