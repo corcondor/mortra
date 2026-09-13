@@ -32,8 +32,12 @@ def main(argv=None):
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--resume", type=Path)
     parser.add_argument("--cycles", type=int)
+    parser.add_argument("--queries", type=Path)
+    parser.add_argument("--knowledge", type=Path)
     parser.add_argument("--condition", choices=["learn", "no-theorems", "no-representations", "no-dsl", "initial-only"], default="learn")
     args = parser.parse_args(argv)
+    if args.knowledge and (not args.queries or args.resume):
+        parser.error("--knowledge requires --queries and cannot resume training")
     args.output.mkdir(parents=True, exist_ok=False)
     config = json.loads(args.config.read_text(encoding="utf-8"))
     source = source_seal()
@@ -47,18 +51,37 @@ def main(argv=None):
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
     write(args.output/"input.json", metadata)
     old = None
+    if args.knowledge:
+        prior = json.loads((args.knowledge.parent/"input.json").read_text(encoding="utf-8"))
+        if prior["source_seal"] != source or prior["config"] != config:
+            raise ValueError("query archive comes from different code or inputs")
+        old = json.loads(args.knowledge.read_text(encoding="utf-8"))
     if args.resume:
         prior = json.loads((args.resume.parent/"input.json").read_text(encoding="utf-8"))
         if prior["source_seal"] != source or prior["config"] != config or prior["condition"] != args.condition:
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
-    engine = Theory(config, theorem_reuse=args.condition != "no-theorems",
+    engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
                     dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, state=old)
     failure = None
+    queries = None
     try:
-        state = engine.run(cycles=args.cycles) if args.condition != "initial-only" else engine.snapshot()
-        if args.condition == "initial-only":
+        if args.queries:
+            tasks = json.loads(args.queries.read_text(encoding="utf-8"))
+            write(args.output/"queries-input.json", tasks)
+            queries = []
+            for t in tasks:
+                row = engine.vocabulary.solve_observation(t, acquired=args.condition == "learn")
+                queries.append(row)
+                write(args.output/"queries.json", queries)
+                print(json.dumps({"task": t["id"], "solved": row["solved"],
+                                  "states": row["states_explored"], "seconds": row["seconds"]}), flush=True)
+            engine.state["stop_reason"] = "external_queries_complete"
+            state = engine.snapshot()
+        else:
+            state = engine.run(cycles=args.cycles) if args.condition != "initial-only" else engine.snapshot()
+        if args.condition == "initial-only" and not args.queries:
             engine.state["stop_reason"] = "initial_knowledge_comparison"
             state = engine.snapshot()
     except Exception:
@@ -76,6 +99,9 @@ def main(argv=None):
     result["execution_completed"] = failure is None
     result["sha"] = metadata["sha"]
     result["workflow_run_id"] = metadata["workflow_run_id"]
+    if queries is not None:
+        result["queries"] = {"count": len(queries), "solved": sum(q["solved"] for q in queries),
+                             "origin": "external_heldout", "witness_supplied": False}
     write(args.output/"verification.json", result)
     print(json.dumps(result, indent=2))
     if failure:

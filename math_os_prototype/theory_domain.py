@@ -146,8 +146,9 @@ class Domain:
             raise ValueError("ill-typed operation")
         return "predicate" if op in {"eq", "and", "not"} else "scalar"
 
-    def compose(self, parent, others):
-        ptype = self.type_of(parent)
+    def compose(self, parent, others, *, type_of=None):
+        type_of = type_of or self.type_of
+        ptype = type_of(parent)
         for op in self.operations:
             if op in {"neg", "diff"} and ptype == "scalar":
                 yield term(op, parent)
@@ -160,7 +161,7 @@ class Domain:
                 needed = "predicate" if op == "and" else "scalar"
                 if ptype == needed:
                     for other in others:
-                        if self.type_of(other) == needed:
+                        if type_of(other) == needed:
                             yield term(op, parent, other)
                             yield term(op, other, parent)
 

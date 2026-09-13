@@ -9,6 +9,7 @@ on:
       - "configs/q-directed-verification.json"
       - "configs/theory-*.json"
       - "tests/test_theory_formation.py"
+      - "tests/test_theory_dsl.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -39,6 +40,7 @@ on:
       - "configs/q-directed-verification.json"
       - "configs/theory-*.json"
       - "tests/test_theory_formation.py"
+      - "tests/test_theory_dsl.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -249,6 +251,16 @@ jobs:
           python scripts/verify_theory_dsl.py --config configs/theory-dsl-ring.json \
             --config configs/theory-dsl-fold.json --output "$VERIFY_OUTPUT/dsl-feedback" \
             2>&1 | tee "$VERIFY_OUTPUT/dsl-feedback.log"
+      - name: Synthesize unseen finite observations from frozen value specifications
+        if: env.DSL_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          for seed in 917332 917333; do
+            python scripts/verify_theory_tasks.py --config configs/theory-dsl-fold.json \
+              --challenge-seed "$seed" --output "$VERIFY_OUTPUT/dsl-tasks-$seed" \
+              2>&1 | tee "$VERIFY_OUTPUT/dsl-tasks-$seed.log"
+          done
       - name: Measure frozen-baseline persistent learning
         if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true' && env.BOTTLENECK_MODE != 'true'
         shell: bash

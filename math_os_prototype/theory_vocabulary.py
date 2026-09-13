@@ -36,6 +36,17 @@ def program_size(node):
     return 1 + sum(program_size(a) for a in node.get("args", []))
 
 
+def context_operations(node):
+    """Exclude literal payloads and holes from compositional novelty."""
+    if lib.is_hole(node):
+        return 0
+    if lib.is_call(node):
+        return 1 + sum(context_operations(v) for v in node["arguments"].values())
+    if not isinstance(node, dict):
+        return 0
+    return bool(node.get("args")) + sum(context_operations(v) for v in node.get("args", []))
+
+
 class Vocabulary:
     def __init__(self, theory):
         self.theory, self.domain = theory, theory.domain
@@ -46,6 +57,10 @@ class Vocabulary:
         self.state.setdefault("observation_operations", {})
         self.state.setdefault("recurrence_operations", {})
         self.state.setdefault("natural_cursor", 0)
+        self.state.setdefault("composition_cursor", 0)
+        # Interpreter caches, not learned knowledge; rebuilding them is charged.
+        self._compiled_spaces = {}
+        self._observation_values = {}
 
     def register_recurrence(self, pid):
         p = self.theory.state["procedures"][pid]
@@ -174,15 +189,31 @@ class Vocabulary:
                 if requirements and any(v not in (None, False, "unrestricted") for v in requirements.values()):
                     raise ValueError("representation does not preserve requested legality/goal")
                 r = materialize(self.theory.state, t["binding"])
-                system = self.domain.linear_system()
-                basis = [sp.sympify(b) for b in r["basis"]]
-                rows = sp.Matrix([[b.coeff(x) for x in system.variables] for b in basis])
-                weights = sp.Matrix([r["readout"]])
-                for g in reversed(t["args"][0]["letters"]):
-                    weights = weights * sp.Matrix(r["action_matrices"][g])
-                    counter["matrix_multiply_adds"] += r["dimension"]**2
-                values = list(weights*rows)
-                counter["matrix_multiply_adds"] += r["dimension"]*len(values)
+                identity = digest({k: r[k] for k in ("basis", "action_matrices", "readout", "scope", "system_key")})
+                value_key = digest([identity, t["args"][0]["letters"]])
+                if identity not in self._compiled_spaces:
+                    system = self.domain.linear_system()
+                    basis = [sp.sympify(b) for b in r["basis"]]
+                    rows = tuple(tuple(b.coeff(x) for x in system.variables) for b in basis)
+                    matrices = {g: tuple(tuple(sp.Rational(x) for x in row) for row in m)
+                                for g, m in r["action_matrices"].items()}
+                    self._compiled_spaces[identity] = (rows, matrices, tuple(map(sp.Rational, r["readout"])))
+                    counter["representation_compiles"] = counter.get("representation_compiles", 0)+1
+                if value_key in self._observation_values:
+                    values = self._observation_values[value_key]
+                    counter["representation_cache_hits"] = counter.get("representation_cache_hits", 0)+1
+                else:
+                    rows, matrices, weights = self._compiled_spaces[identity]
+                    for g in reversed(t["args"][0]["letters"]):
+                        weights = tuple(sum(w*row[j] for w, row in zip(weights, matrices[g]))
+                                        for j in range(len(weights)))
+                        counter["matrix_multiply_adds"] += r["dimension"]**2
+                    values = tuple(sum(w*row[j] for w, row in zip(weights, rows))
+                                   for j in range(r["ambient_dimension"]))
+                    counter["matrix_multiply_adds"] += r["dimension"]*len(values)
+                    if len(self._observation_values) >= self.theory.budget["library_corpus"]:
+                        self._observation_values.pop(next(iter(self._observation_values)))
+                    self._observation_values[value_key] = values
                 counter["representation_calls"] += 1
                 name = "__certified_"+digest(t)[:16]
                 domain.sensors[name] = values
@@ -220,7 +251,8 @@ class Vocabulary:
         s["last_learn_size"] = len(s["corpus"])
         began = time.perf_counter()
         with lib.grammar(self.accepts):
-            found = lib.learn(s["corpus"], pairs=e.budget["library_pairs"], keep=8)
+            found = lib.learn(s["corpus"], pairs=e.budget["library_pairs"], keep=8,
+                              admissible=lambda t: context_operations(t) >= 2)
             accepted = None
             for candidate in found["ranked"]:
                 template = candidate["template"]
@@ -255,6 +287,7 @@ class Vocabulary:
                 break
         s["attempts"].append({"cycle": e.state["cycle"], "corpus": len(s["corpus"]),
             "pairs": found["pairs_tried"], "offered": found["offered"], "evaluated": found["evaluated"],
+            "operation_aliases_excluded": found["excluded_by_contract"],
             "accepted": accepted["id"] if accepted else None,
             "seconds": time.perf_counter()-began})
         e.charge("library_acquisition", pairs=found["pairs_tried"],
@@ -265,13 +298,29 @@ class Vocabulary:
         s["last_synthesis_size"] = len(s["corpus"])+len(s["definitions"])+len(e.state["representations"])
         pool = [e.state["concepts"][cid]["definition"] for cid in e.state["active_concepts"]]
         pool += [row["program"] for row in s["executions"][-e.budget["batch"]:]]
+        words = list(islice(chain.from_iterable(product(self.domain.actions, repeat=n)
+                     for n in range(1, e.budget["word_length"]+1)),
+                     s["word_cursor"], s["word_cursor"]+e.budget["batch"])) if self.domain.actions else []
+        naturals = list(range(s["natural_cursor"], s["natural_cursor"]+e.budget["batch"]))
+        s["word_cursor"] += len(words)
+        s["natural_cursor"] += len(naturals)
+        pool += [term("word", letters=list(w)) for w in words]
+        pool += [term("natural", value=n) for n in naturals]
+        by_sort = {}
+        for p in pool:
+            by_sort.setdefault(self.accepts(p), []).append(p)
         ranked = sorted(s["definitions"], key=lambda d: (
             -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), -d["utility_bits"], d["index"]))
         search_cost = {}
+        arguments = {d["index"]: {name: by_sort.get(sort, [])
+                      for name, sort in d["signature"]["parameters"].items()} for d in ranked}
+        # Keep computation syntax here: evaluating a recurrence to a constant
+        # before deduplication erases the new argument and its procedure route.
         with lib.grammar(self.accepts):
             calls = lib.call_candidates(ranked, pool, limit=e.budget["batch"],
-                exclude=[lib.key(self.primitive(row["program"])) for row in s["corpus"]],
-                table=self.table(), scan=e.budget["library_pairs"], normalise=self.primitive, stats=search_cost)
+                exclude=[lib.key(self.expand(row["program"])) for row in s["corpus"]],
+                table=self.table(), scan=e.budget["library_pairs"], normalise=self.expand,
+                stats=search_cost, argument_pools=arguments)
         e.charge("dsl_search", **search_cost)
         programs = [c["call"] for c in calls]
         # Certified spaces become callable operations from action words to scalar
@@ -279,10 +328,6 @@ class Vocabulary:
         if e.flags["representation_reuse"]:
             from math_os_prototype.runtime_typed_planner import (
                 initial_fact, RuntimePrimitive, PrimitiveResult, synthesize_typed_plan)
-            words = list(islice(chain.from_iterable(product(self.domain.actions, repeat=n)
-                         for n in range(1, e.budget["word_length"]+1)),
-                         s["word_cursor"], s["word_cursor"]+e.budget["batch"]))
-            s["word_cursor"] += e.budget["batch"]
             facts = [initial_fact("action_word", term("word", letters=list(w))) for w in words[:e.budget["batch"]]]
             primitives = []
             for rid in e.state["representations"]:
@@ -299,8 +344,7 @@ class Vocabulary:
                 e.charge("dsl_search", typed_states=plan.states_explored)
             if e.flags["theorem_reuse"] and s["recurrence_operations"]:
                 facts = [initial_fact("natural", term("natural", value=n))
-                         for n in range(s["natural_cursor"], s["natural_cursor"]+e.budget["batch"])]
-                s["natural_cursor"] += e.budget["batch"]
+                         for n in naturals]
                 primitives = []
                 for pid in s["recurrence_operations"]:
                     def execute(args, pid=pid):
@@ -311,6 +355,15 @@ class Vocabulary:
                     max_depth=1, max_states=e.budget["library_pairs"])
                 programs.extend(f.value for f in plan.facts if f.sort == "scalar_observation")
                 e.charge("dsl_search", typed_states=plan.states_explored)
+        # Re-enter the same domain constructors with acquired executable terms.
+        # Rotate parents; selecting only the last outputs would starve earlier
+        # definitions whenever a batch contains many represented observations.
+        parents = [r["program"] for r in s["executions"]]
+        if parents:
+            parent = parents[s["composition_cursor"] % len(parents)]
+            s["composition_cursor"] += 1
+            composed = self.domain.compose(parent, pool, type_of=self.accepts)
+            programs.extend(islice(composed, e.budget["batch"]))
         for program in programs:
             if digest(program) in s["seen_calls"]:
                 continue
@@ -350,3 +403,112 @@ class Vocabulary:
         if e.flags["dsl_reuse"] and generation != s["last_synthesis_size"] and (s["definitions"] or e.state["representations"]):
             out.append(("synthesize", e.budget["batch"]))
         return out
+
+    def solve_observation(self, task, *, acquired=True):
+        """Synthesize a program from its exact finite-model specification.
+
+        This is a goal adapter for the existing typed planner. No witness or
+        acquired body is supplied by the caller. Equality on the complete model
+        is a congruence for the declared pure operations, not for legality.
+        """
+        from math_os_prototype.runtime_typed_planner import (
+            initial_fact, RuntimePrimitive, PrimitiveResult, synthesize_typed_plan)
+        if self.domain.scope["kind"] != "complete_finite_model":
+            raise ValueError("observation synthesis requires a complete finite model")
+        if task["scope"] != self.domain.scope or task.get("requirements"):
+            raise ValueError("query scope or additional requirements are unsupported")
+        allowed = {"id", "scope", "values", "budget", "requirements"}
+        if set(task) - allowed or len(task["values"]) != len(self.domain.models):
+            raise ValueError("query takes values, not a witness or a route")
+        target = [str(sp.Rational(v)) for v in task["values"]]
+        budget = task["budget"]
+        if set(budget) != {"states", "depth", "program_size", "expanded_size"} or any(
+                type(v) is not int or v < 1 for v in budget.values()):
+            raise ValueError("positive frozen query bounds required")
+        before = digest(self.theory.state)
+        # Each external task starts cold in every condition; no answer cache
+        # from an earlier evaluation task is counted as acquired capability.
+        self._compiled_spaces.clear()
+        self._observation_values.clear()
+        counter = {"candidate_evaluations": 0, "size_refusals": 0, "type_refusals": 0,
+                   "semantic_nodes": 0, "representation_calls": 0,
+                   "matrix_multiply_adds": 0, "prover_calls": 0, "acquisition_calls": 0}
+        start = time.perf_counter()
+        def payload(program):
+            if program_size(program) > budget["program_size"]:
+                counter["size_refusals"] += 1
+                return None
+            if size(self.primitive(program)) > budget["expanded_size"]:
+                counter["size_refusals"] += 1
+                return None
+            sort = self.accepts(program)
+            if sort in {"action_word", "natural"}:
+                return {"program": program, "values": program}
+            result, cost = self.evaluate(program)
+            counter["candidate_evaluations"] += 1
+            for k, v in cost.items():
+                counter[k] = counter.get(k, 0)+v
+            return {"program": program, "values": [str(v) for v in result]}
+        def primitive(name, inputs, output, build):
+            def execute(args):
+                try:
+                    p = build([a.value["program"] for a in args])
+                    value = payload(p)
+                except (ValueError, TypeError):
+                    counter["type_refusals"] += 1
+                    return None
+                return PrimitiveResult(value, {"scope": self.domain.scope, "program": p}) if value else None
+            return RuntimePrimitive(name, tuple(inputs), output, execute)
+        seeds = self.domain.seeds()
+        # Common inputs in every condition; acquired computations, not a larger
+        # external input set, distinguish B from A and C.
+        seeds += [term("word", letters=[g]) for g in self.domain.actions]
+        seeds += [term("natural", value=n) for n in (0, 1)]
+        facts = [initial_fact(self.accepts(p), payload(p)) for p in seeds]
+        operations = []
+        if acquired:
+            definitions = sorted(self.state["definitions"], key=lambda d: (
+                -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), d["index"]))
+            for d in definitions:
+                names = list(d["signature"]["parameters"])
+                def build(args, d=d, names=names):
+                    return {"op": lib.USE, "abstraction": d["index"], "arguments": dict(zip(names, args))}
+                operations.append(primitive("definition:"+d["id"],
+                    list(d["signature"]["parameters"].values()), d["signature"]["result"], build))
+            for rid in self.state["observation_operations"]:
+                operations.append(primitive("representation:"+rid, ["action_word"], "scalar",
+                    lambda a, rid=rid: term("represented", a[0], binding=rid)))
+        representatives = [self.domain.seeds()[0]]
+        if "eq" in self.domain.operations:
+            representatives.append(term("eq", representatives[0], representatives[0]))
+        known = set()
+        for parent in representatives:
+            for prototype in self.domain.compose(parent, representatives):
+                key = digest({k: v for k, v in prototype.items() if k != "args"})
+                if key in known:
+                    continue
+                known.add(key)
+                operations.append(primitive("primitive:"+key,
+                    [self.domain.type_of(a) for a in prototype["args"]], self.domain.type_of(prototype),
+                    lambda a, p=prototype: dict(p, args=a)))
+        plan = synthesize_typed_plan(facts, operations, ["scalar"],
+            max_depth=budget["depth"], max_states=budget["states"],
+            fair=True,
+            goal_predicates={"scalar": lambda f: f.value["values"] == target},
+            value_key=lambda sort, v: digest(v["values"]))
+        solution = plan.goals.get("scalar")
+        program = solution.value["program"] if solution else None
+        if program is not None:
+            independent = [str(v) for v in self.domain.evaluate(self.primitive(program))]
+            if independent != target:
+                raise AssertionError("synthesized solution fails independent finite-model replay")
+        if digest(self.theory.state) != before:
+            raise AssertionError("query changed the acquired archive")
+        return {"task": task["id"], "solved": solution is not None, "program": program,
+            "definitions_used": sorted(references(program)),
+            "states_explored": plan.states_explored, "costs": counter,
+            "seconds": time.perf_counter()-start, "archive_unchanged": True,
+            "proof": {"kind": "complete_finite_model_replay", "scope": self.domain.scope,
+                      "checks": len(target)} if solution else None,
+            "stop": "solved" if solution else "bounded_search_exhausted",
+            "program_bits": lib.cost(program) if solution else None}

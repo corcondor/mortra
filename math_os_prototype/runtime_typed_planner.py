@@ -124,15 +124,33 @@ def synthesize_typed_plan(
     *,
     max_depth: int = 12,
     max_states: int = 2048,
+    goal_predicates: dict[str, Callable[[RuntimeFact], bool]] | None = None,
+    value_key: Callable[[str, Any], str] | None = None,
+    fair: bool = False,
 ) -> RuntimePlan:
-    """Enumerate well-typed primitive compositions until all goals are built."""
+    """Enumerate typed compositions with optional value-sensitive goals.
+
+    A custom value_key must be an exact congruence for the supplied primitives.
+    The planner cannot infer that premise from samples. `fair` interleaves
+    attempted applications, including rejected or duplicate applications.
+    """
 
     facts = list(initial_facts)
     primitive_tuple = tuple(primitives)
     goals_tuple = tuple(dict.fromkeys(goal_sorts))
+    goal_predicates = goal_predicates or {}
+    value_key = value_key or (lambda sort, value: _canonical(value))
+    def goals_in(by_sort):
+        selected = {}
+        for sort in goals_tuple:
+            candidates = [f for f in by_sort.get(sort, [])
+                          if sort not in goal_predicates or goal_predicates[sort](f)]
+            if candidates:
+                selected[sort] = min(candidates, key=lambda f: f.depth)
+        return selected
     relevant = _relevant_primitives(primitive_tuple, goals_tuple)
     facts_by_id = {fact.id: fact for fact in facts}
-    seen_values = {(fact.sort, _canonical(fact.value)) for fact in facts}
+    seen_values = {(fact.sort, value_key(fact.sort, fact.value)) for fact in facts}
     attempted: set[tuple[str, tuple[str, ...]]] = set()
     states_explored = len(facts)
 
@@ -140,11 +158,7 @@ def synthesize_typed_plan(
         by_sort: dict[str, list[RuntimeFact]] = {}
         for fact in facts:
             by_sort.setdefault(fact.sort, []).append(fact)
-        goal_map = {
-            sort: min(by_sort[sort], key=lambda fact: fact.depth)
-            for sort in goals_tuple
-            if by_sort.get(sort)
-        }
+        goal_map = goals_in(by_sort)
         if len(goal_map) == len(goals_tuple):
             program = _proof_program(goal_map.values(), facts_by_id)
             return RuntimePlan(
@@ -155,11 +169,10 @@ def synthesize_typed_plan(
                 open_goal_sorts=(),
             )
 
-        changed = False
-        for primitive in relevant:
+        def arguments_for(primitive):
             source_rows = [by_sort.get(sort, []) for sort in primitive.source_sorts]
             if any(not rows for rows in source_rows):
-                continue
+                return
             combinations = product(*source_rows) if source_rows else [()]
             for arguments in combinations:
                 dependency_ids = tuple(argument.id for argument in arguments)
@@ -170,29 +183,60 @@ def synthesize_typed_plan(
                 depth = max((argument.depth for argument in arguments), default=-1) + 1
                 if depth > max_depth:
                     continue
-                result = primitive.execute(tuple(arguments))
-                states_explored += 1
-                if result is None:
-                    if states_explored >= max_states:
-                        break
-                    continue
-                value_key = (primitive.target_sort, _canonical(result.value))
-                if value_key in seen_values:
-                    continue
-                fact = RuntimeFact(
-                    id=_fact_id(primitive.target_sort, result.value, dependency_ids),
-                    sort=primitive.target_sort,
-                    value=result.value,
-                    dependencies=dependency_ids,
-                    depth=depth,
-                    certificate_step={"rule": primitive.name, **result.certificate_step},
-                )
-                facts.append(fact)
-                facts_by_id[fact.id] = fact
-                seen_values.add(value_key)
-                changed = True
+                yield primitive, arguments, dependency_ids, depth
+
+        def attempts():
+            streams = [iter(arguments_for(p)) for p in relevant]
+            if not fair:
+                for stream in streams:
+                    yield from stream
+                return
+            # One attempted application per primitive, not one successful offer:
+            # an operator producing only duplicates must not consume the budget.
+            while streams:
+                alive = []
+                for stream in streams:
+                    try:
+                        yield next(stream)
+                        alive.append(stream)
+                    except StopIteration:
+                        pass
+                streams = alive
+
+        changed = False
+        for primitive, arguments, dependency_ids, depth in attempts():
+            if states_explored >= max_states:
+                break
+            result = primitive.execute(tuple(arguments))
+            states_explored += 1
+            if result is None:
                 if states_explored >= max_states:
                     break
+                continue
+            result_key = (primitive.target_sort, value_key(primitive.target_sort, result.value))
+            if result_key in seen_values:
+                continue
+            fact = RuntimeFact(
+                id=_fact_id(primitive.target_sort, result.value, dependency_ids),
+                sort=primitive.target_sort,
+                value=result.value,
+                dependencies=dependency_ids,
+                depth=depth,
+                certificate_step={"rule": primitive.name, **result.certificate_step},
+            )
+            facts.append(fact)
+            facts_by_id[fact.id] = fact
+            seen_values.add(result_key)
+            changed = True
+            if primitive.target_sort in goal_predicates and goal_predicates[primitive.target_sort](fact):
+                current = {}
+                for f in facts:
+                    current.setdefault(f.sort, []).append(f)
+                reached = goals_in(current)
+                if len(reached) == len(goals_tuple):
+                    return RuntimePlan(goals=reached, facts=tuple(facts),
+                        proof_program=_proof_program(reached.values(), facts_by_id),
+                        states_explored=states_explored, open_goal_sorts=())
             if states_explored >= max_states:
                 break
         if not changed:
@@ -201,11 +245,7 @@ def synthesize_typed_plan(
     by_sort: dict[str, list[RuntimeFact]] = {}
     for fact in facts:
         by_sort.setdefault(fact.sort, []).append(fact)
-    goal_map = {
-        sort: min(by_sort[sort], key=lambda fact: fact.depth)
-        for sort in goals_tuple
-        if by_sort.get(sort)
-    }
+    goal_map = goals_in(by_sort)
     return RuntimePlan(
         goals=goal_map,
         facts=tuple(facts),

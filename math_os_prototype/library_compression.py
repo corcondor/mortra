@@ -256,7 +256,7 @@ def generalise(first, second, *, limit=6):
             if a.get("op") == b.get("op"):
                 # Symbol names are structural, but differing leaves may be
                 # abstracted as whole typed programs, never as arbitrary strings.
-                if a.get("op") == "var" and a != b:
+                if a != b and (a.get("op") == "var" or a.get("args") == []):
                     _ACCEPTS(a)
                     _ACCEPTS(b)
                     return fresh("program", deepcopy(a), deepcopy(b))
@@ -799,7 +799,7 @@ def candidates(corpus, *, pairs=4000, limit=6):
     return {"candidates": offered, "pairs_tried": tried, "subterms": len(pool)}
 
 
-def learn(corpus, *, pairs=4000, limit=6, keep=8):
+def learn(corpus, *, pairs=4000, limit=6, keep=8, admissible=None):
     """Rank candidates by the objective, pruning by the bound before evaluating.
 
     The bound is computed first because it is the cheap half: it needs the match
@@ -807,9 +807,12 @@ def learn(corpus, *, pairs=4000, limit=6, keep=8):
     """
     precondition = bound_precondition(corpus)
     offered = candidates(corpus, pairs=pairs, limit=limit)
-    scored, pruned, audits = [], 0, []
+    scored, pruned, audits, excluded = [], 0, [], []
     best = 0
     for entry in offered["candidates"]:
+        if admissible is not None and not admissible(entry["template"]):
+            excluded.append(entry["id"])
+            continue
         bound = upper_bound(corpus, entry["template"])
         if bound["sites"] < 2:
             pruned += 1
@@ -830,6 +833,7 @@ def learn(corpus, *, pairs=4000, limit=6, keep=8):
             "corpus_bits": sum(cost(e["program"]) for e in corpus),
             "offered": len(offered["candidates"]), "subterms": offered["subterms"],
             "pairs_tried": offered["pairs_tried"], "pruned_by_bound": pruned,
+            "excluded_by_contract": excluded,
             "evaluated": len(scored), "bound_audit": audits,
             "bound_violations": [a for a in audits if not a["bound_holds"]],
             "ranked": scored[:keep], "cost_model": COST,
@@ -1011,7 +1015,7 @@ def rationals_in(program, found=None):
 
 
 def _offers_of(entry, program_pool, value_pool, excluded, seen, table,
-               normalise, revisits, budget):
+               normalise, revisits, budget, argument_pools=None):
     """Every call of ONE definition the pools allow, in the fixed order.
 
     Lazily, so that the caller can take one at a time. `seen` and `excluded` are
@@ -1029,7 +1033,8 @@ def _offers_of(entry, program_pool, value_pool, excluded, seen, table,
     limit cannot become an unbounded scan.
     """
     names = holes(entry["template"])
-    pools = [program_pool if name.startswith("f") else value_pool
+    pools = [argument_pools[name] if argument_pools is not None else
+             program_pool if name.startswith("f") else value_pool
              for name in names]
     if not names or any(not pool for pool in pools):
         return
@@ -1065,7 +1070,8 @@ def _offers_of(entry, program_pool, value_pool, excluded, seen, table,
 
 
 def call_candidates(library, program_pool, *, limit=12, exclude=(), value_pool=None,
-                    table=None, normalise=None, scan=None, revisits=None, stats=None):
+                    table=None, normalise=None, scan=None, revisits=None, stats=None,
+                    argument_pools=None):
     """Calls of the learned definitions, with arguments taken from a pool.
 
     The arguments are drawn from what the search already has -- its own seeds and
@@ -1114,7 +1120,8 @@ def call_candidates(library, program_pool, *, limit=12, exclude=(), value_pool=N
                     value_pool.append(value)
     offered, seen = [], set()
     streams = [_offers_of(entry, program_pool, value_pool, excluded, seen, table,
-                          normalise, revisits, budget)
+                          normalise, revisits, budget,
+                          argument_pools.get(entry["index"]) if argument_pools is not None else None)
                for entry in library]
     while streams:
         alive = []
