@@ -26,6 +26,17 @@ def call(d, *args):
 
 
 class SemanticEditing(unittest.TestCase):
+    def test_equation_reuse_does_not_invent_an_execution_dependency(self):
+        from scripts.verify_theory_semantic_edit import evidence
+        state = {"costs": {}, "seconds": 0, "dsl": {
+            "definitions": [{"id": "h", "born": 1}, {"id": "g", "born": 4,
+                "semantic_sources": [{"proofs": ["eq"]}], "acquisition_sources": ["different-execution"]}],
+            "semantic_relations": [{"id": "eq", "definition": "h", "kind": "equivalent_implementation"}],
+            "semantic_uses": [{"cycle": 3, "proofs": ["eq"], "after": term("var", name="x")}],
+            "semantic_discoveries": []}}
+        row = evidence(state)["edges"][0]
+        self.assertFalse(row["subsequent_acquisitions"])
+        self.assertEqual(len(row["later_equation_based_acquisitions"]), 1)
     def test_general_symbolic_projection_and_originals_immutable(self):
         e = Theory(config(), semantic_edits=True)
         u, x = lib.program_hole(0), term("var", name="x")

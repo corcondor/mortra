@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT))
 from scripts.run_theory_formation import write, source_seal
 from scripts.verify_theory_tasks import freeze
 from math_os_prototype.theory_domain import Domain
+from math_os_prototype.representation_progress import digest
 
 
 def read(path):
@@ -43,11 +44,12 @@ def evidence(state):
             relation = relations[rid]
             d = next(d for d in dsl["definitions"] if d["id"] == relation["definition"])
             later = [g for g in dsl["definitions"] if g["born"] > use["cycle"] and
-                     (any(rid in s["proofs"] for s in g.get("semantic_sources", [])) or
-                      any(r["program"] == use["after"] and r["id"] in g.get("acquisition_sources", [])
-                          for r in dsl["corpus"]))]
+                     digest(use["after"]) in g.get("acquisition_sources", [])]
+            equation_based = [g for g in dsl["definitions"] if g["born"] > use["cycle"] and
+                              any(rid in s["proofs"] for s in g.get("semantic_sources", []))]
             edges.append({"original_definition": d, "relation": relation,
-                          "later_use": use, "subsequent_acquisitions": later})
+                          "later_use": use, "subsequent_acquisitions": later,
+                          "later_equation_based_acquisitions": equation_based})
     return {"definitions": dsl["definitions"], "discoveries": dsl["semantic_discoveries"],
         "relations": dsl["semantic_relations"], "uses": len(dsl["semantic_uses"]),
         "edges": edges, "all_costs": state["costs"], "seconds": state["seconds"],
@@ -71,10 +73,10 @@ def render(t):
 
 
 def ascii_evidence(trace):
-    edge = next((e for e in trace["edges"] if e["subsequent_acquisitions"]), None)
+    edge = next(iter(trace["edges"]), None)
     if edge is None:
-        return "No complete witnessed edge from editing to later acquisition.\n"
-    d, r, u, g = edge["original_definition"], edge["relation"], edge["later_use"], edge["subsequent_acquisitions"][0]
+        return "No complete witnessed edge from acquired definition to edited execution.\n"
+    d, r, u = edge["original_definition"], edge["relation"], edge["later_use"]
     return (f"Acquired D{d['index']} [{d['id']}] := {render(d['template'])}\n"
             f"  -> discovered {r['id']}: body = {render(r['right'])}\n"
             f"  -> proof: {r['proof']['kind']}, QQ, {len(r['proof']['residuals'])} states, "
@@ -82,8 +84,9 @@ def ascii_evidence(trace):
             f"  -> rewritten program at cycle {u['cycle']}: {render(u['before'])} => {render(u['after'])}\n"
             f"  -> executed: representation calls = {u['execution_cost'].get('representation_calls', 0)}, "
             f"semantic nodes = {u['execution_cost'].get('semantic_nodes', 0)}; independent replay retained\n"
-            f"  -> acquired later D{g['index']} [{g['id']}] := {render(g['template'])}\n"
-            "The later definition may be an equivalent implementation, not a new mathematical function.\n")
+            f"Later acquisitions using this exact execution: {len(edge['subsequent_acquisitions'])}.\n"
+            f"Separately, later abstractions using this equation on corpus forms: {len(edge['later_equation_based_acquisitions'])}.\n"
+            "These are different dependency edges; an equivalent implementation is not a new mathematical function.\n")
 
 
 def main():

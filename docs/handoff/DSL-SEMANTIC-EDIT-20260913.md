@@ -96,6 +96,13 @@ representation usage metadata was fingerprinted as mathematical dependency.
 v2 is a separately started run after that defect was corrected. The final
 results must name their own source seal and Actions run rather than these logs.
 
+Actions 34755531986 (4b36b182943a9388e55db5837388aa5253492fa0) was cancelled
+before the new evaluation ran. Report audit found that a shared equation ID
+was being counted as a dependency from a particular later execution. The
+corrected reporter requires that execution's corpus ID in acquisition_sources;
+equation-based abstraction is counted separately. No solver, equation learner,
+target, seed or selection rule was changed for this measurement correction.
+
 Scope remains frame observations, not panel structure or collision-free origami.
 Historical unused folding-structure definitions remain unused evidence, not
 retroactively counted as representation or recurrence use.
