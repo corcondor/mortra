@@ -88,10 +88,18 @@ python scripts/verify_theory_semantic_edit.py \
 
 ## Remaining capability issue
 
-In the measured baseline, all three archived definitions occupy the definition
-acquisition budget although one is a projection and two represent the same
-function. `Vocabulary.options()` uses archive length; active search uses the
-equation-filtered list. This is a separate limit on future acquisition, not a
-conclusion that removing the limit will create capability. It is not changed in
-this runtime-cost experiment, to avoid conflating language changes and overhead.
+Correction to the first diagnosis: the actual definition budget is **8**, not
+3. Only 3 definitions have been acquired, so five slots remain. Although
+`Vocabulary.options()` counts archived rather than active definitions, this
+limit is not the direct cause of the observed acquisition stop.
+
+The observed block is the full **512-entry corpus**. `Vocabulary.record()`
+rejects all new entries once this bound is reached. `last_learn_size` is also
+512, and abstraction eligibility requires the corpus length to increase by the
+configured interval (32). This condition can never become true again at that
+bound. The final cycle-300 state and the source both confirm this condition.
+New mathematical execution records continue to be archived elsewhere, but are
+not inserted into the abstraction corpus. This is not evidence that refreshing
+the corpus alone will produce capability; it identifies the next missing path
+for testing cumulative learning. It is not changed in this cost experiment.
 The long-term objective remains active; syntax speed is not its completion.
