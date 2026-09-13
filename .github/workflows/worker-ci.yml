@@ -271,7 +271,8 @@ jobs:
         working-directory: target
         shell: bash
         run: |
-          python scripts/verify_theory_semantic_edit.py --output "$VERIFY_OUTPUT/dsl-semantic-edit" \
+          python scripts/verify_theory_semantic_edit.py --plan configs/theory-semantic-runtime-evaluation.json \
+            --output "$VERIFY_OUTPUT/dsl-semantic-edit" \
             2>&1 | tee "$VERIFY_OUTPUT/dsl-semantic-edit.log"
       - name: Measure frozen-baseline persistent learning
         if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true' && env.BOTTLENECK_MODE != 'true'

@@ -10,9 +10,9 @@ import time
 import sympy as sp
 
 from math_os_prototype import library_compression as lib
-from math_os_prototype.theory_domain import term, size, recurrence_value
+from math_os_prototype.theory_domain import term, size, recurrence_value, _parsed_literal
 from math_os_prototype.theory_spaces import materialize
-from math_os_prototype.representation_progress import digest
+from math_os_prototype.representation_progress import digest, encoding
 
 
 def references(node):
@@ -64,6 +64,7 @@ class Vocabulary:
         # Interpreter caches, not learned knowledge; rebuilding them is charged.
         self._compiled_spaces = {}
         self._observation_values = {}
+        self._definition_table_cache = None
 
     def register_recurrence(self, pid):
         p = self.theory.state["procedures"][pid]
@@ -96,6 +97,31 @@ class Vocabulary:
     def table(self):
         return lib.definition_table({d["index"]: d["template"] for d in self.state["definitions"]})
 
+    def _execution_table(self, counter):
+        """Reuse a detached table only while every definition body is unchanged.
+
+        Public table() still returns a fresh copy. Macro resolution continues
+        checking the seal, while accepts() checks current signatures and scope.
+        """
+        began = time.perf_counter()
+        templates = {d["index"]: d["template"] for d in self.state["definitions"]}
+        if not getattr(self.domain, "syntax_cache_enabled", True):
+            result = lib.definition_table(templates)
+            if counter is not None:
+                counter["definition_table_builds"] = counter.get("definition_table_builds", 0)+1
+                counter["definition_table_seconds"] = counter.get("definition_table_seconds", 0)+time.perf_counter()-began
+            return result
+        key = encoding(templates)
+        hit = self._definition_table_cache is not None and self._definition_table_cache[0] == key
+        if not hit:
+            self._definition_table_cache = (key, lib.definition_table(templates))
+        if counter is not None:
+            event = "definition_table_cache_hits" if hit else "definition_table_builds"
+            counter[event] = counter.get(event, 0)+1
+            counter["definition_table_key_bytes"] = counter.get("definition_table_key_bytes", 0)+len(key)
+            counter["definition_table_seconds"] = counter.get("definition_table_seconds", 0)+time.perf_counter()-began
+        return self._definition_table_cache[1]
+
     def accepts(self, node, *, counter=None):
         if counter is not None:
             counter["type_scope_checks"] = counter.get("type_scope_checks", 0)+1
@@ -115,7 +141,7 @@ class Vocabulary:
                 raise ValueError("call arity mismatch")
             for name, value in node["arguments"].items():
                 expected = definition["signature"]["parameters"][name]
-                actual = "rational" if not isinstance(value, dict) and sp.sympify(value).is_Rational else self.accepts(value, counter=counter)
+                actual = "rational" if not isinstance(value, dict) and self.domain.parse_literal(value).is_Rational else self.accepts(value, counter=counter)
                 if actual != expected:
                     raise ValueError("call argument type mismatch")
             return definition["signature"]["result"]
@@ -124,7 +150,7 @@ class Vocabulary:
                 raise ValueError("invalid action word")
             return "action_word"
         if node.get("op") == "natural":
-            number = sp.sympify(node["value"])
+            number = self.domain.parse_literal(node["value"])
             if node.get("args") != [] or number.is_Integer is not True or number < 0:
                 raise ValueError("natural argument required")
             return "natural"
@@ -155,7 +181,7 @@ class Vocabulary:
     def expand(self, node, *, counter=None, charge=None):
         self.accepts(node, counter=counter)
         with lib.grammar(lambda p: self.accepts(p, counter=counter)):
-            return lib.expand_for_execution(node, self.table(), stats=counter, charge=charge)
+            return lib.expand_for_execution(node, self._execution_table(counter), stats=counter, charge=charge)
 
     def primitive(self, node, *, counter=None, charge=None):
         """Independent replay lowering. Never required just to size a candidate."""
@@ -580,6 +606,8 @@ class Vocabulary:
         # from an earlier evaluation task is counted as acquired capability.
         self._compiled_spaces.clear()
         self._observation_values.clear()
+        self._definition_table_cache = None
+        _parsed_literal.cache_clear()
         counter = {"candidate_evaluations": 0, "size_refusals": 0, "type_refusals": 0,
                    "semantic_nodes": 0, "representation_calls": 0,
                    "matrix_multiply_adds": 0, "prover_calls": 0, "acquisition_calls": 0,
@@ -712,12 +740,16 @@ class Vocabulary:
                              ("observable_spaces", "representations", "procedures"))
         equation_bits = lib.cost(self.state["semantic_relations"])
         active_bits = (structural_bits if acquired and definitions_enabled else 0)+(certified_bits if acquired else 0)+(equation_bits if execution_mode == "edited" else 0)
+        literal_cache = _parsed_literal.cache_info()
+        counter.update(literal_parse_cache_hits=literal_cache.hits, literal_parse_cache_misses=literal_cache.misses,
+                       literal_parse_cache_entries=literal_cache.currsize)
         return {"task": task["id"], "solved": program is not None, "program": program,
             "definitions_used": sorted(references(program)),
             "states_explored": len(seeds)+counter["attempted_applications"], "costs": counter,
             "work": work, "independent_replay_work": replay_work,
             "normal_work_used": work["used"]-replay_work["used"],
             "semantic_rewrite_trace": rewrite_trace, "execution_mode": execution_mode, "archive_digest": before,
+            "syntax_cache_enabled": getattr(self.domain, "syntax_cache_enabled", True),
             "enabled_operations": [o.name for o in operations],
             "library_cost": {"structural_definition_bits": structural_bits,
                 "certified_operation_bits": certified_bits, "active_bits": active_bits,

@@ -25,7 +25,7 @@ def source_seal():
                     ROOT/"scripts/run_theory_formation.py", ROOT/"scripts/verify_theory_formation.py",
                     ROOT/"scripts/verify_theory_tasks.py", ROOT/"scripts/verify_theory_dsl.py",
                     ROOT/"scripts/verify_theory_semantic_edit.py"])
-    return {str(p.relative_to(ROOT)): digest(p.read_text(encoding="utf-8")) for p in files}
+    return {p.relative_to(ROOT).as_posix(): digest(p.read_text(encoding="utf-8")) for p in files}
 
 
 def main(argv=None):
@@ -37,6 +37,8 @@ def main(argv=None):
     parser.add_argument("--queries", type=Path)
     parser.add_argument("--knowledge", type=Path)
     parser.add_argument("--semantic-edits", action="store_true")
+    parser.add_argument("--uncached-syntax", action="store_true",
+                        help="diagnostic ablation: rebuild definition tables and reparse literals")
     parser.add_argument("--execution-mode", choices=["legacy", "certified", "edited"], default="certified")
     parser.add_argument("--condition", choices=["learn", "no-theorems", "no-representations", "no-dsl", "initial-only"], default="learn")
     args = parser.parse_args(argv)
@@ -54,6 +56,7 @@ def main(argv=None):
                 "repository": os.environ.get("GITHUB_REPOSITORY"),
                 "command": sys.argv, "generated_at": datetime.now(timezone.utc).isoformat(),
                 "semantic_edits": args.semantic_edits, "execution_mode": args.execution_mode,
+                "syntax_cache_enabled": not args.uncached_syntax,
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
     write(args.output/"input.json", metadata)
@@ -66,12 +69,14 @@ def main(argv=None):
     if args.resume:
         prior = json.loads((args.resume.parent/"input.json").read_text(encoding="utf-8"))
         if (prior["source_seal"] != source or prior["config"] != config or prior["condition"] != args.condition
-                or prior.get("semantic_edits", False) != args.semantic_edits):
+                or prior.get("semantic_edits", False) != args.semantic_edits
+                or prior.get("syntax_cache_enabled", True) != (not args.uncached_syntax)):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
                     dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits, state=old)
+    engine.domain.syntax_cache_enabled = not args.uncached_syntax
     failure = None
     queries = None
     try:

@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from itertools import islice, product
 from copy import deepcopy
+from functools import lru_cache
+import re
 import sympy as sp
 
 from math_os_prototype import abstraction_correspondence as ring
@@ -15,6 +17,18 @@ from math_os_prototype.finite_generator_problem_dna import (
     FiniteGeneratorSystem, LinearGenerator, discover_action_observable_basis,
     discover_linear_observation_recurrence)
 from math_os_prototype.representation_progress import digest
+
+
+@lru_cache(maxsize=512, typed=True)
+def _parsed_literal(value):
+    return sp.sympify(value)
+
+
+def parse_literal(value):
+    """Memoize immutable JSON literals, not model observations or equations."""
+    numeric = type(value) is int or (type(value) is str and
+        re.fullmatch(r"[+-]?[0-9]+(?:/[+-]?[0-9]+)?", value) is not None)
+    return _parsed_literal(value) if numeric else sp.sympify(value)
 
 
 def size(term):
@@ -127,6 +141,9 @@ class Domain:
         return [term("var", name=n) for n in self.names] + [term("const", value="0"),
                                                                term("const", value="1")]
 
+    def parse_literal(self, value):
+        return parse_literal(value) if getattr(self, "syntax_cache_enabled", True) else sp.sympify(value)
+
     def type_of(self, t):
         op, args = t["op"], t.get("args", [])
         arities = {"var": 0, "const": 0, "neg": 1, "diff": 1, "pull": 1,
@@ -137,7 +154,7 @@ class Domain:
             raise ValueError("undeclared operation")
         if op == "var" and t["name"] not in self.names:
             raise ValueError("undeclared sensor")
-        if op == "const" and sp.sympify(t["value"]).is_Rational is not True:
+        if op == "const" and self.parse_literal(t["value"]).is_Rational is not True:
             raise ValueError("inexact constant")
         if op == "pull" and t["label"] not in self.actions:
             raise ValueError("undeclared action")

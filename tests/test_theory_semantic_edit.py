@@ -26,6 +26,99 @@ def call(d, *args):
 
 
 class SemanticEditing(unittest.TestCase):
+    def test_literal_cache_is_bounded_and_retains_exact_type_checks(self):
+        import sympy as sp
+        from math_os_prototype.theory_domain import _parsed_literal, parse_literal
+        _parsed_literal.cache_clear()
+        self.assertEqual(parse_literal("-3/2"), sp.Rational(-3, 2))
+        self.assertEqual(parse_literal("-3/2"), sp.Rational(-3, 2))
+        self.assertEqual(_parsed_literal.cache_info().hits, 1)
+        before = _parsed_literal.cache_info()
+        self.assertEqual(parse_literal("sqrt(4)"), 2)
+        self.assertEqual(_parsed_literal.cache_info(), before)
+        e = Theory(config())
+        for value in ("sqrt(2)", "0.5", 0.5, "x"):
+            with self.assertRaises(ValueError):
+                e.domain.type_of(term("const", value=value))
+        for i in range(600):
+            parse_literal(str(i))
+        self.assertEqual(_parsed_literal.cache_info().currsize, 512)
+
+    def test_execution_table_reuse_tracks_live_body_changes(self):
+        e = Theory(config())
+        x = term("var", name="x")
+        d = define(e, term("neg", lib.program_hole(0)))
+        p = call(d, x)
+        costs = {}
+        self.assertEqual(e.vocabulary.expand(p, counter=costs), term("neg", x))
+        self.assertEqual(e.vocabulary.expand(p, counter=costs), term("neg", x))
+        self.assertEqual(costs["definition_table_builds"], 1)
+        self.assertEqual(costs["definition_table_cache_hits"], 1)
+        d["template"] = term("add", lib.program_hole(0), lib.program_hole(0))
+        self.assertEqual(e.vocabulary.expand(p, counter=costs), term("add", x, x))
+        self.assertEqual(costs["definition_table_builds"], 2)
+        d["signature"]["parameters"]["f0"] = "natural"
+        with self.assertRaises(ValueError):
+            e.vocabulary.expand(p)
+
+    def test_cached_table_is_private_and_resolve_still_checks_its_seal(self):
+        e = Theory(config())
+        x = term("var", name="x")
+        d = define(e, term("neg", lib.program_hole(0)))
+        p = call(d, x)
+        e.vocabulary.expand(p)
+        public = e.vocabulary.table()
+        public["definitions"]["0"] = x
+        self.assertEqual(e.vocabulary.expand(p), term("neg", x))
+        e.vocabulary._definition_table_cache[1]["definitions"]["0"] = x
+        with self.assertRaises(ValueError):
+            e.vocabulary.expand(p)
+
+    def test_syntax_cache_does_not_change_expansion_budget_or_results(self):
+        e = Theory(config())
+        x = term("var", name="x")
+        d = define(e, term("neg", lib.program_hole(0)))
+        p = call(d, x)
+        values, costs = [], []
+        for enabled in (True, False):
+            e.domain.syntax_cache_enabled = enabled
+            e.vocabulary._definition_table_cache = None
+            c = {}
+            charge = lambda k, n: c.__setitem__(k, c.get(k, 0)+n)
+            values.append(e.vocabulary.evaluate(p, charge=charge)[0])
+            costs.append(c)
+        self.assertEqual(values[0], values[1])
+        self.assertEqual(costs[0], costs[1])
+
+    def test_query_caches_start_cold_and_uncached_computation_is_identical(self):
+        e = Theory(config(), semantic_edits=True)
+        x = term("var", name="x")
+        d = define(e, term("add", lib.program_hole(0), term("const", value="0")))
+        e.state["dsl"]["semantic_relations"].extend(discover(e.vocabulary, d)["relations"])
+        t = {"id": "development-fixture", "scope": e.domain.scope,
+             "values": list(map(str, e.domain.evaluate(term("neg", x)))),
+             "budget": {"states": 40, "depth": 8, "program_size": 500, "expanded_size": 500, "work": 100000}}
+        rows = []
+        for enabled in (True, True, False):
+            e.domain.syntax_cache_enabled = enabled
+            rows.append(e.vocabulary.solve_observation(t, execution_mode="edited"))
+        self.assertEqual(rows[0]["costs"]["definition_table_builds"], 1)
+        self.assertEqual(rows[1]["costs"]["definition_table_builds"], 1)
+        self.assertEqual(rows[0]["costs"]["literal_parse_cache_misses"], rows[1]["costs"]["literal_parse_cache_misses"])
+        self.assertGreater(rows[2]["costs"]["definition_table_builds"], 1)
+        self.assertEqual(rows[2]["costs"]["literal_parse_cache_hits"], 0)
+        for key in ("program", "states_explored", "work", "semantic_rewrite_trace", "archive_digest"):
+            self.assertEqual(rows[0][key], rows[2][key])
+
+    def test_source_seal_paths_are_portable_without_weakening_content_hashes(self):
+        from scripts.run_theory_formation import ROOT, source_seal
+        from math_os_prototype.representation_progress import digest
+        seal = source_seal()
+        self.assertTrue(seal)
+        self.assertTrue(all("\\" not in key and not key.startswith("/") for key in seal))
+        self.assertEqual(seal["scripts/run_theory_formation.py"],
+                         digest((ROOT/"scripts/run_theory_formation.py").read_text(encoding="utf-8")))
+
     def test_symbolic_replay_cost_does_not_require_finite_states(self):
         from math_os_prototype.theory_domain import Domain
         d = Domain({"kind": "differential_ring", "variables": ["z"], "operations": ["diff", "neg", "add", "mul"]})

@@ -154,8 +154,13 @@ def main():
                                          if domain.type_of(r["primitive"]) == "scalar")
         for seed, tasks in challenges.items():
             rows = {}
-            for name, (archive, mode) in plan["conditions"].items():
+            for name, condition in plan["conditions"].items():
+                if len(condition) not in (2, 3) or (len(condition) == 3 and condition[2] != "uncached"):
+                    raise ValueError("condition is archive, execution mode, optional uncached syntax")
+                archive, mode = condition[:2]
                 options = ["--execution-mode", mode, "--queries", args.output/f"challenge-{seed}.json"]
+                if len(condition) == 3:
+                    options += ["--uncached-syntax"]
                 if archive == "initial":
                     options += ["--condition", "initial-only"]
                 else:
@@ -179,11 +184,23 @@ def main():
                     "seconds": sum(rs[i]["seconds"] for i in common),
                     "bits_with_library": rs[0]["library_cost"]["active_bits"]+sum(rs[i]["program_bits"] for i in common)} for n, rs in rows.items()},
                 "semantically_unseen": {n: {"count": len(unseen), "solved": sum(rs[i]["solved"] for i in unseen)} for n, rs in rows.items()}}
+            cohort["interpreter_only_pairs"] = []
+            for name, condition in plan["conditions"].items():
+                if len(condition) != 3:
+                    continue
+                for other, base in plan["conditions"].items():
+                    if base != condition[:2]:
+                        continue
+                    checked_fields = ("solved", "program", "states_explored", "work", "semantic_rewrite_trace")
+                    cohort["interpreter_only_pairs"].append({"cached": other, "uncached": name,
+                        "same_archive": all(a["archive_digest"] == b["archive_digest"] for a, b in zip(rows[other], rows[name])),
+                        "same_computation": all(all(a[k] == b[k] for k in checked_fields) for a, b in zip(rows[other], rows[name]))})
             record["cohorts"][str(seed)] = cohort
             write(args.output/"verification.json", record)
         record["sources_unchanged"] = seal == source_seal() and harness == hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
         record["passed"] = record["sources_unchanged"] and all(
-            c["same_archive_edit_ablation"] and c["budget_respected"] and c["size_bounds_nonbinding"]
+            c["same_archive_edit_ablation"] and c["budget_respected"] and c["size_bounds_nonbinding"] and
+            all(p["same_archive"] and p["same_computation"] for p in c["interpreter_only_pairs"])
             for c in record["cohorts"].values())
     except Exception as exc:
         import traceback
