@@ -218,6 +218,8 @@ def rewrite(v, program, *, counter=None, charge=None):
             return t
         if lib.is_call(t):
             node = dict(t, arguments={k: visit(a) for k, a in t["arguments"].items()})
+            if not v.state.get("semantic_relations"):
+                return node
             best, score = node, v.execution_estimate(node, counter=counter, charge=charge)
             proof = None
             for r in v.state.get("semantic_relations", []):

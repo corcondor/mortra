@@ -26,6 +26,24 @@ def call(d, *args):
 
 
 class SemanticEditing(unittest.TestCase):
+    def test_symbolic_replay_cost_does_not_require_finite_states(self):
+        from math_os_prototype.theory_domain import Domain
+        d = Domain({"kind": "differential_ring", "variables": ["z"], "operations": ["diff", "neg", "add", "mul"]})
+        p = term("diff", term("mul", term("var", name="z"), term("var", name="z")))
+        costs = {}
+        value = d.evaluate(p, charge=lambda k, n: costs.__setitem__(k, costs.get(k, 0)+n))
+        self.assertEqual(value, d.evaluate(p))
+        self.assertEqual(costs, {"symbolic_ast_nodes": 4})
+
+    def test_unsupported_domain_without_equations_leaves_the_call_intact(self):
+        c = {"domain": {"kind": "differential_ring", "variables": ["z"], "operations": ["neg", "add"]},
+             "seed": 1, "budget": {"definitions": 3}}
+        e = Theory(c, semantic_edits=True)
+        d = define(e, term("neg", lib.program_hole(0)))
+        p = call(d, term("var", name="z"))
+        self.assertEqual(discover(e.vocabulary, d)["status"], "unsupported")
+        self.assertEqual(e.vocabulary.edit(p), (p, []))
+
     def test_equation_reuse_does_not_invent_an_execution_dependency(self):
         from scripts.verify_theory_semantic_edit import evidence
         state = {"costs": {}, "seconds": 0, "dsl": {

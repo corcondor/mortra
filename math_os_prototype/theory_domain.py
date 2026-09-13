@@ -189,7 +189,10 @@ class Domain:
                     len(v) != len(self.models) for v in symbolic_sensors.values()):
                 raise ValueError("symbolic sensor scope mismatch")
         if charge is not None:
-            charge("model_node_evaluations", size(t)*len(self.models))
+            if self.kind == "differential_ring":
+                charge("symbolic_ast_nodes", size(t))
+            else:
+                charge("model_node_evaluations", size(t)*len(self.models))
         if counter is not None:
             counter["semantic_nodes"] = counter.get("semantic_nodes", 0) + size(t)
         if self.kind == "differential_ring":

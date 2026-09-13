@@ -103,6 +103,13 @@ corrected reporter requires that execution's corpus ID in acquisition_sources;
 equation-based abstraction is counted separately. No solver, equation learner,
 target, seed or selection rule was changed for this measurement correction.
 
+Actions 34755677777 (119a64485ea660fdd4733d424736ef546778c3f7) failed in
+the retained differential-ring normal run: replay accounting accessed a finite
+model state count on a symbolic domain. Its failure artifact is retained. The
+fix charges symbolic AST nodes in that domain, not fictitious finite states.
+This counts input syntax, not the algebra kernel's individual operations; full
+replay wall time remains measured. The new held-out cohorts had not yet run.
+
 Scope remains frame observations, not panel structure or collision-free origami.
 Historical unused folding-structure definitions remain unused evidence, not
 retroactively counted as representation or recurrence use.
