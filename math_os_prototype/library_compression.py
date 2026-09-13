@@ -542,7 +542,7 @@ def calls_in(node, found=None):
     return found
 
 
-def expand_for_execution(node, definitions, *, steps=200_000):
+def expand_for_execution(node, definitions, *, steps=200_000, stats=None, charge=None):
     """Drive every call out and check what is left can actually be run.
 
     This is the **execution boundary**, and it is deliberately not the same
@@ -571,12 +571,18 @@ def expand_for_execution(node, definitions, *, steps=200_000):
     budget = [int(steps)]
 
     def drive(current, chain):
+        if charge is not None:
+            charge("expansion_visits", 1)
+        if stats is not None:
+            stats["expansion_visits"] = stats.get("expansion_visits", 0)+1
         budget[0] -= 1
         if budget[0] <= 0:
             raise ExpansionError(
                 f"expansion exceeded its {steps}-step budget; a partial "
                 "expansion is not a result")
         if is_call(current):
+            if stats is not None:
+                stats["macro_expansions"] = stats.get("macro_expansions", 0)+1
             index = current["abstraction"]
             if index in chain:
                 raise ExpansionError(

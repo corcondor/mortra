@@ -179,9 +179,11 @@ class Domain:
             return {"op": "diff", "child": self.program(a[0])}
         raise ValueError("not a differential scalar term")
 
-    def evaluate(self, t, counter=None):
+    def evaluate(self, t, counter=None, *, charge=None):
         """Count actual syntax operations, including repeated subexpressions."""
         self.type_of(t)
+        if charge is not None:
+            charge("model_node_evaluations", size(t)*len(self.models))
         if counter is not None:
             counter["semantic_nodes"] = counter.get("semantic_nodes", 0) + size(t)
         if self.kind == "differential_ring":

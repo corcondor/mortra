@@ -242,7 +242,10 @@ jobs:
         if: env.DSL_MODE == 'true'
         working-directory: target
         shell: bash
-        run: python -m pytest tests/test_theory_dsl.py -q 2>&1 | tee "$VERIFY_OUTPUT/dsl-tests.log"
+        run: |
+          python -m pytest tests/test_theory_dsl.py scripts/test_library_compression.py \
+            scripts/test_expand_for_execution.py scripts/test_call_candidate_dedup.py -q \
+            2>&1 | tee "$VERIFY_OUTPUT/dsl-tests.log"
       - name: Run persistent DSL acquisition, reuse and held-out ablation
         if: env.DSL_MODE == 'true'
         working-directory: target
@@ -256,7 +259,7 @@ jobs:
         working-directory: target
         shell: bash
         run: |
-          for seed in 917332 917333; do
+          for seed in 917334 917335; do
             python scripts/verify_theory_tasks.py --config configs/theory-dsl-fold.json \
               --challenge-seed "$seed" --output "$VERIFY_OUTPUT/dsl-tasks-$seed" \
               2>&1 | tee "$VERIFY_OUTPUT/dsl-tasks-$seed.log"

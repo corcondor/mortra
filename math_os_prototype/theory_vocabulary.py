@@ -93,19 +93,26 @@ class Vocabulary:
     def table(self):
         return lib.definition_table({d["index"]: d["template"] for d in self.state["definitions"]})
 
-    def accepts(self, node):
+    def accepts(self, node, *, counter=None):
+        if counter is not None:
+            counter["type_scope_checks"] = counter.get("type_scope_checks", 0)+1
         if not isinstance(node, dict) or "op" not in node:
             raise ValueError("not a typed program")
         if lib.is_call(node):
-            definition = next((d for d in self.state["definitions"]
-                               if str(d["index"]) == str(node["abstraction"])), None)
+            definition = None
+            for d in self.state["definitions"]:
+                if counter is not None:
+                    counter["definition_lookup_checks"] = counter.get("definition_lookup_checks", 0)+1
+                if str(d["index"]) == str(node["abstraction"]):
+                    definition = d
+                    break
             if definition is None or definition["scope"] != self.domain.scope:
                 raise ValueError("missing definition or incompatible scope")
             if set(node["arguments"]) != set(definition["signature"]["parameters"]):
                 raise ValueError("call arity mismatch")
             for name, value in node["arguments"].items():
                 expected = definition["signature"]["parameters"][name]
-                actual = "rational" if not isinstance(value, dict) and sp.sympify(value).is_Rational else self.accepts(value)
+                actual = "rational" if not isinstance(value, dict) and sp.sympify(value).is_Rational else self.accepts(value, counter=counter)
                 if actual != expected:
                     raise ValueError("call argument type mismatch")
             return definition["signature"]["result"]
@@ -120,20 +127,20 @@ class Vocabulary:
             return "natural"
         if node.get("op") == "recurrence":
             self.law(node["procedure"])
-            if len(node["args"]) != 1 or self.accepts(node["args"][0]) != "natural":
+            if len(node["args"]) != 1 or self.accepts(node["args"][0], counter=counter) != "natural":
                 raise ValueError("recurrence takes one natural argument")
             return "scalar"
         if node.get("op") == "represented":
             r = materialize(self.theory.state, node["binding"])
             if r["scope"] != self.domain.scope or r["system_key"] != self.domain.key:
                 raise ValueError("representation outside scope")
-            if len(node["args"]) != 1 or self.accepts(node["args"][0]) != "action_word":
+            if len(node["args"]) != 1 or self.accepts(node["args"][0], counter=counter) != "action_word":
                 raise ValueError("represented observation takes one action word")
             return "scalar"
         # Delegate primitive typing after substituting typed representative leaves.
         children = []
         for child in node.get("args", []):
-            sort = self.accepts(child)
+            sort = self.accepts(child, counter=counter)
             if sort == "scalar":
                 children.append(self.domain.seeds()[0])
             elif sort == "predicate":
@@ -142,21 +149,23 @@ class Vocabulary:
                 raise ValueError("action word used as scalar")
         return self.domain.type_of(dict(node, args=children))
 
-    def expand(self, node):
-        self.accepts(node)
-        with lib.grammar(self.accepts):
-            return lib.expand_for_execution(node, self.table())
+    def expand(self, node, *, counter=None, charge=None):
+        self.accepts(node, counter=counter)
+        with lib.grammar(lambda p: self.accepts(p, counter=counter)):
+            return lib.expand_for_execution(node, self.table(), stats=counter, charge=charge)
 
-    def primitive(self, node):
-        node = self.expand(node)
+    def primitive(self, node, *, counter=None, charge=None):
+        node = self.expand(node, counter=counter, charge=charge)
         def walk(t):
             if t["op"] == "recurrence":
                 p, law = self.law(t["procedure"])
                 index = law["scope"]["initial_state_index"]
                 for _ in range(int(t["args"][0]["value"])):
+                    if charge is not None:
+                        charge("model_action_steps", 1)
                     index = self.domain.actions[law["label"]][index]
                 c = self.theory.state["concepts"][self.theory.state["representations"][p["representation"]]["concept"]]
-                value = self.domain.evaluate(c["definition"])[index]
+                value = self.domain.evaluate(c["definition"], charge=charge)[index]
                 return term("const", value=str(value))
             if t["op"] == "represented":
                 q = deepcopy(self.theory.state["concepts"][
@@ -168,11 +177,15 @@ class Vocabulary:
             return dict(t, args=[walk(a) for a in t.get("args", [])])
         return walk(node)
 
-    def evaluate(self, program, *, requirements=None):
+    def evaluate(self, program, *, requirements=None, charge=None, counter=None):
         if requirements and any(v not in (None, False, "unrestricted") for v in requirements.values()):
             raise ValueError("observation language does not certify additional legality or goal requirements")
-        node = self.expand(program)
-        counter = {"matrix_multiply_adds": 0, "representation_calls": 0}
+        counter = counter if counter is not None else {}
+        counter.setdefault("matrix_multiply_adds", 0)
+        counter.setdefault("representation_calls", 0)
+        began = time.perf_counter()
+        node = self.expand(program, counter=counter, charge=charge)
+        counter["expansion_validation_seconds"] = counter.get("expansion_validation_seconds", 0)+time.perf_counter()-began
         domain = copy(self.domain)
         domain.sensors, domain.names = dict(domain.sensors), list(domain.names)
         def walk(t):
@@ -181,6 +194,8 @@ class Vocabulary:
                     raise ValueError("recurrence permits only its certified initial state and repeats")
                 _, law = self.law(t["procedure"])
                 n = int(t["args"][0]["value"])
+                if charge is not None:
+                    charge("recurrence_multiply_adds", max(0, n+1-law["order"])*law["order"])
                 value = recurrence_value(law, n)
                 counter["recurrence_calls"] = counter.get("recurrence_calls", 0)+1
                 counter["recurrence_multiply_adds"] = counter.get("recurrence_multiply_adds", 0)+max(0, n+1-law["order"])*law["order"]
@@ -205,9 +220,13 @@ class Vocabulary:
                 else:
                     rows, matrices, weights = self._compiled_spaces[identity]
                     for g in reversed(t["args"][0]["letters"]):
+                        if charge is not None:
+                            charge("matrix_multiply_adds", r["dimension"]**2)
                         weights = tuple(sum(w*row[j] for w, row in zip(weights, matrices[g]))
                                         for j in range(len(weights)))
                         counter["matrix_multiply_adds"] += r["dimension"]**2
+                    if charge is not None:
+                        charge("matrix_multiply_adds", r["dimension"]*r["ambient_dimension"])
                     values = tuple(sum(w*row[j] for w, row in zip(weights, rows))
                                    for j in range(r["ambient_dimension"]))
                     counter["matrix_multiply_adds"] += r["dimension"]*len(values)
@@ -220,7 +239,7 @@ class Vocabulary:
                 domain.names.append(name)
                 return term("var", name=name)
             return dict(t, args=[walk(a) for a in t.get("args", [])])
-        result = domain.evaluate(walk(node), counter)
+        result = domain.evaluate(walk(node), counter, charge=charge)
         return result, counter
 
     def record(self, program, primitive, parents=()):
@@ -404,13 +423,14 @@ class Vocabulary:
             out.append(("synthesize", e.budget["batch"]))
         return out
 
-    def solve_observation(self, task, *, acquired=True):
+    def solve_observation(self, task, *, acquired=True, definitions_enabled=True):
         """Synthesize a program from its exact finite-model specification.
 
         This is a goal adapter for the existing typed planner. No witness or
         acquired body is supplied by the caller. Equality on the complete model
         is a congruence for the declared pure operations, not for legality.
         """
+        start = time.perf_counter()
         from math_os_prototype.runtime_typed_planner import (
             initial_fact, RuntimePrimitive, PrimitiveResult, synthesize_typed_plan)
         if self.domain.scope["kind"] != "complete_finite_model":
@@ -422,7 +442,8 @@ class Vocabulary:
             raise ValueError("query takes values, not a witness or a route")
         target = [str(sp.Rational(v)) for v in task["values"]]
         budget = task["budget"]
-        if set(budget) != {"states", "depth", "program_size", "expanded_size"} or any(
+        required = {"states", "depth", "program_size", "expanded_size"}
+        if not required <= set(budget) <= required | {"work"} or any(
                 type(v) is not int or v < 1 for v in budget.values()):
             raise ValueError("positive frozen query bounds required")
         before = digest(self.theory.state)
@@ -432,27 +453,48 @@ class Vocabulary:
         self._observation_values.clear()
         counter = {"candidate_evaluations": 0, "size_refusals": 0, "type_refusals": 0,
                    "semantic_nodes": 0, "representation_calls": 0,
-                   "matrix_multiply_adds": 0, "prover_calls": 0, "acquisition_calls": 0}
-        start = time.perf_counter()
+                   "matrix_multiply_adds": 0, "prover_calls": 0, "acquisition_calls": 0,
+                   "attempted_applications": 0, "verification_checks": 0,
+                   "primitive_expansion_seconds": 0, "evaluation_seconds": 0,
+                   "candidate_build_seconds": 0, "verification_seconds": 0,
+                   "rewrite_matching_checks": 0}
+        work = {"used": 0, "limit": budget.get("work"), "categories": {}}
+        class WorkLimit(RuntimeError):
+            pass
+        def charge(kind, count):
+            if work["limit"] is not None and work["used"]+count > work["limit"]:
+                raise WorkLimit("shared interpreter work budget exhausted")
+            work["used"] += count
+            work["categories"][kind] = work["categories"].get(kind, 0)+count
         def payload(program):
             if program_size(program) > budget["program_size"]:
                 counter["size_refusals"] += 1
                 return None
-            if size(self.primitive(program)) > budget["expanded_size"]:
+            began = time.perf_counter()
+            try:
+                expanded = self.primitive(program, counter=counter, charge=charge)
+            finally:
+                counter["primitive_expansion_seconds"] += time.perf_counter()-began
+            if size(expanded) > budget["expanded_size"]:
                 counter["size_refusals"] += 1
                 return None
-            sort = self.accepts(program)
+            sort = self.accepts(program, counter=counter)
             if sort in {"action_word", "natural"}:
                 return {"program": program, "values": program}
-            result, cost = self.evaluate(program)
-            counter["candidate_evaluations"] += 1
-            for k, v in cost.items():
-                counter[k] = counter.get(k, 0)+v
+            began = time.perf_counter()
+            try:
+                result, _ = self.evaluate(program, counter=counter, charge=charge)
+                counter["candidate_evaluations"] += 1
+            finally:
+                counter["evaluation_seconds"] += time.perf_counter()-began
             return {"program": program, "values": [str(v) for v in result]}
         def primitive(name, inputs, output, build):
             def execute(args):
+                counter["attempted_applications"] += 1
                 try:
+                    began = time.perf_counter()
                     p = build([a.value["program"] for a in args])
+                    counter["candidate_build_seconds"] += time.perf_counter()-began
                     value = payload(p)
                 except (ValueError, TypeError):
                     counter["type_refusals"] += 1
@@ -464,10 +506,12 @@ class Vocabulary:
         # external input set, distinguish B from A and C.
         seeds += [term("word", letters=[g]) for g in self.domain.actions]
         seeds += [term("natural", value=n) for n in (0, 1)]
-        facts = [initial_fact(self.accepts(p), payload(p)) for p in seeds]
+        if len(seeds) > budget["states"]:
+            raise ValueError("state budget cannot hold the common initial inputs")
+        facts = []
         operations = []
         if acquired:
-            definitions = sorted(self.state["definitions"], key=lambda d: (
+            definitions = sorted(self.state["definitions"] if definitions_enabled else [], key=lambda d: (
                 -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), d["index"]))
             for d in definitions:
                 names = list(d["signature"]["parameters"])
@@ -478,6 +522,9 @@ class Vocabulary:
             for rid in self.state["observation_operations"]:
                 operations.append(primitive("representation:"+rid, ["action_word"], "scalar",
                     lambda a, rid=rid: term("represented", a[0], binding=rid)))
+            for pid in self.state["recurrence_operations"]:
+                operations.append(primitive("recurrence:"+pid, ["natural"], "scalar",
+                    lambda a, pid=pid: term("recurrence", a[0], procedure=pid)))
         representatives = [self.domain.seeds()[0]]
         if "eq" in self.domain.operations:
             representatives.append(term("eq", representatives[0], representatives[0]))
@@ -491,24 +538,47 @@ class Vocabulary:
                 operations.append(primitive("primitive:"+key,
                     [self.domain.type_of(a) for a in prototype["args"]], self.domain.type_of(prototype),
                     lambda a, p=prototype: dict(p, args=a)))
-        plan = synthesize_typed_plan(facts, operations, ["scalar"],
-            max_depth=budget["depth"], max_states=budget["states"],
-            fair=True,
-            goal_predicates={"scalar": lambda f: f.value["values"] == target},
-            value_key=lambda sort, v: digest(v["values"]))
-        solution = plan.goals.get("scalar")
-        program = solution.value["program"] if solution else None
-        if program is not None:
-            independent = [str(v) for v in self.domain.evaluate(self.primitive(program))]
-            if independent != target:
-                raise AssertionError("synthesized solution fails independent finite-model replay")
+        program, stopped, plan = None, "bounded_search_exhausted", None
+        try:
+            facts = [initial_fact(self.accepts(p), payload(p)) for p in seeds]
+            if any(f.value is None for f in facts):
+                raise ValueError("size bounds exclude common initial inputs")
+            plan = synthesize_typed_plan(facts, operations, ["scalar"],
+                max_depth=budget["depth"], max_states=budget["states"], fair=True,
+                goal_predicates={"scalar": lambda f: f.value["values"] == target},
+                value_key=lambda sort, v: digest(v["values"]))
+            solution = plan.goals.get("scalar")
+            if solution is not None:
+                began = time.perf_counter()
+                try:
+                    expanded = self.primitive(solution.value["program"], counter=counter, charge=charge)
+                    independent = [str(v) for v in self.domain.evaluate(expanded, charge=charge)]
+                    counter["verification_checks"] += len(target)
+                    if independent != target:
+                        raise AssertionError("synthesized solution fails independent finite-model replay")
+                    program, stopped = solution.value["program"], "solved"
+                finally:
+                    counter["verification_seconds"] += time.perf_counter()-began
+        except WorkLimit:
+            stopped = "work_budget_exhausted"
         if digest(self.theory.state) != before:
             raise AssertionError("query changed the acquired archive")
-        return {"task": task["id"], "solved": solution is not None, "program": program,
+        bodies = [{k: d[k] for k in ("id", "index", "signature", "template", "scope", "dependencies")}
+                  for d in self.state["definitions"]]
+        structural_bits = sum(lib.cost(d) for d in bodies)
+        certified_bits = sum(lib.cost(self.theory.state.get(k, {})) for k in
+                             ("observable_spaces", "representations", "procedures"))
+        active_bits = (structural_bits if acquired and definitions_enabled else 0)+(certified_bits if acquired else 0)
+        return {"task": task["id"], "solved": program is not None, "program": program,
             "definitions_used": sorted(references(program)),
-            "states_explored": plan.states_explored, "costs": counter,
+            "states_explored": len(seeds)+counter["attempted_applications"], "costs": counter,
+            "work": work, "archive_digest": before,
+            "enabled_operations": [o.name for o in operations],
+            "library_cost": {"structural_definition_bits": structural_bits,
+                "certified_operation_bits": certified_bits, "active_bits": active_bits,
+                "stored_bits": structural_bits+certified_bits},
             "seconds": time.perf_counter()-start, "archive_unchanged": True,
             "proof": {"kind": "complete_finite_model_replay", "scope": self.domain.scope,
-                      "checks": len(target)} if solution else None,
-            "stop": "solved" if solution else "bounded_search_exhausted",
-            "program_bits": lib.cost(program) if solution else None}
+                      "checks": len(target)} if program else None,
+            "stop": stopped, "program_bits": lib.cost(program) if program else None,
+            "program_and_library_bits": lib.cost(program)+active_bits if program else None}

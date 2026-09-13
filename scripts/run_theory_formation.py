@@ -38,6 +38,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.knowledge and (not args.queries or args.resume):
         parser.error("--knowledge requires --queries and cannot resume training")
+    if args.queries and args.condition not in {"learn", "no-dsl", "initial-only"}:
+        parser.error("query conditions are initial-only, learn, or structural-only no-dsl")
     args.output.mkdir(parents=True, exist_ok=False)
     config = json.loads(args.config.read_text(encoding="utf-8"))
     source = source_seal()
@@ -72,7 +74,8 @@ def main(argv=None):
             write(args.output/"queries-input.json", tasks)
             queries = []
             for t in tasks:
-                row = engine.vocabulary.solve_observation(t, acquired=args.condition == "learn")
+                row = engine.vocabulary.solve_observation(t, acquired=args.condition != "initial-only",
+                    definitions_enabled=args.condition != "no-dsl")
                 queries.append(row)
                 write(args.output/"queries.json", queries)
                 print(json.dumps({"task": t["id"], "solved": row["solved"],

@@ -100,6 +100,57 @@ class Spaces(unittest.TestCase):
 
 
 class Definitions(unittest.TestCase):
+    def test_structural_ablation_retains_certified_operations_and_archive(self):
+        e = Theory(config())
+        cid = e.add_concept(term("neg", term("var", name="x")), [])
+        e.acquire(cid)
+        rid = next(iter(e.state["representations"]))
+        e.derive(rid, "a")
+        # A known unit-test definition; it is never an input to normal runs.
+        hole = lib.program_hole(0)
+        e.state["dsl"]["definitions"].append({"index": 0, "id": "unit-only",
+            "signature": {"parameters": {"f0": "scalar"}, "result": "scalar"},
+            "template": term("add", hole, term("neg", hole)), "scope": e.domain.scope,
+            "dependencies": [], "reuse_count": 0})
+        task = {"id": "unit-only", "scope": e.domain.scope, "values": ["99"]*3,
+            "budget": {"states": 50, "depth": 64, "program_size": 4096,
+                       "expanded_size": 4096, "work": 1_000_000}}
+        with patch.object(e.domain, "acquire", side_effect=AssertionError("reacquired")), \
+             patch.object(e.domain, "settle", side_effect=AssertionError("reproved")):
+            b = e.vocabulary.solve_observation(task)
+            c = e.vocabulary.solve_observation(task, definitions_enabled=False)
+        self.assertEqual(b["archive_digest"], c["archive_digest"])
+        self.assertEqual([o for o in b["enabled_operations"] if not o.startswith("definition:")], c["enabled_operations"])
+        self.assertTrue(any(o.startswith("recurrence:") for o in c["enabled_operations"]))
+        self.assertGreater(c["costs"]["representation_calls"], 0)
+        self.assertGreater(b["costs"]["macro_expansions"], 0)
+        self.assertEqual(c["costs"].get("macro_expansions", 0), 0)
+        self.assertEqual(b["library_cost"]["stored_bits"], c["library_cost"]["stored_bits"])
+        self.assertGreater(b["library_cost"]["active_bits"], c["library_cost"]["active_bits"])
+
+    def test_work_bound_stops_before_unpaid_execution(self):
+        e = Theory(config())
+        task = {"id": "unit-only", "scope": e.domain.scope, "values": ["0"]*3,
+                "budget": {"states": 128, "depth": 64, "program_size": 4096,
+                           "expanded_size": 4096, "work": 3}}
+        row = e.vocabulary.solve_observation(task, acquired=False)
+        self.assertFalse(row["solved"])
+        self.assertEqual(row["stop"], "work_budget_exhausted")
+        self.assertLessEqual(row["work"]["used"], 3)
+        self.assertEqual(row["costs"]["verification_checks"], 0)
+        self.assertTrue(row["archive_unchanged"])
+
+    def test_witness_bounds_do_not_exclude_the_initial_language(self):
+        from scripts.verify_theory_tasks import freeze
+        fixture = config()
+        fixture["domain"]["sensors"]["y"] = [3, 4, 5]
+        tasks, witnesses = freeze(fixture, seed=12345)
+        for task, witness in zip(tasks, witnesses):
+            self.assertNotIn("program", task)
+            self.assertLessEqual(witness["primitive_nodes"], task["budget"]["program_size"])
+            self.assertLessEqual(witness["primitive_nodes"], task["budget"]["expanded_size"])
+            self.assertLessEqual(witness["source_depth"], task["budget"]["depth"])
+
     def test_planner_duplicates_obey_budget_and_do_not_starve_operators(self):
         from math_os_prototype.runtime_typed_planner import (
             initial_fact, RuntimePrimitive, PrimitiveResult, synthesize_typed_plan)

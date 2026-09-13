@@ -1,5 +1,9 @@
 # Typed acquired composition and value-specified search
 
+This document describes the first protocol at commit `2b21189a65e7978ea935a9cb2583688cba07363f`.
+The current structural-only ablation and expanded cost accounting are specified
+in [DSL-SYNTHESIS-COMPARISON-20260913.md](DSL-SYNTHESIS-COMPARISON-20260913.md).
+
 This revision starts from `b47fdb1bb74513820cf491ac5906ed0ce510d5d7`.
 The previous recorded implementation was `eb086d561cc12ad93799736148c1edd466afb588`.
 Historical THEORY.md and NEXT.md status labels are unchanged.

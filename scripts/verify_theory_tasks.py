@@ -17,7 +17,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from math_os_prototype.theory_domain import Domain, term
+from math_os_prototype.theory_domain import Domain, term, size
 from scripts.run_theory_formation import write, source_seal
 from scripts.verify_theory_dsl import inspect
 
@@ -46,9 +46,11 @@ def freeze(config, seed=917331):
             raise ValueError("insufficient distinct frozen specifications")
         seen.add(key)
         task = {"id": f"external-{len(tasks):02d}", "scope": d.scope, "values": value,
-                "budget": {"states": 512, "depth": 5, "program_size": 12, "expanded_size": 64}}
+                "budget": {"states": 512, "depth": 64, "program_size": 4096,
+                           "expanded_size": 4096, "work": 1_000_000}}
         tasks.append(task)
-        witnesses.append({"task": task["id"], "source_depth": depth, "program": p})
+        witnesses.append({"task": task["id"], "source_depth": depth,
+                          "primitive_nodes": size(p), "program": p})
     return tasks, witnesses
 
 
@@ -67,7 +69,18 @@ def main():
     sources = source_seal()
     record = {"sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
               "workflow_run_id": os.environ.get("GITHUB_RUN_ID"), "source_seal": sources,
-              "challenge_seed": args.challenge_seed, "commands": [], "errors": [], "passed": False}
+              "challenge_seed": args.challenge_seed, "commands": [], "errors": [], "passed": False,
+              "process_seconds": {}}
+    record["protocol"] = "value-synthesis-structural-only-ablation-v2"
+    record["harness_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    record["all_targets_primitive_expressible_within_bounds"] = all(
+        w["primitive_nodes"] <= t["budget"]["program_size"] and
+        w["primitive_nodes"] <= t["budget"]["expanded_size"] and
+        w["source_depth"] <= t["budget"]["depth"] for w, t in zip(witnesses, tasks))
+    record["work_unit_definition"] = (
+        "expanded data visits + complete-model AST node evaluations + action steps "
+        "+ rational multiply-adds; charged before execution. Not bit complexity. "
+        "Scope/type/retrieval overhead is included in wall time, with lookup counts.")
     began = time.perf_counter()
     def run(name, *options):
         command = [sys.executable, str(ROOT/"scripts/run_theory_formation.py"),
@@ -75,7 +88,11 @@ def main():
         record["commands"].append(command)
         write(args.output/"verification.json", record)
         with (args.output/(name+".log")).open("w", encoding="utf-8") as log:
-            result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, timeout=900)
+            started = time.perf_counter()
+            try:
+                result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, timeout=900)
+            finally:
+                record["process_seconds"][name] = time.perf_counter()-started
         if result.returncode:
             raise RuntimeError(f"{name} stopped: return code {result.returncode}")
     try:
@@ -93,6 +110,11 @@ def main():
             "total": len(rs), "states_explored": sum(r["states_explored"] for r in rs),
             "median_states": statistics.median(r["states_explored"] for r in rs),
             "seconds": sum(r["seconds"] for r in rs),
+            "process_seconds": record["process_seconds"][n],
+            "work_used": sum(r["work"]["used"] for r in rs),
+            "library_bits_once": rs[0]["library_cost"]["active_bits"],
+            "solved_program_bits": sum(r["program_bits"] or 0 for r in rs),
+            "suite_description_bits": rs[0]["library_cost"]["active_bits"]+sum(r["program_bits"] or 0 for r in rs),
             "costs": {k: sum(r["costs"].get(k, 0) for r in rs)
                       for k in set().union(*(r["costs"] for r in rs))}} for n, rs in rows.items()}
         record["previously_unsolved_to_solved"] = [b["task"] for a, b in zip(rows["A-initial"], rows["B-acquired"])
@@ -101,13 +123,45 @@ def main():
                                     if a["solved"] and not b["solved"]]
         record["initial_mixed"] = 0 < record["conditions"]["A-initial"]["solved"] < len(tasks)
         record["budget_respected"] = all(r["states_explored"] <= t["budget"]["states"]
+                                         and r["work"]["used"] <= t["budget"]["work"]
                                          for rs in rows.values() for r, t in zip(rs, tasks))
+        record["size_bounds_nonbinding"] = all(r["costs"]["size_refusals"] == 0 for rs in rows.values() for r in rs)
         a, b = rows["A-initial"], rows["B-acquired"]
         record["common_solved_search_cost"] = [{"task": x["task"], "initial": x["states_explored"],
             "acquired": y["states_explored"]} for x, y in zip(a, b) if x["solved"] and y["solved"]]
-        record["ablation_restores_initial"] = [r["solved"] for r in rows["A-initial"]] == [r["solved"] for r in rows["C-disabled"]]
+        b, c = rows["B-acquired"], rows["C-disabled"]
+        record["structural_ablation_only"] = all(
+            x["archive_digest"] == y["archive_digest"] and
+            [op for op in x["enabled_operations"] if not op.startswith("definition:")] == y["enabled_operations"] and
+            not y["definitions_used"] and y["costs"].get("macro_expansions", 0) == 0
+            for x, y in zip(b, c))
+        record["structural_macro_gain_tasks"] = [x["task"] for x, y in zip(b, c) if x["solved"] and not y["solved"]]
+        record["structural_macro_lost_tasks"] = [y["task"] for x, y in zip(b, c) if y["solved"] and not x["solved"]]
+        common = [i for i in range(len(tasks)) if all(rs[i]["solved"] for rs in rows.values())]
+        record["common_solved_comparison"] = {n: {
+            "count": len(common), "states": sum(rs[i]["states_explored"] for i in common),
+            "seconds": sum(rs[i]["seconds"] for i in common),
+            "description_bits_with_library_once": rs[0]["library_cost"]["active_bits"]+sum(rs[i]["program_bits"] for i in common)
+            } for n, rs in rows.items()}
+        # Classify semantic overlap afterwards; never select targets with this.
+        domain = Domain(config["domain"])
+        seen = {tuple(v["values_or_normal_form"]) for v in state["concepts"].values() if v["type"] == "scalar"}
+        for row in state["dsl"]["corpus"]:
+            if domain.type_of(row["primitive"]) == "scalar":
+                seen.add(tuple(str(v) for v in domain.evaluate(row["primitive"])))
+        for row in state["dsl"]["executions"]:
+            if domain.type_of(row["primitive"]) == "scalar":
+                seen.add(tuple(str(v) for v in row["result"]))
+        record["semantic_overlap"] = {t["id"]: tuple(t["values"]) in seen for t in tasks}
+        record["unseen_semantic_tasks"] = {n: {"count": sum(not record["semantic_overlap"][t["id"]] for t in tasks),
+            "solved": sum(r["solved"] and not record["semantic_overlap"][r["task"]] for r in rs)} for n, rs in rows.items()}
+        record["acquisition_costs"] = state["costs"]
+        record["acquisition_seconds"] = state["seconds"]
         record["sources_unchanged"] = sources == source_seal()
-        record["passed"] = record["sources_unchanged"] and record["ablation_restores_initial"] and record["budget_respected"]
+        record["harness_unchanged"] = record["harness_sha256"] == hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+        record["passed"] = (record["sources_unchanged"] and record["structural_ablation_only"] and record["budget_respected"]
+            and record["all_targets_primitive_expressible_within_bounds"] and record["size_bounds_nonbinding"]
+            and record["initial_mixed"] and record["harness_unchanged"])
     except Exception as exc:
         record["errors"].append(f"{type(exc).__name__}: {exc}")
     record["wall_seconds"] = time.perf_counter()-began
