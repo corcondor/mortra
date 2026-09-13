@@ -5,6 +5,10 @@ No Python, mathematical primitive, prover, scheduler, retrieval policy or
 workflow implementation changes. Mathematical SHA remains
 `14d18a42c3a7c640a7c54c86c36b7238c419df56`.
 
+Stage2 completed in Actions34733054750. Fresh results and the limited
+expression-reduction effect are recorded in
+`docs/research/ARCHIVE-TERM-INTERACTION-RESULTS-20260913.md`.
+
 ## Why This Experiment
 
 Fresh Actions34725274254 found no extra held-out capability when archive128
