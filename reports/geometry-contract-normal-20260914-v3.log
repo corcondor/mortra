@@ -1,0 +1,174 @@
+{"phase": "training", "task": "train-01", "solved": true, "expansions": 2}
+{"phase": "training", "task": "train-02", "solved": true, "expansions": 4}
+{"phase": "training", "task": "train-03", "solved": true, "expansions": 10}
+{"phase": "training", "task": "train-04", "solved": true, "expansions": 43}
+{"phase": "training", "task": "train-05", "solved": true, "expansions": 45}
+{"phase": "primitive_only", "task": "unseen-01", "solved": true, "expansions": 14}
+{"phase": "primitive_only", "task": "unseen-02", "solved": true, "expansions": 16}
+{"phase": "primitive_only", "task": "unseen-03", "solved": false, "expansions": 119}
+{"phase": "primitive_only", "task": "unseen-04", "solved": false, "expansions": 119}
+{"phase": "syntactic_macro", "task": "unseen-01", "solved": true, "expansions": 28}
+{"phase": "syntactic_macro", "task": "unseen-02", "solved": true, "expansions": 38}
+{"phase": "syntactic_macro", "task": "unseen-03", "solved": false, "expansions": 119}
+{"phase": "syntactic_macro", "task": "unseen-04", "solved": false, "expansions": 119}
+{"phase": "library_compression", "task": "unseen-01", "solved": true, "expansions": 14}
+{"phase": "library_compression", "task": "unseen-02", "solved": true, "expansions": 16}
+{"phase": "library_compression", "task": "unseen-03", "solved": false, "expansions": 119}
+{"phase": "library_compression", "task": "unseen-04", "solved": false, "expansions": 119}
+{"phase": "certified_morphism", "task": "unseen-01", "solved": true, "expansions": 28}
+{"phase": "certified_morphism", "task": "unseen-02", "solved": true, "expansions": 38}
+{"phase": "certified_morphism", "task": "unseen-03", "solved": false, "expansions": 119}
+{"phase": "certified_morphism", "task": "unseen-04", "solved": false, "expansions": 119}
+{"phase": "ablation", "task": "unseen-01", "solved": true, "expansions": 28}
+{"phase": "ablation", "task": "unseen-02", "solved": true, "expansions": 32}
+{"phase": "ablation", "task": "unseen-03", "solved": false, "expansions": 119}
+{"phase": "ablation", "task": "unseen-04", "solved": false, "expansions": 119}
+{
+  "execution_completed": true,
+  "scope": {
+    "coefficient_field": "QQ",
+    "models": "real_coordinate_plane",
+    "actions": {
+      "midpoint": "bridge_midpoint_v1",
+      "foot": "bridge_foot_v1"
+    },
+    "predicates": {
+      "midp": "coordinate_average",
+      "coll": "determinant_zero",
+      "orthogonal": "vector_dot_zero"
+    },
+    "branch": "single_valued_rational",
+    "version": 1
+  },
+  "plan_sha256": "199c9c28f28b874b2d342bb23877b4b29aeb982425c66366bc9ebd5d1d39279c",
+  "archive_sha256": "1a92cae61f50668e8031dc740b189b008f166225fafd7f0815110aed01cb30b9",
+  "frozen_library_sha256": "1a92cae61f50668e8031dc740b189b008f166225fafd7f0815110aed01cb30b9",
+  "library_unchanged": true,
+  "summary": {
+    "primitive_only": {
+      "solved": 2,
+      "tasks": 4,
+      "false_proofs": 0,
+      "candidate_expansions": 268,
+      "primitive_equivalent_operations": 268,
+      "wall_seconds": 27.904311000020243,
+      "contract_check_seconds": 0.385719800091465,
+      "independent_replay_seconds": 0.3924024999869289,
+      "registration_certification_seconds": 0,
+      "registration_prover_calls": 0,
+      "goal_prover_calls": 1416,
+      "acquired_morphism_calls": 0,
+      "successful_acquired_applications": 0,
+      "rejected_acquired_applications": 0,
+      "goal_acquired_calls": 0
+    },
+    "syntactic_macro": {
+      "solved": 2,
+      "tasks": 4,
+      "false_proofs": 0,
+      "candidate_expansions": 304,
+      "primitive_equivalent_operations": 516,
+      "wall_seconds": 21.816771900004824,
+      "contract_check_seconds": 0.35368489992106333,
+      "independent_replay_seconds": 0.3297238999948604,
+      "registration_certification_seconds": 0,
+      "registration_prover_calls": 0,
+      "goal_prover_calls": 1966,
+      "acquired_morphism_calls": 212,
+      "successful_acquired_applications": 125,
+      "rejected_acquired_applications": 87,
+      "goal_acquired_calls": 2
+    },
+    "library_compression": {
+      "solved": 2,
+      "tasks": 4,
+      "false_proofs": 0,
+      "candidate_expansions": 268,
+      "primitive_equivalent_operations": 268,
+      "wall_seconds": 22.55643530000816,
+      "contract_check_seconds": 0.35246160000679083,
+      "independent_replay_seconds": 0.49835380000877194,
+      "registration_certification_seconds": 0,
+      "registration_prover_calls": 0,
+      "goal_prover_calls": 1416,
+      "acquired_morphism_calls": 0,
+      "successful_acquired_applications": 0,
+      "rejected_acquired_applications": 0,
+      "goal_acquired_calls": 0
+    },
+    "certified_morphism": {
+      "solved": 2,
+      "tasks": 4,
+      "false_proofs": 0,
+      "candidate_expansions": 304,
+      "primitive_equivalent_operations": 516,
+      "wall_seconds": 28.95947650000744,
+      "contract_check_seconds": 0.5940837000234751,
+      "independent_replay_seconds": 0.25877430000400636,
+      "registration_certification_seconds": 2.318802100009634,
+      "registration_prover_calls": 120,
+      "goal_prover_calls": 1966,
+      "acquired_morphism_calls": 212,
+      "successful_acquired_applications": 125,
+      "rejected_acquired_applications": 87,
+      "goal_acquired_calls": 2
+    },
+    "ablation": {
+      "solved": 2,
+      "tasks": 4,
+      "false_proofs": 0,
+      "candidate_expansions": 298,
+      "primitive_equivalent_operations": 471,
+      "wall_seconds": 29.05595749997883,
+      "contract_check_seconds": 0.6436928000766784,
+      "independent_replay_seconds": 0.4642393000103766,
+      "registration_certification_seconds": 3.193637899996247,
+      "registration_prover_calls": 88,
+      "goal_prover_calls": 1680,
+      "acquired_morphism_calls": 173,
+      "successful_acquired_applications": 82,
+      "rejected_acquired_applications": 91,
+      "goal_acquired_calls": 2
+    }
+  },
+  "acquired_count": 3,
+  "active_count": 3,
+  "ablation_excluded": [
+    "geom.a0247196c81e93c6fd89"
+  ],
+  "causal_comparison": [
+    {
+      "task": "unseen-01",
+      "lost_solve": false,
+      "additional_expansions": 0,
+      "longer_proof": false
+    },
+    {
+      "task": "unseen-02",
+      "lost_solve": false,
+      "additional_expansions": -6,
+      "longer_proof": false
+    },
+    {
+      "task": "unseen-03",
+      "lost_solve": false,
+      "additional_expansions": 0,
+      "longer_proof": false
+    },
+    {
+      "task": "unseen-04",
+      "lost_solve": false,
+      "additional_expansions": 0,
+      "longer_proof": false
+    }
+  ],
+  "acquisition_seconds": 1.362183199991705,
+  "acquisition_certification_seconds": 1.154690399984247,
+  "minimal_chain_passed": false,
+  "new_algorithm_claimed": false,
+  "external_prover_used": false,
+  "scope_note": "unseen construction specifications, not an olympiad theorem-solving benchmark",
+  "sources_unchanged": true,
+  "sha": "ed87f0ea67c921fbf686d47074762150507e418a",
+  "workflow_run_id": null
+}

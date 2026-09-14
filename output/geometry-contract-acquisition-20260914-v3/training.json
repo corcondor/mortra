@@ -1,0 +1,6970 @@
+[
+  {
+    "task": {
+      "id": "train-01",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "4*ux-3*ax-bx",
+        "4*uy-3*ay-by"
+      ],
+      "nonzero": []
+    },
+    "task_sha256": "b109107b0101a1d9991dd3c061e42b6af8358acada9221ade6c4bd4cfb1360a8",
+    "solved": true,
+    "stop_reason": "proved",
+    "state": {
+      "points": {
+        "a": [
+          "ax",
+          "ay"
+        ],
+        "b": [
+          "bx",
+          "by"
+        ],
+        "v2": [
+          "ax/2 + bx/2",
+          "ay/2 + by/2"
+        ],
+        "v3": [
+          "3*ax/4 + bx/4",
+          "3*ay/4 + by/4"
+        ]
+      },
+      "terms": {
+        "a": {
+          "op": "var",
+          "name": "a"
+        },
+        "b": {
+          "op": "var",
+          "name": "b"
+        },
+        "v2": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "v3": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "path": [
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v2"
+          ],
+          "output": "v2",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        }
+      ],
+      "certificates": [
+        "primitive_contract_composition",
+        "primitive_contract_composition"
+      ],
+      "primitive_equivalent_depth": 2
+    },
+    "proof": {
+      "point": "v3",
+      "term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "var",
+            "name": "a"
+          },
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "precondition": [],
+      "scope": {
+        "coefficient_field": "QQ",
+        "models": "real_coordinate_plane",
+        "actions": {
+          "midpoint": "bridge_midpoint_v1",
+          "foot": "bridge_foot_v1"
+        },
+        "predicates": {
+          "midp": "coordinate_average",
+          "coll": "determinant_zero",
+          "orthogonal": "vector_dot_zero"
+        },
+        "branch": "single_valued_rational",
+        "version": 1
+      }
+    },
+    "costs": {
+      "goal_prover_calls": 18,
+      "goal_proof_seconds": 0.0339867000002414,
+      "candidate_generation_seconds": 0.0008569000201532617,
+      "candidate_expansions": 2,
+      "primitive_equivalent_operations": 2,
+      "execution_seconds": 0.006102200000896119,
+      "contract_checks": 2,
+      "contract_check_seconds": 4.7000066842883825e-06,
+      "primitive_executions": 2,
+      "successful_applications": 2,
+      "successful_acquired_applications": 0,
+      "application_seconds_inclusive": 0.016913799991016276
+    },
+    "events": [
+      {
+        "event": "registry",
+        "primitives": [
+          "midpoint",
+          "foot"
+        ],
+        "acquired": [],
+        "scope": {
+          "coefficient_field": "QQ",
+          "models": "real_coordinate_plane",
+          "actions": {
+            "midpoint": "bridge_midpoint_v1",
+            "foot": "bridge_foot_v1"
+          },
+          "predicates": {
+            "midp": "coordinate_average",
+            "coll": "determinant_zero",
+            "orthogonal": "vector_dot_zero"
+          },
+          "branch": "single_valued_rational",
+          "version": 1
+        },
+        "mode": "certified"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "candidates": [
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v2"
+          ],
+          "output": "v2",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "child": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "candidates": []
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "candidates": [
+          {
+            "key": "midpoint(a,v2)",
+            "inputs": [
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(b,v2)",
+            "inputs": [
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "child": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12"
+      },
+      {
+        "event": "goal_certificate",
+        "witness": {
+          "point": "v3",
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "precondition": [],
+          "scope": {
+            "coefficient_field": "QQ",
+            "models": "real_coordinate_plane",
+            "actions": {
+              "midpoint": "bridge_midpoint_v1",
+              "foot": "bridge_foot_v1"
+            },
+            "predicates": {
+              "midp": "coordinate_average",
+              "coll": "determinant_zero",
+              "orthogonal": "vector_dot_zero"
+            },
+            "branch": "single_valued_rational",
+            "version": 1
+          }
+        },
+        "state": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12"
+      }
+    ],
+    "wall_seconds": 0.09976200001256075,
+    "wall_budget_is_soft": true,
+    "proof_length": 2,
+    "macro_proof_length": 2,
+    "proof_actions": [
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "b"
+        ],
+        "outputs": [
+          "v2"
+        ],
+        "output": "v2",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "v2"
+        ],
+        "outputs": [
+          "v3"
+        ],
+        "output": "v3",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      }
+    ],
+    "goal_acquired_calls": [],
+    "false_proofs": 0,
+    "false_proof_scope": "requires independent replay",
+    "independent_replay": {
+      "checked": true,
+      "passed": true,
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "primitive_operations": 2,
+      "contract_id": "geom.f71187001d6331dbe4ee",
+      "seconds": 0.10435209999559447,
+      "method": "primitive_reexecution_and_relational_witness_certificate"
+    }
+  },
+  {
+    "task": {
+      "id": "train-02",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "4*ux-ax-3*bx",
+        "4*uy-ay-3*by"
+      ],
+      "nonzero": []
+    },
+    "task_sha256": "d9a5ee3c9ad5c4a2b26c5c48a397265b6ce5f0fd839af418f7f65bc49e02e741",
+    "solved": true,
+    "stop_reason": "proved",
+    "state": {
+      "points": {
+        "a": [
+          "ax",
+          "ay"
+        ],
+        "b": [
+          "bx",
+          "by"
+        ],
+        "v2": [
+          "ax/2 + bx/2",
+          "ay/2 + by/2"
+        ],
+        "v3": [
+          "ax/4 + 3*bx/4",
+          "ay/4 + 3*by/4"
+        ]
+      },
+      "terms": {
+        "a": {
+          "op": "var",
+          "name": "a"
+        },
+        "b": {
+          "op": "var",
+          "name": "b"
+        },
+        "v2": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "v3": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "b"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "path": [
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v2"
+          ],
+          "output": "v2",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        }
+      ],
+      "certificates": [
+        "primitive_contract_composition",
+        "primitive_contract_composition"
+      ],
+      "primitive_equivalent_depth": 2
+    },
+    "proof": {
+      "point": "v3",
+      "term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "var",
+            "name": "b"
+          },
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "precondition": [],
+      "scope": {
+        "coefficient_field": "QQ",
+        "models": "real_coordinate_plane",
+        "actions": {
+          "midpoint": "bridge_midpoint_v1",
+          "foot": "bridge_foot_v1"
+        },
+        "predicates": {
+          "midp": "coordinate_average",
+          "coll": "determinant_zero",
+          "orthogonal": "vector_dot_zero"
+        },
+        "branch": "single_valued_rational",
+        "version": 1
+      }
+    },
+    "costs": {
+      "goal_prover_calls": 26,
+      "goal_proof_seconds": 0.060865999999805354,
+      "candidate_generation_seconds": 0.0005315000162227079,
+      "candidate_expansions": 4,
+      "primitive_equivalent_operations": 4,
+      "execution_seconds": 0.029990399998496287,
+      "contract_checks": 3,
+      "contract_check_seconds": 5.399982910603285e-06,
+      "primitive_executions": 3,
+      "successful_applications": 3,
+      "successful_acquired_applications": 0,
+      "application_seconds_inclusive": 0.06101160000253003,
+      "rejected_applications": 1,
+      "rejected_acquired_applications": 0
+    },
+    "events": [
+      {
+        "event": "registry",
+        "primitives": [
+          "midpoint",
+          "foot"
+        ],
+        "acquired": [],
+        "scope": {
+          "coefficient_field": "QQ",
+          "models": "real_coordinate_plane",
+          "actions": {
+            "midpoint": "bridge_midpoint_v1",
+            "foot": "bridge_foot_v1"
+          },
+          "predicates": {
+            "midp": "coordinate_average",
+            "coll": "determinant_zero",
+            "orthogonal": "vector_dot_zero"
+          },
+          "branch": "single_valued_rational",
+          "version": 1
+        },
+        "mode": "certified"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "candidates": [
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v2"
+          ],
+          "output": "v2",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "child": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "candidates": []
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "candidates": [
+          {
+            "key": "midpoint(a,v2)",
+            "inputs": [
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(b,v2)",
+            "inputs": [
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "child": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "candidates": [
+          {
+            "key": "foot(a,b,v2)",
+            "inputs": [
+              "a",
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(b,a,v2)",
+            "inputs": [
+              "b",
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(v2,a,b)",
+            "inputs": [
+              "v2",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v2"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "child": "d2ea4d5ff2dae722fabfc5fc8c3804740915a1a2b1b59c6d6f06989064211394"
+      },
+      {
+        "event": "goal_certificate",
+        "witness": {
+          "point": "v3",
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "precondition": [],
+          "scope": {
+            "coefficient_field": "QQ",
+            "models": "real_coordinate_plane",
+            "actions": {
+              "midpoint": "bridge_midpoint_v1",
+              "foot": "bridge_foot_v1"
+            },
+            "predicates": {
+              "midp": "coordinate_average",
+              "coll": "determinant_zero",
+              "orthogonal": "vector_dot_zero"
+            },
+            "branch": "single_valued_rational",
+            "version": 1
+          }
+        },
+        "state": "d2ea4d5ff2dae722fabfc5fc8c3804740915a1a2b1b59c6d6f06989064211394"
+      }
+    ],
+    "wall_seconds": 0.13656530001026113,
+    "wall_budget_is_soft": true,
+    "proof_length": 2,
+    "macro_proof_length": 2,
+    "proof_actions": [
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "b"
+        ],
+        "outputs": [
+          "v2"
+        ],
+        "output": "v2",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "b",
+          "v2"
+        ],
+        "outputs": [
+          "v3"
+        ],
+        "output": "v3",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "b"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      }
+    ],
+    "goal_acquired_calls": [],
+    "false_proofs": 0,
+    "false_proof_scope": "requires independent replay",
+    "independent_replay": {
+      "checked": true,
+      "passed": true,
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "primitive_operations": 2,
+      "contract_id": "geom.4f4ff2221fa0685d8c59",
+      "seconds": 0.13735210000595544,
+      "method": "primitive_reexecution_and_relational_witness_certificate"
+    }
+  },
+  {
+    "task": {
+      "id": "train-03",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "8*ux-7*ax-bx",
+        "8*uy-7*ay-by"
+      ],
+      "nonzero": []
+    },
+    "task_sha256": "8401fbd3beffded37dfb9259cfa2e5c8181fb4ba35cc3639d30e46ffea9e3804",
+    "solved": true,
+    "stop_reason": "proved",
+    "state": {
+      "points": {
+        "a": [
+          "ax",
+          "ay"
+        ],
+        "b": [
+          "bx",
+          "by"
+        ],
+        "v2": [
+          "ax/2 + bx/2",
+          "ay/2 + by/2"
+        ],
+        "v3": [
+          "3*ax/4 + bx/4",
+          "3*ay/4 + by/4"
+        ],
+        "v4": [
+          "7*ax/8 + bx/8",
+          "7*ay/8 + by/8"
+        ]
+      },
+      "terms": {
+        "a": {
+          "op": "var",
+          "name": "a"
+        },
+        "b": {
+          "op": "var",
+          "name": "b"
+        },
+        "v2": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "v3": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "v4": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "path": [
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v2"
+          ],
+          "output": "v2",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "midpoint",
+                    "args": [
+                      {
+                        "op": "var",
+                        "name": "a"
+                      },
+                      {
+                        "op": "var",
+                        "name": "b"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        }
+      ],
+      "certificates": [
+        "primitive_contract_composition",
+        "primitive_contract_composition",
+        "primitive_contract_composition"
+      ],
+      "primitive_equivalent_depth": 3
+    },
+    "proof": {
+      "point": "v4",
+      "term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "var",
+            "name": "a"
+          },
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "precondition": [],
+      "scope": {
+        "coefficient_field": "QQ",
+        "models": "real_coordinate_plane",
+        "actions": {
+          "midpoint": "bridge_midpoint_v1",
+          "foot": "bridge_foot_v1"
+        },
+        "predicates": {
+          "midp": "coordinate_average",
+          "coll": "determinant_zero",
+          "orthogonal": "vector_dot_zero"
+        },
+        "branch": "single_valued_rational",
+        "version": 1
+      }
+    },
+    "costs": {
+      "goal_prover_calls": 36,
+      "goal_proof_seconds": 0.1343401000049198,
+      "candidate_generation_seconds": 0.0016642999689793214,
+      "candidate_expansions": 10,
+      "primitive_equivalent_operations": 10,
+      "execution_seconds": 0.07673950000025798,
+      "contract_checks": 6,
+      "contract_check_seconds": 6.140001642052084e-05,
+      "primitive_executions": 6,
+      "successful_applications": 4,
+      "successful_acquired_applications": 0,
+      "application_seconds_inclusive": 0.18366589999641292,
+      "rejected_applications": 6,
+      "rejected_acquired_applications": 0
+    },
+    "events": [
+      {
+        "event": "registry",
+        "primitives": [
+          "midpoint",
+          "foot"
+        ],
+        "acquired": [],
+        "scope": {
+          "coefficient_field": "QQ",
+          "models": "real_coordinate_plane",
+          "actions": {
+            "midpoint": "bridge_midpoint_v1",
+            "foot": "bridge_foot_v1"
+          },
+          "predicates": {
+            "midp": "coordinate_average",
+            "coll": "determinant_zero",
+            "orthogonal": "vector_dot_zero"
+          },
+          "branch": "single_valued_rational",
+          "version": 1
+        },
+        "mode": "certified"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "candidates": [
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v2"
+          ],
+          "output": "v2",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "child": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "160aa31a23f8bbf973cfad0f6fd6ebcb97220df2d83552779ba92e45961724d2",
+        "candidates": []
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "candidates": [
+          {
+            "key": "midpoint(a,v2)",
+            "inputs": [
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(b,v2)",
+            "inputs": [
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "child": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "candidates": [
+          {
+            "key": "foot(a,b,v2)",
+            "inputs": [
+              "a",
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(b,a,v2)",
+            "inputs": [
+              "b",
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(v2,a,b)",
+            "inputs": [
+              "v2",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v2"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v2"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "755863c1e6616c75a4ea7747073748b2ed58eff340ac03775ce6eb9c8cde4762",
+        "child": "d2ea4d5ff2dae722fabfc5fc8c3804740915a1a2b1b59c6d6f06989064211394"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "v2"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2']"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "b"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v2",
+          "a",
+          "b"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12",
+        "candidates": [
+          {
+            "key": "midpoint(a,v2)",
+            "inputs": [
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v2)",
+            "inputs": [
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "midpoint(v2,v3)",
+            "inputs": [
+              "v2",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "v2"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12",
+        "candidates": [
+          {
+            "key": "foot(a,b,v2)",
+            "inputs": [
+              "a",
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(b,a,v2)",
+            "inputs": [
+              "b",
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(a,v2,v3)",
+            "inputs": [
+              "a",
+              "v2",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v2,a,v3)",
+            "inputs": [
+              "v2",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v3,a,v2)",
+            "inputs": [
+              "v3",
+              "a",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(b,a,v3)",
+            "inputs": [
+              "b",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,v2,v3)",
+            "inputs": [
+              "b",
+              "v2",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v3,b,v2)",
+            "inputs": [
+              "v3",
+              "b",
+              "v2"
+            ]
+          },
+          {
+            "key": "foot(a,b,v3)",
+            "inputs": [
+              "a",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v2,b,v3)",
+            "inputs": [
+              "v2",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v2,a,b)",
+            "inputs": [
+              "v2",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(v3,a,b)",
+            "inputs": [
+              "v3",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v2"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "midpoint",
+                    "args": [
+                      {
+                        "op": "var",
+                        "name": "a"
+                      },
+                      {
+                        "op": "var",
+                        "name": "b"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "9fd083daf4e1b80fbcfa4ddb3d8771157a9ec8daf091bad074afb4fd54dc8e12",
+        "child": "4ce8460bbd6e5de9dfdea4cdc8cbd39dcc3f30b753fcc265d0585918b0e97c9f"
+      },
+      {
+        "event": "goal_certificate",
+        "witness": {
+          "point": "v4",
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "midpoint",
+                    "args": [
+                      {
+                        "op": "var",
+                        "name": "a"
+                      },
+                      {
+                        "op": "var",
+                        "name": "b"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "precondition": [],
+          "scope": {
+            "coefficient_field": "QQ",
+            "models": "real_coordinate_plane",
+            "actions": {
+              "midpoint": "bridge_midpoint_v1",
+              "foot": "bridge_foot_v1"
+            },
+            "predicates": {
+              "midp": "coordinate_average",
+              "coll": "determinant_zero",
+              "orthogonal": "vector_dot_zero"
+            },
+            "branch": "single_valued_rational",
+            "version": 1
+          }
+        },
+        "state": "4ce8460bbd6e5de9dfdea4cdc8cbd39dcc3f30b753fcc265d0585918b0e97c9f"
+      }
+    ],
+    "wall_seconds": 0.36569420000887476,
+    "wall_budget_is_soft": true,
+    "proof_length": 3,
+    "macro_proof_length": 3,
+    "proof_actions": [
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "b"
+        ],
+        "outputs": [
+          "v2"
+        ],
+        "output": "v2",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "v2"
+        ],
+        "outputs": [
+          "v3"
+        ],
+        "output": "v3",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "v3"
+        ],
+        "outputs": [
+          "v4"
+        ],
+        "output": "v4",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      }
+    ],
+    "goal_acquired_calls": [],
+    "false_proofs": 0,
+    "false_proof_scope": "requires independent replay",
+    "independent_replay": {
+      "checked": true,
+      "passed": true,
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "primitive_operations": 3,
+      "contract_id": "geom.49f3f3138cf359dcab55",
+      "seconds": 0.3297270000039134,
+      "method": "primitive_reexecution_and_relational_witness_certificate"
+    }
+  },
+  {
+    "task": {
+      "id": "train-04",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "2*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    },
+    "task_sha256": "98f40c93fa47100108f6e0a5a5569313b65284c9ed2ca01e087eb67ecd6c0c0f",
+    "solved": true,
+    "stop_reason": "proved",
+    "state": {
+      "points": {
+        "a": [
+          "ax",
+          "ay"
+        ],
+        "b": [
+          "bx",
+          "by"
+        ],
+        "c": [
+          "cx",
+          "cy"
+        ],
+        "v3": [
+          "(ax**2*cx - ax*ay*by + ax*ay*cy - 2*ax*bx*cx + ax*by**2 - ax*by*cy + ay**2*bx - ay*bx*by - ay*bx*cy + bx**2*cx + bx*by*cy)/(ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2)",
+          "(ax**2*by - ax*ay*bx + ax*ay*cx - ax*bx*by - ax*by*cx + ay**2*cy + ay*bx**2 - ay*bx*cx - 2*ay*by*cy + bx*by*cx + by**2*cy)/(ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2)"
+        ],
+        "v4": [
+          "(ax**3 - 2*ax**2*bx + ax**2*cx + ax*ay**2 - 3*ax*ay*by + ax*ay*cy + ax*bx**2 - 2*ax*bx*cx + 2*ax*by**2 - ax*by*cy + ay**2*bx - ay*bx*by - ay*bx*cy + bx**2*cx + bx*by*cy)/(2*ax**2 - 4*ax*bx + 2*ay**2 - 4*ay*by + 2*bx**2 + 2*by**2)",
+          "(ax**2*ay + ax**2*by - 3*ax*ay*bx + ax*ay*cx - ax*bx*by - ax*by*cx + ay**3 - 2*ay**2*by + ay**2*cy + 2*ay*bx**2 - ay*bx*cx + ay*by**2 - 2*ay*by*cy + bx*by*cx + by**2*cy)/(2*ax**2 - 4*ax*bx + 2*ay**2 - 4*ay*by + 2*bx**2 + 2*by**2)"
+        ]
+      },
+      "terms": {
+        "a": {
+          "op": "var",
+          "name": "a"
+        },
+        "b": {
+          "op": "var",
+          "name": "b"
+        },
+        "c": {
+          "op": "var",
+          "name": "c"
+        },
+        "v3": {
+          "op": "foot",
+          "args": [
+            {
+              "op": "var",
+              "name": "c"
+            },
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "v4": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "path": [
+        {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        }
+      ],
+      "certificates": [
+        "primitive_contract_composition",
+        "primitive_contract_composition"
+      ],
+      "primitive_equivalent_depth": 2
+    },
+    "proof": {
+      "point": "v4",
+      "term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "var",
+            "name": "a"
+          },
+          {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "precondition": [
+        "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2"
+      ],
+      "scope": {
+        "coefficient_field": "QQ",
+        "models": "real_coordinate_plane",
+        "actions": {
+          "midpoint": "bridge_midpoint_v1",
+          "foot": "bridge_foot_v1"
+        },
+        "predicates": {
+          "midp": "coordinate_average",
+          "coll": "determinant_zero",
+          "orthogonal": "vector_dot_zero"
+        },
+        "branch": "single_valued_rational",
+        "version": 1
+      }
+    },
+    "costs": {
+      "goal_prover_calls": 228,
+      "goal_proof_seconds": 1.997559299968998,
+      "candidate_generation_seconds": 0.004306699993321672,
+      "candidate_expansions": 43,
+      "primitive_equivalent_operations": 43,
+      "execution_seconds": 0.7251611999818124,
+      "contract_checks": 29,
+      "contract_check_seconds": 0.05195929996261839,
+      "primitive_executions": 29,
+      "successful_applications": 23,
+      "successful_acquired_applications": 0,
+      "application_seconds_inclusive": 1.3920286000065971,
+      "rejected_applications": 20,
+      "rejected_acquired_applications": 0
+    },
+    "events": [
+      {
+        "event": "registry",
+        "primitives": [
+          "midpoint",
+          "foot"
+        ],
+        "acquired": [],
+        "scope": {
+          "coefficient_field": "QQ",
+          "models": "real_coordinate_plane",
+          "actions": {
+            "midpoint": "bridge_midpoint_v1",
+            "foot": "bridge_foot_v1"
+          },
+          "predicates": {
+            "midp": "coordinate_average",
+            "coll": "determinant_zero",
+            "orthogonal": "vector_dot_zero"
+          },
+          "branch": "single_valued_rational",
+          "version": 1
+        },
+        "mode": "certified"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "candidates": [
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "candidates": [
+          {
+            "key": "foot(a,b,c)",
+            "inputs": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(b,a,c)",
+            "inputs": [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(c,a,b)",
+            "inputs": [
+              "c",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "c"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "c"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "candidates": [
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "f2efa332e97df376cc9b705788a11e114e38813d9a341707e1713b393a25d1e6"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "candidates": [
+          {
+            "key": "foot(a,b,v3)",
+            "inputs": [
+              "a",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,a,v3)",
+            "inputs": [
+              "b",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,a,v3)",
+            "inputs": [
+              "c",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,b,v3)",
+            "inputs": [
+              "c",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(a,c,v3)",
+            "inputs": [
+              "a",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,c,v3)",
+            "inputs": [
+              "b",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v3,a,b)",
+            "inputs": [
+              "v3",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(v3,a,c)",
+            "inputs": [
+              "v3",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(v3,b,c)",
+            "inputs": [
+              "v3",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(c,a,b)",
+            "inputs": [
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(a,b,c)",
+            "inputs": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(b,a,c)",
+            "inputs": [
+              "b",
+              "a",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v3"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "6d79fc2f9cb5a9341e69350dbce4d26fc98015441222355c8d7ae70a3a03ed17"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "v3"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "c",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "74564fac03ec12a0c213e79edef0f2b951be4b9606b2f1af6df3fc0899decb49"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "97f38696e207d3729b3cc29b81b9afa0cd1329b56697b678b4d3b23c312906c7"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "b"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "6b8546d59711bd0bf9b11affba676654058c71f487c9fd96cc0fb6d13ceebcb9"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "0ce9d792444c5e9e783e54a8c502b7b5037ed8352f4605cb45f6b8b8f659296f"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 + 2*ax*bx - 4*ax*cx + ay**2 + 2*ay*by - 4*ay*cy + bx**2 - 4*bx*cx + by**2 - 4*by*cy + 4*cx**2 + 4*cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "ac1ff8e1e3aca70646bce655579123148441ec19b612a1dc7af5f32ec9b7b902"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 + 2*ax*bx - 4*ax*cx + ay**2 + 2*ay*by - 4*ay*cy + bx**2 - 4*bx*cx + by**2 - 4*by*cy + 4*cx**2 + 4*cy**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "candidates": [
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "333a33b6fed27781a52796fdb8ed462840573a05383bdd5b5608a21bc43d1bd5"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "a",
+          "b"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "c",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "63a95f5545219b0024a333477df9d532b9b509558f4da141e3428cbdd6ed078f"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "4e3a2b917b4da047b2c31ef0d46a5c2ba18a66dbcb20df161ef0c14b0c0a4ff0"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "b",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "c"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "2169703e009697dac41eba3e6b37c24db4da9b074fac46d8961692f98dfe6726"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "ed1010bca323d2a76a74e56e24c4f244894766f892c908d7d00059d8456cb74a"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "809fee2c739b5a94223bd98275cd05ca6dc30076f7a1787189ad983661827380"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "candidates": [
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "b"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "f87de50271b56fddb93e95e3e72000138d50da7bec86d40affedfa23343e561b"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "candidates": [
+          {
+            "key": "foot(a,c,v3)",
+            "inputs": [
+              "a",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,a,v3)",
+            "inputs": [
+              "c",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,a,v3)",
+            "inputs": [
+              "b",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,c,v3)",
+            "inputs": [
+              "b",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(a,b,v3)",
+            "inputs": [
+              "a",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,b,v3)",
+            "inputs": [
+              "c",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v3,a,c)",
+            "inputs": [
+              "v3",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(v3,a,b)",
+            "inputs": [
+              "v3",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(v3,b,c)",
+            "inputs": [
+              "v3",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(b,a,c)",
+            "inputs": [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(a,b,c)",
+            "inputs": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(c,a,b)",
+            "inputs": [
+              "c",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "c",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "b"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "375b363e4752bc46f0c3a2f433425d2122a6ab12012fafc863ef5965545a14db"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "c",
+          "a",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "b"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "ee668466b6c0f669131c0c155c4a401e7d1003f6add8a61a54fb24ca8a5ccb2a"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "b",
+          "c"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "397ffa6554c8dab49e2b57cc15bce4b5c109ff843200ccf8c73fd24c20345791"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 4*ax*bx + 2*ax*cx + ay**2 - 4*ay*by + 2*ay*cy + 4*bx**2 - 4*bx*cx + 4*by**2 - 4*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "47e7ca872a6edc4f8cc073eef984fcb4c14faef900950c40d5a9f710675c54fa"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "c",
+          "b",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 4*ax*bx + 2*ax*cx + ay**2 - 4*ay*by + 2*ay*cy + 4*bx**2 - 4*bx*cx + 4*by**2 - 4*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89",
+        "candidates": [
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89",
+        "child": "6c46e92a2235cf16427a728e0388fc70b5136079b08501bb6a3d52ae942c4a84"
+      },
+      {
+        "event": "goal_certificate",
+        "witness": {
+          "point": "v4",
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "precondition": [
+            "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2"
+          ],
+          "scope": {
+            "coefficient_field": "QQ",
+            "models": "real_coordinate_plane",
+            "actions": {
+              "midpoint": "bridge_midpoint_v1",
+              "foot": "bridge_foot_v1"
+            },
+            "predicates": {
+              "midp": "coordinate_average",
+              "coll": "determinant_zero",
+              "orthogonal": "vector_dot_zero"
+            },
+            "branch": "single_valued_rational",
+            "version": 1
+          }
+        },
+        "state": "6c46e92a2235cf16427a728e0388fc70b5136079b08501bb6a3d52ae942c4a84"
+      }
+    ],
+    "wall_seconds": 3.5761089000006905,
+    "wall_budget_is_soft": true,
+    "proof_length": 2,
+    "macro_proof_length": 2,
+    "proof_actions": [
+      {
+        "family": "foot",
+        "inputs": [
+          "c",
+          "a",
+          "b"
+        ],
+        "outputs": [
+          "v3"
+        ],
+        "output": "v3",
+        "body": {
+          "op": "foot",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            }
+          ]
+        },
+        "term": {
+          "op": "foot",
+          "args": [
+            {
+              "op": "var",
+              "name": "c"
+            },
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "v3"
+        ],
+        "outputs": [
+          "v4"
+        ],
+        "output": "v4",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      }
+    ],
+    "goal_acquired_calls": [],
+    "false_proofs": 0,
+    "false_proof_scope": "requires independent replay",
+    "independent_replay": {
+      "checked": true,
+      "passed": true,
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "primitive_operations": 2,
+      "contract_id": "geom.077dde28b5848b4560cf",
+      "seconds": 0.817425799992634,
+      "method": "primitive_reexecution_and_relational_witness_certificate"
+    }
+  },
+  {
+    "task": {
+      "id": "train-05",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "2*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))-((bx-ax)**2+(by-ay)**2)"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    },
+    "task_sha256": "9b869b3f6654d124835fdec98ba6147a201ded74a900c0ac0936b9633b8a37bb",
+    "solved": true,
+    "stop_reason": "proved",
+    "state": {
+      "points": {
+        "a": [
+          "ax",
+          "ay"
+        ],
+        "b": [
+          "bx",
+          "by"
+        ],
+        "c": [
+          "cx",
+          "cy"
+        ],
+        "v3": [
+          "(ax**2*cx - ax*ay*by + ax*ay*cy - 2*ax*bx*cx + ax*by**2 - ax*by*cy + ay**2*bx - ay*bx*by - ay*bx*cy + bx**2*cx + bx*by*cy)/(ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2)",
+          "(ax**2*by - ax*ay*bx + ax*ay*cx - ax*bx*by - ax*by*cx + ay**2*cy + ay*bx**2 - ay*bx*cx - 2*ay*by*cy + bx*by*cx + by**2*cy)/(ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2)"
+        ],
+        "v4": [
+          "(ax**2*bx + ax**2*cx - ax*ay*by + ax*ay*cy - 2*ax*bx**2 - 2*ax*bx*cx + ax*by**2 - ax*by*cy + 2*ay**2*bx - 3*ay*bx*by - ay*bx*cy + bx**3 + bx**2*cx + bx*by**2 + bx*by*cy)/(2*ax**2 - 4*ax*bx + 2*ay**2 - 4*ay*by + 2*bx**2 + 2*by**2)",
+          "(2*ax**2*by - ax*ay*bx + ax*ay*cx - 3*ax*bx*by - ax*by*cx + ay**2*by + ay**2*cy + ay*bx**2 - ay*bx*cx - 2*ay*by**2 - 2*ay*by*cy + bx**2*by + bx*by*cx + by**3 + by**2*cy)/(2*ax**2 - 4*ax*bx + 2*ay**2 - 4*ay*by + 2*bx**2 + 2*by**2)"
+        ]
+      },
+      "terms": {
+        "a": {
+          "op": "var",
+          "name": "a"
+        },
+        "b": {
+          "op": "var",
+          "name": "b"
+        },
+        "c": {
+          "op": "var",
+          "name": "c"
+        },
+        "v3": {
+          "op": "foot",
+          "args": [
+            {
+              "op": "var",
+              "name": "c"
+            },
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "v4": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "b"
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "path": [
+        {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        }
+      ],
+      "certificates": [
+        "primitive_contract_composition",
+        "primitive_contract_composition"
+      ],
+      "primitive_equivalent_depth": 2
+    },
+    "proof": {
+      "point": "v4",
+      "term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "var",
+            "name": "b"
+          },
+          {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "precondition": [
+        "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2"
+      ],
+      "scope": {
+        "coefficient_field": "QQ",
+        "models": "real_coordinate_plane",
+        "actions": {
+          "midpoint": "bridge_midpoint_v1",
+          "foot": "bridge_foot_v1"
+        },
+        "predicates": {
+          "midp": "coordinate_average",
+          "coll": "determinant_zero",
+          "orthogonal": "vector_dot_zero"
+        },
+        "branch": "single_valued_rational",
+        "version": 1
+      }
+    },
+    "costs": {
+      "goal_prover_calls": 238,
+      "goal_proof_seconds": 1.8707635000318987,
+      "candidate_generation_seconds": 0.004079600010300055,
+      "candidate_expansions": 45,
+      "primitive_equivalent_operations": 45,
+      "execution_seconds": 0.544038600040949,
+      "contract_checks": 30,
+      "contract_check_seconds": 0.043493500037584454,
+      "primitive_executions": 30,
+      "successful_applications": 24,
+      "successful_acquired_applications": 0,
+      "application_seconds_inclusive": 1.2086720999941463,
+      "rejected_applications": 21,
+      "rejected_acquired_applications": 0
+    },
+    "events": [
+      {
+        "event": "registry",
+        "primitives": [
+          "midpoint",
+          "foot"
+        ],
+        "acquired": [],
+        "scope": {
+          "coefficient_field": "QQ",
+          "models": "real_coordinate_plane",
+          "actions": {
+            "midpoint": "bridge_midpoint_v1",
+            "foot": "bridge_foot_v1"
+          },
+          "predicates": {
+            "midp": "coordinate_average",
+            "coll": "determinant_zero",
+            "orthogonal": "vector_dot_zero"
+          },
+          "branch": "single_valued_rational",
+          "version": 1
+        },
+        "mode": "certified"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "candidates": [
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "candidates": [
+          {
+            "key": "foot(a,b,c)",
+            "inputs": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(b,a,c)",
+            "inputs": [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(c,a,b)",
+            "inputs": [
+              "c",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "c"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "c"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v3"
+          ],
+          "output": "v3",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "1cb639705330bb772b4fd61caeabdafecee13c8174b27c8363d1155d2ee1f9a6",
+        "child": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "candidates": [
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "f2efa332e97df376cc9b705788a11e114e38813d9a341707e1713b393a25d1e6"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "candidates": [
+          {
+            "key": "foot(a,b,v3)",
+            "inputs": [
+              "a",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,a,v3)",
+            "inputs": [
+              "b",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,a,v3)",
+            "inputs": [
+              "c",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,b,v3)",
+            "inputs": [
+              "c",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(a,c,v3)",
+            "inputs": [
+              "a",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,c,v3)",
+            "inputs": [
+              "b",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v3,a,b)",
+            "inputs": [
+              "v3",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(v3,a,c)",
+            "inputs": [
+              "v3",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(v3,b,c)",
+            "inputs": [
+              "v3",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(c,a,b)",
+            "inputs": [
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(a,b,c)",
+            "inputs": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(b,a,c)",
+            "inputs": [
+              "b",
+              "a",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v3"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "6d79fc2f9cb5a9341e69350dbce4d26fc98015441222355c8d7ae70a3a03ed17"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "v3"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "c",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "74564fac03ec12a0c213e79edef0f2b951be4b9606b2f1af6df3fc0899decb49"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "97f38696e207d3729b3cc29b81b9afa0cd1329b56697b678b4d3b23c312906c7"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "b"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "6b8546d59711bd0bf9b11affba676654058c71f487c9fd96cc0fb6d13ceebcb9"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "0ce9d792444c5e9e783e54a8c502b7b5037ed8352f4605cb45f6b8b8f659296f"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 + 2*ax*bx - 4*ax*cx + ay**2 + 2*ay*by - 4*ay*cy + bx**2 - 4*bx*cx + by**2 - 4*by*cy + 4*cx**2 + 4*cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "ac1ff8e1e3aca70646bce655579123148441ec19b612a1dc7af5f32ec9b7b902"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 + 2*ax*bx - 4*ax*cx + ay**2 + 2*ay*by - 4*ay*cy + bx**2 - 4*bx*cx + by**2 - 4*by*cy + 4*cx**2 + 4*cy**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "candidates": [
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "333a33b6fed27781a52796fdb8ed462840573a05383bdd5b5608a21bc43d1bd5"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "a",
+          "b"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "c",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "63a95f5545219b0024a333477df9d532b9b509558f4da141e3428cbdd6ed078f"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "4e3a2b917b4da047b2c31ef0d46a5c2ba18a66dbcb20df161ef0c14b0c0a4ff0"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "b",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "a",
+          "c"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "foot",
+          "inputs": [
+            "c",
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ]
+          },
+          "term": {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5bc383d44dfffab5e8f6975e87fd30178b6ab2390fb7c52dfa129a364a8ac36",
+        "child": "2169703e009697dac41eba3e6b37c24db4da9b074fac46d8961692f98dfe6726"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "ed1010bca323d2a76a74e56e24c4f244894766f892c908d7d00059d8456cb74a"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "child": "809fee2c739b5a94223bd98275cd05ca6dc30076f7a1787189ad983661827380"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "candidates": [
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "b"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "f87de50271b56fddb93e95e3e72000138d50da7bec86d40affedfa23343e561b"
+      },
+      {
+        "event": "enumerate",
+        "family": "foot",
+        "parent": "eaf074442c7cbcf7fbc11fe6bc93b4f1c278694b8163556865533f50e56ed483",
+        "candidates": [
+          {
+            "key": "foot(a,c,v3)",
+            "inputs": [
+              "a",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,a,v3)",
+            "inputs": [
+              "c",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,a,v3)",
+            "inputs": [
+              "b",
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(b,c,v3)",
+            "inputs": [
+              "b",
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(a,b,v3)",
+            "inputs": [
+              "a",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(c,b,v3)",
+            "inputs": [
+              "c",
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "foot(v3,a,c)",
+            "inputs": [
+              "v3",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(v3,a,b)",
+            "inputs": [
+              "v3",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "foot(v3,b,c)",
+            "inputs": [
+              "v3",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(b,a,c)",
+            "inputs": [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(a,b,c)",
+            "inputs": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          {
+            "key": "foot(c,a,b)",
+            "inputs": [
+              "c",
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "c",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "b"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "375b363e4752bc46f0c3a2f433425d2122a6ab12012fafc863ef5965545a14db"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "c",
+          "a",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "b"
+                  },
+                  {
+                    "op": "var",
+                    "name": "c"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "ee668466b6c0f669131c0c155c4a401e7d1003f6add8a61a54fb24ca8a5ccb2a"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "a",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "reject",
+        "family": "midpoint",
+        "inputs": [
+          "b",
+          "c"
+        ],
+        "reason": "duplicate_point"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "b",
+          "c",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "b"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "397ffa6554c8dab49e2b57cc15bce4b5c109ff843200ccf8c73fd24c20345791"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "a",
+          "b",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 4*ax*bx + 2*ax*cx + ay**2 - 4*ay*by + 2*ay*cy + 4*bx**2 - 4*bx*cx + 4*by**2 - 4*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "c"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "c5b53a090f58b1860e6d596bfb8509659227b6eb90cac0cd020d2a6be5793bbd",
+        "child": "47e7ca872a6edc4f8cc073eef984fcb4c14faef900950c40d5a9f710675c54fa"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "c",
+          "b",
+          "v3"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 4*ax*bx + 2*ax*cx + ay**2 - 4*ay*by + 2*ay*cy + 4*bx**2 - 4*bx*cx + 4*by**2 - 4*by*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "enumerate",
+        "family": "midpoint",
+        "parent": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89",
+        "candidates": [
+          {
+            "key": "midpoint(a,v3)",
+            "inputs": [
+              "a",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(b,v3)",
+            "inputs": [
+              "b",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(c,v3)",
+            "inputs": [
+              "c",
+              "v3"
+            ]
+          },
+          {
+            "key": "midpoint(a,b)",
+            "inputs": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "key": "midpoint(a,c)",
+            "inputs": [
+              "a",
+              "c"
+            ]
+          },
+          {
+            "key": "midpoint(b,c)",
+            "inputs": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "a",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89",
+        "child": "6c46e92a2235cf16427a728e0388fc70b5136079b08501bb6a3d52ae942c4a84"
+      },
+      {
+        "event": "reject",
+        "family": "foot",
+        "inputs": [
+          "v3",
+          "a",
+          "c"
+        ],
+        "reason": "unproved_applicability: ['ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2']"
+      },
+      {
+        "event": "apply",
+        "action": {
+          "family": "midpoint",
+          "inputs": [
+            "b",
+            "v3"
+          ],
+          "outputs": [
+            "v4"
+          ],
+          "output": "v4",
+          "body": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ]
+          },
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "primitive_equivalent_operations": 1,
+          "certificate": "primitive_contract_composition"
+        },
+        "parent": "a65395618144c3d9e1f0a28e77a6bab823b9c35bde32bb05909a61e7466fdd89",
+        "child": "822425169d03ea6f0ffbcf97346782faa940572e75b5c94904025cdad583b1e2"
+      },
+      {
+        "event": "goal_certificate",
+        "witness": {
+          "point": "v4",
+          "term": {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "foot",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "c"
+                  },
+                  {
+                    "op": "var",
+                    "name": "a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
+          },
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "precondition": [
+            "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2"
+          ],
+          "scope": {
+            "coefficient_field": "QQ",
+            "models": "real_coordinate_plane",
+            "actions": {
+              "midpoint": "bridge_midpoint_v1",
+              "foot": "bridge_foot_v1"
+            },
+            "predicates": {
+              "midp": "coordinate_average",
+              "coll": "determinant_zero",
+              "orthogonal": "vector_dot_zero"
+            },
+            "branch": "single_valued_rational",
+            "version": 1
+          }
+        },
+        "state": "822425169d03ea6f0ffbcf97346782faa940572e75b5c94904025cdad583b1e2"
+      }
+    ],
+    "wall_seconds": 3.250143500001286,
+    "wall_budget_is_soft": true,
+    "proof_length": 2,
+    "macro_proof_length": 2,
+    "proof_actions": [
+      {
+        "family": "foot",
+        "inputs": [
+          "c",
+          "a",
+          "b"
+        ],
+        "outputs": [
+          "v3"
+        ],
+        "output": "v3",
+        "body": {
+          "op": "foot",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            }
+          ]
+        },
+        "term": {
+          "op": "foot",
+          "args": [
+            {
+              "op": "var",
+              "name": "c"
+            },
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "b",
+          "v3"
+        ],
+        "outputs": [
+          "v4"
+        ],
+        "output": "v4",
+        "body": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ]
+        },
+        "term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "b"
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "primitive_equivalent_operations": 1,
+        "certificate": "primitive_contract_composition"
+      }
+    ],
+    "goal_acquired_calls": [],
+    "false_proofs": 0,
+    "false_proof_scope": "requires independent replay",
+    "independent_replay": {
+      "checked": true,
+      "passed": true,
+      "residuals": [
+        "0",
+        "0"
+      ],
+      "primitive_operations": 2,
+      "contract_id": "geom.eae5374c005a747c09cc",
+      "seconds": 0.526236700010486,
+      "method": "primitive_reexecution_and_relational_witness_certificate"
+    }
+  }
+]

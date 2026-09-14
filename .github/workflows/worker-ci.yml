@@ -14,6 +14,7 @@ on:
       - "tests/test_theory_corpus.py"
       - "tests/test_temporal_utility.py"
       - "tests/test_basis_quality.py"
+      - "tests/test_geometry_contracts.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -49,6 +50,7 @@ on:
       - "tests/test_theory_corpus.py"
       - "tests/test_temporal_utility.py"
       - "tests/test_basis_quality.py"
+      - "tests/test_geometry_contracts.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -77,7 +79,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, geometry, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
+        options: [worker, q-directed, theory-formation, geometry, geometry-contracts, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -178,6 +180,7 @@ jobs:
       TEMPORAL_MODE: ${{ inputs.verification_suite == 'temporal-utility' }}
       BASIS_MODE: ${{ inputs.verification_suite == 'basis-quality' }}
       GEOMETRY_MODE: ${{ inputs.verification_suite == 'geometry' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
+      CONTRACT_MODE: ${{ inputs.verification_suite == 'geometry-contracts' }}
       PYTHONHASHSEED: "0"
     steps:
       - name: Set output location
@@ -251,13 +254,32 @@ jobs:
         run: |
           python ci-control/scripts/verify_q_directed_ci.py --execute \
             --repo target --output "$VERIFY_OUTPUT"
+      - name: Install the declared rational contract fragment dependencies
+        if: env.CONTRACT_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python -m pip install -r requirements-geometry-contracts.txt 2>&1 | tee "$VERIFY_OUTPUT/contract-dependencies.log"
+          python -m pip freeze > "$VERIFY_OUTPUT/contract-environment.txt"
+      - name: Test and reproduce acquired geometry contracts with causal ablation
+        if: env.CONTRACT_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python -m pytest tests/test_geometry_contracts.py tests/test_theory_geometry.py tests/test_theory_dsl.py \
+            tests/test_theory_formation.py worker/backend/test_typed_geometry_stalk.py -q \
+            --junitxml="$VERIFY_OUTPUT/contract-tests.xml" 2>&1 | tee "$VERIFY_OUTPUT/contract-tests.log"
+          python scripts/run_theory_formation.py --config configs/theory-geometry-contract-acquisition.json \
+            --output "$VERIFY_OUTPUT/geometry-contracts" 2>&1 | tee "$VERIFY_OUTPUT/contract-run.log"
+          python scripts/replay_geometry_contracts.py --run "$VERIFY_OUTPUT/geometry-contracts" \
+            --output "$VERIFY_OUTPUT/contract-replay.json" --require-chain 2>&1 | tee "$VERIFY_OUTPUT/contract-replay.log"
       - name: Test theory formation guards
         if: env.THEORY_MODE == 'true'
         working-directory: target
         shell: bash
         run: python -m unittest discover -s tests -p test_theory_formation.py -v 2>&1 | tee "$VERIFY_OUTPUT/theory-tests.log"
       - name: Run frozen target-free experiments and ablations
-        if: env.THEORY_MODE == 'true' && env.LONG_MODE != 'true' && env.GEOMETRY_MODE != 'true'
+        if: env.THEORY_MODE == 'true' && env.LONG_MODE != 'true' && env.GEOMETRY_MODE != 'true' && env.CONTRACT_MODE != 'true'
         working-directory: target
         shell: bash
         run: |

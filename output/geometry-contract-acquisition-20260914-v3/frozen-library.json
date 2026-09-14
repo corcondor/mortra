@@ -1,0 +1,1406 @@
+[
+  {
+    "version": 1,
+    "typed_parameters": [
+      {
+        "name": "f0",
+        "type": "Point"
+      },
+      {
+        "name": "f1",
+        "type": "Point"
+      },
+      {
+        "name": "f2",
+        "type": "Point"
+      }
+    ],
+    "local_auxiliary_variables": [
+      {
+        "name": "local0",
+        "type": "Point",
+        "coordinates": [
+          "_free_x_0",
+          "_free_y_1"
+        ]
+      },
+      {
+        "name": "local1",
+        "type": "Point",
+        "coordinates": [
+          "_free_x_2",
+          "_free_y_3"
+        ]
+      }
+    ],
+    "body": {
+      "args": [
+        {
+          "op": "var",
+          "name": "f0"
+        },
+        {
+          "args": [
+            {
+              "op": "var",
+              "name": "f1"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            }
+          ],
+          "op": "midpoint"
+        }
+      ],
+      "op": "midpoint"
+    },
+    "composition": [
+      {
+        "family": "midpoint",
+        "inputs": [
+          "f1",
+          "f2"
+        ],
+        "output": "local0",
+        "term": {
+          "args": [
+            {
+              "op": "var",
+              "name": "f1"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            }
+          ],
+          "op": "midpoint"
+        }
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "f0",
+          "local0"
+        ],
+        "output": "local1",
+        "term": {
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f1"
+                },
+                {
+                  "op": "var",
+                  "name": "f2"
+                }
+              ],
+              "op": "midpoint"
+            }
+          ],
+          "op": "midpoint"
+        }
+      }
+    ],
+    "output": "local1",
+    "applicability": {
+      "input_nonzero_polynomials": [],
+      "geometry_pullbacks": []
+    },
+    "construction_relation": {
+      "geometry": [
+        {
+          "predicate": "midp",
+          "points": [
+            "local0",
+            "f1",
+            "f2"
+          ]
+        },
+        {
+          "predicate": "midp",
+          "points": [
+            "local1",
+            "f0",
+            "local0"
+          ]
+        }
+      ],
+      "polynomials": [
+        "2*_free_x_0 - f1x - f2x",
+        "2*_free_y_1 - f1y - f2y",
+        "-_free_x_0 + 2*_free_x_2 - f0x",
+        "-_free_y_1 + 2*_free_y_3 - f0y"
+      ]
+    },
+    "guaranteed_relation": [
+      {
+        "predicate": "midp",
+        "points": [
+          "local0",
+          "f1",
+          "f2"
+        ]
+      },
+      {
+        "predicate": "midp",
+        "points": [
+          "local1",
+          "f0",
+          "local0"
+        ]
+      }
+    ],
+    "nondegeneracy_conditions": [],
+    "branch_conditions": [],
+    "representation_scopes": {
+      "coefficient_field": "QQ",
+      "models": "real_coordinate_plane",
+      "actions": {
+        "midpoint": "bridge_midpoint_v1",
+        "foot": "bridge_foot_v1"
+      },
+      "predicates": {
+        "midp": "coordinate_average",
+        "coll": "determinant_zero",
+        "orthogonal": "vector_dot_zero"
+      },
+      "branch": "single_valued_rational",
+      "version": 1
+    },
+    "witness": {
+      "local0": [
+        "f1x/2 + f2x/2",
+        "f1y/2 + f2y/2"
+      ],
+      "local1": [
+        "f0x/2 + f1x/4 + f2x/4",
+        "f0y/2 + f1y/4 + f2y/4"
+      ]
+    },
+    "dependency_graph": {
+      "local0": [
+        "f1",
+        "f2"
+      ],
+      "local1": [
+        "f0",
+        "local0"
+      ]
+    },
+    "exact_certificate": {
+      "method": "rational_witness_and_triangular_linear_uniqueness",
+      "steps": [
+        {
+          "output": "local0",
+          "linear_output_matrix": [
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ]
+          ],
+          "determinant_pullback": "4",
+          "required_nonzero": [],
+          "existence_residuals": [
+            "0",
+            "0"
+          ],
+          "transfer": [
+            {
+              "relation": {
+                "predicate": "midp",
+                "points": [
+                  "local0",
+                  "f1",
+                  "f2"
+                ]
+              },
+              "polynomial": "4*_free_x_0**2 - 4*_free_x_0*f1x - 4*_free_x_0*f2x + 4*_free_y_1**2 - 4*_free_y_1*f1y - 4*_free_y_1*f2y + f1x**2 + 2*f1x*f2x + f1y**2 + 2*f1y*f2y + f2x**2 + f2y**2",
+              "replayed": true
+            }
+          ]
+        },
+        {
+          "output": "local1",
+          "linear_output_matrix": [
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ]
+          ],
+          "determinant_pullback": "4",
+          "required_nonzero": [],
+          "existence_residuals": [
+            "0",
+            "0"
+          ],
+          "transfer": [
+            {
+              "relation": {
+                "predicate": "midp",
+                "points": [
+                  "local1",
+                  "f0",
+                  "local0"
+                ]
+              },
+              "polynomial": "_free_x_0**2 - 4*_free_x_0*_free_x_2 + 2*_free_x_0*f0x + 4*_free_x_2**2 - 4*_free_x_2*f0x + _free_y_1**2 - 4*_free_y_1*_free_y_3 + 2*_free_y_1*f0y + 4*_free_y_3**2 - 4*_free_y_3*f0y + f0x**2 + f0y**2",
+              "replayed": true
+            }
+          ]
+        }
+      ],
+      "existence": true,
+      "guarantee": true,
+      "contract_transfer": true,
+      "all_input_assignments_under_P": true
+    },
+    "id": "geom.a0247196c81e93c6fd89",
+    "source_proof_traces": [
+      {
+        "source_proof": "29e640554c20bdfb7710f9af3ed5a844431887dcf314e6c2a17fdff3a4052c8d",
+        "task_sha256": "b109107b0101a1d9991dd3c061e42b6af8358acada9221ade6c4bd4cfb1360a8",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace0_a"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace0_a"
+              },
+              "f2": {
+                "op": "var",
+                "name": "trace0_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace0_a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace0_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace0_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "source_proof": "b7ccb3eee8d47c9f01b901602017dab4cce38f66396395d3604d3fe6b3cc3b92",
+        "task_sha256": "d9a5ee3c9ad5c4a2b26c5c48a397265b6ce5f0fd839af418f7f65bc49e02e741",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace1_b"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace1_a"
+              },
+              "f2": {
+                "op": "var",
+                "name": "trace1_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace1_b"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace1_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace1_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "source_proof": "00eb5943f4dfd7c361e412280cffff14dbadc4f83113f4ff7b014ac9093ca9c1",
+        "task_sha256": "8401fbd3beffded37dfb9259cfa2e5c8181fb4ba35cc3639d30e46ffea9e3804",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace2_a"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace2_a"
+              },
+              "f2": {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "trace2_a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "trace2_b"
+                  }
+                ]
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace2_a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace2_a"
+                    },
+                    {
+                      "op": "midpoint",
+                      "args": [
+                        {
+                          "op": "var",
+                          "name": "trace2_a"
+                        },
+                        {
+                          "op": "var",
+                          "name": "trace2_b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "path": [
+              "args",
+              1
+            ],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace2_a"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace2_a"
+              },
+              "f2": {
+                "op": "var",
+                "name": "trace2_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace2_a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace2_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace2_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "acquisition_cost": {
+      "certification_seconds": 0.10839670000132173,
+      "primitive_schema_steps": 2,
+      "prover_calls": 8
+    },
+    "template": {
+      "args": [
+        {
+          "series_parameter": "f0"
+        },
+        {
+          "args": [
+            {
+              "series_parameter": "f1"
+            },
+            {
+              "series_parameter": "f2"
+            }
+          ],
+          "op": "midpoint"
+        }
+      ],
+      "op": "midpoint"
+    },
+    "acquisition_utility_bits": -1184
+  },
+  {
+    "version": 1,
+    "typed_parameters": [
+      {
+        "name": "f0",
+        "type": "Point"
+      },
+      {
+        "name": "f1",
+        "type": "Point"
+      }
+    ],
+    "local_auxiliary_variables": [
+      {
+        "name": "local0",
+        "type": "Point",
+        "coordinates": [
+          "_free_x_0",
+          "_free_y_1"
+        ]
+      },
+      {
+        "name": "local1",
+        "type": "Point",
+        "coordinates": [
+          "_free_x_2",
+          "_free_y_3"
+        ]
+      }
+    ],
+    "body": {
+      "args": [
+        {
+          "op": "var",
+          "name": "f0"
+        },
+        {
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ],
+          "op": "midpoint"
+        }
+      ],
+      "op": "midpoint"
+    },
+    "composition": [
+      {
+        "family": "midpoint",
+        "inputs": [
+          "f0",
+          "f1"
+        ],
+        "output": "local0",
+        "term": {
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f1"
+            }
+          ],
+          "op": "midpoint"
+        }
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "f0",
+          "local0"
+        ],
+        "output": "local1",
+        "term": {
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f0"
+                },
+                {
+                  "op": "var",
+                  "name": "f1"
+                }
+              ],
+              "op": "midpoint"
+            }
+          ],
+          "op": "midpoint"
+        }
+      }
+    ],
+    "output": "local1",
+    "applicability": {
+      "input_nonzero_polynomials": [],
+      "geometry_pullbacks": []
+    },
+    "construction_relation": {
+      "geometry": [
+        {
+          "predicate": "midp",
+          "points": [
+            "local0",
+            "f0",
+            "f1"
+          ]
+        },
+        {
+          "predicate": "midp",
+          "points": [
+            "local1",
+            "f0",
+            "local0"
+          ]
+        }
+      ],
+      "polynomials": [
+        "2*_free_x_0 - f0x - f1x",
+        "2*_free_y_1 - f0y - f1y",
+        "-_free_x_0 + 2*_free_x_2 - f0x",
+        "-_free_y_1 + 2*_free_y_3 - f0y"
+      ]
+    },
+    "guaranteed_relation": [
+      {
+        "predicate": "midp",
+        "points": [
+          "local0",
+          "f0",
+          "f1"
+        ]
+      },
+      {
+        "predicate": "midp",
+        "points": [
+          "local1",
+          "f0",
+          "local0"
+        ]
+      }
+    ],
+    "nondegeneracy_conditions": [],
+    "branch_conditions": [],
+    "representation_scopes": {
+      "coefficient_field": "QQ",
+      "models": "real_coordinate_plane",
+      "actions": {
+        "midpoint": "bridge_midpoint_v1",
+        "foot": "bridge_foot_v1"
+      },
+      "predicates": {
+        "midp": "coordinate_average",
+        "coll": "determinant_zero",
+        "orthogonal": "vector_dot_zero"
+      },
+      "branch": "single_valued_rational",
+      "version": 1
+    },
+    "witness": {
+      "local0": [
+        "f0x/2 + f1x/2",
+        "f0y/2 + f1y/2"
+      ],
+      "local1": [
+        "3*f0x/4 + f1x/4",
+        "3*f0y/4 + f1y/4"
+      ]
+    },
+    "dependency_graph": {
+      "local0": [
+        "f0",
+        "f1"
+      ],
+      "local1": [
+        "f0",
+        "local0"
+      ]
+    },
+    "exact_certificate": {
+      "method": "rational_witness_and_triangular_linear_uniqueness",
+      "steps": [
+        {
+          "output": "local0",
+          "linear_output_matrix": [
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ]
+          ],
+          "determinant_pullback": "4",
+          "required_nonzero": [],
+          "existence_residuals": [
+            "0",
+            "0"
+          ],
+          "transfer": [
+            {
+              "relation": {
+                "predicate": "midp",
+                "points": [
+                  "local0",
+                  "f0",
+                  "f1"
+                ]
+              },
+              "polynomial": "4*_free_x_0**2 - 4*_free_x_0*f0x - 4*_free_x_0*f1x + 4*_free_y_1**2 - 4*_free_y_1*f0y - 4*_free_y_1*f1y + f0x**2 + 2*f0x*f1x + f0y**2 + 2*f0y*f1y + f1x**2 + f1y**2",
+              "replayed": true
+            }
+          ]
+        },
+        {
+          "output": "local1",
+          "linear_output_matrix": [
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ]
+          ],
+          "determinant_pullback": "4",
+          "required_nonzero": [],
+          "existence_residuals": [
+            "0",
+            "0"
+          ],
+          "transfer": [
+            {
+              "relation": {
+                "predicate": "midp",
+                "points": [
+                  "local1",
+                  "f0",
+                  "local0"
+                ]
+              },
+              "polynomial": "_free_x_0**2 - 4*_free_x_0*_free_x_2 + 2*_free_x_0*f0x + 4*_free_x_2**2 - 4*_free_x_2*f0x + _free_y_1**2 - 4*_free_y_1*_free_y_3 + 2*_free_y_1*f0y + 4*_free_y_3**2 - 4*_free_y_3*f0y + f0x**2 + f0y**2",
+              "replayed": true
+            }
+          ]
+        }
+      ],
+      "existence": true,
+      "guarantee": true,
+      "contract_transfer": true,
+      "all_input_assignments_under_P": true
+    },
+    "id": "geom.0f5663e398d89048703c",
+    "source_proof_traces": [
+      {
+        "source_proof": "29e640554c20bdfb7710f9af3ed5a844431887dcf314e6c2a17fdff3a4052c8d",
+        "task_sha256": "b109107b0101a1d9991dd3c061e42b6af8358acada9221ade6c4bd4cfb1360a8",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace0_a"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace0_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace0_a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace0_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace0_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "source_proof": "00eb5943f4dfd7c361e412280cffff14dbadc4f83113f4ff7b014ac9093ca9c1",
+        "task_sha256": "8401fbd3beffded37dfb9259cfa2e5c8181fb4ba35cc3639d30e46ffea9e3804",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace2_a"
+              },
+              "f1": {
+                "op": "midpoint",
+                "args": [
+                  {
+                    "op": "var",
+                    "name": "trace2_a"
+                  },
+                  {
+                    "op": "var",
+                    "name": "trace2_b"
+                  }
+                ]
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace2_a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace2_a"
+                    },
+                    {
+                      "op": "midpoint",
+                      "args": [
+                        {
+                          "op": "var",
+                          "name": "trace2_a"
+                        },
+                        {
+                          "op": "var",
+                          "name": "trace2_b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "path": [
+              "args",
+              1
+            ],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace2_a"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace2_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace2_a"
+                },
+                {
+                  "op": "midpoint",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace2_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace2_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "acquisition_cost": {
+      "certification_seconds": 0.13911619999271352,
+      "primitive_schema_steps": 2,
+      "prover_calls": 8
+    },
+    "template": {
+      "args": [
+        {
+          "series_parameter": "f0"
+        },
+        {
+          "args": [
+            {
+              "series_parameter": "f0"
+            },
+            {
+              "series_parameter": "f1"
+            }
+          ],
+          "op": "midpoint"
+        }
+      ],
+      "op": "midpoint"
+    },
+    "acquisition_utility_bits": -560
+  },
+  {
+    "version": 1,
+    "typed_parameters": [
+      {
+        "name": "f0",
+        "type": "Point"
+      },
+      {
+        "name": "f1",
+        "type": "Point"
+      },
+      {
+        "name": "f2",
+        "type": "Point"
+      },
+      {
+        "name": "f3",
+        "type": "Point"
+      }
+    ],
+    "local_auxiliary_variables": [
+      {
+        "name": "local0",
+        "type": "Point",
+        "coordinates": [
+          "_free_x_0",
+          "_free_y_1"
+        ]
+      },
+      {
+        "name": "local1",
+        "type": "Point",
+        "coordinates": [
+          "_free_x_2",
+          "_free_y_3"
+        ]
+      }
+    ],
+    "body": {
+      "args": [
+        {
+          "op": "var",
+          "name": "f0"
+        },
+        {
+          "args": [
+            {
+              "op": "var",
+              "name": "f1"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            },
+            {
+              "op": "var",
+              "name": "f3"
+            }
+          ],
+          "op": "foot"
+        }
+      ],
+      "op": "midpoint"
+    },
+    "composition": [
+      {
+        "family": "foot",
+        "inputs": [
+          "f1",
+          "f2",
+          "f3"
+        ],
+        "output": "local0",
+        "term": {
+          "args": [
+            {
+              "op": "var",
+              "name": "f1"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            },
+            {
+              "op": "var",
+              "name": "f3"
+            }
+          ],
+          "op": "foot"
+        }
+      },
+      {
+        "family": "midpoint",
+        "inputs": [
+          "f0",
+          "local0"
+        ],
+        "output": "local1",
+        "term": {
+          "args": [
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f1"
+                },
+                {
+                  "op": "var",
+                  "name": "f2"
+                },
+                {
+                  "op": "var",
+                  "name": "f3"
+                }
+              ],
+              "op": "foot"
+            }
+          ],
+          "op": "midpoint"
+        }
+      }
+    ],
+    "output": "local1",
+    "applicability": {
+      "input_nonzero_polynomials": [
+        "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2"
+      ],
+      "geometry_pullbacks": [
+        {
+          "predicate": "distinct",
+          "points": [
+            "f2",
+            "f3"
+          ],
+          "pullback": "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2",
+          "input_factors": [
+            "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2"
+          ]
+        }
+      ]
+    },
+    "construction_relation": {
+      "geometry": [
+        {
+          "predicate": "coll",
+          "points": [
+            "local0",
+            "f2",
+            "f3"
+          ]
+        },
+        {
+          "predicate": "orthogonal",
+          "points": [
+            "local0",
+            "f1",
+            "f2",
+            "f3"
+          ]
+        },
+        {
+          "predicate": "midp",
+          "points": [
+            "local1",
+            "f0",
+            "local0"
+          ]
+        }
+      ],
+      "polynomials": [
+        "(_free_x_0 - f2x)*(-f2y + f3y) - (_free_y_1 - f2y)*(-f2x + f3x)",
+        "(_free_x_0 - f1x)*(-f2x + f3x) + (_free_y_1 - f1y)*(-f2y + f3y)",
+        "-_free_x_0 + 2*_free_x_2 - f0x",
+        "-_free_y_1 + 2*_free_y_3 - f0y"
+      ]
+    },
+    "guaranteed_relation": [
+      {
+        "predicate": "coll",
+        "points": [
+          "local0",
+          "f2",
+          "f3"
+        ]
+      },
+      {
+        "predicate": "orthogonal",
+        "points": [
+          "local0",
+          "f1",
+          "f2",
+          "f3"
+        ]
+      },
+      {
+        "predicate": "midp",
+        "points": [
+          "local1",
+          "f0",
+          "local0"
+        ]
+      }
+    ],
+    "nondegeneracy_conditions": [
+      "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2"
+    ],
+    "branch_conditions": [],
+    "representation_scopes": {
+      "coefficient_field": "QQ",
+      "models": "real_coordinate_plane",
+      "actions": {
+        "midpoint": "bridge_midpoint_v1",
+        "foot": "bridge_foot_v1"
+      },
+      "predicates": {
+        "midp": "coordinate_average",
+        "coll": "determinant_zero",
+        "orthogonal": "vector_dot_zero"
+      },
+      "branch": "single_valued_rational",
+      "version": 1
+    },
+    "witness": {
+      "local0": [
+        "(f1x*f2x**2 - 2*f1x*f2x*f3x + f1x*f3x**2 + f1y*f2x*f2y - f1y*f2x*f3y - f1y*f2y*f3x + f1y*f3x*f3y - f2x*f2y*f3y + f2x*f3y**2 + f2y**2*f3x - f2y*f3x*f3y)/(f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2)",
+        "(f1x*f2x*f2y - f1x*f2x*f3y - f1x*f2y*f3x + f1x*f3x*f3y + f1y*f2y**2 - 2*f1y*f2y*f3y + f1y*f3y**2 + f2x**2*f3y - f2x*f2y*f3x - f2x*f3x*f3y + f2y*f3x**2)/(f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2)"
+      ],
+      "local1": [
+        "(f0x*f2x**2 - 2*f0x*f2x*f3x + f0x*f2y**2 - 2*f0x*f2y*f3y + f0x*f3x**2 + f0x*f3y**2 + f1x*f2x**2 - 2*f1x*f2x*f3x + f1x*f3x**2 + f1y*f2x*f2y - f1y*f2x*f3y - f1y*f2y*f3x + f1y*f3x*f3y - f2x*f2y*f3y + f2x*f3y**2 + f2y**2*f3x - f2y*f3x*f3y)/(2*f2x**2 - 4*f2x*f3x + 2*f2y**2 - 4*f2y*f3y + 2*f3x**2 + 2*f3y**2)",
+        "(f0y*f2x**2 - 2*f0y*f2x*f3x + f0y*f2y**2 - 2*f0y*f2y*f3y + f0y*f3x**2 + f0y*f3y**2 + f1x*f2x*f2y - f1x*f2x*f3y - f1x*f2y*f3x + f1x*f3x*f3y + f1y*f2y**2 - 2*f1y*f2y*f3y + f1y*f3y**2 + f2x**2*f3y - f2x*f2y*f3x - f2x*f3x*f3y + f2y*f3x**2)/(2*f2x**2 - 4*f2x*f3x + 2*f2y**2 - 4*f2y*f3y + 2*f3x**2 + 2*f3y**2)"
+      ]
+    },
+    "dependency_graph": {
+      "local0": [
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "local1": [
+        "f0",
+        "local0"
+      ]
+    },
+    "exact_certificate": {
+      "method": "rational_witness_and_triangular_linear_uniqueness",
+      "steps": [
+        {
+          "output": "local0",
+          "linear_output_matrix": [
+            [
+              "-f2y + f3y",
+              "f2x - f3x"
+            ],
+            [
+              "-f2x + f3x",
+              "-f2y + f3y"
+            ]
+          ],
+          "determinant_pullback": "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2",
+          "required_nonzero": [
+            "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2"
+          ],
+          "existence_residuals": [
+            "0",
+            "0"
+          ],
+          "transfer": [
+            {
+              "relation": {
+                "predicate": "coll",
+                "points": [
+                  "local0",
+                  "f2",
+                  "f3"
+                ]
+              },
+              "polynomial": "_free_x_0*f2y - _free_x_0*f3y - _free_y_1*f2x + _free_y_1*f3x + f2x*f3y - f2y*f3x",
+              "replayed": true
+            },
+            {
+              "relation": {
+                "predicate": "orthogonal",
+                "points": [
+                  "local0",
+                  "f1",
+                  "f2",
+                  "f3"
+                ]
+              },
+              "polynomial": "_free_x_0*f2x - _free_x_0*f3x + _free_y_1*f2y - _free_y_1*f3y - f1x*f2x + f1x*f3x - f1y*f2y + f1y*f3y",
+              "replayed": true
+            }
+          ]
+        },
+        {
+          "output": "local1",
+          "linear_output_matrix": [
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ]
+          ],
+          "determinant_pullback": "4",
+          "required_nonzero": [
+            "f2x**2 - 2*f2x*f3x + f2y**2 - 2*f2y*f3y + f3x**2 + f3y**2"
+          ],
+          "existence_residuals": [
+            "0",
+            "0"
+          ],
+          "transfer": [
+            {
+              "relation": {
+                "predicate": "midp",
+                "points": [
+                  "local1",
+                  "f0",
+                  "local0"
+                ]
+              },
+              "polynomial": "_free_x_0**2 - 4*_free_x_0*_free_x_2 + 2*_free_x_0*f0x + 4*_free_x_2**2 - 4*_free_x_2*f0x + _free_y_1**2 - 4*_free_y_1*_free_y_3 + 2*_free_y_1*f0y + 4*_free_y_3**2 - 4*_free_y_3*f0y + f0x**2 + f0y**2",
+              "replayed": true
+            }
+          ]
+        }
+      ],
+      "existence": true,
+      "guarantee": true,
+      "contract_transfer": true,
+      "all_input_assignments_under_P": true
+    },
+    "id": "geom.b68ba801870de5688a1b",
+    "source_proof_traces": [
+      {
+        "source_proof": "6b8bf7b6f2e72c25342b1ad1db9147078790bee961cb913ed09f74d2b8b0d5d6",
+        "task_sha256": "98f40c93fa47100108f6e0a5a5569313b65284c9ed2ca01e087eb67ecd6c0c0f",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace3_a"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace3_c"
+              },
+              "f2": {
+                "op": "var",
+                "name": "trace3_a"
+              },
+              "f3": {
+                "op": "var",
+                "name": "trace3_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace3_a"
+                },
+                {
+                  "op": "foot",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace3_c"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace3_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace3_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "source_proof": "346401f7c9ef600bb75c03ae694978493ff52757209749b9b04bfd26a5491bc8",
+        "task_sha256": "9b869b3f6654d124835fdec98ba6147a201ded74a900c0ac0936b9633b8a37bb",
+        "matches": [
+          {
+            "path": [],
+            "binding": {
+              "f0": {
+                "op": "var",
+                "name": "trace4_b"
+              },
+              "f1": {
+                "op": "var",
+                "name": "trace4_c"
+              },
+              "f2": {
+                "op": "var",
+                "name": "trace4_a"
+              },
+              "f3": {
+                "op": "var",
+                "name": "trace4_b"
+              }
+            },
+            "subterm": {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "trace4_b"
+                },
+                {
+                  "op": "foot",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "trace4_c"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace4_a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "trace4_b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "acquisition_cost": {
+      "certification_seconds": 0.9071774999902118,
+      "primitive_schema_steps": 2,
+      "prover_calls": 14
+    },
+    "template": {
+      "args": [
+        {
+          "series_parameter": "f0"
+        },
+        {
+          "args": [
+            {
+              "series_parameter": "f1"
+            },
+            {
+              "series_parameter": "f2"
+            },
+            {
+              "series_parameter": "f3"
+            }
+          ],
+          "op": "foot"
+        }
+      ],
+      "op": "midpoint"
+    },
+    "acquisition_utility_bits": -1464
+  }
+]

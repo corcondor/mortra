@@ -1,0 +1,156 @@
+{
+  "domain": {
+    "kind": "geometry",
+    "mode": "contract_acquisition"
+  },
+  "protocol": {
+    "version": 1,
+    "origin": "developer-authored construction specifications; not autonomous problem generation",
+    "frozen_before_first_run": true,
+    "fragment": [
+      "midpoint",
+      "foot"
+    ],
+    "evaluation_use": "one fixed small construction benchmark; no olympiad or generalization population claim",
+    "input_contains_solution_programs": false
+  },
+  "search": {
+    "seed": 17,
+    "max_states": 120,
+    "max_primitive_operations": 360,
+    "wall_seconds": 120,
+    "per_family_limit": 12
+  },
+  "acquisition": {
+    "pairs": 3000,
+    "max_parameters": 6,
+    "min_steps": 2,
+    "max_steps": 4,
+    "capacity": 8
+  },
+  "training": [
+    {
+      "id": "train-01",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "4*ux-3*ax-bx",
+        "4*uy-3*ay-by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "train-02",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "4*ux-ax-3*bx",
+        "4*uy-ay-3*by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "train-03",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "8*ux-7*ax-bx",
+        "8*uy-7*ay-by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "train-04",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "2*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    },
+    {
+      "id": "train-05",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "2*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))-((bx-ax)**2+(by-ay)**2)"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    }
+  ],
+  "evaluation": [
+    {
+      "id": "unseen-01",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "8*ux-5*ax-3*bx",
+        "8*uy-5*ay-3*by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "unseen-02",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "8*ux-3*ax-5*bx",
+        "8*uy-3*ay-5*by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "unseen-03",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "4*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    },
+    {
+      "id": "unseen-04",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "2*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx+dx-2*ax)*(bx-ax)+(cy+dy-2*ay)*(by-ay))"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    }
+  ]
+}

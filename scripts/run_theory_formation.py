@@ -27,9 +27,9 @@ def source_seal():
                     ROOT/"scripts/verify_theory_tasks.py", ROOT/"scripts/verify_theory_dsl.py",
                     ROOT/"scripts/verify_theory_semantic_edit.py", ROOT/"scripts/verify_temporal_utility.py",
                     ROOT/"scripts/verify_basis_quality.py", ROOT/"scripts/verify_theory_geometry.py",
-                    ROOT/"scripts/freeze_geometry_cohort.py"])
+                    ROOT/"scripts/freeze_geometry_cohort.py", ROOT/"scripts/replay_geometry_contracts.py"])
     files += sorted(ROOT.joinpath("worker/backend").glob("*.py"))
-    files += [ROOT/"requirements-geometry.txt"]
+    files += [ROOT/"requirements-geometry.txt", ROOT/"requirements-geometry-contracts.txt"]
     return {p.relative_to(ROOT).as_posix(): digest(p.read_text(encoding="utf-8")) for p in files}
 
 
@@ -80,8 +80,27 @@ def main(argv=None):
     if config["domain"].get("kind") == "geometry":
         if args.resume or args.knowledge or args.queries or args.condition != "learn":
             parser.error("Geometry uses formal task inputs, not scalar archive/queries or training conditions")
-        from math_os_prototype.theory_geometry import run_geometry_theory
-        result = run_geometry_theory(config, args.output)
+        if config["domain"].get("mode") == "contract_acquisition":
+            from importlib.metadata import distributions
+            from math_os_prototype.theory_geometry_acquisition import run_contract_geometry
+            write(args.output/"environment.json", {
+                "python": sys.version, "platform": platform.platform(),
+                "python_hash_seed": os.environ.get("PYTHONHASHSEED"),
+                "packages": {d.metadata["Name"]: d.version for d in distributions()},
+                "git_remote": subprocess.check_output(["git", "remote", "get-url", "origin"], cwd=ROOT, text=True).strip(),
+                "branch": subprocess.check_output(["git", "branch", "--show-current"], cwd=ROOT, text=True).strip(),
+                "sha": metadata["sha"], "workflow_run_id": metadata["workflow_run_id"]})
+            try:
+                required_seed = config.get("protocol", {}).get("python_hash_seed")
+                if required_seed is not None and os.environ.get("PYTHONHASHSEED") != str(required_seed):
+                    raise ValueError("set PYTHONHASHSEED before launching Python as declared in the frozen protocol")
+                result = run_contract_geometry(config, args.output)
+            except Exception:
+                write(args.output/"failure.json", {"traceback": traceback.format_exc()})
+                result = {"execution_completed": False, "minimal_chain_passed": False}
+        else:
+            from math_os_prototype.theory_geometry import run_geometry_theory
+            result = run_geometry_theory(config, args.output)
         result.update(sources_unchanged=source == source_seal(), sha=metadata["sha"],
                       workflow_run_id=metadata["workflow_run_id"])
         write(args.output/"verification.json", result)

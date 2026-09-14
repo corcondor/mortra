@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
-from itertools import combinations, permutations
+from itertools import combinations, permutations, product
 import random
 from typing import Any, Callable, Hashable, Iterable, Mapping, Sequence, TypeVar
 
@@ -267,7 +267,10 @@ def _family_inputs(
         yield from combinations(points, family.input_arity)
         return
     if family.symmetry == "ordered":
-        yield from permutations(points, family.input_arity)
+        if family.allow_repeated_inputs:
+            yield from product(points, repeat=family.input_arity)
+        else:
+            yield from permutations(points, family.input_arity)
         return
     if family.symmetry == "head_pair":
         for head in points:
