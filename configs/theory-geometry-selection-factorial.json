@@ -1,0 +1,30 @@
+{
+  "domain": {"kind": "geometry", "mode": "selection_factorial"},
+  "protocol": {
+    "python_hash_seed": 0,
+    "baseline_sha": "616bff0d0d11a1a073e7a02099d40cb99b40a4d9",
+    "conditions": {"A": [false, false], "B": [false, true], "C": [true, false], "D": [true, true]},
+    "factors": ["stored_library_enabled", "contract_ranking_enabled"],
+    "candidate_invariance": "Same state and same library: generate and truncate with the unchanged generator before ordering. A/B and C/D must be permutations; A/C need not be.",
+    "selection": "Existing typed atom alignment; one offer per live family each fair round; reorder offers, never filter by relevance; stable original order on ties.",
+    "fair_original_round_every": 4,
+    "no_acquisition_or_policy_learning": true,
+    "evaluation_status": "16 old regression goals, and all 16 goal templates on new fixed random rational point instances; instance transfer, not new theorem families",
+    "holdout_seed": 2026091501,
+    "holdout_coordinate_range": [-9, 9],
+    "holdout_rule": "In original task order draw two integers per point in input order. Redraw a complete configuration only for duplicate points or a collinear triple. Preserve all goals. Do not test solutions or inspect learned bodies to select tasks.",
+    "diagnostic_status": "Post-evaluation, regression only; bounded witness search, not an oracle upper bound or impossibility certificate. Never feed witnesses back to selection."
+  },
+  "source_archive": {
+    "path": "reports/semantic-feedback-eight-cycle-evidence.zip",
+    "sha256": "7557e376e7e654b3f8b269b6f901c6ba4fa5705c46e368c9d944d11db0d7637f",
+    "run_id": "34889840285",
+    "source_sha": "023cedd57ef0cafe7a0449326f22b55dc1ec38c6",
+    "member_prefix": "semantic-geometry-023cedd57ef0cafe7a0449326f22b55dc1ec38c6-34889840285/semantic-feedback-normal/",
+    "library_sha256": "060f19ac6ac38f7cea28295065d15294fcb5e549775a9888c506436ac725c51b",
+    "plan_sha256": "f44ce834ccc8914b2ad35d68e8a0990c35c8e406387541119f36103dd36807b5"
+  },
+  "search": {"seed": 17, "max_depth": 6000, "per_family_limit": 3, "max_input_tuples": 128, "max_primitive_operations": 6000, "wall_seconds": 600},
+  "applications": 112,
+  "diagnostic": {"enabled": true, "conditions": ["A", "D"], "applications": 448, "max_primitive_operations": 24000, "wall_seconds": 300}
+}
