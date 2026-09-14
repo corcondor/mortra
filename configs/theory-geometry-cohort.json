@@ -1,0 +1,58 @@
+{
+  "origin": "Newclid pinned dataset, supplied auxiliary clauses removed",
+  "unseen_scope": "not used in this adapter's development; global historical exposure unverified",
+  "source_file": "jgex_ag_231.txt",
+  "source_sha256": "c661c8333f977cefd5415a0bba57a377635d70aba927c525c3341b71a144f546",
+  "selection": "first count by sha256(geometry-cohort-917401:statement), 3..7 initial points; supported syntax only",
+  "eligible_count": 95,
+  "tasks": [
+    {
+      "id": "examples/complete2/011/complete_004_6_GDD_FULL_81-109_99.gex",
+      "statement": "a b c = triangle a b c; m = free m; n = on_aline n a c b a m; q = foot q m a b; p = foot p m a c ? perp a n p q",
+      "selection_key": "03697a1cedb158c53016290b779a6efbc3ef12562db1bcd2ec9d80add90c39db"
+    },
+    {
+      "id": "examples/complete2/000/complete_007_7_Book_LLL_L194-2.gex",
+      "statement": "a b = segment a b; c = on_bline c a b; d = on_bline d a b; e = on_line e c d, on_line e a b ? cong b e a e",
+      "selection_key": "05154d3d82e686a275544004a6e3e9d9ed7d2768d1dbc687467ebde394b8a193"
+    },
+    {
+      "id": "examples/complete2/000/complete_017_ex-gao_gao_L_L022-1.gex",
+      "statement": "a b = segment a b; c = on_bline c a b; d = on_line d a c; e = on_circle e c d, on_line e b c ? cong a e b d",
+      "selection_key": "088ab94d2c79775ec948d2b18256643632cc68e1ddd73ea8f0b6c4e0a481ad32"
+    },
+    {
+      "id": "examples/complete2/unsolved1/complete_008_ex-gao_ex160_e213.gex",
+      "statement": "a b c = triangle a b c; d = midpoint d a b; e = midpoint e c a; f = on_line f d e, angle_bisector f c b a ? perp a f b f",
+      "selection_key": "0cef51d0b0734efd61add16b5264ce1a3085dee4c7accd2a0b861374884a8e01"
+    },
+    {
+      "id": "examples/complete2/011/complete_003_6_GDD_FULL_21-40_34.gex",
+      "statement": "a b c = triangle a b c; h = orthocenter h a b c; o = circle o h b c; p = on_tline p h c h, on_circle p o b ? para b p a h",
+      "selection_key": "0d8bfa0a31da7e2d2e3266607f5c205be7646e106dc2fbcbed093fe2300c78cd"
+    },
+    {
+      "id": "examples/complete2/009/complete_013_7_Book_00EE_10_E072-13.gex",
+      "statement": "a b c = triangle a b c; d = foot d b a c; e = foot e a b c; f = foot f b d e ? eqangle a b b d b c b f",
+      "selection_key": "0dfca33a40e8c5d036f2ecfc25cb41c01f7780b51f8ce3cbbe93823fceb5553c"
+    },
+    {
+      "id": "examples/complete2/unsolved1/complete_011_7_Book_00EE_04_E051-2.gex",
+      "statement": "a b c = triangle a b c; d = on_line d a b; e = on_pline e d b c, on_line e a c; f = on_line f c d, on_line f b e; g = on_line g a f, on_line g b c ? midp g b c",
+      "selection_key": "0e2ddd44b2d10624fcaa16c7addf8f09beb9140f15aa41302b9fc8c73de2b6c7"
+    },
+    {
+      "id": "examples/complete2/012/complete_004_6_GDD_FULL_81-109_101.gex",
+      "statement": "a b c = triangle a b c; o = circle o a b c; h = midpoint h c b; d = on_line d o h, on_line d a b; e = on_tline e c c o, on_tline e a a o ? cyclic a d e o",
+      "selection_key": "0f4ec194568791158ce076beab6d663713c481229125b583a28fe03817f74e47"
+    }
+  ],
+  "search": {
+    "seed": 917401,
+    "max_depth": 2,
+    "max_states": 65,
+    "per_family_limit": 8,
+    "closure_steps": 1000
+  },
+  "task_timeout_seconds": 180
+}

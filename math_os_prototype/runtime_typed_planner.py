@@ -38,6 +38,7 @@ class RuntimePrimitive:
     source_sorts: tuple[str, ...]
     target_sort: str
     execute: PrimitiveExecutor
+    alternatives: Callable[[tuple[RuntimeFact, ...]], Iterable[Callable[[], PrimitiveResult | None]]] | None = None
 
 
 @dataclass(frozen=True)
@@ -183,7 +184,13 @@ def synthesize_typed_plan(
                 depth = max((argument.depth for argument in arguments), default=-1) + 1
                 if depth > max_depth:
                     continue
-                yield primitive, arguments, dependency_ids, depth
+                if primitive.alternatives is None:
+                    yield primitive, arguments, dependency_ids, depth, lambda p=primitive, a=arguments: p.execute(tuple(a))
+                else:
+                    # Enumerate from these actual input facts, but execute only
+                    # after the shared planner has charged an application slot.
+                    for invoke in primitive.alternatives(tuple(arguments)):
+                        yield primitive, arguments, dependency_ids, depth, invoke
 
         def attempts():
             streams = [iter(arguments_for(p)) for p in relevant]
@@ -204,10 +211,10 @@ def synthesize_typed_plan(
                 streams = alive
 
         changed = False
-        for primitive, arguments, dependency_ids, depth in attempts():
+        for primitive, arguments, dependency_ids, depth, invoke in attempts():
             if states_explored >= max_states:
                 break
-            result = primitive.execute(tuple(arguments))
+            result = invoke()
             states_explored += 1
             if result is None:
                 if states_explored >= max_states:

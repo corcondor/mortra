@@ -26,7 +26,10 @@ def source_seal():
                     ROOT/"scripts/run_theory_formation.py", ROOT/"scripts/verify_theory_formation.py",
                     ROOT/"scripts/verify_theory_tasks.py", ROOT/"scripts/verify_theory_dsl.py",
                     ROOT/"scripts/verify_theory_semantic_edit.py", ROOT/"scripts/verify_temporal_utility.py",
-                    ROOT/"scripts/verify_basis_quality.py"])
+                    ROOT/"scripts/verify_basis_quality.py", ROOT/"scripts/verify_theory_geometry.py",
+                    ROOT/"scripts/freeze_geometry_cohort.py"])
+    files += sorted(ROOT.joinpath("worker/backend").glob("*.py"))
+    files += [ROOT/"requirements-geometry.txt"]
     return {p.relative_to(ROOT).as_posix(): digest(p.read_text(encoding="utf-8")) for p in files}
 
 
@@ -74,6 +77,16 @@ def main(argv=None):
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
     write(args.output/"input.json", metadata)
+    if config["domain"].get("kind") == "geometry":
+        if args.resume or args.knowledge or args.queries or args.condition != "learn":
+            parser.error("Geometry uses formal task inputs, not scalar archive/queries or training conditions")
+        from math_os_prototype.theory_geometry import run_geometry_theory
+        result = run_geometry_theory(config, args.output)
+        result.update(sources_unchanged=source == source_seal(), sha=metadata["sha"],
+                      workflow_run_id=metadata["workflow_run_id"])
+        write(args.output/"verification.json", result)
+        print(json.dumps(result, indent=2))
+        return 0 if result["execution_completed"] and result["sources_unchanged"] else 1
     old = None
     if args.knowledge:
         prior = json.loads((args.knowledge.parent/"input.json").read_text(encoding="utf-8"))

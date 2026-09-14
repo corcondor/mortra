@@ -77,7 +77,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
+        options: [worker, q-directed, theory-formation, geometry, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -176,7 +176,9 @@ jobs:
       BOTTLENECK_MODE: ${{ inputs.verification_suite == 'bottleneck-study' }}
       DSL_MODE: ${{ inputs.verification_suite == 'dsl-feedback' }}
       TEMPORAL_MODE: ${{ inputs.verification_suite == 'temporal-utility' }}
-      BASIS_MODE: ${{ inputs.verification_suite == 'basis-quality' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
+      BASIS_MODE: ${{ inputs.verification_suite == 'basis-quality' }}
+      GEOMETRY_MODE: ${{ inputs.verification_suite == 'geometry' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
+      PYTHONHASHSEED: "0"
     steps:
       - name: Set output location
         shell: bash
@@ -223,6 +225,27 @@ jobs:
           python -m pip check 2>&1 | tee "$VERIFY_OUTPUT/dependency-check.log"
       - name: Test verification gates
         run: python -m unittest discover -s ci-control/tests -p test_q_directed_ci.py -v
+      - name: Install pinned geometry adapter dependencies
+        if: env.GEOMETRY_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python -m pip install -r requirements-geometry.txt 2>&1 | tee "$VERIFY_OUTPUT/geometry-dependencies.log"
+          python -m pip freeze > "$VERIFY_OUTPUT/geometry-environment.txt"
+      - name: Test shared planner and geometry adapter boundaries
+        if: env.GEOMETRY_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python -m pytest tests/test_theory_geometry.py tests/test_theory_dsl.py -q \
+            2>&1 | tee "$VERIFY_OUTPUT/geometry-tests.log"
+      - name: Reproduce frozen formal geometry cohort through the normal Theory entry
+        if: env.GEOMETRY_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python scripts/verify_theory_geometry.py --plan configs/theory-geometry-cohort.json \
+            --output "$VERIFY_OUTPUT/geometry" 2>&1 | tee "$VERIFY_OUTPUT/geometry-run.log"
       - name: Reproduce tests, acquisition, stored reuse, and refusal
         shell: bash
         run: |
@@ -234,7 +257,7 @@ jobs:
         shell: bash
         run: python -m unittest discover -s tests -p test_theory_formation.py -v 2>&1 | tee "$VERIFY_OUTPUT/theory-tests.log"
       - name: Run frozen target-free experiments and ablations
-        if: env.THEORY_MODE == 'true' && env.LONG_MODE != 'true'
+        if: env.THEORY_MODE == 'true' && env.LONG_MODE != 'true' && env.GEOMETRY_MODE != 'true'
         working-directory: target
         shell: bash
         run: |
