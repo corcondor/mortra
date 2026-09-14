@@ -444,3 +444,72 @@ Development regressions: 156 passed, 1 external-comparison skip, 44.94 seconds.
 The supplied examples in these tests are not autonomous acquisition evidence.
 The follow-up normal run and Actions evidence will be recorded below after
 completion; implementation and development tests alone do not prove growth.
+
+### Predeclared eight-cycle extension
+
+Before starting this extension, the four-cycle training record at source commit
+`d1e622820dd086373b1723a43c0ae0e5d5d2d711` showed an admissible candidate containing
+a prior acquired call, supported by six histories, with seven net AST nodes
+saved including its definition. The two selected candidates in that cycle
+saved twelve each. This observation concerns training only; it is not a
+generation-2 acquisition or an evaluation success.
+
+The separate extension uses
+`configs/theory-geometry-semantic-feedback-eight-cycles.json`, SHA256
+`f44ce834ccc8914b2ad35d68e8a0990c35c8e406387541119f36103dd36807b5`.
+Only the horizon changes from four to eight cycles in every training condition.
+Domain, tasks, seed, all per-cycle and evaluation budgets, and acquisition
+limits are identical by parsed-JSON comparison. The Python source and selection
+rule are unchanged. The run will stop at eight cycles regardless of whether a
+recursive definition is acquired. No candidate ID is privileged and no answer
+or definition is supplied. B still learns in its first cycle only, and D is
+C's final archive with no active roots, as in the original comparison.
+
+The new config also corrects descriptive selection metadata to the rule
+actually recorded by the d1e6228 Python implementation. The old four-cycle
+config's historical `protocol.selection` text is not executable selection code;
+the per-acquisition `selection_rule` and ranked `selection_rounds` are the
+authoritative records for that run. The 16 goals remain regression tasks whose
+outcomes have previously been inspected, not a new blinded evaluation.
+
+The existing paper-guided geometry workflow gains a choice between these two
+configs. Its push default is the eight-cycle extension. This does not create a
+second competing CI pipeline or change the existing exact-kernel job.
+
+### Completed four-cycle refactoring experiment
+
+Source: `d1e622820dd086373b1723a43c0ae0e5d5d2d711`.
+Local command (PowerShell, `PYTHONHASHSEED=0`):
+
+```text
+.venv/Scripts/python.exe scripts/run_theory_formation.py --config configs/theory-geometry-semantic-feedback.json --output reports/semantic-feedback-normal-d1e6228
+```
+
+Local duration was 674.223 seconds. Fresh
+[Actions run 34888598466](https://github.com/corcondor/mortra/actions/runs/34888598466)
+passed both jobs; its test XML records 156 passed, 1 external-comparison skip,
+0 failures/errors, 50.906 seconds. Its normal experiment took 563.630 seconds.
+Both runs have unchanged source seals and archives during evaluation. Parsed
+non-timing summaries and complete adjacent-language reach differences agree.
+The preceding shell-gate-only run 34887869294 also completed successfully.
+
+| Condition | Registered / active definitions | Highest generation | Solved / tasks | Evaluation candidates | Reach states, inputs 1 / 2 |
+|---|---:|---:|---:|---:|---:|
+| A primitive | 0 / 0 | 0 | 8 / 16 | 922 | 80 / 74 |
+| B first generation only | 2 / 2 | 1 | 8 / 16 | 922 | 68 / 62 |
+| C recursive permitted | 8 / 8 | 1 | 8 / 16 | 922 | 54 / 47 |
+| D C archive inactive | 8 / 0 | 1 | 8 / 16 | 922 | 80 / 74 |
+| E flatten before acquisition | 8 / 8 | 1 | 8 / 16 | 922 | 51 / 44 |
+
+All eight C acquisitions have positive marginal AST savings, but this is
+training-description compression, not proved future utility. C has 8 / 7 new
+states versus A on the two reach inputs, and loses 34 / 34 old states.
+No solved goal uses an acquired call. Thus neither more solved goals nor net
+bounded reach growth has been established. The extension is a separate test
+of the remaining recursive-acquisition path, not a replacement for this result.
+
+[Fresh Linux evidence artifact](https://github.com/corcondor/mortra/actions/runs/34888598466/artifacts/10366212596):
+13,628,331 bytes, SHA256
+`7768cf929622a67cef8cf809045a736112dda99176573909571d370f55805c10`.
+It contains the exact config, source seal, environment, test log/XML, original
+histories, refactoring proofs, candidate rankings, certificates and comparisons.

@@ -1,0 +1,780 @@
+{
+  "domain": {
+    "kind": "geometry",
+    "mode": "semantic_feedback"
+  },
+  "protocol": {
+    "python_hash_seed": 0,
+    "conditions": [
+      "A primitive",
+      "B generation one only",
+      "C recursive",
+      "D C archive inactive",
+      "E flatten before acquisition"
+    ],
+    "input_kind": "predeclared exact rational geometry configurations; no answer or intermediate construction",
+    "evaluation_is_frozen_before_training": true,
+    "selection": "positive marginal AST-node saving including definition, history support, content hash",
+    "no_post_result_task_tuning": true,
+    "evaluation_status": "previously inspected regression tasks; no evaluation feedback to acquisition",
+    "extension_reason": "Four-cycle training left positive-utility candidates unselected at its acquisition budget; double the horizon for all conditions without changing tasks or per-cycle budgets."
+  },
+  "cycles": 8,
+  "training_applications_per_cycle": 112,
+  "evaluation_applications": 112,
+  "reachability_applications": 112,
+  "search": {
+    "seed": 17,
+    "max_depth": 6000,
+    "per_family_limit": 3,
+    "max_input_tuples": 128,
+    "max_primitive_operations": 6000,
+    "wall_seconds": 600
+  },
+  "acquisition": {
+    "pairs": 3000,
+    "max_parameters": 4,
+    "min_contexts": 2,
+    "min_semantic_operations": 2,
+    "max_primitive_steps": 4,
+    "per_cycle_capacity": 2,
+    "certification_budget": 2,
+    "corpus_capacity": 512
+  },
+  "training": [
+    {
+      "points": {
+        "a": [
+          0,
+          0
+        ],
+        "b": [
+          6,
+          0
+        ],
+        "c": [
+          1,
+          4
+        ],
+        "d": [
+          5,
+          3
+        ]
+      }
+    },
+    {
+      "points": {
+        "a": [
+          1,
+          2
+        ],
+        "b": [
+          8,
+          1
+        ],
+        "c": [
+          2,
+          7
+        ],
+        "d": [
+          7,
+          6
+        ]
+      }
+    },
+    {
+      "points": {
+        "a": [
+          -2,
+          1
+        ],
+        "b": [
+          5,
+          -1
+        ],
+        "c": [
+          0,
+          6
+        ],
+        "d": [
+          4,
+          4
+        ]
+      }
+    }
+  ],
+  "evaluation": [
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "a",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "c",
+            "d"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "points": [
+            "a",
+            "u",
+            "c",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "perp",
+          "points": [
+            "u",
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "points": [
+            "u",
+            "b",
+            "a",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "a",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "c",
+            "d"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "points": [
+            "a",
+            "u",
+            "c",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "perp",
+          "points": [
+            "u",
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "points": [
+            "u",
+            "b",
+            "a",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "a",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "c",
+            "u",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "c",
+            "u",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "a",
+            "c"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "points": [
+            "b",
+            "u",
+            "c",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cyclic",
+          "points": [
+            "u",
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "c",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "a",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "c",
+            "u",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "c",
+            "u",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "a",
+            "c"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "points": [
+            "b",
+            "u",
+            "c",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cyclic",
+          "points": [
+            "u",
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "predicate": "coll",
+          "points": [
+            "u",
+            "c",
+            "d"
+          ]
+        }
+      ]
+    }
+  ],
+  "reachability": [
+    {
+      "points": {
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "c": [
+          2,
+          8
+        ],
+        "d": [
+          7,
+          5
+        ]
+      }
+    },
+    {
+      "points": {
+        "a": [
+          -1,
+          2
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "c": [
+          1,
+          9
+        ],
+        "d": [
+          6,
+          7
+        ]
+      }
+    }
+  ]
+}

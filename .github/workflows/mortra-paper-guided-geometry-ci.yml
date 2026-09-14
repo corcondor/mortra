@@ -10,6 +10,7 @@ on:
       - "scripts/run_theory_formation.py"
       - "tests/test_geometry_semantic_feedback.py"
       - "configs/theory-geometry-semantic-feedback.json"
+      - "configs/theory-geometry-semantic-feedback-eight-cycles.json"
       - "worker/backend/numerical_incidence_auxiliary.py"
       - "worker/backend/typed_bidirectional_priority.py"
       - "worker/backend/constructible_groebner.py"
@@ -37,6 +38,7 @@ on:
       - "math_os_prototype/theory_geometry_feedback.py"
       - "tests/test_geometry_semantic_feedback.py"
       - "configs/theory-geometry-semantic-feedback.json"
+      - "configs/theory-geometry-semantic-feedback-eight-cycles.json"
       - "worker/backend/**"
       - "scripts/export_hageo409_jgex.py"
       - "scripts/finalize_geometry_proof_portfolio.py"
@@ -44,6 +46,14 @@ on:
       - "tests/test_finalize_geometry_proof_portfolio.py"
       - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
   workflow_dispatch:
+    inputs:
+      experiment_config:
+        description: Frozen semantic geometry comparison
+        type: choice
+        default: configs/theory-geometry-semantic-feedback-eight-cycles.json
+        options:
+          - configs/theory-geometry-semantic-feedback.json
+          - configs/theory-geometry-semantic-feedback-eight-cycles.json
 
 permissions:
   contents: read
@@ -54,6 +64,7 @@ jobs:
     timeout-minutes: 40
     env:
       PYTHONHASHSEED: "0"
+      EXPERIMENT_CONFIG: ${{ inputs.experiment_config || 'configs/theory-geometry-semantic-feedback-eight-cycles.json' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -72,7 +83,7 @@ jobs:
           mkdir -p reports
           python -m pytest -q tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
       - name: Frozen normal-entry A B C D E experiment
-        run: python scripts/run_theory_formation.py --config configs/theory-geometry-semantic-feedback.json --output reports/semantic-feedback-normal
+        run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
       - name: Preserve fresh evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
