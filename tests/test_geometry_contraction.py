@@ -7,6 +7,11 @@ from math_os_prototype import geometry_contracts as gc
 from math_os_prototype.geometry_contraction import compile_summary, replay_summary, infer_interface, source_interfaces
 from math_os_prototype.theory_geometry_contraction import ContractionGeometryDomain
 from math_os_prototype.theory_geometry_acquisition import RationalGeometryDomain, acquisition, solve, independent_replay
+from math_os_prototype.theory_geometry_acquisition import ConstructionBudgetExceeded, proof_depths
+from math_os_prototype.runtime_typed_planner import (
+    RuntimePrimitive, PrimitiveResult, RuntimeSearchProgress, initial_fact, synthesize_typed_plan,
+)
+from scripts.replay_geometry_contraction import audit_scientific_gate
 from worker.backend.typed_geometry_stalk import TypedConstructionCandidate, enumerate_typed_candidates, ConstructionFamily
 
 
@@ -165,3 +170,118 @@ def test_source_subdag_shared_internal_point_becomes_boundary():
     assert boundary == ["local0", "local1"]  # Both feed the outside consumer.
     summary, _ = compile_summary(h, boundary)
     assert summary["interface"]["public_outputs"] == ["local0", "local1"]
+
+
+@pytest.mark.parametrize("fair", [False, True])
+def test_progress_observation_does_not_change_search(fair):
+    def run(progress):
+        trace = []
+        def apply(args):
+            value = args[0].value
+            trace.append(value)
+            return PrimitiveResult(value+1, {"op": "increment"})
+        plan = synthesize_typed_plan([initial_fact("N", 0)],
+            [RuntimePrimitive("increment", ("N",), "N", apply)], ["N"],
+            goal_predicates={"N": lambda f: f.value == 3}, fair=fair, progress=progress)
+        return plan, trace
+    progress = RuntimeSearchProgress()
+    plain, a = run(None)
+    measured, b = run(progress)
+    assert plain == measured and a == b
+    assert progress.states_explored == measured.states_explored
+    assert progress.states_retained == len(measured.facts)
+    assert progress.applications_started == progress.applications_completed == 3
+
+
+@pytest.mark.parametrize("where,explored,retained,started,completed", [
+    ("enumeration", 1, 1, 0, 0), ("invocation", 1, 1, 1, 0), ("goal", 2, 2, 1, 1)])
+def test_progress_survives_all_domain_budget_exit_sites(where, explored, retained, started, completed):
+    progress = RuntimeSearchProgress()
+    def invoke():
+        if where == "invocation":
+            raise ConstructionBudgetExceeded("synthetic invocation limit")
+        return PrimitiveResult(1, {})
+    def alternatives(args):
+        if where == "enumeration":
+            raise ConstructionBudgetExceeded("synthetic enumeration limit")
+        yield invoke
+    def goal(fact):
+        if where == "goal" and fact.value == 1:
+            raise ConstructionBudgetExceeded("synthetic goal limit")
+        return False
+    with pytest.raises(ConstructionBudgetExceeded):
+        synthesize_typed_plan([initial_fact("N", 0)],
+            [RuntimePrimitive("step", ("N",), "N", lambda a: None, alternatives)], ["N"],
+            goal_predicates={"N": goal}, progress=progress)
+    assert (progress.states_explored, progress.states_retained, progress.applications_started,
+            progress.applications_completed) == (explored, retained, started, completed)
+
+
+def test_geometry_budget_run_keeps_partial_counts_without_fake_proof():
+    result = solve(TASK, {**CONFIG, "wall_seconds": 0})
+    assert not result["solved"] and result["states_explored"] == result["states_retained"] == 1
+    assert result["planner_applications_started"] == result["planner_applications_completed"] == 0
+    assert result["expanded_primitive_proof_depth"] is None
+
+
+def test_geometry_operation_budget_counts_interrupted_application_separately():
+    result = solve(TASK, {**CONFIG, "max_primitive_operations": 0})
+    assert not result["solved"]
+    # A depth-zero planner never invokes an operation.
+    assert result["planner_applications_started"] == 0
+    assert result["states_explored"] == result["states_retained"] == 1
+
+
+def test_depth_is_longest_path_not_dag_size_and_refinement_has_dependency():
+    left, right = term("foot", "p", "a", "b"), term("foot", "a", "b", "p")
+    proof = {"term": term("midpoint", left, right), "point": "answer"}
+    depths = proof_depths(proof, [
+        {"family": "H", "inputs": ["a", "b", "p"], "outputs": ["y"]},
+        {"family": "refine", "inputs": ["a", "b", "p"], "outputs": ["m"], "refines_action": 0},
+        {"family": "midpoint", "inputs": ["y", "m"], "outputs": ["answer"]}])
+    assert depths == {"expanded_primitive_proof_nodes": 3,
+                      "expanded_primitive_proof_depth": 2, "macro_proof_depth": 3}
+    assert proof_depths({"term": gc.point("a"), "point": "a"}, []) == {
+        "expanded_primitive_proof_nodes": 0, "expanded_primitive_proof_depth": 0, "macro_proof_depth": 0}
+
+
+def gate_fixture():
+    row = {"task": {"id": "synthetic"}, "solved": True, "false_proofs": 0,
+           "goal_acquired_calls": [], "costs": {"candidate_expansions": 10, "goal_prover_calls": 20}}
+    comparisons = {k: [deepcopy(row)] for k in ("primitive_only", "syntactic_macro", "certified_morphism",
+                                               "summarized", "hiding_only", "ablation")}
+    for label in ("summarized", "hiding_only"):
+        comparisons[label][0]["costs"].update(candidate_expansions=5, hidden_objects=1)
+    comparisons["summarized"][0]["goal_acquired_calls"] = ["synthetic_H"]
+    return comparisons
+
+
+def test_independent_gate_keeps_conservative_criteria_and_separates_causes():
+    comparisons = gate_fixture()
+    assert audit_scientific_gate(comparisons)["passed"]
+    comparisons["hiding_only"][0]["costs"].update(candidate_expansions=11, goal_prover_calls=21)
+    audit = audit_scientific_gate(comparisons)
+    assert not audit["passed"]
+    assert "hiding_only_aggregate_search_lower" in audit["failed_criteria"]
+    assert not audit["hiding_only_lost_exposed_tasks"]
+    for label in ("syntactic_macro", "certified_morphism", "summarized", "hiding_only"):
+        comparisons[label][0]["solved"] = False
+    audit = audit_scientific_gate(comparisons)
+    assert audit["lost_solved_tasks_by_baseline"]["primitive_only"] == ["synthetic"]
+    assert not audit["lost_solved_tasks_by_baseline"]["syntactic_macro"]
+    assert not audit["hiding_only_lost_exposed_tasks"]
+
+
+@pytest.mark.parametrize("kind", ["missing", "reordered", "empty", "duplicate"])
+def test_independent_gate_refuses_incomplete_comparisons(kind):
+    comparisons = gate_fixture()
+    if kind == "missing":
+        comparisons.pop("ablation")
+    elif kind == "reordered":
+        comparisons["ablation"][0]["task"]["id"] = "different"
+    elif kind == "empty":
+        comparisons = {k: [] for k in comparisons}
+    else:
+        comparisons = {k: rows+rows for k, rows in comparisons.items()}
+    with pytest.raises(ValueError):
+        audit_scientific_gate(comparisons)

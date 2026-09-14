@@ -17,7 +17,7 @@ import sympy as sp
 from math_os_prototype import geometry_contracts as gc
 from math_os_prototype import library_compression as library
 from math_os_prototype.representation_progress import digest
-from math_os_prototype.runtime_typed_planner import PrimitiveResult
+from math_os_prototype.runtime_typed_planner import PrimitiveResult, RuntimeSearchProgress
 from math_os_prototype.theory_action_domain import search_action_domain
 from worker.backend.typed_geometry_stalk import (
     ConstructionFamily, DEFAULT_POINT_FAMILIES, enumerate_typed_candidates,
@@ -274,13 +274,35 @@ class RationalGeometryDomain:
         return False
 
 
+def proof_depths(proof, actions):
+    """Lengths count operations; depths count the longest dependency chain."""
+    if not proof:
+        return {"expanded_primitive_proof_nodes": None,
+                "expanded_primitive_proof_depth": None, "macro_proof_depth": None}
+    steps, output = gc.dag(proof["term"])
+    depths = {}
+    for step in steps:
+        depths[step["output"]] = 1+max((depths.get(n, 0) for n in step["inputs"]), default=0)
+    macro_depths = {}
+    for action in actions:
+        depth = 1+max((macro_depths.get(n, 0) for n in action["inputs"]), default=0)
+        if action["family"] == "refine":
+            original = actions[action["refines_action"]]
+            depth = max(depth, 1+max(macro_depths[n] for n in original["outputs"]))
+        for name in action["outputs"]:
+            macro_depths[name] = depth
+    return {"expanded_primitive_proof_nodes": len(steps),
+            "expanded_primitive_proof_depth": depths.get(output, 0),
+            "macro_proof_depth": macro_depths.get(proof["point"], 0)}
+
+
 def solve(task, config, contracts=(), *, mode="certified", emit=lambda e: None, domain_class=RationalGeometryDomain):
     start = time.perf_counter()
     domain = domain_class(task, config, contracts, mode=mode, emit=emit)
-    explored, retained = None, None
+    progress = RuntimeSearchProgress()
     try:
-        plan = search_action_domain(domain, max_depth=config["max_primitive_operations"], max_states=config["max_states"])
-        explored, retained = plan.states_explored, len(plan.facts)
+        plan = search_action_domain(domain, max_depth=config["max_primitive_operations"],
+                                    max_states=config["max_states"], progress=progress)
         goal = plan.goals.get(domain.sort)
         state = goal.value if goal else None
         stop = "proved" if goal else "candidate_or_state_budget"
@@ -292,15 +314,21 @@ def solve(task, config, contracts=(), *, mode="certified", emit=lambda e: None, 
         if needed & set(step["outputs"]):
             used.append(step)
             needed.update(step["inputs"])
+            if step["family"] == "refine":
+                needed.update(state["path"][step["refines_action"]]["outputs"])
     used.reverse()
     return {"task": deepcopy(task), "task_sha256": task_identity(task), "solved": bool(state), "stop_reason": stop,
             "state": state, "proof": proof, "costs": dict(domain.costs), "events": domain.events,
             "wall_seconds": time.perf_counter()-start,
-            "states_explored": explored, "states_retained": retained,
+            "states_explored": progress.states_explored, "states_retained": progress.states_retained,
+            "planner_applications_started": progress.applications_started,
+            "planner_applications_completed": progress.applications_completed,
+            "planner_applications_interrupted": progress.applications_started-progress.applications_completed,
+            "measurement_version": 2,
             "wall_budget_is_soft": True,
             "proof_length": sum(s["primitive_equivalent_operations"] for s in used) if state else None,
             "macro_proof_length": len(used) if state else None,
-            "expanded_primitive_proof_depth": len(gc.dag(proof["term"])[0]) if proof else None,
+            **proof_depths(proof, state["path"] if state else []),
             "proof_actions": used,
             "goal_acquired_calls": [s["family"] for s in used if s["family"] in domain.contracts],
             "false_proofs": None, "false_proof_scope": "requires independent replay"}

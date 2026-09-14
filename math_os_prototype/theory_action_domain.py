@@ -22,7 +22,7 @@ class ActionDomain(Protocol):
     def is_goal(self, state) -> bool: ...
 
 
-def search_action_domain(domain: ActionDomain, *, max_depth, max_states):
+def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progress=None):
     primitives = tuple(RuntimePrimitive(
         family, (domain.sort,), domain.sort, lambda args: None,
         alternatives=lambda args, family=family: domain.alternatives(family, args[0].value),
@@ -31,5 +31,5 @@ def search_action_domain(domain: ActionDomain, *, max_depth, max_states):
         [initial_fact(domain.sort, domain.initial())], primitives, [domain.sort],
         goal_predicates={domain.sort: lambda fact: domain.is_goal(fact.value)},
         value_key=lambda sort, state: domain.key(state),
-        max_depth=max_depth, max_states=max_states, fair=True,
+        max_depth=max_depth, max_states=max_states, fair=True, progress=progress,
     )

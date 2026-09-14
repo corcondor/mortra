@@ -54,6 +54,16 @@ class RuntimePlan:
         return not self.open_goal_sorts
 
 
+@dataclass
+class RuntimeSearchProgress:
+    """Counters survive a domain budget exception; they never guide search."""
+
+    states_explored: int = 0
+    states_retained: int = 0
+    applications_started: int = 0
+    applications_completed: int = 0
+
+
 def _canonical(value: Any) -> str:
     return json.dumps(
         value,
@@ -128,6 +138,7 @@ def synthesize_typed_plan(
     goal_predicates: dict[str, Callable[[RuntimeFact], bool]] | None = None,
     value_key: Callable[[str, Any], str] | None = None,
     fair: bool = False,
+    progress: RuntimeSearchProgress | None = None,
 ) -> RuntimePlan:
     """Enumerate typed compositions with optional value-sensitive goals.
 
@@ -154,6 +165,10 @@ def synthesize_typed_plan(
     seen_values = {(fact.sort, value_key(fact.sort, fact.value)) for fact in facts}
     attempted: set[tuple[str, tuple[str, ...]]] = set()
     states_explored = len(facts)
+    progress = progress if progress is not None else RuntimeSearchProgress()
+    progress.states_explored = states_explored
+    progress.states_retained = len(facts)
+    progress.applications_started = progress.applications_completed = 0
 
     while states_explored < max_states:
         by_sort: dict[str, list[RuntimeFact]] = {}
@@ -214,8 +229,11 @@ def synthesize_typed_plan(
         for primitive, arguments, dependency_ids, depth, invoke in attempts():
             if states_explored >= max_states:
                 break
+            progress.applications_started += 1
             result = invoke()
+            progress.applications_completed += 1
             states_explored += 1
+            progress.states_explored = states_explored
             if result is None:
                 if states_explored >= max_states:
                     break
@@ -232,6 +250,7 @@ def synthesize_typed_plan(
                 certificate_step={"rule": primitive.name, **result.certificate_step},
             )
             facts.append(fact)
+            progress.states_retained = len(facts)
             facts_by_id[fact.id] = fact
             seen_values.add(result_key)
             changed = True
