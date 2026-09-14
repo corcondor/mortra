@@ -1,0 +1,19 @@
+{
+  "reviewed_sha": "c991e86df081f1c5632cb0040db94d7ee90d1051",
+  "finding": "is_goal stored a solution without checking independent replay's passed flag",
+  "severity": "correctness gate",
+  "probe": "after constructing a valid midpoint, replace replay in the review-only process with a failed result, then call is_goal",
+  "before": {"goal_accepted": true, "solution_replay_passed": false},
+  "normal_experiment_modified": false,
+  "saved_results_audit": {
+    "local_solved_records": 40,
+    "local_failed_replays": 0,
+    "github_solved_records": 40,
+    "github_failed_replays": 0,
+    "github_run_id": 34885354682
+  },
+  "correction": "refuse that goal candidate when replay fails; record goal_refusal and goal_replay_failures; continue checking other candidates",
+  "new_regression": "test_failed_independent_goal_replay_is_not_a_solution",
+  "local_tests_after_correction": {"passed": 152, "skipped": 1, "failed": 0, "seconds": 54.04},
+  "new_normal_run_required": true
+}

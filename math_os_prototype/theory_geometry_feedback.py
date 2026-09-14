@@ -316,6 +316,11 @@ class SemanticGeometryDomain:
             if proofs and all(p is not None for p in proofs):
                 primitive = dsl.expand(state.terms[n], self.bank.table, self.costs)
                 replay = self.replay(primitive, state.objects[n]["coordinates"])
+                if not replay["passed"]:
+                    self.costs["goal_replay_failures"] += 1
+                    self.emit({"event": "goal_refusal", "reason": "independent_replay_rejected",
+                               "task_sha256": digest(self.task), "point": n, "replay": replay})
+                    continue
                 self.solution = {"point": n, "term": state.terms[n], "primitive_expansion": primitive,
                     "goals": [asdict(p) for p in proofs], "replay": replay,
                     "acquired_calls": library.calls_in(state.terms[n])}

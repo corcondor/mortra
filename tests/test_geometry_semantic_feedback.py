@@ -223,3 +223,13 @@ def test_solve_has_exact_goal_and_replay(bank):
     assert result["solved"]
     assert result["solution"]["replay"]["passed"]
     assert len(result["solution"]["goals"]) == 2
+
+
+def test_failed_independent_goal_replay_is_not_a_solution(bank, monkeypatch):
+    d = domain(bank, CONFIG["evaluation"][0], policy="SOLVE")
+    state = apply(d, d.initial(), "midpoint", ("a", "b")).value
+    monkeypatch.setattr(d, "replay", lambda *args: {"passed": False, "residuals": ["1", "0"]})
+    assert not d.is_goal(state)
+    assert d.solution is None
+    assert d.costs["goal_replay_failures"] == 1
+    assert not d.is_goal(state)
