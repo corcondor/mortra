@@ -158,6 +158,10 @@ def certify_body(body, *, fragment=None):
     substitution = {}
     for step in steps:
         family, y, args = step["family"], step["output"], step["inputs"]
+        if fragment is not None:
+            # Keep intermediate coordinates bound in the construction DAG.
+            # Expanding them into original inputs is not needed for induction.
+            explicit.coordinates.update(relational.coordinates)
         e0, d0 = len(relational.equations), len(explicit.denominators)
         primitive(explicit, family, y, args, fragment=fragment)
         primitive(relational, family, y, args, fragment=fragment)
@@ -169,7 +173,9 @@ def certify_body(body, *, fragment=None):
         matrix = sp.Matrix(block).jacobian(local)
         if len(block) != 2 or any(v.free_symbols & set(local) for v in matrix):
             raise ValueError("construction is not triangular linear in its output")
-        determinant = matrix.det().subs(substitution, simultaneous=True)
+        determinant = matrix.det()
+        if fragment is None:
+            determinant = determinant.subs(substitution, simultaneous=True)
         step_guards = set(factors(determinant))
         for denominator in explicit.denominators[d0:]:
             step_guards.update(factors(denominator))
@@ -178,7 +184,8 @@ def certify_body(body, *, fragment=None):
         inherited = set(guards)
         if fragment is not None:
             geometry_guards.append({"predicate": "polynomial_nonzero",
-                                    "points": args, "input_factors": sorted(step_guards)})
+                                    "points": args, "before_output": y,
+                                    "parent_factors": sorted(step_guards)})
         elif family == "foot":
             a, b = args[1:]
             delta = relational._sub(relational.coordinates[b], relational.coordinates[a])
@@ -197,13 +204,7 @@ def certify_body(body, *, fragment=None):
         substitution.update(zip(local, value))
         proof_substitution = substitution
         if fragment is not None:
-            # Prove a step universally in its parent coordinates, before
-            # substituting earlier rational constructions. The composed witness
-            # and guards above instantiate these local theorems by induction.
-            local_explicit = _JGEXElaborator()
-            local_explicit.coordinates.update({n: relational.coordinates[n] for n in args})
-            primitive(local_explicit, family, y, args, fragment=fragment)
-            proof_substitution = dict(zip(local, local_explicit.coordinates[y], strict=True))
+            proof_substitution = dict(zip(local, value, strict=True))
         checks = [str(sp.cancel(e.subs(proof_substitution, simultaneous=True))) for e in block]
         if not all(check(sp.sympify(e)) for e in checks):
             raise ValueError("relational witness replay failed")
@@ -238,9 +239,10 @@ def certify_body(body, *, fragment=None):
                        "required_nonzero": sorted(step_guards), "existence_residuals": checks,
                        "transfer": transfer})
         if fragment is not None:
+            proofs[-1]["determinant_parent_coordinates"] = proofs[-1].pop("determinant_pullback")
             proofs[-1]["residual_scope"] = "current output with independent parent coordinate symbols"
-            proofs[-1]["local_witness"] = list(map(str, local_explicit.coordinates[y]))
-            proofs[-1]["composition_obligation"] = "instantiate only after earlier steps and their pulled-back guards hold"
+            proofs[-1]["local_witness"] = list(map(str, value))
+            proofs[-1]["composition_obligation"] = "earlier local witnesses evaluated; this step's guards nonzero before evaluation"
     semantic = {"version": 1, "typed_parameters": [{"name": n, "type": "Point"} for n in names],
         "local_auxiliary_variables": [{"name": s["output"], "type": "Point",
             "coordinates": list(map(str, relational.coordinates[s["output"]]))} for s in steps],
@@ -253,6 +255,14 @@ def certify_body(body, *, fragment=None):
         "exact_certificate": {"method": "rational_witness_and_triangular_linear_uniqueness",
             "steps": proofs, "existence": True, "guarantee": True,
             "contract_transfer": True, "all_input_assignments_under_P": True}}
+    if fragment is not None:
+        semantic["witness_mode"] = "sequential_local"
+        semantic["applicability"] = {
+            "input_nonzero_polynomials": [],
+            "sequential_nonzero_polynomials": geometry_guards,
+            "meaning": "evaluate the DAG in order; every parent_factors expression must be nonzero before that output; otherwise refuse",
+            "input_domain": "the real input assignments on which this finite guarded evaluation completes"}
+        semantic["exact_certificate"]["method"] = "local_rational_witness_and_triangular_linear_uniqueness"
     semantic["id"] = "geom."+digest(semantic)[:20]
     return semantic, {"certification_seconds": time.perf_counter()-started,
                       "primitive_schema_steps": len(steps), "prover_calls": identity_checks}

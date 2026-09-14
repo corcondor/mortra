@@ -166,6 +166,7 @@ class SemanticGeometryDomain:
             return None
         self.costs["primitive_equivalent_operations"] += count
         started = time.perf_counter()
+        execution = None
         child = deepcopy(state)
         try:
             used_predicates = []
@@ -181,14 +182,23 @@ class SemanticGeometryDomain:
             symbols = {n+a: sp.Symbol(n+a, real=True) for n in names for a in ("x", "y")}
             replacement = {symbols[n+a]: sp.Rational(state.objects[v]["coordinates"][i])
                            for n, v in mapping.items() for i, a in enumerate(("x", "y"))}
+            local_coordinates = {p["name"]: p["coordinates"] for p in cert["local_auxiliary_variables"]}
+            if cert.get("witness_mode") == "sequential_local":
+                symbols.update({s: sp.Symbol(s, real=True) for xy in local_coordinates.values() for s in xy})
+            step_guards = {g["before_output"]: g["parent_factors"]
+                           for g in cert["applicability"].get("sequential_nonzero_polynomials", [])}
             def value(expression):
                 return sp.cancel(gc.parse(expression, symbols).subs(replacement, simultaneous=True))
-            check = time.perf_counter()
-            for e in cert["applicability"]["input_nonzero_polynomials"]:
-                self.costs["applicability_prover_calls"] += 1
-                if value(e) == 0:
-                    raise ValueError("unproved_applicability:contract_nonzero")
-            self.costs["applicability_seconds"] += time.perf_counter()-check
+            def check_guards(expressions):
+                check = time.perf_counter()
+                try:
+                    for e in expressions:
+                        self.costs["applicability_prover_calls"] += 1
+                        if value(e) == 0:
+                            raise ValueError("unproved_applicability:contract_nonzero")
+                finally:
+                    self.costs["applicability_seconds"] += time.perf_counter()-check
+            check_guards(cert["applicability"]["input_nonzero_polynomials"])
             local_terms = {n: state.terms[v] for n, v in mapping.items()}
             if acquired:
                 binding = {n: state.terms[v] for n, v in mapping.items()}
@@ -199,8 +209,10 @@ class SemanticGeometryDomain:
             expansion = dsl.expand(semantic, self.bank.table, expansion_stats)
             self.costs.update(expansion_stats)
             added = []
-            execution = time.perf_counter()
             for step in cert["composition"]:
+                check_guards(step_guards.get(step["output"], []))
+                execution = time.perf_counter()
+                self.costs["witness_evaluation_attempts"] += 1
                 xy = [str(value(e)) for e in cert["witness"][step["output"]]]
                 if any(sp.Rational(e).is_finite is not True for e in xy):
                     raise ValueError("undefined exact witness")
@@ -214,16 +226,20 @@ class SemanticGeometryDomain:
                 else:
                     name = existing
                 mapping[step["output"]] = name
+                if cert.get("witness_mode") == "sequential_local":
+                    replacement.update({symbols[s]: sp.Rational(v)
+                        for s, v in zip(local_coordinates[step["output"]], xy, strict=True)})
                 local_terms[step["output"]] = {"op": step["family"],
                                                "args": [local_terms[a] for a in step["inputs"]]}
                 if existing is None:
                     child.terms[name] = local_terms[step["output"]]
+                self.costs["witness_evaluations"] += 1
+                self.costs["execution_seconds"] += time.perf_counter()-execution
+                execution = None
             output = mapping[cert["output"]]
             if output in state.objects:
                 raise ValueError("duplicate_output_point")
             child.terms[output] = semantic
-            self.costs["witness_evaluations"] += count
-            self.costs["execution_seconds"] += time.perf_counter()-execution
             source = {"morphism": candidate.family, "contract": cert["id"], "parent": self.key(state)}
             for relation in cert["guaranteed_relation"]:
                 args = tuple(mapping[a] for a in relation["points"])
@@ -266,6 +282,8 @@ class SemanticGeometryDomain:
                        "reason": str(exc), "task_sha256": digest(self.task)})
             return None
         finally:
+            if execution is not None:
+                self.costs["execution_seconds"] += time.perf_counter()-execution
             self.costs["application_seconds_inclusive"] += time.perf_counter()-started
 
     def replay(self, primitive, expected):

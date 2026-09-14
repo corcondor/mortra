@@ -117,22 +117,25 @@ def test_archive_tampering_and_free_points_rejected(bank):
         deepcopy(bank).register(h)
 
 
-def test_composed_local_proofs_keep_global_witness_and_guards():
+def test_composed_local_proofs_keep_sequential_witness_and_guards():
     f0, f1, f2 = (lib.program_hole(i) for i in range(3))
     template = {"op": "foot", "args": [f2, f0,
                 {"op": "midpoint", "args": [f0, f1]}]}
     h = dsl.certify_definition(template, [])
     cert = h["exact_certificate"]["exact_certificate"]
     assert cert["all_input_assignments_under_P"]
-    assert h["applicability"]["input_nonzero_polynomials"]
+    assert h["exact_certificate"]["witness_mode"] == "sequential_local"
+    assert any(g["parent_factors"] for g in h["applicability"]["sequential_nonzero_polynomials"])
     assert all(s["residual_scope"] == "current output with independent parent coordinate symbols"
                for s in cert["steps"])
     assert all(all(r == "0" for r in s["existence_residuals"]) for s in cert["steps"])
-    # The stored runtime witness must still be a function of the original inputs.
+    # Each witness may refer only to original inputs and earlier bound outputs.
     import sympy as sp
     allowed = {n+axis for n in ("f0", "f1", "f2") for axis in ("x", "y")}
-    assert all({str(s) for s in sp.sympify(v).free_symbols} <= allowed
-               for xy in h["exact_certificate"]["witness"].values() for v in xy)
+    for local in h["exact_certificate"]["local_auxiliary_variables"]:
+        xy = h["exact_certificate"]["witness"][local["name"]]
+        assert all({str(s) for s in sp.sympify(v).free_symbols} <= allowed for v in xy)
+        allowed.update(local["coordinates"])
     assert dsl.replay_definition(h, [])
 
 
@@ -142,6 +145,33 @@ def test_recursive_cycle_and_unknown_calls_rejected():
         dsl.expand(term, lib.definition_table({"x": term}))
     with pytest.raises(lib.ExpansionError):
         dsl.expand(term, lib.definition_table({}))
+
+
+def test_acquired_sequential_guard_refuses_degenerate_intermediate(bank):
+    bank = deepcopy(bank)
+    f = [lib.program_hole(i) for i in range(4)]
+    template = {"op": "foot", "args": [f[0],
+                {"op": "midpoint", "args": [f[1], f[2]]}, f[3]]}
+    h = dsl.certify_definition(template, [])
+    bank.register(h)
+    d = domain(bank, {"points": {"a": [0, 2], "b": [0, 0], "c": [2, 0], "d": [1, 0]}}, active=[h["id"]])
+    state = d.initial()
+    before = state.record()
+    assert apply(d, state, h["id"], ("a", "b", "c", "d")) is None
+    assert state.record() == before
+    assert not d.histories
+
+
+def test_nested_three_point_constructions_use_local_proofs(bank):
+    bank = deepcopy(bank)
+    f = [lib.program_hole(i) for i in range(4)]
+    h = dsl.certify_definition({"op": "orthocenter", "args": [
+        {"op": "circle", "args": f[:3]}, f[0], f[3]]}, [])
+    bank.register(h)
+    d = domain(bank, active=[h["id"]])
+    assert apply(d, d.initial(), h["id"], ("a", "b", "c", "d")) is not None
+    assert d.histories[-1]["replay"]["passed"]
+    assert d.costs["witness_evaluations"] == 2
 
 
 def test_generated_call_survives_into_later_learning_input(bank):

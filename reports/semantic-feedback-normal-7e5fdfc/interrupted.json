@@ -1,0 +1,15 @@
+{
+  "sha": "7e5fdfc66258d4cec0a30617d95e7a7540e0029c",
+  "execution_completed": false,
+  "interrupted_local": "2026-09-15T04:07:53+09:00",
+  "interruption": "developer terminated after external read-only stack inspection; not certified exhaustion",
+  "last_completed_stage": "A four training cycles; B first search window",
+  "incomplete_stage": "B first candidate certification",
+  "candidate": "b09ecce79cae1c80",
+  "observed_stack": ["sympy dmp_zz_wang_hensel_lifting", "sympy factor", "_JGEXElaborator._directed_intersection", "_JGEXElaborator._orthocenter", "geometry_contracts.certify_body:162"],
+  "diagnostic_command": "uv tool run --from py-spy py-spy dump --pid 36352",
+  "diagnosis": "the composed explicit witness still globally expands and factors earlier symbolic constructions",
+  "next_general_change": "retain sequential local witnesses and local nonzero guards; verify composition by triangular induction",
+  "tasks_or_candidate_order_changed": false,
+  "github_run_cancelled": 34884674289
+}

@@ -73,7 +73,7 @@ class EuclideanFragment:
     arities = {"midpoint": 2, "mirror": 2, "foot": 3, "circle": 3,
                "orthocenter": 3, "reflect": 3, "intersection_ll": 4}
     scope = {"coefficient_field": "QQ", "models": "real_coordinate_plane",
-             "branch": "single_valued_rational", "version": 2,
+             "branch": "single_valued_rational", "version": 3,
              "actions": list(arities),
              "equations": "existing JGEX rational and relational elaborators",
              "predicate_policy": "polynomial equality plus explicit geometric nondegeneracy",
