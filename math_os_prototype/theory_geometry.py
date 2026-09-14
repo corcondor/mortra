@@ -1,14 +1,15 @@
-"""Geometry adapter: existing MORTRA constructors, Newclid DDARN and exact bridge.
+"""Geometry adapter: existing constructors/planner and internal exact bridge.
 
 No question-specific rules, auxiliary points or learned routes are supplied.
 Numeric construction filters are not certificates. Acceptance requires the
-existing symbolic verifier on both the original and augmented statements.
+existing symbolic verifier and a scope-preserving extension check whenever
+only the augmented statement is proved.
 """
 from __future__ import annotations
 
 from collections import Counter
 from dataclasses import asdict
-from itertools import combinations
+from itertools import combinations, islice
 import json
 import time
 
@@ -16,7 +17,17 @@ import numpy as np
 
 from math_os_prototype.representation_progress import digest
 from math_os_prototype.runtime_typed_planner import PrimitiveResult
-from worker.backend.typed_geometry_stalk import DEFAULT_POINT_FAMILIES, enumerate_typed_candidates
+from worker.backend.typed_geometry_stalk import DEFAULT_POINT_FAMILIES, TypedConstructionCandidate, enumerate_typed_candidates
+
+
+def relation_key(relation):
+    tokens = relation.split()
+    if tokens[0] == "coll":
+        return "coll "+" ".join(sorted(tokens[1:]))
+    if tokens[0] == "cong" and len(tokens) == 5:
+        pairs = sorted([sorted(tokens[1:3]), sorted(tokens[3:5])])
+        return "cong "+" ".join(p for pair in pairs for p in pair)
+    return relation
 
 
 class GeometryDomain:
@@ -40,8 +51,30 @@ class GeometryDomain:
         self.definitions = JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS)
         self.families = tuple(f.name for f in DEFAULT_POINT_FAMILIES)
         self.registry = {f.name: f for f in DEFAULT_POINT_FAMILIES}
+        requested = config.get("construction_families", self.families)
+        if not requested or not set(requested) <= set(self.registry):
+            raise ValueError("nonempty existing construction family selection required")
+        self.families = tuple(dict.fromkeys(requested))
+        self.registry = {f: self.registry[f] for f in self.families}
         self.events = []
         self.costs = Counter()
+        self.certificate_cache = {}
+        self.extension_cache = {}
+        self.native_candidate_cache = {}
+        self.native_connected = config.get("deduction_backend", "exact") == "exact"
+        if self.native_connected:
+            from worker.backend.jgex_native_interfaces import native_rule_theorems, typed_construction_contracts, formulation_goal_atoms
+            from worker.backend.symbolic_sheaf_coordination import RuleClosureAdapter
+            self.native_theorems = native_rule_theorems()
+            self.native_contracts = typed_construction_contracts(tuple(self.registry.values()))
+            predicates = sorted({a.predicate for t in self.native_theorems for a in (*t.premises, t.conclusion)})
+            self.native_rules = RuleClosureAdapter("mortra-native-rules", self.native_theorems,
+                imports=predicates, exports=predicates,
+                max_certificates_per_round=max(1, config.get("per_family_limit", 8)))
+            self.native_goal = formulation_goal_atoms(self.formulation)[0]
+            self.log(event="native_registry", constructors=list(self.families), predicates=predicates,
+                rule_count=len(self.native_theorems), rules_sha256=digest([asdict(t) for t in self.native_theorems]),
+                knowledge_origin="existing declarative rule bank; not run-acquired", external_deductor=False)
         self.root = None
         self.stage = "formalization"
 
@@ -82,7 +115,9 @@ class GeometryDomain:
             self.log(event="initial", state_key=self.key(self.root), state=self.root)
         return self.root
 
-    def close(self, problem, statement, path):
+    def close(self, problem, statement, path, inherited=None):
+        if self.config.get("deduction_backend", "exact") == "exact":
+            return self.close_exact(problem, statement, path, inherited)
         if self.config.get("deduction_backend", "python") == "yuclid":
             return self.close_native(problem, statement, path)
         if self.config.get("deduction_backend", "python") != "python":
@@ -124,6 +159,118 @@ class GeometryDomain:
             state["proof"] = data.model_dump(mode="json")
         return self.certify_solved(state)
 
+    def close_exact(self, problem, statement, path, inherited=None):
+        """Bounded consequence discovery, using the existing certificate engine.
+
+        Newclid supplies parsing/construction only. Neither its deductive agent
+        nor Yuclid participates. The original and augmented goal remain separate
+        obligations, so an auxiliary cannot silently strengthen the theorem.
+        """
+        start = time.perf_counter()
+        assumptions = sorted(str(a) for a in problem.assumptions)
+        inherited = inherited or {}
+        state = {"problem": problem.model_dump(mode="json"), "statement": statement,
+            "relations": sorted(set(assumptions) | set(inherited.get("relations", []))),
+            "relation_certificates": dict(inherited.get("relation_certificates", {})),
+            "path": path, "deduction_proved": False, "certified": False,
+            "closure_exhausted": False, "closure_steps": 0,
+            "deduction_mode": "MORTRA exact polynomial certificates",
+            "proof": None, "certificates": []}
+        self.certify_solved(state, require_deduction=False)
+        state["deduction_proved"] = state["certified"]
+        before = list(state["relations"])
+        if state["certified"]:
+            goal = statement.split("?", 1)[1].strip()
+            state["relations"] = sorted(set(state["relations"]) | {goal})
+            state["relation_certificates"][goal] = state["certificates"][-1]
+            state["proof"] = {"proof_length": sum(
+                len(c["obligation"]["quotient_certificate"]) +
+                len(c["obligation"]["local_lemma_certificates"]) + 1
+                for c in state["certificates"] if c["accepted"]), "unit": "algebraic certificate components"}
+        # Keep the first vocabulary conservative: no directed-angle/branch
+        # recognition is invented here. Other existing goal semantics still work.
+        limit = min(self.config.get("closure_steps", 1000), self.config["per_family_limit"])
+        attempted = []
+        from worker.backend.geometry_proof_hypergraph import Atom
+        facts = frozenset(Atom(r.split()[0], tuple(r.split()[1:])).canonical() for r in state["relations"])
+        proposal = self.native_rules.propose(facts, self.native_goal, round_index=len(path))
+        native = {}
+        for item in proposal.certificates:
+            if self.native_rules.verify(item, facts):
+                relation = relation_key(" ".join((item.conclusion.predicate, *item.conclusion.arguments)))
+                native[relation] = item
+        self.costs["native_rule_proposals"] += len(proposal.certificates)
+        self.log(event="native_rule_proposals", path=path, proposals=[asdict(c) for c in proposal.certificates],
+                 verified_instances=len(native))
+        candidates = list(dict.fromkeys([*native, *self.relation_candidates(state, limit)]))[:limit]
+        for relation in candidates:
+            source = statement.split("?", 1)[0].strip()+" ? "+relation
+            certificate = self.certify(source)
+            # A relation must not add assumptions beyond the current chart.
+            allowed = {condition for c in state["certificates"]
+                for key in ("normalization_assumptions", "nondegeneracy_conditions")
+                for condition in c.get("obligation", {}).get(key, [])}
+            required = {condition for key in ("normalization_assumptions", "nondegeneracy_conditions")
+                for condition in certificate.get("obligation", {}).get(key, [])}
+            accepted = certificate["accepted"] and required <= allowed
+            attempted.append(relation)
+            self.log(event="exact_relation_check", path=path, relation=relation,
+                accepted=accepted, additional_conditions=sorted(required-allowed),
+                certificate=certificate, rule_instance=asdict(native[relation]) if relation in native else None)
+            if accepted:
+                state["relations"].append(relation)
+                state["relation_certificates"][relation] = certificate
+                self.costs["certified_new_relations"] += 1
+                self.costs["native_rule_relations_certified"] += int(relation in native)
+        state["relations"] = sorted(set(state["relations"]))
+        state["relations_before_exact_closure"] = before
+        state["closure_steps"] = len(attempted)
+        state["closure_stop_reason"] = "bounded_relation_candidates_checked"
+        self.costs["closure_calls"] += 1
+        self.costs["closure_seconds"] += time.perf_counter()-start
+        self.log(event="exact_closure", state_key=self.key(state), path=path,
+            assumptions=assumptions, checked_relations=attempted,
+            certified_relations=sorted(set(state["relations"])-set(before)),
+            goal_certified=state["certified"], stop_reason=state["closure_stop_reason"])
+        return state
+
+    def relation_candidates(self, state, limit):
+        """Local, lazy candidate enumeration, not all n^8 relation tuples."""
+        names = {p["name"] for p in state["problem"]["points"]}
+        goals = list(dict.fromkeys(p for g in self.formulation.goals
+            for p in str(g).split()[1:] if p in names))
+        recent = ([state["path"][-1]["output"], *state["path"][-1]["inputs"]]
+                  if state["path"] else [])
+        core = set(recent+goals)
+        neighbors = set()
+        for relation in state["relations"]:
+            support = set(relation.split()[1:]) & names
+            if support & core:
+                neighbors.update(support)
+        points = list(dict.fromkeys(recent+goals+sorted(neighbors)))[:8]
+        # Collinearity and squared-distance equality have exact polynomial
+        # semantics even with coinciding coordinates. Do not infer cyclicity
+        # from its determinant without separately proving noncollinearity.
+        streams = [iter("coll "+" ".join(p) for p in combinations(points, 3)),
+            iter("cong "+" ".join(a+b) for a, b in combinations(list(combinations(points, 2)), 2))]
+        seen = {relation_key(r) for r in state["relations"]}
+        result = []
+        while streams and len(result) < limit:
+            remaining = []
+            for stream in streams:
+                # Bound rejected/duplicate scans too, not only proof calls.
+                for relation in islice(stream, max(1, limit)):
+                    relation = relation_key(relation)
+                    if relation not in seen:
+                        result.append(relation)
+                        seen.add(relation)
+                        remaining.append(stream)
+                        break
+                if len(result) >= limit:
+                    break
+            streams = remaining
+        return result
+
     def close_native(self, problem, statement, path):
         import hashlib
         import os
@@ -156,8 +303,8 @@ class GeometryDomain:
             "proof": {"proof_length": result.goal_deduction_count, "native": result.payload}}
         return self.certify_solved(state)
 
-    def certify_solved(self, state):
-        if state["deduction_proved"]:
+    def certify_solved(self, state, *, require_deduction=True):
+        if not require_deduction or state["deduction_proved"]:
             start = time.perf_counter()
             try:
                 # Auxiliary existence must not silently restrict the original
@@ -165,20 +312,121 @@ class GeometryDomain:
                 for source in dict.fromkeys([str(self.formulation), state["statement"]]):
                     state["certificates"].append(self.certify(source))
                 state["certified"] = all(c["accepted"] for c in state["certificates"])
+                state["certification_route"] = "original_and_augmented_exact"
+                if not state["certified"] and state["certificates"][-1]["accepted"]:
+                    extension = self.certify_extension(str(self.formulation), state["statement"])
+                    state["extension_certificate"] = extension
+                    state["certified"] = extension["accepted"]
+                    state["certification_route"] = "augmented_exact_with_conservative_extension"
             except (ValueError, NotImplementedError) as exc:
                 state["certificate_failure"] = str(exc)
             self.costs["certification_seconds"] += time.perf_counter()-start
         return state
 
+    def certify_extension(self, original, augmented):
+        """Check a rational chart extension without re-proving the original goal.
+
+        Reuse the bridge's elaborator and exact arithmetic. No new variables,
+        constraints, old coordinates, or unproved regularity may be introduced.
+        Other extension types are refused, not assumed conservative.
+        """
+        cache_key = digest([original, augmented])
+        if cache_key in self.extension_cache:
+            self.costs["extension_cache_hits"] += 1
+            return self.extension_cache[cache_key]
+        from newclid.jgex.formulation import JGEXFormulation
+        from worker.backend.jgex_exact_constraint_bridge import _prepare_exact_system
+        from math_os_prototype.geometry_contracts import exact_zero, factors
+        import sympy as sp
+        start = time.perf_counter()
+        result = {"accepted": False, "kind": "rational_chart_conservative_extension",
+                  "original_sha256": digest(original), "augmented_sha256": digest(augmented)}
+        try:
+            base_form, aug_form = map(JGEXFormulation.from_text, (original, augmented))
+            prefix = len(base_form.setup_clauses)
+            if (base_form.goals != aug_form.goals or base_form.auxiliary_clauses or aug_form.auxiliary_clauses
+                    or tuple(base_form.setup_clauses) != tuple(aug_form.setup_clauses[:prefix])):
+                raise ValueError("not an extension of the identical source and goal")
+            base, *_, base_goal, base_eqs, base_vars = _prepare_exact_system(
+                original, enable_structural_lemmas=False)
+            extended, *_, aug_goal, aug_eqs, aug_vars = _prepare_exact_system(
+                augmented, enable_structural_lemmas=False)
+            if tuple(base_vars) != tuple(aug_vars):
+                raise ValueError("extension introduces free or algebraic variables")
+            if base.normalization_assumptions != extended.normalization_assumptions:
+                raise ValueError("extension changes the normalization scope")
+            checks = []
+            def check(value):
+                self.costs["extension_identity_checks"] += 1
+                ok = exact_zero(value)
+                checks.append(ok)
+                return ok
+            if not check(base_goal-aug_goal):
+                raise ValueError("extension changes the original goal polynomial")
+            for name, coordinates in base.coordinates.items():
+                if name not in extended.coordinates or not all(check(a-b) for a, b in
+                        zip(coordinates, extended.coordinates[name], strict=True)):
+                    raise ValueError("extension changes an original point")
+            if len(aug_eqs) < len(base_eqs) or not all(check(a-b) for a, b in zip(base_eqs, aug_eqs)):
+                raise ValueError("extension changes original constraints")
+            if not all(check(e) for e in aug_eqs[len(base_eqs):]):
+                raise ValueError("extension adds nontrivial constraints")
+            known_factors = {f for e in base.denominators for f in factors(e)}
+            required_factors = {f for e in extended.denominators for f in factors(e)}
+            if not required_factors <= known_factors:
+                raise ValueError("extension requires unproved nonzero conditions")
+            added = {n: p for n, p in extended.coordinates.items() if n not in base.coordinates}
+            for coords in added.values():
+                for value in coords:
+                    if not value.free_symbols <= set(base_vars) or value.has(sp.Float):
+                        raise ValueError("extension is outside the rational chart fragment")
+                    for part in sp.cancel(value).as_numer_denom():
+                        if base_vars:
+                            try:
+                                sp.Poly(part, *base_vars, domain=sp.QQ)
+                            except (sp.PolynomialError, sp.polys.polyerrors.CoercionFailed) as exc:
+                                raise ValueError("nonrational extension witness") from exc
+                        elif part.is_Rational is not True:
+                            raise ValueError("nonrational constant extension witness")
+            result.update(accepted=True, identity_checks=len(checks), all_residuals_zero=all(checks),
+                point_witnesses={n: list(map(str, p)) for n, p in added.items()},
+                original_regularity=sorted(known_factors), required_regularity=sorted(required_factors),
+                scope="original explicit chart under its declared regularity; no new constraints or free variables")
+        except (ValueError, NotImplementedError) as exc:
+            result["refusal_reason"] = str(exc)
+        result["certificate_sha256"] = digest(result)
+        self.costs["extension_certification_seconds"] += time.perf_counter()-start
+        self.extension_cache[cache_key] = result
+        self.log(event="extension_certificate", certificate=result)
+        return result
+
     def certify(self, statement):
         from worker.backend.jgex_exact_constraint_bridge import lower_jgex_to_exact_obligation
-        obligation = lower_jgex_to_exact_obligation(statement,
-            enable_affine_local_lemmas=False, enable_structural_lemmas=False)
+        if statement in self.certificate_cache:
+            self.costs["exact_certificate_cache_hits"] += 1
+            return self.certificate_cache[statement]
         self.costs["exact_prover_calls"] += 1
+        self.log(event="exact_check_started", statement=statement)
+        start = time.perf_counter()
+        try:
+            obligation = lower_jgex_to_exact_obligation(statement,
+                enable_affine_local_lemmas=False, enable_structural_lemmas=False)
+        except (ValueError, NotImplementedError) as exc:
+            result = {"statement": statement, "accepted": False,
+                      "unsupported": type(exc).__name__+": "+str(exc)}
+            self.certificate_cache[statement] = result
+            self.log(event="exact_check_completed", accepted=False, statement=statement,
+                     seconds=time.perf_counter()-start, unsupported=result["unsupported"])
+            return result
         accepted = (obligation.exact_replay and obligation.remainder == "0"
                     and not obligation.vacuous_unit_ideal
                     and not obligation.untransported_nonzero_conditions)
-        return {"statement": statement, "accepted": accepted, "obligation": asdict(obligation)}
+        result = {"statement": statement, "accepted": accepted, "obligation": asdict(obligation)}
+        self.certificate_cache[statement] = result
+        self.log(event="exact_check_completed", accepted=accepted, statement=statement,
+                 certificate_sha256=obligation.certificate_sha256,
+                 seconds=time.perf_counter()-start)
+        return result
 
     def objects(self, state):
         names = [p["name"] for p in state["problem"]["points"]]
@@ -187,10 +435,10 @@ class GeometryDomain:
         return {"Point": names, "Line": [list(p) for p in combinations(names, 2)],
                 "Circle": [r.split()[1:] for r in state["relations"] if r.startswith("cyclic ")]}
 
-    def candidates(self, family, state):
+    def candidate_rows(self, family, state, relations):
         names = [p["name"] for p in state["problem"]["points"]]
         graph = {name: set() for name in names}
-        for relation in state["relations"] + state["problem"]["assumptions"]:
+        for relation in relations + state["problem"]["assumptions"]:
             tokens = relation.split() if isinstance(relation, str) else relation["string"].split()
             points = set(tokens[1:]) & set(names)
             for left, right in combinations(points, 2):
@@ -203,10 +451,74 @@ class GeometryDomain:
             used_keys={step["key"] for step in state["path"]},
             per_family_limit=self.config["per_family_limit"], ranking="structural",
             seed=self.config["seed"])
-        self.log(event="enumerate", state_key=self.key(state), family=family,
-                 input_points=names, input_relations=state["relations"],
-                 candidates=[{"family": c.family, "inputs": c.inputs, "key": c.key} for c in rows])
         return rows
+
+    def candidates(self, family, state):
+        start = time.perf_counter()
+        rows = self.candidate_rows(family, state, state["relations"])
+        without = self.candidate_rows(family, state, state.get("relations_before_exact_closure", state["relations"]))
+        changed = [(c.key, c.structural_rank) for c in rows] != [(c.key, c.structural_rank) for c in without]
+        self.costs["candidate_generation_and_counterfactual_seconds"] += time.perf_counter()-start
+        self.costs["relation_influenced_enumerations"] += int(changed)
+        contract_rows = self.native_candidates(state) if self.native_connected else ()
+        prioritized = [TypedConstructionCandidate(c.family, c.inputs, c.rank)
+                       for c in contract_rows if c.family == family and c.executable]
+        by_key = {c.key: c for c in prioritized}
+        for c in rows:
+            by_key.setdefault(c.key, c)
+        rows = list(by_key.values())[:self.config["per_family_limit"]]
+        self.log(event="enumerate", state_key=self.key(state), family=family,
+                 native_relations_changed_ranking=changed,
+                 native_contract_candidates=[c.key for c in prioritized],
+                 without_new_relations=[{"key": c.key, "rank": c.structural_rank} for c in without],
+                 input_points=[p["name"] for p in state["problem"]["points"]], input_relations=state["relations"],
+                 candidates=[{"family": c.family, "inputs": c.inputs, "key": c.key, "rank": c.structural_rank} for c in rows])
+        return rows
+
+    def native_candidates(self, state):
+        """Reuse the existing backward-obligation and construction compilers."""
+        from worker.backend.geometry_proof_hypergraph import Atom, synthesize_backward_obligations, stratify_backward_obligations
+        from worker.backend.typed_construction_contracts import synthesize_contract_candidates
+        key = self.key(state)
+        if key in self.native_candidate_cache:
+            self.costs["native_candidate_cache_hits"] += 1
+            return self.native_candidate_cache[key]
+        start = time.perf_counter()
+        limit = self.config["per_family_limit"]
+        facts = tuple(Atom(r.split()[0], tuple(r.split()[1:])).canonical() for r in state["relations"])
+        # Preserve the existing experiment's witness/ground branch policy.
+        expanded = synthesize_backward_obligations(facts, self.native_goal, self.native_theorems,
+            max_states_per_rule=192, max_results=limit * 4)
+        obligations = stratify_backward_obligations(expanded, limit=limit, witness_fraction=0.25)
+        names = [p["name"] for p in state["problem"]["points"]]
+        candidates, audit = synthesize_contract_candidates(
+            (a for o in obligations for a in o.open_premises), self.native_contracts,
+            visible_entities=names, output_entity=self.next_output(state),
+            used_keys={s["key"] for s in state["path"]},
+            max_candidates_per_contract=limit, max_candidates_per_obligation=limit,
+            obligation_branches=[o.open_premises for o in obligations], known_facts=facts,
+            use_representation_atlas=False)
+        self.costs["native_backward_compilation_seconds"] += time.perf_counter()-start
+        self.costs["native_backward_obligations"] += len(obligations)
+        self.costs["native_contract_candidates"] += len(candidates)
+        self.native_candidate_cache[key] = candidates
+        self.log(event="native_backward_compilation", state_key=key,
+            input_relations=state["relations"],
+            certified_relations_used=sorted({
+                relation for relation in state.get("relation_certificates", {})
+                if Atom(relation.split()[0], tuple(relation.split()[1:])).canonical()
+                in {a for o in obligations for a in o.matched_premises}}),
+            obligations=[asdict(o) for o in obligations], audit=asdict(audit),
+            candidates=[asdict(c) for c in candidates])
+        return candidates
+
+    @staticmethod
+    def next_output(state):
+        names = {p["name"] for p in state["problem"]["points"]}
+        index = len(names)
+        while f"aux{index}" in names:
+            index += 1
+        return f"aux{index}"
 
     def alternatives(self, family, state):
         for candidate in self.candidates(family, state):
@@ -217,13 +529,14 @@ class GeometryDomain:
         from newclid.jgex.clause import JGEXClause
         from newclid.jgex.to_newclid import add_clause_to_problem
         start = time.perf_counter()
-        names = {p["name"] for p in state["problem"]["points"]}
-        index = len(names)
-        while f"aux{index}" in names:
-            index += 1
-        output = f"aux{index}"
+        output = self.next_output(state)
         step = {"family": candidate.family, "inputs": list(candidate.inputs),
                 "output": output, "key": candidate.key}
+        if self.native_connected:
+            matched = [c for c in self.native_candidates(state) if c.key == candidate.key and c.executable]
+            step["native_contract_selected"] = bool(matched)
+            step["native_plan_certificates"] = [c.plan_certificate_sha256 for c in matched]
+            self.costs["native_contract_applications"] += bool(matched)
         clause = f"{output} = {step['family']} {output} {' '.join(step['inputs'])}"
         self.costs["morphism_applications"] += 1
         seed = int(digest([self.config["seed"], state["path"], step])[:8], 16)
@@ -239,7 +552,7 @@ class GeometryDomain:
         self.costs["construction_seconds"] += time.perf_counter()-start
         setup, goal = state["statement"].split("?", 1)
         statement = setup.strip()+"; "+clause+" ? "+goal.strip()
-        child = self.close(updated, statement, [*state["path"], step])
+        child = self.close(updated, statement, [*state["path"], step], state)
         event = {"event": "apply", "parent": self.key(state), "child": self.key(child),
                  "action": step, "contract": self.contract(step["family"]),
                  "produced_assumptions": [a for a in child["problem"]["assumptions"]
@@ -300,6 +613,7 @@ def run_geometry_theory(config, output):
         write("replay.json", replay)
         result = {"execution_completed": True, "proved": bool(goal) and replay["passed"],
                   "initial_deduction_proved": domain.initial()["deduction_proved"],
+                  "initial_goal_certified": domain.initial()["certified"],
                   "initial_closure_exhausted": domain.initial()["closure_exhausted"],
                   "morphism_applications": domain.costs["morphism_applications"],
                   "explored_states": len(plan.facts), "charged_applications": plan.states_explored-1,
@@ -308,6 +622,16 @@ def run_geometry_theory(config, output):
                   "replay_passed": replay["passed"], "costs": dict(domain.costs),
                   "status": "proved" if goal else "budget_or_finite_candidate_exhaustion",
                   "false_proofs": 0, "llm_calls": 0,
+                  "native_exact_checks": domain.costs["exact_prover_calls"],
+                  "native_rule_proposals": domain.costs["native_rule_proposals"],
+                  "native_rule_relations_certified": domain.costs["native_rule_relations_certified"],
+                  "native_backward_obligations": domain.costs["native_backward_obligations"],
+                  "native_contract_candidates": domain.costs["native_contract_candidates"],
+                  "native_contract_applications": domain.costs["native_contract_applications"],
+                  "certified_new_relations": domain.costs["certified_new_relations"],
+                  "relation_influenced_enumerations": domain.costs["relation_influenced_enumerations"],
+                  "proof_length_unit": state["proof"].get("unit", "deductions") if goal else None,
+                  "external_deduction_used": config["search"].get("deduction_backend", "exact") != "exact",
                   "acquired_morphisms_used": 0,
                   "acquired_transfer": "not evaluated: no verified acquired geometry library connected"}
     except Exception as exc:

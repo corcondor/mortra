@@ -39,7 +39,9 @@ def main():
             "source_sha256": hashlib.sha256(args.dataset.read_bytes()).hexdigest(),
             "selection": "first count by sha256(geometry-cohort-917401:statement), 3..7 initial points; supported syntax only",
             "eligible_count": len(candidates), "tasks": tasks,
-            "search": {"seed": 917401, "max_depth": 2, "max_states": 65,
+            "search": {"deduction_backend": "exact", "ar_profile": "standard",
+                       "closure_timeout_seconds": 10,
+                       "seed": 917401, "max_depth": 2, "max_states": 65,
                        "per_family_limit": 8, "closure_steps": 1000},
             "task_timeout_seconds": 180}
     with args.output.open("x", encoding="utf-8") as f:

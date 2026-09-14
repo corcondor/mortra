@@ -157,7 +157,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.verification_suite == 'geometry-contraction' && 60 || inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 60 || 20 }}
+    timeout-minutes: ${{ (inputs.verification_suite == 'geometry-contraction' || inputs.verification_suite == 'geometry') && 60 || inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 60 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -241,7 +241,11 @@ jobs:
         working-directory: target
         shell: bash
         run: |
-          python -m pytest tests/test_theory_geometry.py tests/test_theory_dsl.py -q \
+          python -m pytest tests/test_theory_geometry.py tests/test_theory_dsl.py \
+            worker/backend/test_geometry_proof_hypergraph.py worker/backend/test_geometry_proof_hypergraph_index.py \
+            worker/backend/test_symbolic_sheaf_coordination.py worker/backend/test_typed_construction_contracts.py \
+            worker/backend/test_typed_geometry_stalk.py worker/backend/test_typed_candidate_alignment.py \
+            -q --junitxml="$VERIFY_OUTPUT/geometry-tests.xml" \
             2>&1 | tee "$VERIFY_OUTPUT/geometry-tests.log"
       - name: Reproduce frozen formal geometry cohort through the normal Theory entry
         if: env.GEOMETRY_MODE == 'true'
@@ -249,7 +253,9 @@ jobs:
         shell: bash
         run: |
           python scripts/verify_theory_geometry.py --plan configs/theory-geometry-cohort.json \
-            --output "$VERIFY_OUTPUT/geometry" 2>&1 | tee "$VERIFY_OUTPUT/geometry-run.log"
+            --require-no-yuclid --output "$VERIFY_OUTPUT/geometry" 2>&1 | tee "$VERIFY_OUTPUT/geometry-run.log"
+          python scripts/run_theory_formation.py --config configs/theory-geometry-dev.json \
+            --output "$VERIFY_OUTPUT/geometry-development" 2>&1 | tee "$VERIFY_OUTPUT/geometry-development.log"
       - name: Reproduce tests, acquisition, stored reuse, and refusal
         shell: bash
         run: |

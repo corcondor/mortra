@@ -51,6 +51,10 @@ from newclid.jgex.to_newclid import add_clause_to_problem
 from newclid.all_rules import DEFAULT_RULES
 
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
+from worker.backend.jgex_native_interfaces import (
+    construction_relation_atoms, construction_requirement_atoms,
+    typed_construction_contracts, native_rule_theorems, formulation_goal_atoms,
+)
 from worker.backend.incremental_prefix_state import (
     PrefixStateCache,
     replay_prefix_state,
@@ -171,78 +175,6 @@ def _ordinal_preferences(
         candidate.key: score_by_rank[ranks[candidate.key]]
         for candidate in candidates
     }
-
-
-def construction_relation_atoms(
-    family: str,
-    output: str,
-    inputs: tuple[str, ...],
-) -> tuple[Atom, ...]:
-    """Instantiate the formal conclusion atoms declared by a JGEX construction."""
-
-    definition = DEFINITIONS[family]
-    templates: list[Atom] = []
-    for clause in definition.clauses:
-        for construction in clause.constructions:
-            tokens = tuple(str(construction.string).split())
-            if tokens:
-                templates.append(Atom(tokens[0], tokens[1:]))
-    return instantiate_relation_templates(
-        tuple(map(str, definition.args)),
-        templates,
-        (output, *inputs),
-    )
-
-
-def construction_requirement_atoms(
-    family: str,
-    output: str,
-    inputs: tuple[str, ...],
-) -> tuple[Atom, ...]:
-    """Instantiate the declared existence/nondegeneracy side conditions."""
-
-    definition = DEFINITIONS[family]
-    templates = tuple(
-        Atom(tokens[0], tokens[1:])
-        for construction in definition.requirements.constructions
-        if (tokens := tuple(str(construction.string).split()))
-    )
-    return instantiate_relation_templates(
-        tuple(map(str, definition.args)),
-        templates,
-        (output, *inputs),
-    )
-
-
-def typed_construction_contracts(
-    families: tuple[ConstructionFamily, ...],
-) -> tuple[TypedConstructionContract, ...]:
-    """Expose JGEX definitions as alpha-renamable construction contracts."""
-
-    contracts: list[TypedConstructionContract] = []
-    for family in families:
-        output_variable = "?OUT"
-        input_variables = tuple(
-            f"?INPUT{index}" for index in range(family.input_arity)
-        )
-        contracts.append(
-            TypedConstructionContract(
-                family=family,
-                output_variable=output_variable,
-                input_variables=input_variables,
-                relation_atoms=construction_relation_atoms(
-                    family.name,
-                    output_variable,
-                    input_variables,
-                ),
-                requirement_atoms=construction_requirement_atoms(
-                    family.name,
-                    output_variable,
-                    input_variables,
-                ),
-            )
-        )
-    return tuple(contracts)
 
 
 @dataclass(frozen=True)
@@ -456,43 +388,6 @@ def formulation_structure(
         graph.setdefault(point, set())
         role_graph.setdefault(point, set())
     return points, graph, role_graph, role_weights, goal_multiplicity
-
-
-def _rule_atom(construction: Any) -> Atom:
-    arguments = tuple(
-        f"?{value}" if value and value[0].isalpha() else value
-        for value in map(str, construction.variables)
-    )
-    return Atom(str(construction.name), arguments)
-
-
-def native_rule_theorems() -> tuple[Theorem, ...]:
-    """Expose explicit Newclid rules plus universal Euclidean AR morphisms."""
-
-    theorems: list[Theorem] = []
-    for rule in sorted(DEFAULT_RULES, key=lambda item: item.id):
-        premises = tuple(_rule_atom(item) for item in rule.premises)
-        for index, conclusion in enumerate(rule.conclusions):
-            theorems.append(
-                Theorem(
-                    f"{rule.id}:{index}",
-                    premises,
-                    _rule_atom(conclusion),
-                )
-            )
-    return (*theorems, *euclidean_relation_theorems())
-
-
-def formulation_goal_atoms(formulation: JGEXFormulation) -> tuple[Atom, ...]:
-    goals: list[Atom] = []
-    for goal in formulation.goals:
-        raw_name = getattr(goal, "name", None)
-        if hasattr(raw_name, "value"):
-            raw_name = raw_name.value
-        if not raw_name:
-            raw_name = str(goal).split()[0]
-        goals.append(Atom(str(raw_name), tuple(map(str, goal.args))).canonical())
-    return tuple(goals)
 
 
 def proof_state_obligations(
