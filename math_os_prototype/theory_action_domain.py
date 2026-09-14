@@ -34,4 +34,6 @@ def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progres
         goal_predicates={domain.sort: lambda fact: domain.is_goal(fact.value)},
         value_key=lambda sort, state: domain.key(state),
         max_depth=max_depth, max_states=max_states, fair=True, progress=progress,
+        rank_fair_rounds=getattr(domain, "rank_fair_rounds", False),
+        original_order_every=getattr(domain, "original_order_every", 4),
     )

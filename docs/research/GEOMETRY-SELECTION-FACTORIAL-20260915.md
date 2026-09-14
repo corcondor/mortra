@@ -82,3 +82,57 @@ versions are separate runs, never repaired while running.
   no task-specific definition is inserted to obtain it.
 - No improvement remains a valid negative result. Do not respond by extending
   the training horizon or tuning on the new evaluation cohort.
+
+## Implementation and development checks
+
+The plan was committed before selector implementation at `b07d911`.
+
+- `theory_geometry_feedback.candidate_rows` exposes the unchanged candidate
+  generator; its original caller preserves old ordering.
+- `SelectionDomain` instantiates the stored contract's relation templates with
+  actual candidate bindings and fresh symbolic output names. Every goal
+  conjunct refers to the same prospective output. It reuses
+  `typed_candidate_alignment.align_candidate_atoms` and
+  `_forward_predicate_distances(euclidean_relation_theorems(), ...)`.
+  These are approximate ranking features, not an optimal policy or a proof.
+- The shared typed planner optionally sorts one buffered offer from every live
+  family in each fair round. No offer is removed. Every fourth round preserves
+  the original family order. Lookahead generation and alignment are timed.
+- Normal entry adds `domain.mode = selection_factorial`. Acquisition is never
+  called. Stored contracts are revalidated once before the comparisons, with
+  that shared setup cost recorded separately.
+- Each solution records its actual state, construction ancestor calls, and
+  the corresponding planner dependency DAG in addition to its answer term
+  and independent primitive replay. This does not certify that each ancestor
+  was necessary to the solution.
+
+Initial `python -m pytest ...` used the system interpreter and failed collection
+because `newclid` was absent (3 collection errors, saved in
+`reports/selection-baseline-tests.xml`). No math result was produced. The
+checkout's existing isolated environment, installed from the declared geometry
+requirements, is used below; no dependency definitions were changed.
+
+```
+$env:PYTHONHASHSEED='0'
+.venv/Scripts/python.exe -m pytest -q tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py --junitxml=reports/selection-baseline-venv-tests.xml
+.venv/Scripts/python.exe -m pytest -q tests/test_geometry_selection.py --junitxml=reports/selection-development-v1.xml
+.venv/Scripts/python.exe -m pytest -q tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py --junitxml=reports/selection-regression-v1.xml
+```
+
+Results: baseline 156 passed / 1 skipped in 110.38 s; artificial selection tests
+26 passed in 9.04 s; full related regression 184 passed / 1 skipped in 100.73 s.
+The skip is the existing optional external-comparison test. The baseline XML
+completed before the first solver-source edit. These are local test results,
+not a normal-run capability claim.
+
+## Frozen execution command
+
+```
+PYTHONHASHSEED=0 python scripts/run_theory_formation.py --config configs/theory-geometry-selection-factorial.json --output reports/semantic-feedback-normal
+```
+
+The existing `Verify paper-guided geometry portfolio` Actions workflow now
+defaults to this configuration, and keeps both old acquisition configurations
+available through `workflow_dispatch`. The exact-kernel job is unchanged.
+Push triggers on the touched implementation/test/config paths. No new workflow,
+main merge, force push, parser change, or new geometric axiom is included.

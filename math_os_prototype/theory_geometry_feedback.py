@@ -184,9 +184,9 @@ class SemanticGeometryDomain:
         return dsl.certify_atom(predicate, args, state.objects, provenance=source,
                                known=state.predicates, stats=self.costs)
 
-    def alternatives(self, family, state):
+    def candidate_rows(self, family, state):
         if self.stop_reason or state.depth >= self.config["max_depth"]:
-            return
+            return []
         start = time.perf_counter()
         names = list(state.objects)
         graph = {n: set() for n in names}
@@ -205,6 +205,10 @@ class SemanticGeometryDomain:
         self.costs["candidate_generation_seconds"] += time.perf_counter()-start
         self.costs["examined_input_tuples"] += audit.get("examined_input_tuples", 0)
         self.costs["input_guard_filtered"] += audit.get("precondition_filtered", 0)
+        return rows
+
+    def alternatives(self, family, state):
+        rows = self.candidate_rows(family, state)
         for row in rows:
             key = (family, self.key(state), tuple(row.inputs))
             if key not in self.attempted:

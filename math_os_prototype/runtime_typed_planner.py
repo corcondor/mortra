@@ -29,6 +29,17 @@ class PrimitiveResult:
     certificate_step: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class RankedAlternative:
+    """Scheduling metadata only; invoking still uses the existing executor."""
+
+    invoke: Callable[[], PrimitiveResult | None]
+    priority: tuple = ()
+
+    def __call__(self):
+        return self.invoke()
+
+
 PrimitiveExecutor = Callable[[tuple[RuntimeFact, ...]], PrimitiveResult | None]
 
 
@@ -138,6 +149,8 @@ def synthesize_typed_plan(
     goal_predicates: dict[str, Callable[[RuntimeFact], bool]] | None = None,
     value_key: Callable[[str, Any], str] | None = None,
     fair: bool = False,
+    rank_fair_rounds: bool = False,
+    original_order_every: int = 4,
     progress: RuntimeSearchProgress | None = None,
 ) -> RuntimePlan:
     """Enumerate typed compositions with optional value-sensitive goals.
@@ -146,6 +159,9 @@ def synthesize_typed_plan(
     The planner cannot infer that premise from samples. `fair` interleaves
     attempted applications, including rejected or duplicate applications.
     """
+
+    if rank_fair_rounds and (not fair or original_order_every < 1):
+        raise ValueError("ranked scheduling requires fair rounds and a positive interval")
 
     facts = list(initial_facts)
     primitive_tuple = tuple(primitives)
@@ -215,14 +231,25 @@ def synthesize_typed_plan(
                 return
             # One attempted application per primitive, not one successful offer:
             # an operator producing only duplicates must not consume the budget.
+            round_index = 0
             while streams:
                 alive = []
+                batch = []
                 for stream in streams:
                     try:
-                        yield next(stream)
+                        offer = next(stream)
+                        if rank_fair_rounds:
+                            batch.append(offer)
+                        else:
+                            yield offer
                         alive.append(stream)
                     except StopIteration:
                         pass
+                if rank_fair_rounds:
+                    round_index += 1
+                    if round_index % original_order_every:
+                        batch.sort(key=lambda offer: getattr(offer[-1], "priority", ()))
+                    yield from batch
                 streams = alive
 
         changed = False
