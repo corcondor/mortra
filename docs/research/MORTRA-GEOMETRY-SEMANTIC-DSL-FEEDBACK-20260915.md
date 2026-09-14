@@ -1,6 +1,45 @@
 # MORTRA Geometry Semantic DSL Feedback, 2026-09-15
 
-## Scope and status
+## Latest outcome: recursive acquisition observed
+
+The fixed-source eight-cycle extension acquired four certified generation-2
+morphisms, executed three of them later, and returned their execution histories
+to acquisition. All five conditions still solved 8/16 regression tasks.
+Thus the recursive geometry DSL loop is observed; improved task-solving is not.
+
+The following aliases describe actual stored definitions from run 34889840285,
+not proposed target definitions. `circle` means the circumcenter Point here.
+Cycles are zero-based throughout the evidence.
+
+```text
+7 primitive Point morphisms + exact predicates
+  -> autonomous construction histories
+  -> cycle 2: H0(u,v,w,z) = circle(orthocenter(u,v,w),u,z)
+  -> certify and register H0 in the active DSL
+  -> execute H0(mirror(a,b),a,c,b) and other bindings
+  -> 6 original H0-call histories across 3 training contexts
+  -> cycle 5: acquire H1(x,y,z) = H0(mirror(x,y),x,z,y)
+  -> certify and register H1 (generation 2)
+  -> later automatically execute H1(a,b,foot(a,b,c))
+  -> independent primitive replay: 4 DAG operations, residuals [0,0]
+  -> cycle 7 learning input contains 33 generation-2 call histories
+  -> 5 candidates containing generation-2 calls are generated
+  STOP at fixed horizon: no generation-3 acquisition was registered.
+```
+
+H0 is `geom.semantic.6a9edceaf4c1c846e632`; H1 is
+`geom.semantic.84ef8b9e4166008b3828`. H1's source histories all contain H0 calls
+in the original execution events, not just in a later refactoring view.
+H1 registration is events.jsonl line 12136; its later successful call is line
+12812, history `e70fc0a38023ab216533560f0c6ba8242719f1877de2ffead810fb9fbb9b2714`.
+Its first source is line 10637, history
+`85fac63d75b117ffcd01c3bee70e759fe2cb0612155f5c8d16f2ca37af779ad5`.
+All line numbers refer to the original Linux artifact, not the copied report.
+
+See the completed eight-cycle section below for comparison, costs and limits.
+The earlier negative runs remain intact in the following sections.
+
+## Initial scope and status
 
 In the initial c991e86 experiment, the geometry DSL acquired and executed new certified operations, but did not
 acquire a certified second-generation operation or solve more held-out tasks.
@@ -408,6 +447,10 @@ sections 2 and 3, identifies the mismatch between old solution programs and a
 new library, then optimizes over equivalent refactorings with library cost.
 Its learned search policy is distinct from its learned library. This revision
 does not implement its neural policy or claim its full algorithm.
+Its section 5 evaluation and ablations were also read: task-solving evaluation
+separates library learning, recognition-guided search, refactoring and wholesale
+memorization. Our implication is methodological: registered definitions alone
+cannot establish better synthesis. It is not evidence that MORTRA needs an LLM.
 
 [babble](https://arxiv.org/pdf/2212.04596), sections 4.1, 4.2 and 5, separates
 candidate generation from library extraction. Extraction accounts for library
@@ -416,6 +459,11 @@ existing pattern matching, non-overlapping replacement, use nodes and full
 expansion checks. This is a bounded refactoring view, NOT a complete e-graph
 implementation or general equational-theory learner. The original view is
 retained for candidate generation as well as the refactored view.
+Section 6 and the beginning of 6.1 were additionally inspected. Their stated
+questions concern compression, the contribution of anti-unification/equations,
+and qualitative interpretation. Better compression there is not a theorem that
+MORTRA's current fair search will solve more geometry tasks. These are relevant
+sections actually read, not a claim to have read both papers in full.
 
 ### Fixed changes before the follow-up run
 
@@ -513,3 +561,159 @@ of the remaining recursive-acquisition path, not a replacement for this result.
 `7768cf929622a67cef8cf809045a736112dda99176573909571d370f55805c10`.
 It contains the exact config, source seal, environment, test log/XML, original
 histories, refactoring proofs, candidate rankings, certificates and comparisons.
+
+## Completed eight-cycle extension
+
+Frozen commit: `023cedd57ef0cafe7a0449326f22b55dc1ec38c6`.
+[Actions run 34889840285](https://github.com/corcondor/mortra/actions/runs/34889840285)
+completed both jobs successfully. The exact command was:
+
+```text
+python scripts/run_theory_formation.py --config configs/theory-geometry-semantic-feedback-eight-cycles.json --output reports/semantic-feedback-normal
+```
+
+The Linux environment used Python 3.12.14, PYTHONHASHSEED=0, and the declared
+geometry-contract dependencies. The full version inventory is environment.json.
+The test command is the same five-file pytest command documented above: 156
+passed, 1 external-comparison skip, 0 failures/errors, 500.450 seconds. Of that,
+454.597 seconds belongs to the existing nested-foot global-contract test
+`test_contract_all_real_assignments_and_transfer[body4]`; this test took 4.523
+seconds in the preceding d1e6228 Actions run. The cause of this timing variation
+has not been isolated. No test was removed or bypassed.
+
+The normal experiment took 1121.115 seconds. Source seals are unchanged during
+the run and identical to d1e6228's seal. No Python algorithm changed between
+the four- and eight-cycle runs. The config and source were frozen before launch;
+the library archive remained unchanged during evaluation.
+The old c991e86 policy was not run for eight cycles in this task, and individual
+refactoring, cost and prefilter changes were not separately ablated. Thus this
+is evidence that the fixed revised implementation performs the full loop, not
+proof that each change was individually necessary or that the old policy could
+never acquire a second generation with a longer horizon.
+
+### Acquisitions and actual later use
+
+| Cycle | Active definitions | New generations | Corpus entries | Refactoring proofs | Cumulative successful learned calls in training |
+|---:|---:|---|---:|---:|---:|
+| 0 | 2 | 1, 1 | 194 | 12 | 0 |
+| 1 | 4 | 1, 1 | 334 | 43 | 15 |
+| 2 | 6 | 1, 1 | 488 | 68 | 57 |
+| 3 | 8 | 1, 1 | 512 | 72 | 120 |
+| 4 | 10 | 1, 1 | 512 | 77 | 207 |
+| 5 | 12 | 1, 2 | 512 | 58 | 315 |
+| 6 | 14 | 2, 2 | 512 | 86 | 416 |
+| 7 | 16 | 2, 1 | 512 | 87 | 547 |
+
+Refactoring proofs here are per-stage equality-of-expansion checks, not counts
+of new geometric theorems. Cumulative call counters must not be summed over
+cycles. No corpus-compression gains across changing corpora are summed either.
+
+| Generation-2 ID suffix | Acquisition cycle | Actual original sources / contexts | Later training calls | Evaluation calls | Reach-control calls |
+|---|---:|---:|---:|---:|---:|
+| 84ef8b9e4166008b3828 | 5 | 6 / 3 | 3 | 0 | 0 |
+| 7af21c2e953bcbb21998 | 6 | 6 / 3 | 15 | 38 | 9 |
+| 86730dfc0826455cea3a | 6 | 6 / 3 | 15 | 30 | 7 |
+| aced3b76e3d056c8aadb | 7 | 6 / 3 | 0 | 0 | 0 |
+
+Every source listed in these four certificates was located in original
+training events and actually contained its parent call. The last morphism was
+registered at the final cycle but has no observed later successful execution;
+it is not counted as successfully reused. The other three do have later
+primitive-replayed executions. Two are used on evaluation configurations not
+used for acquisition, without improving the number of solved goals.
+
+H1's acquisition used a 3371-node learning corpus. Its replacement produced
+3353 nodes, and its definition cost 11 nodes: net 7 nodes saved. This acquisition
+also saved 3056 bits under the separately recorded JSON model. Its certificate
+used 18 prover calls over 3 primitive schema steps. All four generation-2
+acquisitions have net 7 AST nodes saved each, but these are different marginal
+corpus decisions, not an additive cumulative capability metric.
+
+### Same-budget comparisons
+
+Each A/B/C/E training condition performed 2688 candidate applications
+(8 cycles, 3 contexts, 112 per context). D reuses C's archive without another
+training run. Each evaluation condition used 922 candidate applications across
+16 tasks and solved the same 8 tasks. All 40 solved records passed replay.
+
+| Condition | Active / archived | Highest generation | Solved / tasks | Reach states, inputs 1 / 2 | Evaluation search seconds |
+|---|---:|---:|---:|---:|---:|
+| A primitive | 0 / 0 | 0 | 8 / 16 | 80 / 74 | 31.800 |
+| B first acquisition only | 2 / 2 | 1 | 8 / 16 | 68 / 62 | 30.016 |
+| C recursive | 16 / 16 | 2 | 8 / 16 | 55 / 48 | 46.144 |
+| D C archive inactive | 0 / 16 | 2 in archive | 8 / 16 | 80 / 74 | 32.315 |
+| E flatten before acquisition | 16 / 16 | 1 | 8 / 16 | 42 / 37 | 38.614 |
+
+C reaches 19 / 16 states absent from A, but loses 44 / 42 states present in A.
+D restores A's reach sets. Relative to E, C gains 16 / 13 states and loses
+3 / 2, a net gain of 13 / 11. Thus retaining learned calls changes bounded
+reach beyond the flattening control, but does not make the reach set a superset
+of primitive search. These are condition-level comparisons, not an isolated
+causal ablation of each individual H1.
+
+At the first generation-2 acquisition, L5 to L6 gains 3 and loses 3 states on
+each input. L6 to L7 gains 10 / 8 and loses 4 / 4; L7 to L8 subsequently loses
+net 6 / 6. Selecting the best intermediate language after seeing evaluation
+would be post-selection; the final language is the predeclared L8.
+
+### Costs and interpretation
+
+| Condition | Training search seconds | Acquisition seconds, inclusive | Certificate seconds / prover calls | Registration seconds / prover calls |
+|---|---:|---:|---:|---:|
+| A | 91.212 | 0 | 0 / 0 | 0 / 0 |
+| B | 91.338 | 5.368 | 1.085 / 24 | 1.112 / 24 |
+| C | 120.642 | 174.941 | 13.915 / 234 | 10.955 / 234 |
+| E | 115.542 | 212.176 | 12.439 / 226 | 9.204 / 226 |
+
+Acquisition includes certification, registration, matching and refactoring;
+the component times must not be added to it again. Training search timers and
+counters are cumulative, so only each domain's last snapshot is aggregated.
+The complete normal-run duration additionally includes evaluation, reach runs,
+common primitive certification, initialization and output I/O.
+
+In evaluation, A / C respectively perform 922 / 1322 witness evaluations,
+0 / 760 macro expansions, and 1062 / 1102 independently replayed primitive
+operations. Execution time is 22.549 / 33.288 seconds; independent replay time
+is 0.179 / 0.202 seconds. Candidate generation takes 0.426 / 1.186 seconds,
+including input-guard work; registry synchronization is 0.098 / 0.509 seconds.
+C executes learned morphisms 302 times, of which 68 are generation-2 calls.
+None appears in a successful goal proof. The lower number of some predicate
+checks is not evidence of cheaper solving: different states were explored.
+
+The observed improvement is the recursive acquisition path and a positive
+definition-inclusive training description cost for every accepted morphism.
+It is not a new geometric axiom, a new universally stronger DSL, a speedup,
+or better solved-task performance. Current fair allocation across every active
+family redistributes a fixed search budget as the library grows. The next
+research issue is useful selection/search allocation, not the existence of a
+call-to-acquisition connection. No new selector or frontier generator was
+silently introduced in this experiment.
+
+### Preserved evidence and final verdict
+
+- [Fresh Actions artifact](https://github.com/corcondor/mortra/actions/runs/34889840285/artifacts/10367681471):
+  29,239,758 bytes; SHA256
+  `6943ec866aae0271cafe93596dc65b2d8c7931b6eb506ea52cfb03a115b50f2a`.
+- `reports/semantic-feedback-eight-cycle-evidence.zip`: a separately packaged
+  complete copy of the downloaded artifact, 30,888,590 bytes; SHA256
+  `7557e376e7e654b3f8b269b6f901c6ba4fa5705c46e368c9d944d11db0d7637f`.
+  Different ZIP packaging explains the different digest. The copied archive is
+  not a second experimental run. Every one of its 25 file entries was hash-checked
+  against the downloaded artifact; there were no mismatches.
+- `reports/semantic-feedback-eight-cycle-provenance-review.json`: read-only
+  post-run source/call/registration audit, including original event line numbers.
+- `reports/semantic-feedback-eight-cycle-cost-review.json`: read-only aggregation
+  of measured counters; no computation or answer was injected into the run.
+
+| Question | Final verdict |
+|---|---|
+| Autonomous selection of typed geometry compositions | Observed |
+| Acquired calls retained as learning-language components | Observed |
+| Generation-2 definitions acquired from actual parent-call histories | Observed: 4 |
+| Generation-2 definitions later executed and replayed | Observed: 3 of 4 |
+| Their experience returned to another abstraction stage | Observed: 33 histories, 5 call-containing candidates |
+| Generation-3 acquisition | Not observed |
+| C versus flattening control E in bounded reach | Positive net difference on both fixed inputs |
+| Net/superset bounded reach improvement over primitive A | Not observed |
+| More solved regression tasks or fewer evaluation candidates | Not observed |
+| Broad novel-task generalization, arbitrary carriers or grammar learning | Not established |

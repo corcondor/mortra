@@ -1,0 +1,1061 @@
+{
+  "kind": "posthoc_read_only_audit",
+  "run_id": 34889840285,
+  "sha": "023cedd57ef0cafe7a0449326f22b55dc1ec38c6",
+  "same_source_seal_as_d1e6228": true,
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "1",
+    "tests": "157",
+    "time": "500.450",
+    "timestamp": "2026-09-14T19:56:35.926679+00:00",
+    "hostname": "runnervmlun5p"
+  },
+  "recursive_morphisms": [
+    {
+      "id": "geom.semantic.84ef8b9e4166008b3828",
+      "cycle": 5,
+      "generation": 2,
+      "parents": [
+        "geom.semantic.6a9edceaf4c1c846e632"
+      ],
+      "body": {
+        "op": "use",
+        "abstraction": "geom.semantic.6a9edceaf4c1c846e632",
+        "arguments": {
+          "f0": {
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ],
+            "op": "mirror"
+          },
+          "f1": {
+            "op": "var",
+            "name": "f0"
+          },
+          "f2": {
+            "op": "var",
+            "name": "f2"
+          },
+          "f3": {
+            "op": "var",
+            "name": "f1"
+          }
+        }
+      },
+      "parent_bodies": {
+        "geom.semantic.6a9edceaf4c1c846e632": {
+          "args": [
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f0"
+                },
+                {
+                  "op": "var",
+                  "name": "f1"
+                },
+                {
+                  "op": "var",
+                  "name": "f2"
+                }
+              ],
+              "op": "orthocenter"
+            },
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f3"
+            }
+          ],
+          "op": "circle"
+        }
+      },
+      "certificate_id": "geom.70c1f0d0cb4d3acd1c99",
+      "certificate_mode": "sequential_local",
+      "registration": {
+        "line": 12136,
+        "cycle": 5
+      },
+      "source_count": 6,
+      "source_context_count": 3,
+      "source_histories": [
+        "85fac63d75b117ffcd01c3bee70e759fe2cb0612155f5c8d16f2ca37af779ad5",
+        "9dda6a81f19e0860bbb52208a57824318052d751c40b0071a6f266f2c4680055",
+        "2f584d6ffca31fa774a7755e161ded4c0a762096bd4dff21f79ddfa3c37df8cc",
+        "15612056fb893c6ec1e01b2e064600b17108a5bd3f705724a0a4bd7316386ea6",
+        "15728837dda2a22c3489ae73994177def0f786cdb6b74b5ad46fad605385f68c",
+        "a92be9086260f4723cba6100c047af410f929bab9a1a37ae08be4065efd2e1e5"
+      ],
+      "all_sources_in_original_events": true,
+      "original_sources_with_parent_call": 6,
+      "first_source": {
+        "line": 10637,
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.6a9edceaf4c1c846e632",
+          "arguments": {
+            "f0": {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            },
+            "f1": {
+              "op": "var",
+              "name": "a"
+            },
+            "f2": {
+              "op": "var",
+              "name": "c"
+            },
+            "f3": {
+              "op": "var",
+              "name": "b"
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0005545959999153638,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        },
+        "calls": [
+          "geom.semantic.6a9edceaf4c1c846e632"
+        ]
+      },
+      "syntax_nodes": {
+        "before": 3371,
+        "after": 3353,
+        "definition": 11,
+        "net_saved": 7,
+        "model": "one per AST node; binder and each parameter once; IDs not bytes"
+      },
+      "json_utility_bits": 3056,
+      "acquisition_cost": {
+        "certification_seconds": 1.028144730999884,
+        "primitive_schema_steps": 3,
+        "prover_calls": 18,
+        "expansion_visits": 52,
+        "macro_expansions": 1
+      },
+      "later_calls": {
+        "training": 3,
+        "evaluation": 0,
+        "reach_control": 0
+      },
+      "first_training_call": {
+        "line": 12812,
+        "history": "e70fc0a38023ab216533560f0c6ba8242719f1877de2ffead810fb9fbb9b2714",
+        "task": "080745d1770096df6a5a2f14decdf0fc752f213994ed79d7cb4784d7db49ea07",
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.84ef8b9e4166008b3828",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0007650200000171026,
+          "primitive_operations": 4,
+          "method": "primitive reexecution, not contract witness"
+        }
+      },
+      "first_evaluation_call": null
+    },
+    {
+      "id": "geom.semantic.7af21c2e953bcbb21998",
+      "cycle": 6,
+      "generation": 2,
+      "parents": [
+        "geom.semantic.a6b900e0f674d6cf1e9c"
+      ],
+      "body": {
+        "op": "use",
+        "abstraction": "geom.semantic.a6b900e0f674d6cf1e9c",
+        "arguments": {
+          "f0": {
+            "op": "var",
+            "name": "f0"
+          },
+          "f1": {
+            "op": "var",
+            "name": "f1"
+          },
+          "f2": {
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ],
+            "op": "orthocenter"
+          }
+        }
+      },
+      "parent_bodies": {
+        "geom.semantic.a6b900e0f674d6cf1e9c": {
+          "args": [
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f0"
+                },
+                {
+                  "op": "var",
+                  "name": "f1"
+                }
+              ],
+              "op": "midpoint"
+            },
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            }
+          ],
+          "op": "orthocenter"
+        }
+      },
+      "certificate_id": "geom.f640b2ffa9c7f53d2d9a",
+      "certificate_mode": "sequential_local",
+      "registration": {
+        "line": 12654,
+        "cycle": 6
+      },
+      "source_count": 6,
+      "source_context_count": 3,
+      "source_histories": [
+        "752f0bb6aeff55b51f2348643493689392fa1db28576b35e2236821e0ec83a3d",
+        "293837c627abecfa7478f4f7392f50ff9f108192b3da32de3d5143b03f84537e",
+        "7ac56419fbe7100fafcdb3b4968947fd381cd499c41801f0e3b7eca26e614a55",
+        "2f65233609857f21d019dd3a8de134decfcc9e9546651828191e70c59455e706",
+        "7c23945ccb0d974dfa4070accd525670dfe2668ef86ee4d2a55b49e56e0ac14d",
+        "dab7907534f34ff137e80ff3d8058dc9a73a0b4453cf122690a5798cddd999ae"
+      ],
+      "all_sources_in_original_events": true,
+      "original_sources_with_parent_call": 6,
+      "first_source": {
+        "line": 10610,
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.a6b900e0f674d6cf1e9c",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "orthocenter",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0004057880000800651,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        },
+        "calls": [
+          "geom.semantic.a6b900e0f674d6cf1e9c"
+        ]
+      },
+      "syntax_nodes": {
+        "before": 3416,
+        "after": 3398,
+        "definition": 11,
+        "net_saved": 7,
+        "model": "one per AST node; binder and each parameter once; IDs not bytes"
+      },
+      "json_utility_bits": 3056,
+      "acquisition_cost": {
+        "certification_seconds": 0.8441807429999244,
+        "primitive_schema_steps": 3,
+        "prover_calls": 20,
+        "expansion_visits": 46,
+        "macro_expansions": 1
+      },
+      "later_calls": {
+        "training": 15,
+        "evaluation": 38,
+        "reach_control": 9
+      },
+      "first_training_call": {
+        "line": 12687,
+        "history": "c4f0755bcb02aa1c354d7dec2c406213ad5d6e7e48cc9de7a0b5350c9320f464",
+        "task": "080745d1770096df6a5a2f14decdf0fc752f213994ed79d7cb4784d7db49ea07",
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.7af21c2e953bcbb21998",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "var",
+              "name": "c"
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.00039189199992506474,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        }
+      },
+      "first_evaluation_call": {
+        "line": 20864,
+        "history": "0a5c80a44d410290b81d5d4d8920c70ffb0ddf493d5e5b796a7a73da4d887eb3",
+        "task": "64fe01e5661d3d3c81cddeeda57d5af0a682348da9878127ae6f0e0060d4b4f6",
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.7af21c2e953bcbb21998",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "var",
+              "name": "c"
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0004695370000717958,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        }
+      }
+    },
+    {
+      "id": "geom.semantic.86730dfc0826455cea3a",
+      "cycle": 6,
+      "generation": 2,
+      "parents": [
+        "geom.semantic.95e24700e08df3c4585e"
+      ],
+      "body": {
+        "op": "use",
+        "abstraction": "geom.semantic.95e24700e08df3c4585e",
+        "arguments": {
+          "f0": {
+            "op": "var",
+            "name": "f0"
+          },
+          "f1": {
+            "op": "var",
+            "name": "f1"
+          },
+          "f2": {
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              },
+              {
+                "op": "var",
+                "name": "f2"
+              }
+            ],
+            "op": "orthocenter"
+          }
+        }
+      },
+      "parent_bodies": {
+        "geom.semantic.95e24700e08df3c4585e": {
+          "args": [
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f0"
+                },
+                {
+                  "op": "var",
+                  "name": "f1"
+                }
+              ],
+              "op": "midpoint"
+            },
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f2"
+            }
+          ],
+          "op": "circle"
+        }
+      },
+      "certificate_id": "geom.f3492cbbb7b75adaab65",
+      "certificate_mode": "sequential_local",
+      "registration": {
+        "line": 12655,
+        "cycle": 6
+      },
+      "source_count": 6,
+      "source_context_count": 3,
+      "source_histories": [
+        "f01a50cafb082583672db4f47d3e0084cf5e094a37d5802d92cd88cba065ce0e",
+        "3b47d2de60437e149841682c3befcecc970620ae02735e61643062bb8982db9b",
+        "ea7a07b5cd9b0c04e86d3fd6977dafc5a8609102898367cd7f4933c9be89b886",
+        "c31c04996fc3950c8be7c10dc15e8af2da5cdba20d5931c5c95a87e5cfda1bb8",
+        "441a5572da2263c45abf953cbd9b20fed7380af7b6a231c8235ce444fe2b2063",
+        "fdc16f7ba6b90b50724eb2b37c5256114da38818d4ef27e5dc4c5e477ebe015f"
+      ],
+      "all_sources_in_original_events": true,
+      "original_sources_with_parent_call": 6,
+      "first_source": {
+        "line": 10612,
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.95e24700e08df3c4585e",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "orthocenter",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0004947950000087076,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        },
+        "calls": [
+          "geom.semantic.95e24700e08df3c4585e"
+        ]
+      },
+      "syntax_nodes": {
+        "before": 3398,
+        "after": 3380,
+        "definition": 11,
+        "net_saved": 7,
+        "model": "one per AST node; binder and each parameter once; IDs not bytes"
+      },
+      "json_utility_bits": 3056,
+      "acquisition_cost": {
+        "certification_seconds": 1.0055432900001051,
+        "primitive_schema_steps": 3,
+        "prover_calls": 20,
+        "expansion_visits": 46,
+        "macro_expansions": 1
+      },
+      "later_calls": {
+        "training": 15,
+        "evaluation": 30,
+        "reach_control": 7
+      },
+      "first_training_call": {
+        "line": 12689,
+        "history": "66f934661f1bc32e750e24007979ced8528fd1ba66e85e2d820869fc58e4f0fe",
+        "task": "080745d1770096df6a5a2f14decdf0fc752f213994ed79d7cb4784d7db49ea07",
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.86730dfc0826455cea3a",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "var",
+              "name": "c"
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.00045853699998588127,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        }
+      },
+      "first_evaluation_call": {
+        "line": 20866,
+        "history": "b21949f5ab8d9804844b0c94afc0c4b0c97489f09def6b2518d0597f5689cae3",
+        "task": "64fe01e5661d3d3c81cddeeda57d5af0a682348da9878127ae6f0e0060d4b4f6",
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.86730dfc0826455cea3a",
+          "arguments": {
+            "f0": {
+              "op": "var",
+              "name": "a"
+            },
+            "f1": {
+              "op": "var",
+              "name": "b"
+            },
+            "f2": {
+              "op": "var",
+              "name": "c"
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0005507190001026174,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        }
+      }
+    },
+    {
+      "id": "geom.semantic.aced3b76e3d056c8aadb",
+      "cycle": 7,
+      "generation": 2,
+      "parents": [
+        "geom.semantic.13e1670a636cac7a3706"
+      ],
+      "body": {
+        "op": "use",
+        "abstraction": "geom.semantic.13e1670a636cac7a3706",
+        "arguments": {
+          "f0": {
+            "args": [
+              {
+                "op": "var",
+                "name": "f0"
+              },
+              {
+                "op": "var",
+                "name": "f1"
+              }
+            ],
+            "op": "mirror"
+          },
+          "f1": {
+            "op": "var",
+            "name": "f0"
+          },
+          "f2": {
+            "op": "var",
+            "name": "f2"
+          },
+          "f3": {
+            "op": "var",
+            "name": "f1"
+          }
+        }
+      },
+      "parent_bodies": {
+        "geom.semantic.13e1670a636cac7a3706": {
+          "args": [
+            {
+              "args": [
+                {
+                  "op": "var",
+                  "name": "f0"
+                },
+                {
+                  "op": "var",
+                  "name": "f1"
+                },
+                {
+                  "op": "var",
+                  "name": "f2"
+                }
+              ],
+              "op": "circle"
+            },
+            {
+              "op": "var",
+              "name": "f0"
+            },
+            {
+              "op": "var",
+              "name": "f3"
+            }
+          ],
+          "op": "circle"
+        }
+      },
+      "certificate_id": "geom.89220ab86d7169681b0b",
+      "certificate_mode": "sequential_local",
+      "registration": {
+        "line": 13191,
+        "cycle": 7
+      },
+      "source_count": 6,
+      "source_context_count": 3,
+      "source_histories": [
+        "6ef0ad50243162aa9e73a35819ae7dc2aed55c6384c88e848c0229a02f82c427",
+        "c4aa7d4858c8b87114a654df287f9dc5665f879bfe803c02d30b25e075f879ee",
+        "ee99120dfb869bc68131496ffc1b3361e24f1200b8086d105dbe20a31bf01b42",
+        "a9aa914619a4bb290b730730c0fa45a7df88ab056349ad117bda547da994a77d",
+        "7467c17e493d9fec9a2fb22974bfe144b077a5dbaddcaa490c288c33502350b2",
+        "0dc02fa5834e041c84991c18b1aa54d3d2a3d820b2737ac95b162f7e5ffd28b2"
+      ],
+      "all_sources_in_original_events": true,
+      "original_sources_with_parent_call": 6,
+      "first_source": {
+        "line": 12160,
+        "program": {
+          "op": "use",
+          "abstraction": "geom.semantic.13e1670a636cac7a3706",
+          "arguments": {
+            "f0": {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            },
+            "f1": {
+              "op": "var",
+              "name": "a"
+            },
+            "f2": {
+              "op": "var",
+              "name": "c"
+            },
+            "f3": {
+              "op": "var",
+              "name": "b"
+            }
+          }
+        },
+        "replay": {
+          "passed": true,
+          "residuals": [
+            "0",
+            "0"
+          ],
+          "seconds": 0.0005009759997847141,
+          "primitive_operations": 3,
+          "method": "primitive reexecution, not contract witness"
+        },
+        "calls": [
+          "geom.semantic.13e1670a636cac7a3706"
+        ]
+      },
+      "syntax_nodes": {
+        "before": 3544,
+        "after": 3526,
+        "definition": 11,
+        "net_saved": 7,
+        "model": "one per AST node; binder and each parameter once; IDs not bytes"
+      },
+      "json_utility_bits": 3056,
+      "acquisition_cost": {
+        "certification_seconds": 1.5811805079999885,
+        "primitive_schema_steps": 3,
+        "prover_calls": 18,
+        "expansion_visits": 52,
+        "macro_expansions": 1
+      },
+      "later_calls": {
+        "training": 0,
+        "evaluation": 0,
+        "reach_control": 0
+      },
+      "first_training_call": null,
+      "first_evaluation_call": null
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 0,
+      "active": 2,
+      "accepted": [
+        [
+          "geom.semantic.4ccca6d87a48ddbf708e",
+          1
+        ],
+        [
+          "geom.semantic.05d17c37a0a51f7143a4",
+          1
+        ]
+      ],
+      "corpus_size": 194,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 12,
+      "new_net_nodes": [
+        2,
+        2
+      ],
+      "acquisition_seconds": 4.920886780999922,
+      "acquired_training_calls_cumulative": 0
+    },
+    {
+      "cycle": 1,
+      "active": 4,
+      "accepted": [
+        [
+          "geom.semantic.a6b900e0f674d6cf1e9c",
+          1
+        ],
+        [
+          "geom.semantic.95e24700e08df3c4585e",
+          1
+        ]
+      ],
+      "corpus_size": 334,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 43,
+      "new_net_nodes": [
+        14,
+        14
+      ],
+      "acquisition_seconds": 10.79031841899996,
+      "acquired_training_calls_cumulative": 15
+    },
+    {
+      "cycle": 2,
+      "active": 6,
+      "accepted": [
+        [
+          "geom.semantic.6a9edceaf4c1c846e632",
+          1
+        ],
+        [
+          "geom.semantic.1b84f7c7e765b803d0dd",
+          1
+        ]
+      ],
+      "corpus_size": 488,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 68,
+      "new_net_nodes": [
+        12,
+        12
+      ],
+      "acquisition_seconds": 18.862302193000005,
+      "acquired_training_calls_cumulative": 57
+    },
+    {
+      "cycle": 3,
+      "active": 8,
+      "accepted": [
+        [
+          "geom.semantic.299996baaf4fc2f00a1f",
+          1
+        ],
+        [
+          "geom.semantic.637fe8db3854c7bf2f58",
+          1
+        ]
+      ],
+      "corpus_size": 512,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 72,
+      "new_net_nodes": [
+        12,
+        12
+      ],
+      "acquisition_seconds": 24.358805161999953,
+      "acquired_training_calls_cumulative": 120
+    },
+    {
+      "cycle": 4,
+      "active": 10,
+      "accepted": [
+        [
+          "geom.semantic.13e1670a636cac7a3706",
+          1
+        ],
+        [
+          "geom.semantic.200fecc1e1b0b85fe0f0",
+          1
+        ]
+      ],
+      "corpus_size": 512,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 77,
+      "new_net_nodes": [
+        8,
+        7
+      ],
+      "acquisition_seconds": 27.29800246900004,
+      "acquired_training_calls_cumulative": 207
+    },
+    {
+      "cycle": 5,
+      "active": 12,
+      "accepted": [
+        [
+          "geom.semantic.d33abd09088679bd0193",
+          1
+        ],
+        [
+          "geom.semantic.84ef8b9e4166008b3828",
+          2
+        ]
+      ],
+      "corpus_size": 512,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 58,
+      "new_net_nodes": [
+        10,
+        7
+      ],
+      "acquisition_seconds": 24.59402577700007,
+      "acquired_training_calls_cumulative": 315
+    },
+    {
+      "cycle": 6,
+      "active": 14,
+      "accepted": [
+        [
+          "geom.semantic.7af21c2e953bcbb21998",
+          2
+        ],
+        [
+          "geom.semantic.86730dfc0826455cea3a",
+          2
+        ]
+      ],
+      "corpus_size": 512,
+      "input_with_gen2_calls": 0,
+      "proposals_with_gen2_calls": 0,
+      "refactoring_proofs": 86,
+      "new_net_nodes": [
+        7,
+        7
+      ],
+      "acquisition_seconds": 30.546849173000055,
+      "acquired_training_calls_cumulative": 416
+    },
+    {
+      "cycle": 7,
+      "active": 16,
+      "accepted": [
+        [
+          "geom.semantic.aced3b76e3d056c8aadb",
+          2
+        ],
+        [
+          "geom.semantic.68fd5c2cd6907789ee4d",
+          1
+        ]
+      ],
+      "corpus_size": 512,
+      "input_with_gen2_calls": 33,
+      "proposals_with_gen2_calls": 5,
+      "refactoring_proofs": 87,
+      "new_net_nodes": [
+        7,
+        6
+      ],
+      "acquisition_seconds": 33.57019661300001,
+      "acquired_training_calls_cumulative": 547
+    }
+  ],
+  "reach_deltas": [
+    {
+      "control": "A",
+      "C_new": [
+        19,
+        16
+      ],
+      "C_lost": [
+        44,
+        42
+      ]
+    },
+    {
+      "control": "B",
+      "C_new": [
+        24,
+        21
+      ],
+      "C_lost": [
+        37,
+        35
+      ]
+    },
+    {
+      "control": "D",
+      "C_new": [
+        19,
+        16
+      ],
+      "C_lost": [
+        44,
+        42
+      ]
+    },
+    {
+      "control": "E",
+      "C_new": [
+        16,
+        13
+      ],
+      "C_lost": [
+        3,
+        2
+      ]
+    }
+  ],
+  "C_history_counts": {
+    "training": 1666,
+    "evaluation": 548,
+    "reach_control": 113
+  },
+  "C_bad_replays": []
+}
