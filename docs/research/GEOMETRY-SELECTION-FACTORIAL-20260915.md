@@ -136,3 +136,159 @@ defaults to this configuration, and keeps both old acquisition configurations
 available through `workflow_dispatch`. The exact-kernel job is unchanged.
 Push triggers on the touched implementation/test/config paths. No new workflow,
 main merge, force push, parser change, or new geometric axiom is included.
+
+## Fresh Actions result: no acquired-library benefit demonstrated
+
+The preregistered comparison completed without source changes or reacquisition.
+Both cohorts have A = B = C = D = 8/16 solved. Ranking saves 18 applications
+in both B versus A and D versus C. The acquired-library interaction is zero
+for solved count and application count. Acquired constructions execute more
+often in D, but none occurs in a solved construction dependency path.
+
+This is a negative downstream-capability result, not a reversal of the earlier
+recursive-acquisition result. It does not establish that the library is useless
+under every binding generator, ordering, task, or budget.
+
+### Source, environment, and fresh verification
+
+- Tested source: `5d9fc5cb6095d24ced7010e300be6077c9f7c26e`.
+- Repository: `corcondor/mortra`; branch:
+  `codex/geometry-semantic-feedback-20260915`.
+- [Actions run 34899138144](https://github.com/corcondor/mortra/actions/runs/34899138144)
+  completed successfully. The two jobs were `exact-kernel` and
+  `semantic-feedback`. Workflow success means the checks and experiment
+  completed; it does not mean that mathematical capability improved.
+- Fresh exact-kernel tests: 64 passed in 1.25 s.
+- Fresh semantic-feedback and selection tests: 184 passed, 1 skipped,
+  0 failures, 0 errors in 53.23 s. The skip is unchanged.
+- Python 3.12.14; Linux 6.17.0-1022-azure x86_64; `PYTHONHASHSEED=0`.
+  Selected dependency versions: newclid 3.0.1, sympy 1.14.0, numpy 1.26.4,
+  pytest 8.4.1. Full versions are in the fresh `environment.json`.
+- The normal command is the frozen command above. The exact test commands
+  and fresh outputs for both jobs are retained in `workflow-run.log`.
+- Fresh normal execution: 590.226425 s, including both cohorts, diagnostics,
+  shared library validation, and instrumented output work. Source sealing
+  passed, the library remained unchanged, reacquisitions were 0, and policy
+  learning was disabled.
+
+### Four-arm results
+
+Each row totals 16 tasks. An application is an actually attempted construction,
+including rejected attempts; it is not the number of all proposals generated.
+Each task has the same limit of 112 applications and the same other resource
+limits. Primitive operations account for expansion of acquired definitions.
+Task time includes matching, ranking, exact execution, independent replay,
+and event recording; the shared library setup is reported separately below.
+
+| Cohort | Arm | Solved | Applications | Primitive operations | Task time (s) |
+|---|---|---:|---:|---:|---:|
+| Regression | A | 8/16 | 922 | 922 | 27.373948 |
+| Regression | B | 8/16 | 904 | 904 | 26.471855 |
+| Regression | C | 8/16 | 922 | 1682 | 40.812662 |
+| Regression | D | 8/16 | 904 | 1686 | 44.376238 |
+| New coordinates | A | 8/16 | 922 | 922 | 27.295018 |
+| New coordinates | B | 8/16 | 904 | 904 | 27.400587 |
+| New coordinates | C | 8/16 | 922 | 1682 | 40.534292 |
+| New coordinates | D | 8/16 | 904 | 1686 | 45.385147 |
+
+The solve outcomes agree task by task, not merely in their totals. The
+new-coordinate cohort preserves known goal templates and is not evidence
+about unseen mathematical families.
+
+For `(D-C)-(B-A)`, both cohorts have 0 solves, 0 applications, and +22 primitive
+operations. Task-time interactions are +4.465668 s for regression and
++4.745287 s for new coordinates. Positive time means extra cost, not benefit.
+No statistical timing claim is made from this single fixed run.
+
+### What ranking improved, and what it did not
+
+On the eight tasks solved by every arm, A and C require applications
+`1,3,4,5,1,3,4,5`; B and D require `1,1,1,1,1,1,1,1`.
+The 18-application reduction therefore comes entirely from already-solvable
+primitive constructions, without a learned construction in the solution.
+
+| Cohort | A solved-task time (s) | B | C | D |
+|---|---:|---:|---:|---:|
+| Regression, same eight solved tasks | 0.546335 | 0.315134 | 0.754279 | 0.862389 |
+| New coordinates, same eight solved tasks | 0.562127 | 0.325174 | 0.777787 | 1.056927 |
+
+In regression, candidate generation on these solved tasks takes 0.008594 s
+in C and 0.329996 s in D; in new coordinates it takes 0.010137 s in C and
+0.509844 s in D. D buffers and considers acquired-family proposals before
+choosing the primitive solution. Thus fewer executions do not by themselves
+imply lower total time. This overhead is measured, not omitted.
+
+### Costs and failure-stage evidence
+
+The following are regression totals for all 16 tasks. Predicate prover calls
+and applicability prover calls are separately instrumented counters, not an
+additive estimate of unique proofs. Timers can be nested: for example,
+generation includes its guard work. Do not add every timer as independent cost.
+The analogous full new-coordinate measurements are in `verification.json`.
+
+| Arm | Predicate prover calls | Applicability prover calls | Ranking (s) | Execution (s) | Independent replay (s) | Successful acquired executions |
+|---|---:|---:|---:|---:|---:|---:|
+| A | 19302 | 652 | 0.000688 | 19.085818 | 0.161958 | 0 |
+| B | 18256 | 646 | 0.063321 | 18.712714 | 0.154615 | 0 |
+| C | 18683 | 1068 | 0.000748 | 29.243635 | 0.344567 | 302 |
+| D | 21777 | 1082 | 0.122965 | 31.632526 | 0.411648 | 352 |
+
+Shared source loading takes 0.086995 s. Shared certificate revalidation and
+registration takes 13.744790 s (46 certification prover calls and 234
+registration prover calls). Recorded JSON output work takes 0.598694 s;
+event output takes 4.062050 s already included in the task times. These are
+instrumented intervals, not an exhaustive decomposition of the 590.226425 s
+normal-entry total.
+
+The trace separates candidate input guards, conditional relation alignment,
+proposal order, selection, execution/refusal, and goal checking. C and D do
+reach and execute acquired constructions. All solved answer terms contain
+0 acquired calls, and all solved construction ancestor paths contain 0 acquired
+calls. Merely increasing successful acquired calls from 302 to 352 did not
+create a goal witness. Every unsolved primary task exhausted the 112-application
+budget. Exact failure/refusal details remain in the event stream.
+
+The two within-library comparisons produced 64 task-pair checks, covering
+956 common `(state, family)` pairs, with 0 membership mismatches. Each proposal
+batch additionally checks that reordering is a permutation. This is observed
+same-state membership plus regression-test coverage, not an enumeration of
+every mathematically possible state or binding.
+
+### Wider diagnostic, after evaluation
+
+The eight old unsolved tasks were then searched under A and D with the frozen
+448-application limit (four times the main limit). All 16 arm-task executions
+used 448 applications and remained unsolved. None reached the primitive-operation
+or wall-time limit first; the recorded stop is `window_or_candidate_budget`.
+There are 0 replayed existence witnesses.
+
+This bounded diagnostic leaves the question unresolved: a useful fixed-library
+path may be absent, or it may remain outside the generated bindings or search
+trajectory. The per-family limit of 3 and input-tuple limit of 128 are unchanged.
+It is not an oracle upper bound and does not prove the absence of a useful path.
+No diagnostic binding, auxiliary construction, or result was fed back into the
+selector or evaluation tasks. No further selector tuning was performed.
+
+### Preserved evidence and conclusion
+
+[Fresh Actions artifact](https://github.com/corcondor/mortra/actions/runs/34899138144/artifacts/10369964282):
+`semantic-geometry-5d9fc5cb6095d24ced7010e300be6077c9f7c26e-34899138144`.
+The uploaded artifact digest is
+`fdb7e1e3c283ba0a9094589dc27f6835b07f45f8b4eed907b13c301bcb52d4b5`.
+
+`reports/geometry-selection-factorial-evidence.zip` retains the downloaded
+artifact and the complete fresh workflow log. It is a repackaging of this run,
+not another experiment. Size: 18,509,144 bytes. SHA-256:
+`7059d6fffbee238e789354861857b381170e0438221c576b90f64cd10d2abfa7`.
+ZIP integrity was checked after creation. Its normal-output directory includes
+the frozen literal tasks, inputs, library provenance and contracts, all arm
+results, construction dependency paths, candidate membership checks, detailed
+events, diagnostic runs, environment, and machine-readable verification.
+
+The factorial instrumentation and soft contract ordering are implemented and
+verified. Ordinary primitive ordering improved on the already-solved tasks.
+Additional problem-solving benefit from the frozen acquired library was NOT
+demonstrated. Neither deeper acquisition nor a learned selection policy was
+implemented in response to this negative result. The earlier recursive DSL
+milestone is retained; the usefulness of these 16 constructions for the eight
+unresolved goals is still unestablished.
