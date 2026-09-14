@@ -84,6 +84,11 @@ class Vocabulary:
         self._compiled_spaces = {}
         self._observation_values = {}
         self._definition_table_cache = None
+        self.temporal = None
+        if "temporal_options" in theory.flags:
+            from math_os_prototype.temporal_utility import TemporalUtility
+            self.temporal = TemporalUtility(self, theory.flags["temporal_options"], self.state.get("temporal"))
+            self.state["temporal"] = self.temporal.state
 
     def register_recurrence(self, pid):
         p = self.theory.state["procedures"][pid]
@@ -92,6 +97,8 @@ class Vocabulary:
             "body": {"kernel": "certified_recurrence_value", "procedure": pid},
             "scope": p["body"]["scope"], "meaning": "q(T_label**n(initial_state))",
             "born": self.theory.state["cycle"]}
+        if self.temporal:
+            self.temporal.sync()
 
     def law(self, pid):
         p = self.theory.state["procedures"][pid]
@@ -112,6 +119,17 @@ class Vocabulary:
             "scope": r["scope"], "requirements": "unrestricted observation; no legality/goal inference",
             "meaning": "q after an action word, on every state in the declared finite model",
             "born": self.theory.state["cycle"]}
+        if self.temporal:
+            self.temporal.sync()
+
+    def selected_operations(self):
+        if self.temporal and self.temporal.options["producer_policy"] == "temporal":
+            return set(self.temporal.state["active"])
+        return None
+
+    def offered(self, key):
+        selected = self.selected_operations()
+        return selected is None or key in selected
 
     def table(self):
         return lib.definition_table({d["index"]: d["template"] for d in self.state["definitions"]})
@@ -264,9 +282,9 @@ class Vocabulary:
             return states+sum(walk(a) for a in t.get("args", []))
         return walk(node), lib.cost(program)
 
-    def edit(self, program, *, counter=None, charge=None):
+    def edit(self, program, *, counter=None, charge=None, relation_ids=None):
         from math_os_prototype.theory_semantic_edit import rewrite
-        return rewrite(self, program, counter=counter, charge=charge)
+        return rewrite(self, program, counter=counter, charge=charge, relation_ids=relation_ids)
 
     def active_definitions(self, editing):
         if not editing:
@@ -366,6 +384,8 @@ class Vocabulary:
             self._seen_programs.add(key)
             s["seen_programs"].append(key)
             s["experience_count"] += 1
+            if self.temporal:
+                self.temporal.observe(program, primitive, s["experience_count"], evaluated)
             row = {"id": key, "program": deepcopy(program), "primitive": deepcopy(primitive),
                 "parents": list(parents), "cycle": e.state["cycle"],
                 "source": "self_generated_execution", "sequence": s["experience_count"],
@@ -404,7 +424,7 @@ class Vocabulary:
         began = time.perf_counter()
         result = digest({"corpus": s["corpus_version"], "knowledge": self.knowledge_input(),
             "active": [e.state["concepts"][cid]["definition"] for cid in e.state["active_concepts"]],
-            "executions": len(s["executions"])})
+            "executions": len(s["executions"]), "selected_operations": sorted(self.selected_operations()) if self.selected_operations() is not None else None})
         e.charge("corpus_input_matching", seconds=time.perf_counter()-began, checks=1)
         return result
 
@@ -519,6 +539,8 @@ class Vocabulary:
                         "active_definition_indices": [d["index"] for d in self.active_definitions(True)],
                         "new_equations": [r["id"] for r in discovery["relations"]]})
                     e.event("dsl_semantic_relation_search", discovery=discovery)
+                if self.temporal:
+                    self.temporal.sync()
                 break
         s["attempts"].append({"cycle": e.state["cycle"], "corpus": len(s["corpus"]),
             "input_version": input_version, "corpus_version": s["corpus_version"],
@@ -543,10 +565,18 @@ class Vocabulary:
 
     def synthesize(self):
         e, s = self.theory, self.state
+        if self.selected_operations() is not None:
+            e.event("dsl_active_generation", selected=sorted(self.selected_operations()),
+                    evidence_through=self.temporal.state["sequence"], version=self.temporal.state["version"])
         s["last_synthesis_size"] = len(s["corpus"])+len(s["definitions"])+len(e.state["representations"])
         s["last_synthesis_generation"] = self.generation()
         pool = [e.state["concepts"][cid]["definition"] for cid in e.state["active_concepts"]]
         pool += [row["program"] for row in s["executions"][-e.budget["batch"]:]]
+        if self.selected_operations() is not None:
+            counts = {}
+            pool = [self.temporal.lower(p, self.selected_operations(),
+                lambda k, n: counts.__setitem__(k, counts.get(k, 0)+n)) for p in pool]
+            e.charge("dsl_inactive_lowering", **counts)
         words = list(islice(chain.from_iterable(product(self.domain.actions, repeat=n)
                      for n in range(1, e.budget["word_length"]+1)),
                      s["word_cursor"], s["word_cursor"]+e.budget["batch"])) if self.domain.actions else []
@@ -558,7 +588,8 @@ class Vocabulary:
         by_sort = {}
         for p in pool:
             by_sort.setdefault(self.accepts(p), []).append(p)
-        ranked = sorted(self.active_definitions(e.flags.get("semantic_edits", False)), key=lambda d: (
+        ranked = sorted([d for d in self.active_definitions(e.flags.get("semantic_edits", False))
+                         if self.offered("definition:"+d["id"])], key=lambda d: (
             -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), -d["utility_bits"], d["index"]))
         search_cost = {}
         arguments = {d["index"]: {name: by_sort.get(sort, [])
@@ -580,6 +611,8 @@ class Vocabulary:
             facts = [initial_fact("action_word", term("word", letters=list(w))) for w in words[:e.budget["batch"]]]
             primitives = []
             for rid in e.state["representations"]:
+                if not self.offered("representation:"+rid):
+                    continue
                 def execute(args, rid=rid):
                     program = term("represented", args[0].value, binding=rid)
                     if digest(program) in s["seen_calls"]:
@@ -596,6 +629,8 @@ class Vocabulary:
                          for n in naturals]
                 primitives = []
                 for pid in s["recurrence_operations"]:
+                    if not self.offered("recurrence:"+pid):
+                        continue
                     def execute(args, pid=pid):
                         return PrimitiveResult(term("recurrence", args[0].value, procedure=pid),
                                                {"procedure": pid})
@@ -614,6 +649,11 @@ class Vocabulary:
             composed = self.domain.compose(parent, pool, type_of=self.accepts)
             programs.extend(islice(composed, e.budget["batch"]))
         for program in programs:
+            if self.selected_operations() is not None:
+                counts = {}
+                program = self.temporal.lower(program, self.selected_operations(),
+                    lambda k, n: counts.__setitem__(k, counts.get(k, 0)+n))
+                e.charge("dsl_inactive_lowering", **counts)
             if digest(program) in s["seen_calls"]:
                 continue
             s["seen_calls"].append(digest(program))
@@ -681,7 +721,7 @@ class Vocabulary:
         e.charge("corpus_eligibility", seconds=time.perf_counter()-began, checks=1)
         return out
 
-    def solve_observation(self, task, *, acquired=True, definitions_enabled=True, execution_mode="certified"):
+    def solve_observation(self, task, *, acquired=True, definitions_enabled=True, execution_mode="certified", operation_keys=None):
         """Synthesize a program from its exact finite-model specification.
 
         This is a goal adapter for the existing typed planner. No witness or
@@ -689,6 +729,9 @@ class Vocabulary:
         is a congruence for the declared pure operations, not for legality.
         """
         start = time.perf_counter()
+        selected = set(operation_keys) if operation_keys is not None else self.selected_operations()
+        if selected is not None and self.temporal and selected-set(self.temporal.state["entries"]):
+            raise ValueError("operation selection refers outside the certified archive")
         if execution_mode not in {"legacy", "certified", "edited"}:
             raise ValueError("unknown execution mode")
         from math_os_prototype.runtime_typed_planner import (
@@ -749,6 +792,8 @@ class Vocabulary:
             if execution_mode == "edited":
                 began = time.perf_counter()
                 program, proofs = self.edit(program, counter=counter, charge=charge)
+                if selected is not None and self.temporal:
+                    program = self.temporal.lower(program, selected, charge)
                 counter["semantic_edit_seconds"] = counter.get("semantic_edit_seconds", 0)+time.perf_counter()-began
                 if proofs:
                     rewrite_trace.append({"before": original, "after": program, "proofs": proofs})
@@ -782,18 +827,24 @@ class Vocabulary:
         facts = []
         operations = []
         if acquired:
-            definitions = sorted(self.active_definitions(execution_mode == "edited") if definitions_enabled else [], key=lambda d: (
+            definitions = sorted((self.state["definitions"] if selected is not None else self.active_definitions(execution_mode == "edited")) if definitions_enabled else [], key=lambda d: (
                 -d.get("downstream_saved_bits", 0)/max(1, d["reuse_count"]), d["index"]))
             for d in definitions:
+                if selected is not None and "definition:"+d["id"] not in selected:
+                    continue
                 names = list(d["signature"]["parameters"])
                 def build(args, d=d, names=names):
                     return {"op": lib.USE, "abstraction": d["index"], "arguments": dict(zip(names, args))}
                 operations.append(primitive("definition:"+d["id"],
                     list(d["signature"]["parameters"].values()), d["signature"]["result"], build))
             for rid in self.state["observation_operations"]:
+                if selected is not None and "representation:"+rid not in selected:
+                    continue
                 operations.append(primitive("representation:"+rid, ["action_word"], "scalar",
                     lambda a, rid=rid: term("represented", a[0], binding=rid)))
             for pid in self.state["recurrence_operations"]:
+                if selected is not None and "recurrence:"+pid not in selected:
+                    continue
                 operations.append(primitive("recurrence:"+pid, ["natural"], "scalar",
                     lambda a, pid=pid: term("recurrence", a[0], procedure=pid)))
         representatives = [self.domain.seeds()[0]]
@@ -845,6 +896,8 @@ class Vocabulary:
                              ("observable_spaces", "representations", "procedures"))
         equation_bits = lib.cost(self.state["semantic_relations"])
         active_bits = (structural_bits if acquired and definitions_enabled else 0)+(certified_bits if acquired else 0)+(equation_bits if execution_mode == "edited" else 0)
+        if selected is not None and self.temporal:
+            active_bits = self.temporal.library_bits(selected, relation_ids=None if execution_mode == "edited" else [])
         literal_cache = _parsed_literal.cache_info()
         counter.update(literal_parse_cache_hits=literal_cache.hits, literal_parse_cache_misses=literal_cache.misses,
                        literal_parse_cache_entries=literal_cache.currsize)

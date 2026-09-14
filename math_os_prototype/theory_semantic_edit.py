@@ -208,21 +208,22 @@ def validate(v, relation):
         raise ValueError("semantic equation dependencies changed")
 
 
-def rewrite(v, program, *, counter=None, charge=None):
+def rewrite(v, program, *, counter=None, charge=None, relation_ids=None):
     """Cost-decreasing choice at each concrete call; originals stay immutable."""
     counter = counter if counter is not None else {}
     proofs = []
+    relations = [r for r in v.state.get("semantic_relations", []) if relation_ids is None or r["id"] in relation_ids]
     v.accepts(program, counter=counter)
     def visit(t):
         if not isinstance(t, dict):
             return t
         if lib.is_call(t):
             node = dict(t, arguments={k: visit(a) for k, a in t["arguments"].items()})
-            if not v.state.get("semantic_relations"):
+            if not relations:
                 return node
             best, score = node, v.execution_estimate(node, counter=counter, charge=charge)
             proof = None
-            for r in v.state.get("semantic_relations", []):
+            for r in relations:
                 counter["rewrite_matching_checks"] = counter.get("rewrite_matching_checks", 0)+1
                 if charge:
                     charge("rewrite_matching_checks", 1)

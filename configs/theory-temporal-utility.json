@@ -1,0 +1,16 @@
+{
+  "config": "configs/theory-dsl-fold.json",
+  "budget_overrides": {"seconds": 3600},
+  "temporal": {
+    "active_capacity": 6, "window": 1000, "experiences": 11000,
+    "acquisition_sample": 32, "shadow_interval": 128, "shadow_pairs": 96,
+    "search_interval": 1000, "search_pairs": 12,
+    "work_per_execution": 100000, "search_states": 128, "search_work": 100000,
+    "future_history": 16, "producer_policy": "all"
+  },
+  "adaptive_producer_experiences": 2000,
+  "regression_seeds": [917334, 917335],
+  "external_seeds": [920914],
+  "query_limit_seconds": 1800,
+  "normal_limit_seconds": 4200
+}

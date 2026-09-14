@@ -84,9 +84,9 @@ def objective_vector(entry):
     }
 
 
-def dominates(left, right):
+def dominates(left, right, *, objectives=None):
     """Pareto domination over the components BOTH were measured on."""
-    comparable = [name for name in OBJECTIVES
+    comparable = [name for name in (OBJECTIVES if objectives is None else objectives)
                   if left.get(name) is not None and right.get(name) is not None]
     if not comparable:
         return False

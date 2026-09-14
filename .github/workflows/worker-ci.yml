@@ -12,6 +12,7 @@ on:
       - "tests/test_theory_dsl.py"
       - "tests/test_theory_semantic_edit.py"
       - "tests/test_theory_corpus.py"
+      - "tests/test_temporal_utility.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -45,6 +46,7 @@ on:
       - "tests/test_theory_dsl.py"
       - "tests/test_theory_semantic_edit.py"
       - "tests/test_theory_corpus.py"
+      - "tests/test_temporal_utility.py"
       - "docs/handoff/THEORY-FORMATION*.md"
       - "tests/test_q_directed_ci.py"
       - "requirements*.txt"
@@ -73,7 +75,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, dsl-feedback, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
+        options: [worker, q-directed, theory-formation, dsl-feedback, temporal-utility, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -170,7 +172,8 @@ jobs:
       FRONTIER_MODE: ${{ inputs.verification_suite == 'frontier-reconnection' }}
       CAPACITY_MODE: ${{ inputs.verification_suite == 'capacity-study' }}
       BOTTLENECK_MODE: ${{ inputs.verification_suite == 'bottleneck-study' }}
-      DSL_MODE: ${{ inputs.verification_suite == 'dsl-feedback' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
+      DSL_MODE: ${{ inputs.verification_suite == 'dsl-feedback' }}
+      TEMPORAL_MODE: ${{ inputs.verification_suite == 'temporal-utility' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
     steps:
       - name: Set output location
         shell: bash
@@ -243,13 +246,21 @@ jobs:
         shell: bash
         run: python -m unittest discover -s tests -p test_persistent_learning_measurement.py -v 2>&1 | tee "$VERIFY_OUTPUT/measurement-tests.log"
       - name: Test executable DSL and exact space-sharing guards
-        if: env.DSL_MODE == 'true'
+        if: env.DSL_MODE == 'true' || env.TEMPORAL_MODE == 'true'
         working-directory: target
         shell: bash
         run: |
-          python -m pytest tests/test_theory_dsl.py tests/test_theory_semantic_edit.py tests/test_theory_corpus.py scripts/test_library_compression.py \
+          python -m pytest tests/test_theory_dsl.py tests/test_theory_semantic_edit.py tests/test_theory_corpus.py tests/test_temporal_utility.py scripts/test_library_compression.py \
             scripts/test_expand_for_execution.py scripts/test_call_candidate_dedup.py -q \
             2>&1 | tee "$VERIFY_OUTPUT/dsl-tests.log"
+      - name: Measure causal future utility on the shared normal stream
+        if: env.TEMPORAL_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python scripts/verify_temporal_utility.py --plan configs/theory-temporal-utility.json \
+            --output "$VERIFY_OUTPUT/temporal-utility" \
+            2>&1 | tee "$VERIFY_OUTPUT/temporal-utility.log"
       - name: Run persistent DSL acquisition, reuse and held-out ablation
         if: env.DSL_MODE == 'true'
         working-directory: target

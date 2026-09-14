@@ -92,7 +92,7 @@ def rewrite(t, rules, scope, domain=None):
 
 class Theory:
     def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, dsl_reuse=True,
-                 semantic_edits=False, corpus_refresh=False, eligible_sources=False, state=None):
+                 semantic_edits=False, corpus_refresh=False, eligible_sources=False, temporal_options=None, state=None):
         self.config = configure(config)
         self.domain = Domain(self.config["domain"])
         self.budget = self.config["budget"]
@@ -104,6 +104,9 @@ class Theory:
             self.flags["corpus_refresh"] = True
         if eligible_sources:
             self.flags["eligible_sources"] = True
+        if temporal_options is not None:
+            from math_os_prototype.temporal_utility import configure as temporal_configure
+            self.flags["temporal_options"] = temporal_configure(temporal_options)
         if state is not None:
             state = deepcopy(state)
             seal = state.pop("sha256", None)
@@ -578,6 +581,10 @@ class Theory:
     def run(self, *, cycles=None):
         target = min(self.budget["cycles"], self.state["cycle"] + (cycles or self.budget["cycles"]))
         while self.state["cycle"] < target and self.state["seconds"] < self.budget["seconds"]:
+            temporal = self.vocabulary.temporal
+            if temporal and temporal.state["sequence"] >= temporal.options["experiences"]:
+                self.state["stop_reason"] = "temporal_experience_budget"
+                return self.snapshot()
             if not self.step():
                 break
         self.state["stop_reason"] = ("wall_time_budget" if self.state["seconds"] >= self.budget["seconds"] else

@@ -25,7 +25,7 @@ def source_seal():
     files = sorted([*ROOT.joinpath("math_os_prototype").glob("*.py"),
                     ROOT/"scripts/run_theory_formation.py", ROOT/"scripts/verify_theory_formation.py",
                     ROOT/"scripts/verify_theory_tasks.py", ROOT/"scripts/verify_theory_dsl.py",
-                    ROOT/"scripts/verify_theory_semantic_edit.py"])
+                    ROOT/"scripts/verify_theory_semantic_edit.py", ROOT/"scripts/verify_temporal_utility.py"])
     return {p.relative_to(ROOT).as_posix(): digest(p.read_text(encoding="utf-8")) for p in files}
 
 
@@ -37,6 +37,8 @@ def main(argv=None):
     parser.add_argument("--cycles", type=int)
     parser.add_argument("--queries", type=Path)
     parser.add_argument("--knowledge", type=Path)
+    parser.add_argument("--temporal-plan", type=Path,
+                        help="frozen internal temporal holdout and active-DSL measurement plan")
     parser.add_argument("--semantic-edits", action="store_true")
     parser.add_argument("--refresh-corpus", action="store_true",
                         help="FIFO refresh of the bounded learning corpus; retain acquired source evidence")
@@ -53,6 +55,7 @@ def main(argv=None):
         parser.error("query conditions are initial-only, learn, or structural-only no-dsl")
     args.output.mkdir(parents=True, exist_ok=False)
     config = json.loads(args.config.read_text(encoding="utf-8"))
+    temporal = json.loads(args.temporal_plan.read_text(encoding="utf-8")) if args.temporal_plan else None
     source = source_seal()
     metadata = {"sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "source_seal": source, "config": config, "condition": args.condition,
@@ -63,6 +66,7 @@ def main(argv=None):
                 "semantic_edits": args.semantic_edits, "execution_mode": args.execution_mode,
                 "corpus_refresh": args.refresh_corpus,
                 "eligible_sources": args.eligible_sources,
+                "temporal_options": temporal,
                 "syntax_cache_enabled": not args.uncached_syntax,
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
@@ -79,13 +83,14 @@ def main(argv=None):
                 or prior.get("semantic_edits", False) != args.semantic_edits
                 or prior.get("corpus_refresh", False) != args.refresh_corpus
                 or prior.get("eligible_sources", False) != args.eligible_sources
+                or prior.get("temporal_options") != temporal
                 or prior.get("syntax_cache_enabled", True) != (not args.uncached_syntax)):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
                     dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits,
-                    corpus_refresh=args.refresh_corpus, eligible_sources=args.eligible_sources, state=old)
+                    corpus_refresh=args.refresh_corpus, eligible_sources=args.eligible_sources, temporal_options=temporal, state=old)
     engine.domain.syntax_cache_enabled = not args.uncached_syntax
     failure = None
     queries = None
@@ -119,6 +124,8 @@ def main(argv=None):
                   "procedures", "proof_dependencies", "representation_dependencies", "decisions", "downstream",
                   "observable_spaces", "dsl"]:
         write(args.output/(field+".json"), state[field])
+    if engine.vocabulary.temporal:
+        write(args.output/"temporal.json", engine.vocabulary.temporal.state)
     storage = {"seconds": time.perf_counter()-persistence_start,
                "files": {p.name: p.stat().st_size for p in args.output.glob("*.json")}}
     write(args.output/"persistence.json", storage)
