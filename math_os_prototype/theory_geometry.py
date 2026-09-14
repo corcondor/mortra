@@ -14,6 +14,7 @@ import json
 import time
 
 import numpy as np
+from sympy.polys.polyerrors import CoercionFailed, PolynomialError
 
 from math_os_prototype.representation_progress import digest
 from math_os_prototype.runtime_typed_planner import PrimitiveResult
@@ -392,7 +393,7 @@ class GeometryDomain:
                 point_witnesses={n: list(map(str, p)) for n, p in added.items()},
                 original_regularity=sorted(known_factors), required_regularity=sorted(required_factors),
                 scope="original explicit chart under its declared regularity; no new constraints or free variables")
-        except (ValueError, NotImplementedError) as exc:
+        except (ValueError, NotImplementedError, CoercionFailed, PolynomialError) as exc:
             result["refusal_reason"] = str(exc)
         result["certificate_sha256"] = digest(result)
         self.costs["extension_certification_seconds"] += time.perf_counter()-start
@@ -411,9 +412,10 @@ class GeometryDomain:
         try:
             obligation = lower_jgex_to_exact_obligation(statement,
                 enable_affine_local_lemmas=False, enable_structural_lemmas=False)
-        except (ValueError, NotImplementedError) as exc:
+        except (ValueError, NotImplementedError, CoercionFailed, PolynomialError) as exc:
             result = {"statement": statement, "accepted": False,
                       "unsupported": type(exc).__name__+": "+str(exc)}
+            self.costs["unsupported_exact_checks"] += 1
             self.certificate_cache[statement] = result
             self.log(event="exact_check_completed", accepted=False, statement=statement,
                      seconds=time.perf_counter()-start, unsupported=result["unsupported"])

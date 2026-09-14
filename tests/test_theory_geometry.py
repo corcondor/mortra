@@ -293,3 +293,34 @@ def test_extension_rejects_undeclared_or_nonrational_witness(monkeypatch, poison
         return result
     monkeypatch.setattr(bridge, "_prepare_exact_system", poisoned)
     assert not domain.certify_extension(source, augmented)["accepted"]
+
+
+@pytest.mark.parametrize("error_name", ["CoercionFailed", "PolynomialError"])
+def test_unsupported_polynomial_domain_is_recorded_not_proved(monkeypatch, error_name):
+    import sympy.polys.polyerrors as errors
+    import worker.backend.jgex_exact_constraint_bridge as bridge
+    from math_os_prototype.theory_geometry import GeometryDomain
+    domain = GeometryDomain({"statement": "a b c = triangle a b c ? cong a b a b"}, {})
+    def unsupported(*args, **kwargs):
+        raise getattr(errors, error_name)("outside declared coefficient domain")
+    monkeypatch.setattr(bridge, "lower_jgex_to_exact_obligation", unsupported)
+    first = domain.certify(str(domain.formulation))
+    assert not first["accepted"] and first["unsupported"].startswith(error_name)
+    assert domain.certify(str(domain.formulation)) == first
+    assert domain.costs["unsupported_exact_checks"] == 1
+    assert domain.costs["exact_prover_calls"] == 1
+    assert domain.events[-1]["event"] == "exact_check_completed"
+    assert domain.events[-1]["accepted"] is False
+
+
+def test_actions_complex_similarity_obligation_is_refused():
+    """Regression from failed run 34836669023; never normal-run input."""
+    from math_os_prototype.theory_geometry import GeometryDomain
+    statement = ("a b c = triangle a b c; d = on_line d a b; "
+        "e = on_pline e d b c, on_line e a c; "
+        "f = on_line f c d, on_line f b e; "
+        "g = on_line g a f, on_line g b c; o = circle o b c a ? simtri a b c a d e")
+    domain = GeometryDomain({"statement": statement}, {})
+    certificate = domain.certify(str(domain.formulation))
+    assert not certificate["accepted"]
+    assert certificate["unsupported"].startswith("CoercionFailed")

@@ -106,3 +106,13 @@ separate. Its presence in the repository does not enable it in the native job.
 The first local attempt (`geometry-native-connected-20260914-v1`) stopped at
 the environment guard because the old development environment contained
 `py_yuclid`. It is retained as a refusal, not a completed geometry run.
+
+The first Actions run, `34836669023`, tested code
+`7ee2326070f099a86873cff3326cb93eb8126fa2`. All 103 focused tests passed (one
+external-comparison skip). The normal cohort proved 4/8 tasks at the root and
+exercised five contract-selected constructions across two parent states.
+One task stopped on SymPy `CoercionFailed` when a QQ polynomial operation
+encountered `I`. That failed run is retained. The adapter now records
+`CoercionFailed` and `PolynomialError` as unsupported certificate obligations,
+never as proofs, so other candidates can still be checked. This is a domain
+boundary refusal, not support for complex-coefficient geometry.
