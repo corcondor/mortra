@@ -36,4 +36,5 @@ def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progres
         max_depth=max_depth, max_states=max_states, fair=True, progress=progress,
         rank_fair_rounds=getattr(domain, "rank_fair_rounds", False),
         original_order_every=getattr(domain, "original_order_every", 4),
+        fair_state_streams=getattr(domain, "fair_state_streams", False),
     )

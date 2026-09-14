@@ -81,7 +81,7 @@ def main(argv=None):
     if config["domain"].get("kind") == "geometry":
         if args.resume or args.knowledge or args.queries or args.condition != "learn":
             parser.error("Geometry uses formal task inputs, not scalar archive/queries or training conditions")
-        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback", "selection_factorial"}:
+        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback", "selection_factorial", "complete_revalidation"}:
             from importlib.metadata import distributions
             from math_os_prototype.theory_geometry_acquisition import run_contract_geometry
             write(args.output/"environment.json", {
@@ -95,7 +95,10 @@ def main(argv=None):
                 required_seed = config.get("protocol", {}).get("python_hash_seed")
                 if required_seed is not None and os.environ.get("PYTHONHASHSEED") != str(required_seed):
                     raise ValueError("set PYTHONHASHSEED before launching Python as declared in the frozen protocol")
-                if config["domain"]["mode"] == "selection_factorial":
+                if config["domain"]["mode"] == "complete_revalidation":
+                    from math_os_prototype.theory_geometry_selection import run_complete_revalidation
+                    result = run_complete_revalidation(config, args.output)
+                elif config["domain"]["mode"] == "selection_factorial":
                     from math_os_prototype.theory_geometry_selection import run_selection_factorial
                     result = run_selection_factorial(config, args.output)
                 elif config["domain"]["mode"] == "semantic_feedback":

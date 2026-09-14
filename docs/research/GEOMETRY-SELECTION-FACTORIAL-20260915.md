@@ -1,5 +1,14 @@
 # Fixed geometry library x selection: preregistered comparison
 
+> WITHDRAWN AS AN ASSESSMENT OF THE FULL CANDIDATE SPACE (2026-09-15).
+> This run ranked only the old generator's retained prefix: at most 128 input
+> tuples inspected, then at most 3 candidates per family and state. Fairness
+> applied to that prefix, not the full declared construction language. Its
+> negative solve result does not diagnose the value of the full acquired DSL.
+> Both acquisition and selection are being rerun without those prefix cuts.
+> See `GEOMETRY-CANDIDATE-COMPLETENESS-20260915.md`. The text below describes
+> the superseded run, not the corrected baseline.
+
 ## Status before implementation
 
 Baseline: `616bff0d0d11a1a073e7a02099d40cb99b40a4d9`, branch

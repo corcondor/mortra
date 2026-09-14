@@ -17,7 +17,10 @@ from math_os_prototype import library_compression as library
 from math_os_prototype.representation_progress import digest
 from math_os_prototype.runtime_typed_planner import PrimitiveResult, RuntimeSearchProgress
 from math_os_prototype.theory_action_domain import search_action_domain
-from worker.backend.typed_geometry_stalk import ConstructionFamily, DEFAULT_POINT_FAMILIES, enumerate_typed_candidates
+from worker.backend.typed_geometry_stalk import (
+    ConstructionFamily, DEFAULT_POINT_FAMILIES, enumerate_typed_candidates,
+    iter_complete_typed_candidates,
+)
 
 
 def point_value(xy):
@@ -112,6 +115,10 @@ class SemanticGeometryDomain:
         if policy not in {"SOLVE", "DISCOVER"}:
             raise ValueError("unsupported search policy")
         self.task, self.config, self.bank, self.policy = deepcopy(task), config, bank, policy
+        self.enumeration = config.get("candidate_enumeration", "complete")
+        if self.enumeration not in {"complete", "legacy_prefix"}:
+            raise ValueError("unknown candidate enumeration mode")
+        self.fair_state_streams = self.enumeration == "complete"
         self.active = tuple(active)
         self.emit = emit
         self.costs = Counter()
@@ -181,12 +188,58 @@ class SemanticGeometryDomain:
                    **state.record()})
 
     def prove(self, state, predicate, args, source):
-        return dsl.certify_atom(predicate, args, state.objects, provenance=source,
-                               known=state.predicates, stats=self.costs)
+        proof = dsl.certify_atom(predicate, args, state.objects, provenance=source,
+                                 known=state.predicates, stats=self.costs)
+        if self.config.get("trace_predicates", False):
+            self.emit({"event": "predicate_check", "predicate": predicate,
+                "arguments": list(args), "source": source, "passed": proof is not None,
+                "state_depth": state.depth})
+        return proof
+
+    def complete_candidates(self, family, state):
+        names = list(state.objects)
+        graph = {n: set() for n in names}
+        for atom in state.predicates.values():
+            for a, b in combinations(atom.arguments, 2):
+                graph[a].add(b)
+                graph[b].add(a)
+        demands = Counter(n for g in self.task.get("goals", []) for n in g["points"] if n in names)
+        stream = iter_complete_typed_candidates(points=names, graph=graph,
+            goal_multiplicity=demands if self.policy == "SOLVE" else {},
+            generated_points=set(names)-set(self.task["points"]), family=self.registry[family])
+        state_key = self.key(state)
+        for ordinal, row in enumerate(stream):
+            if self.stop_reason or state.depth >= self.config["max_depth"]:
+                return
+            if (family, state_key, tuple(row.inputs)) in self.attempted:
+                continue
+            if (self.window_started is not None and
+                    time.perf_counter()-self.window_started >= self.config["wall_seconds"]):
+                self.stop_reason = "wall_time_budget"
+                return
+            limit = self.config.get("max_candidate_checks")
+            if limit is not None and self.costs["complete_candidate_checks"] >= limit:
+                self.stop_reason = "candidate_check_budget"
+                return
+            start = time.perf_counter()
+            self.costs["complete_candidate_checks"] += 1
+            self.costs["examined_input_tuples"] += 1
+            admissible = self.binding_admissible(state, family, row.inputs)
+            self.costs["candidate_generation_seconds"] += time.perf_counter()-start
+            self.emit({"event": "candidate_scan", "state": state_key, "family": family,
+                "ordinal": ordinal, "inputs": list(row.inputs),
+                "disposition": "eligible" if admissible else "proved_false_input_guard"})
+            if admissible:
+                yield row
+            else:
+                self.costs["input_guard_filtered"] += 1
+        self.emit({"event": "candidate_stream_exhausted", "state": state_key, "family": family})
 
     def candidate_rows(self, family, state):
         if self.stop_reason or state.depth >= self.config["max_depth"]:
             return []
+        if self.enumeration == "complete":
+            return self.complete_candidates(family, state)
         start = time.perf_counter()
         names = list(state.objects)
         graph = {n: set() for n in names}
@@ -434,7 +487,10 @@ class SemanticGeometryDomain:
         return {"task_sha256": digest(self.task), "solved": bool(self.solution), "solution": self.solution,
                 "reach": sorted(self.reached), "costs": dict(self.costs),
                 "stop_reason": "proved" if self.solution else self.stop_reason or "window_or_candidate_budget",
-                "retained_states": len(self.facts), "wall_seconds": self.search_seconds}
+                "retained_states": len(self.facts), "wall_seconds": self.search_seconds,
+                "candidate_enumeration": self.enumeration,
+                "pending_streams": progress.pending_streams,
+                "pending_note": "Live iterators are retained during search; a new search re-enumerates and skips completed calls. Pending is not impossibility."}
 
 
 def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
@@ -559,6 +615,7 @@ def run_semantic_feedback(config, output):
         raise ValueError("training/evaluation overlap")
     all_results, banks = {}, {}
     initial_bank = GeometryLibrary()
+    write("primitive-contracts.json", initial_bank.schemas)
     common_schema_cost = dict(initial_bank.costs)
     for label in ("A", "B", "C", "E"):
         bank = deepcopy(initial_bank)

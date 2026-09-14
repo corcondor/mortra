@@ -5,7 +5,7 @@ from collections import Counter
 from copy import deepcopy
 from dataclasses import asdict
 from hashlib import sha256
-from itertools import combinations
+from itertools import combinations, islice
 import json
 from pathlib import Path
 import random
@@ -90,9 +90,9 @@ class SelectionDomain(SemanticGeometryDomain):
                  for g in self.task["goals"]]
         return align_candidate_atoms(effects, goals, self.relation_distances)
 
-    def proposals(self, family, state):
-        # Reuse precisely the existing bounded generator, including its guards.
-        rows = self.candidate_rows(family, state)
+    def proposals(self, family, state, rows=None, offset=0):
+        # Ranking may permute a page but never removes its remaining stream.
+        rows = self.candidate_rows(family, state) if rows is None else rows
         rows = [r for r in rows if (family, self.key(state), tuple(r.inputs)) not in self.attempted]
         start = time.perf_counter()
         scores = [self.alignment(family, tuple(r.inputs)) for r in rows] if self.rank_fair_rounds else [None]*len(rows)
@@ -106,19 +106,30 @@ class SelectionDomain(SemanticGeometryDomain):
         invariant = sorted(before) == sorted(after)
         if not invariant:
             raise ValueError("selection changed candidate membership")
-        audit = {"event": "candidate_order", "state": self.key(state), "family": family,
+        audit = {"event": "candidate_order", "state": self.key(state), "family": family, "offset": offset,
             "original": before, "ordered": after, "set_sha256": digest(sorted(before)),
             "permutation_passed": invariant, "guided": self.rank_fair_rounds,
             "alignment": [s.to_dict() if s else None for s in scores],
             "postconditions_are_conditional_proposals_not_facts": True}
         self.proposal_audit.append({"state": audit["state"], "family": family,
-                                    "set_sha256": audit["set_sha256"], "count": len(rows)})
+                                    "set_sha256": audit["set_sha256"], "count": len(rows), "offset": offset})
         self.costs["proposed_candidates"] += len(rows)
         self.emit(audit)
         return [(rows[i], scores[i], i, rank) for rank, i in enumerate(order)]
 
     def alternatives(self, family, state):
-        for row, alignment, original, rank in self.proposals(family, state):
+        def pages():
+            if self.enumeration == "legacy_prefix":
+                yield self.proposals(family, state)
+                return
+            stream, offset = iter(self.candidate_rows(family, state)), 0
+            width = self.config.get("ranking_window", 16)
+            if width < 1:
+                raise ValueError("ranking window must be positive")
+            while page := list(islice(stream, width)):
+                yield self.proposals(family, state, page, offset)
+                offset += len(page)
+        for row, alignment, original, rank in (row for page in pages() for row in page):
             attempt = (family, self.key(state), tuple(row.inputs))
             def invoke(row=row, attempt=attempt, alignment=alignment, original=original, rank=rank):
                 self.emit({"event": "selection", "family": family, "inputs": list(row.inputs),
@@ -155,7 +166,7 @@ class SelectionDomain(SemanticGeometryDomain):
 
 def compare_memberships(left, right):
     def index(rows):
-        return {(r["state"], r["family"]): r["set_sha256"] for r in rows}
+        return {(r["state"], r["family"], r.get("offset", 0), r.get("count", 0)): r["set_sha256"] for r in rows}
     a, b = index(left), index(right)
     common = a.keys() & b.keys()
     return {"common_state_families": len(common),
@@ -190,7 +201,7 @@ def factorial(rows):
         "interpretation": "Counts: positive favors complementarity. Costs: negative favors cost reduction. Not a scalar reward or a statistical population claim."}
 
 
-def run_selection_factorial(config, output):
+def run_selection_factorial(config, output, *, frozen_inputs=None):
     started = time.perf_counter()
     root = Path(__file__).resolve().parents[1]
     io_seconds = 0.0
@@ -199,7 +210,8 @@ def run_selection_factorial(config, output):
         start = time.perf_counter()
         (output/name).write_text(json.dumps(data, indent=2)+"\n", encoding="utf-8")
         io_seconds += time.perf_counter()-start
-    definitions, source_plan, load_seconds = read_inputs(config["source_archive"], root)
+    definitions, source_plan, load_seconds = (read_inputs(config["source_archive"], root)
+        if frozen_inputs is None else frozen_inputs)
     protocol = config["protocol"]
     cohorts = {"regression": source_plan["evaluation"], "transfer": transferred_instances(
         source_plan["evaluation"], protocol["holdout_seed"], protocol["holdout_coordinate_range"])}
@@ -295,3 +307,50 @@ def run_selection_factorial(config, output):
         "diagnostic_failures_are_not_impossibility_proofs": True}
     write("result.json", report)
     return report
+
+
+def run_complete_revalidation(config, output):
+    """Reacquire from initial DSL, then freeze that run's library for selection."""
+    from math_os_prototype.theory_geometry_feedback import run_semantic_feedback
+    from math_os_prototype.geometry_execution_audit import aggregate_geometry_events
+    root = Path(__file__).resolve().parents[1]
+    acquisition_path = root/config["acquisition_config"]
+    selection_path = root/config["selection_config"]
+    acquisition = json.loads(acquisition_path.read_text(encoding="utf-8"))
+    selection = json.loads(selection_path.read_text(encoding="utf-8"))
+    source_hashes = {str(p.relative_to(root)): sha256(p.read_bytes()).hexdigest()
+                     for p in (acquisition_path, selection_path)}
+    for stage in (acquisition, selection):
+        stage["search"].pop("per_family_limit", None)
+        stage["search"].pop("max_input_tuples", None)
+        stage["search"].update(config["search_overrides"])
+        if stage["search"]["candidate_enumeration"] != "complete":
+            raise ValueError("revalidation must enumerate complete candidate streams")
+    if config.get("development_cycles") is not None:
+        acquisition["cycles"] = config["development_cycles"]
+    selection.pop("source_archive")
+    (output/"frozen-stage-inputs.json").write_text(json.dumps({
+        "acquisition": acquisition, "selection": selection,
+        "source_config_hashes": source_hashes,
+        "old_library_loaded": False}, indent=2)+"\n", encoding="utf-8")
+    aout, sout = output/"acquisition", output/"selection"
+    aout.mkdir()
+    sout.mkdir()
+    acquired = run_semantic_feedback(acquisition, aout)
+    current_library = aout/"C-archive.json"
+    source_plan = aout/"frozen-plan.json"
+    definitions = json.loads(current_library.read_text(encoding="utf-8"))
+    plan = json.loads(source_plan.read_text(encoding="utf-8"))
+    selection["source_archive"] = {"kind": "current_normal_run_acquisition",
+        "path": "acquisition/C-archive.json",
+        "sha256": sha256(current_library.read_bytes()).hexdigest(),
+        "plan_sha256": sha256(source_plan.read_bytes()).hexdigest()}
+    compared = run_selection_factorial(selection, sout, frozen_inputs=(definitions, plan, 0.0))
+    for folder in (aout, sout):
+        (folder/"operation-predicate-audit.json").write_text(
+            json.dumps(aggregate_geometry_events(folder/"events.jsonl"), indent=2)+"\n", encoding="utf-8")
+    unchanged = all(sha256((root/p).read_bytes()).hexdigest() == h for p, h in source_hashes.items())
+    return {"execution_completed": acquired["execution_completed"] and compared["execution_completed"] and unchanged,
+        "candidate_enumeration": "complete", "old_library_loaded": False,
+        "acquisition": acquired, "selection": compared,
+        "source_configs_unchanged": unchanged}

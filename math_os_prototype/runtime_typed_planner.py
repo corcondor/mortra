@@ -73,6 +73,7 @@ class RuntimeSearchProgress:
     states_retained: int = 0
     applications_started: int = 0
     applications_completed: int = 0
+    pending_streams: int = 0
 
 
 def _canonical(value: Any) -> str:
@@ -151,6 +152,7 @@ def synthesize_typed_plan(
     fair: bool = False,
     rank_fair_rounds: bool = False,
     original_order_every: int = 4,
+    fair_state_streams: bool = False,
     progress: RuntimeSearchProgress | None = None,
 ) -> RuntimePlan:
     """Enumerate typed compositions with optional value-sensitive goals.
@@ -165,6 +167,8 @@ def synthesize_typed_plan(
 
     facts = list(initial_facts)
     primitive_tuple = tuple(primitives)
+    if fair_state_streams and (not fair or any(len(p.source_sorts) != 1 for p in primitive_tuple)):
+        raise ValueError("state-stream scheduling requires fair unary state actions")
     goals_tuple = tuple(dict.fromkeys(goal_sorts))
     goal_predicates = goal_predicates or {}
     value_key = value_key or (lambda sort, value: _canonical(value))
@@ -224,6 +228,51 @@ def synthesize_typed_plan(
                         yield primitive, arguments, dependency_ids, depth, invoke
 
         def attempts():
+            if fair_state_streams:
+                # Keep each (action, state) iterator alive. Newly retained states
+                # enter the next round instead of waiting for older streams to end.
+                cursor, round_index, streams = 0, 0, []
+                def state_attempts(primitive, fact):
+                    arguments, ids = (fact,), (fact.id,)
+                    depth = fact.depth + 1
+                    if primitive.alternatives is None:
+                        yield primitive, arguments, ids, depth, lambda: primitive.execute(arguments)
+                    else:
+                        for invoke in primitive.alternatives(arguments):
+                            yield primitive, arguments, ids, depth, invoke
+                while True:
+                    for fact in facts[cursor:]:
+                        for primitive in relevant:
+                            key = (primitive.name, (fact.id,))
+                            if (primitive.source_sorts != (fact.sort,) or key in attempted
+                                    or fact.depth >= max_depth):
+                                continue
+                            attempted.add(key)
+                            streams.append(iter(state_attempts(primitive, fact)))
+                    cursor = len(facts)
+                    if not streams:
+                        progress.pending_streams = 0
+                        return
+                    alive, batch = [], []
+                    for stream in streams:
+                        try:
+                            offer = next(stream)
+                        except StopIteration:
+                            continue
+                        alive.append(stream)
+                        if rank_fair_rounds:
+                            batch.append(offer)
+                        else:
+                            progress.pending_streams = len(streams)
+                            yield offer
+                    round_index += 1
+                    if rank_fair_rounds:
+                        if round_index % original_order_every:
+                            batch.sort(key=lambda offer: getattr(offer[-1], "priority", ()))
+                        progress.pending_streams = len(alive)
+                        yield from batch
+                    streams = alive
+                return
             streams = [iter(arguments_for(p)) for p in relevant]
             if not fair:
                 for stream in streams:

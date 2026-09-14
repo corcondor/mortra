@@ -1,5 +1,13 @@
 # MORTRA Geometry Semantic DSL Feedback, 2026-09-15
 
+> SUPERSEDED EXPERIMENTAL BASELINE (2026-09-15).
+> Acquisition and evaluation both used per-family candidate and tuple-prefix
+> cuts. The recorded calls and certificates do not establish exploration of
+> the complete declared geometry language. The 8/16 result is not a capability
+> ceiling or evidence against other bindings. Acquisition and downstream
+> selection are being rerun from the initial DSL without these cuts; see
+> `GEOMETRY-CANDIDATE-COMPLETENESS-20260915.md`.
+
 ## Latest outcome: recursive acquisition observed
 
 The fixed-source eight-cycle extension acquired four certified generation-2

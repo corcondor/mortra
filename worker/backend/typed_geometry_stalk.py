@@ -883,6 +883,22 @@ def construction_role_adjacency_weight(
     )
 
 
+def iter_complete_typed_candidates(*, points, graph, goal_multiplicity,
+                                  generated_points, family):
+    """Enumerate every tuple allowed by the declared input symmetry.
+
+    Ordering is a preference, never a membership test. No point subset,
+    tuple prefix, or per-family candidate prefix is discarded here.
+    Applicability and global resource budgets belong to the caller.
+    """
+    distances = goal_distances(graph, goal_multiplicity)
+    ordered = tuple(sorted(set(points), key=lambda p: (
+        -goal_multiplicity.get(p, 0), 0 if p in generated_points else 1,
+        distances.get(p, 10_000), p)))
+    for inputs in _family_inputs(ordered, family):
+        yield TypedConstructionCandidate(family.name, inputs, ())
+
+
 def enumerate_typed_candidates(
     *,
     points: Sequence[str],
