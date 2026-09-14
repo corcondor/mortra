@@ -117,6 +117,25 @@ def test_archive_tampering_and_free_points_rejected(bank):
         deepcopy(bank).register(h)
 
 
+def test_composed_local_proofs_keep_global_witness_and_guards():
+    f0, f1, f2 = (lib.program_hole(i) for i in range(3))
+    template = {"op": "foot", "args": [f2, f0,
+                {"op": "midpoint", "args": [f0, f1]}]}
+    h = dsl.certify_definition(template, [])
+    cert = h["exact_certificate"]["exact_certificate"]
+    assert cert["all_input_assignments_under_P"]
+    assert h["applicability"]["input_nonzero_polynomials"]
+    assert all(s["residual_scope"] == "current output with independent parent coordinate symbols"
+               for s in cert["steps"])
+    assert all(all(r == "0" for r in s["existence_residuals"]) for s in cert["steps"])
+    # The stored runtime witness must still be a function of the original inputs.
+    import sympy as sp
+    allowed = {n+axis for n in ("f0", "f1", "f2") for axis in ("x", "y")}
+    assert all({str(s) for s in sp.sympify(v).free_symbols} <= allowed
+               for xy in h["exact_certificate"]["witness"].values() for v in xy)
+    assert dsl.replay_definition(h, [])
+
+
 def test_recursive_cycle_and_unknown_calls_rejected():
     term = {"op": "use", "abstraction": "x", "arguments": {}}
     with pytest.raises(lib.ExpansionError):
@@ -146,6 +165,7 @@ def test_generated_call_survives_into_later_learning_input(bank):
 
 def test_search_frontier_continues_and_no_goal_hard_gate(bank):
     d = domain(bank)
+    d.started -= 10000  # Waiting for another domain is not this search's work.
     d.search(12)
     before = set(d.attempted)
     d.search(12)
@@ -153,6 +173,7 @@ def test_search_frontier_continues_and_no_goal_hard_gate(bank):
     assert len(d.attempted) == d.costs["candidate_expansions"]
     assert set(dsl.FRAGMENT.arities) <= {a[0] for a in d.attempted}
     assert not d.solution
+    assert d.search_seconds < d.config["wall_seconds"]
 
 
 def test_reach_normalization_ignores_history_and_names(bank):

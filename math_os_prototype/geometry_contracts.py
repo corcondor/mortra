@@ -195,14 +195,23 @@ def certify_body(body, *, fragment=None):
             raise ValueError("unexpected guard on total midpoint")
         guards.update(step_guards)
         substitution.update(zip(local, value))
-        checks = [str(sp.cancel(e.subs(substitution, simultaneous=True))) for e in block]
+        proof_substitution = substitution
+        if fragment is not None:
+            # Prove a step universally in its parent coordinates, before
+            # substituting earlier rational constructions. The composed witness
+            # and guards above instantiate these local theorems by induction.
+            local_explicit = _JGEXElaborator()
+            local_explicit.coordinates.update({n: relational.coordinates[n] for n in args})
+            primitive(local_explicit, family, y, args, fragment=fragment)
+            proof_substitution = dict(zip(local, local_explicit.coordinates[y], strict=True))
+        checks = [str(sp.cancel(e.subs(proof_substitution, simultaneous=True))) for e in block]
         if not all(check(sp.sympify(e)) for e in checks):
             raise ValueError("relational witness replay failed")
         current_relations = geometric_relations(step) if fragment is None else fragment.relations(step)
         lower = relation_polynomial if fragment is None else fragment.relation_polynomial
         for relation in current_relations:
             residual = lower(relational, relation)
-            if not check(residual.subs(substitution, simultaneous=True)):
+            if not check(residual.subs(proof_substitution, simultaneous=True)):
                 raise ValueError("guaranteed relation replay failed")
         # Coordinate midpoint equations are equivalent to a sum of their
         # squares only over the declared real field. Other rows are +/- C rows.
@@ -213,7 +222,7 @@ def certify_body(body, *, fragment=None):
             if fragment is not None:
                 # The rational witness is the unique output under the recorded
                 # determinants. Effects follow by substitution in that witness.
-                ok = check(poly.subs(substitution, simultaneous=True))
+                ok = check(poly.subs(proof_substitution, simultaneous=True))
             elif reference is not None:
                 ok = check(poly-reference)
             else:
@@ -228,6 +237,10 @@ def certify_body(body, *, fragment=None):
                        "determinant_pullback": str(sp.cancel(determinant)),
                        "required_nonzero": sorted(step_guards), "existence_residuals": checks,
                        "transfer": transfer})
+        if fragment is not None:
+            proofs[-1]["residual_scope"] = "current output with independent parent coordinate symbols"
+            proofs[-1]["local_witness"] = list(map(str, local_explicit.coordinates[y]))
+            proofs[-1]["composition_obligation"] = "instantiate only after earlier steps and their pulled-back guards hold"
     semantic = {"version": 1, "typed_parameters": [{"name": n, "type": "Point"} for n in names],
         "local_auxiliary_variables": [{"name": s["output"], "type": "Point",
             "coordinates": list(map(str, relational.coordinates[s["output"]]))} for s in steps],

@@ -1,0 +1,24 @@
+{
+  "execution_completed": false,
+  "sha": "af42419699de8995f786579392a490944694d989",
+  "started_local": "2026-09-15T03:49:49+09:00",
+  "interrupted_local": "2026-09-15T03:58:25+09:00",
+  "interruption": "developer terminated the process after read-only external stack inspection; not a runtime-certified exhaustion",
+  "last_completed_stage": "A: four training windows, no acquisition; B: first training window",
+  "incomplete_stage": "B acquisition certification",
+  "acquisition_or_evaluation_success_claimed": false,
+  "diagnostic_command": "uv tool run --from py-spy py-spy dump --pid 7664",
+  "observed_stack": [
+    "sympy.core.basic.compare",
+    "sympy.core.mul._expandsums",
+    "sympy.polys.polytools.cancel",
+    "geometry_contracts.exact_zero:105",
+    "geometry_contracts.certify_body:205",
+    "geometry_semantic_dsl.certify_definition:249",
+    "theory_geometry_feedback.acquire:373"
+  ],
+  "diagnosis": "global substitution into an effect polynomial expands a large composed rational witness before cancellation",
+  "preserved_files": ["input.json", "frozen-plan.json", "environment.json", "events.jsonl", "A-training.json"],
+  "github_run_cancelled": 34883401028,
+  "github_note": "existing exact-kernel job succeeded; semantic-feedback job was still in tests when cancellation was requested"
+}

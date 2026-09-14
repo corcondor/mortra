@@ -76,6 +76,8 @@ class SemanticGeometryDomain:
         self.reached = set()
         self.goal_cache = {}
         self.started = time.perf_counter()
+        self.search_seconds = 0.0
+        self.window_started = None
         self.stop_reason = None
         self.sync()
         self.start_state = dsl.GeometrySemanticState(
@@ -147,7 +149,10 @@ class SemanticGeometryDomain:
     def apply(self, state, candidate, attempt):
         if self.stop_reason:
             return None
-        if time.perf_counter()-self.started > self.config["wall_seconds"]:
+        elapsed = self.search_seconds
+        if self.window_started is not None:
+            elapsed += time.perf_counter()-self.window_started
+        if elapsed > self.config["wall_seconds"]:
             self.stop_reason = "wall_budget_between_exact_operations"
             return None
         self.attempted.add(attempt)
@@ -307,8 +312,13 @@ class SemanticGeometryDomain:
         self.sync()
         progress = RuntimeSearchProgress()
         initial_count = len(self.facts) if self.facts is not None else 1
-        plan = search_action_domain(self, max_depth=self.config["max_depth"],
-            max_states=initial_count+applications, progress=progress, initial_facts=self.facts)
+        self.window_started = time.perf_counter()
+        try:
+            plan = search_action_domain(self, max_depth=self.config["max_depth"],
+                max_states=initial_count+applications, progress=progress, initial_facts=self.facts)
+        finally:
+            self.search_seconds += time.perf_counter()-self.window_started
+            self.window_started = None
         self.facts = plan.facts
         self.costs["planner_applications"] += progress.applications_completed
         self.emit({"event": "search_window", "task_sha256": digest(self.task),
@@ -317,10 +327,10 @@ class SemanticGeometryDomain:
         return {"task_sha256": digest(self.task), "solved": bool(self.solution), "solution": self.solution,
                 "reach": sorted(self.reached), "costs": dict(self.costs),
                 "stop_reason": "proved" if self.solution else self.stop_reason or "window_or_candidate_budget",
-                "retained_states": len(self.facts), "wall_seconds": time.perf_counter()-self.started}
+                "retained_states": len(self.facts), "wall_seconds": self.search_seconds}
 
 
-def acquire(histories, bank, config, *, flatten=False):
+def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
     start = time.perf_counter()
     corpus = []
     seen = set()
@@ -369,6 +379,9 @@ def acquire(histories, bank, config, *, flatten=False):
                 rejected.append({"candidate": p["id"], "reason": str(exc)})
         eligible.sort(key=lambda e: (-len(e[1]), -e[2]["utility_bits"], e[0]["id"]))
         for p, sources, utility in eligible[:config["certification_budget"]]:
+            certify_started = time.perf_counter()
+            emit({"event": "certification_start", "cycle": config["cycle"],
+                  "candidate": p["id"], "template": p["template"], "sources": sources})
             try:
                 h = dsl.certify_definition(p["template"], bank.archive)
                 h.update(source_histories=sources, acquisition_utility=utility,
@@ -376,8 +389,12 @@ def acquire(histories, bank, config, *, flatten=False):
                 if len(accepted) < config["per_cycle_capacity"]:
                     bank.register(h)
                     accepted.append(h)
+                emit({"event": "certification_complete", "candidate": p["id"],
+                      "seconds": time.perf_counter()-certify_started, "morphism": h["id"]})
             except (ValueError, TypeError, KeyError) as exc:
                 rejected.append({"candidate": p["id"], "reason": str(exc)})
+                emit({"event": "certification_refused", "candidate": p["id"],
+                      "seconds": time.perf_counter()-certify_started, "reason": str(exc)})
     return {"accepted": accepted, "rejected": rejected, "corpus": corpus,
             "proposals": proposals, "eligible": len(eligible), "flattened_before_learning": flatten,
             "seconds": time.perf_counter()-start,
@@ -419,7 +436,8 @@ def run_semantic_feedback(config, output):
             histories = [h for group in zip_longest(*(d.histories for d in domains)) for h in group if h is not None]
             learning = None
             if label != "A" and (label != "B" or cycle == 0):
-                learning = acquire(histories, bank, dict(config["acquisition"], cycle=cycle), flatten=label == "E")
+                learning = acquire(histories, bank, dict(config["acquisition"], cycle=cycle),
+                                   flatten=label == "E", emit=emit)
                 for h in learning["accepted"]:
                     emit({"event": "registration", "cycle": cycle, "morphism": h})
             snapshots.append(deepcopy(bank.archive))
