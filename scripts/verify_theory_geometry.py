@@ -46,6 +46,24 @@ def main():
                 result = {"proved": False, "status": "timeout", "false_proofs": 0}
         row = {"id": task["id"], "command": command, "result": result,
                "subprocess_wall_seconds": time.perf_counter()-start}
+        events_path = output/"events.jsonl"
+        events = []
+        if events_path.exists():
+            for line in events_path.read_text(encoding="utf-8").splitlines():
+                try:
+                    events.append(json.loads(line))
+                except json.JSONDecodeError:
+                    # A timed-out process may leave an incomplete final record.
+                    pass
+        applications = [e for e in events if e["event"] == "apply"]
+        row["trace_counts"] = {
+            "completed_morphism_applications": len(applications),
+            "rejected_constructions": sum(e["event"] == "rejected_construction" for e in events),
+            "new_relations_with_multiplicity": sum(len(e["new_relations"]) for e in applications),
+            "maximum_path_depth": max((len(e["state"]["path"]) for e in applications), default=0),
+            "child_states_enumerated": len({e["state_key"] for e in events if e["event"] == "enumerate"}
+                & {e["child"] for e in applications}),
+        }
         rows.append(row)
         write(args.output/"results.json", rows)
         print(json.dumps({"id": task["id"], "status": result["status"],

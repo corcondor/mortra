@@ -88,3 +88,19 @@ def test_similarity_does_not_change_initial_theorem():
     assert first["certified"] and other["certified"]
     assert first["certificates"] == other["certificates"]
     assert first["problem"]["points"] != other["problem"]["points"]
+
+
+def test_existing_native_backend_still_requires_exact_certificate():
+    pytest.importorskip("py_yuclid")
+    from math_os_prototype.theory_geometry import GeometryDomain
+    task = {"statement": "a b c = triangle a b c; h = on_tline h b a c, on_tline h c a b ? perp a h b c"}
+    config = {"seed": 17, "deduction_backend": "yuclid", "ar_profile": "standard",
+              "closure_timeout_seconds": 10, "per_family_limit": 8}
+    domain = GeometryDomain(task, config)
+    root = domain.initial()
+    assert root["deduction_proved"] and root["certified"]
+    assert root["certificates"][0]["obligation"]["remainder"] == "0"
+    assert domain.replay(root)["passed"]
+    false_state = dict(root, statement="p0 p1 p2 = triangle p0 p1 p2 ? perp p0 p1 p1 p2",
+                       certificates=[], certified=False)
+    assert not domain.certify_solved(false_state)["certified"]

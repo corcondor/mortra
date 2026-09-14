@@ -83,6 +83,10 @@ class GeometryDomain:
         return self.root
 
     def close(self, problem, statement, path):
+        if self.config.get("deduction_backend", "python") == "yuclid":
+            return self.close_native(problem, statement, path)
+        if self.config.get("deduction_backend", "python") != "python":
+            raise ValueError("Unknown geometry deduction backend")
         from newclid.api import GeometricSolverBuilder, PythonDefault
         from newclid.problem import predicate_to_construction
         from newclid.proof_data import proof_data_from_state
@@ -118,11 +122,47 @@ class GeometryDomain:
         if solved:
             data = proof_data_from_state(list(problem.goals), proof)
             state["proof"] = data.model_dump(mode="json")
+        return self.certify_solved(state)
+
+    def close_native(self, problem, statement, path):
+        import hashlib
+        import os
+        from pathlib import Path
+        import sys
+        from worker.backend.yuclid_native_verifier import verify_problem
+        start = time.perf_counter()
+        binary = Path(sys.executable).with_name("yuclid.exe" if os.name == "nt" else "yuclid")
+        if not binary.is_file():
+            raise FileNotFoundError("Install the declared py-yuclid dependency in this environment")
+        # The existing upstream wrapper resolves its binary from PATH at import.
+        os.environ["PATH"] = str(binary.parent)+os.pathsep+os.environ.get("PATH", "")
+        result = verify_problem(problem, yuclid_exe=binary,
+            ar_profile=self.config["ar_profile"],
+            timeout_seconds=self.config["closure_timeout_seconds"])
+        self.costs["closure_seconds"] += time.perf_counter()-start
+        self.costs["closure_calls"] += 1
+        self.costs["closure_deductions"] += result.all_deduction_count
+        relations = {str(a) for a in problem.assumptions}
+        for deduction in result.payload.get("all_deductions", []):
+            for assertion in deduction.get("assertions", []):
+                relations.add(" ".join([assertion["name"], *map(str, assertion["points"])]))
+        state = {"problem": problem.model_dump(mode="json"), "statement": statement,
+            "relations": sorted(relations), "path": path, "deduction_proved": result.solved,
+            "closure_exhausted": result.status == "saturated", "closure_steps": None,
+            "deduction_mode": "Yuclid DD/AR", "ar_profile": self.config["ar_profile"],
+            "binary_sha256": hashlib.sha256(binary.read_bytes()).hexdigest(),
+            "native_input_sha256": result.input_sha256,
+            "certified": False, "certificates": [],
+            "proof": {"proof_length": result.goal_deduction_count, "native": result.payload}}
+        return self.certify_solved(state)
+
+    def certify_solved(self, state):
+        if state["deduction_proved"]:
             start = time.perf_counter()
             try:
                 # Auxiliary existence must not silently restrict the original
                 # theorem. Certify the original statement independently too.
-                for source in dict.fromkeys([str(self.formulation), statement]):
+                for source in dict.fromkeys([str(self.formulation), state["statement"]]):
                     state["certificates"].append(self.certify(source))
                 state["certified"] = all(c["accepted"] for c in state["certificates"])
             except (ValueError, NotImplementedError) as exc:

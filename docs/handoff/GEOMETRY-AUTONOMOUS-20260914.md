@@ -16,7 +16,7 @@ DSL-growth studies as the research objective.
 | `geometry_proof_hypergraph.py` | Executable relation/rule matching code. Not a replacement for the integrated Newclid inference engine. |
 | `jgex_exact_constraint_bridge.py` | Executable polynomial lowering and exact quotient replay. Reused; affine/structural local-lemma shortcuts are disabled in this adapter. |
 | `newclid_sympy_ar_compat.py` | Existing fixes for constant-length enumeration and variadic inequality predicates. Reused. |
-| `yuclid_native_verifier.py` | Requires an external native binary. Not used here. |
+| `yuclid_native_verifier.py` | Reused by the native adapter revision, using declared `py-yuclid==3.0.0`. |
 | `euclidean_geometry_runtime.py` | Has specialized orthocenter/reflection proof code. Not used as a target-specific fallback. |
 | `generated_construction_action.py` | Canonicalizes construction DAGs. Its names/certificates alone are not learned geometry procedures. |
 | AGENTS traceback discovery/replay scripts | Referenced historical entry points are absent in this checkout. Their described achievements are not fresh evidence. |
@@ -131,3 +131,37 @@ Result tables and shared Actions evidence are recorded separately after the
 fixed implementation has been tested. No geometry learned-morphism transfer,
 natural-language lowering or second-domain capability is established by this
 document alone.
+
+## Native deduction revision
+
+The fixed Python-DD local run `geometry-cohort-v5` completed with 0/8 proved,
+8 timeouts at 180 seconds each, and unchanged source hashes. Its completed
+construction events remain available; no timeout is treated as a proof.
+Shared baseline run: Actions `34809523377`, source
+`5ba39168722e6b9babbfbaf548a160dba32b4cda`.
+
+The next revision connects the **existing** `yuclid_native_verifier.verify_problem`
+to the same adapter/planner. It changes neither the eight statements nor the
+seven construction families. The `standard` existing AR profile disables sine
+reasoning and gives each native closure a 10-second timeout. The original
+180-second whole-task bound remains. The Python-DD backend remains an explicit
+option and its regression tests remain intact. No new deduction theorem is added.
+
+Native proofs and closure assertions are saved in the state, together with the
+native executable hash and input hash. Native `solved` is only a candidate proof:
+the unchanged independent polynomial certificates and full route replay still
+gate acceptance. Native saturation, not a manually shortened rule list, defines
+initial closure exhaustion in this revision.
+
+The PyPI Windows wheel for `py-yuclid==3.0.0` starts with missing Boost DLLs on
+the development host (exit `3221225781`). Its dependency installation is not
+reported as a successful native run. The native regression test intentionally
+fails on that host rather than hiding the missing dependency. The authoritative
+native reproduction uses the declared Linux wheel in GitHub Actions. A separate
+attempt to duplicate the complete Windows environment was stopped during
+dependency installation; it contributed no research result.
+
+Timeout summaries now include completed/rejected construction counts, newly
+derived relations (with multiplicity), path depth and the number of actual child
+states read by later enumeration. An incomplete final event is excluded, not
+reconstructed as a completed application.

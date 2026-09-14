@@ -7,7 +7,7 @@ from itertools import permutations
 
 from newclid.rule_matching import mapping_matcher as mm
 from newclid.rule_matching import efficient_statement as es
-from newclid.predicates import predicate_class_from_type, predicate_from_construction
+from newclid.predicates import predicate_class_from_type
 from newclid.predicates._index import PredicateType
 from newclid.problem import PredicateConstruction
 from newclid.justifications.justification import RuleApplication
@@ -81,7 +81,7 @@ class ValidatedMappingMatcher(mm.MappingMatcher):
             kind = PredicateType(construction.name)
             if predicate_class_from_type(kind).preparse(args) is None:
                 return None
-            return predicate_from_construction(
+            return mm.predicate_from_construction(
                 PredicateConstruction.from_predicate_type_and_args(kind, args), proof.symbols.points)
 
         for mapping in self.theorem_mapper.mappings(rule, points, proof=proof):
