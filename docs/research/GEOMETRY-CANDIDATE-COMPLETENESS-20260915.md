@@ -55,7 +55,10 @@ log records consumed `diff`, `ncoll`, and `npara` premises. Acquired contracts
 also carry coll, cong, midp, and perp effects. The goals additionally query
 cyclic. The old log does NOT contain every failed predicate request. Its missing
 requests cannot be reconstructed from success totals; the audit explicitly
-marks that limitation. The corrected run logs every request and its outcome.
+marks that limitation. The corrected run logs requests through the domain's
+`prove` entrypoint and their outcomes. Recursive nondegeneracy subchecks inside
+`certify_atom` are not separate trace events; successful certificates retain
+their prerequisite trees. Failed internal subchecks are not individually traced.
 
 ## Correction, not a new geometric solver
 
@@ -78,8 +81,8 @@ marks that limitation. The corrected run logs every request and its outcome.
   selection arms use the same window size. Every fourth round retains original
   order. Ranking still cannot certify a fact or bypass applicability.
 - Complete tuple scans record the family, state, ordinal, arguments, and either
-  eligibility or a proved-false input guard. Predicate calls record source,
-  arguments, and outcome. Event aggregation never feeds back into selection.
+  eligibility or a proved-false input guard. Domain-level predicate calls record
+  source, arguments, and outcome. Event aggregation never feeds back into selection.
 
 Remaining limits are explicit resource/representation conditions: 112 attempted
 applications per primary task/window, 6000 primitive operations, 600 seconds per
@@ -143,5 +146,134 @@ Passing tests do not establish that removing the prefixes improves solving.
 
 ## Fresh run result
 
-Pending execution on the committed source. Do not reuse the old 8/16 figures
-as the result of this revision.
+The frozen source is `f966f3efa4004be1b817c5fe08a412a86357f8e5` on
+`codex/geometry-semantic-feedback-20260915` in `corcondor/mortra`.
+[Actions run 34908552962](https://github.com/corcondor/mortra/actions/runs/34908552962)
+completed successfully. The geometry job took 18m35s. Its related suite passed
+226 tests with 1 unchanged skip in 30.66s; the separate exact-kernel job passed
+64 tests in 1.42s. This is fresh Linux evidence, not the development XML.
+The environment was Python 3.12.14, Linux 6.17.0-1022-azure, glibc 2.39.
+`environment.json` records all installed versions.
+
+The normal invocation above completed both stages. Source seals and stage
+configuration hashes were unchanged. `old_library_loaded` is false. Acquisition
+took 629.482s and selection took 396.367s, including their respective output
+costs. The raw counters distinguish candidate guards, certificate checks,
+execution, expansion, primitive replay, and output costs. These overlapping
+timing counters must not be added to each other as independent time savings.
+
+### Candidate coverage actually observed
+
+The C training trajectory successfully executed 10 distinct bindings of `mirror`
+from the same initial state, including `(d,a)`. In C training, 152 state/family
+pairs had more than 3 successful bindings across the eight continuing windows.
+Each success has a primitive replay. This demonstrates that subsequent windows
+can use the portion formerly discarded; it is not just a generator unit test.
+
+The short evaluation must be reported separately. In the factorial run, the
+maximum distinct bindings actually executed per task/state/family were A=3,
+B=2, C=2, D=2. Even the wider diagnostic reached at most 3. This is NOT a new
+hard cutoff: the retained streams and the training continuation above contradict
+that interpretation. The number of state/action streams expands rapidly, so
+the fixed application budget is spent before most individual streams progress.
+Removing permanent exclusion has not solved budget allocation. It would be
+misleading to describe this run as exhaustively evaluating all legal bindings.
+
+The selector stage recorded 719438 tuple scans, 33508 ranking pages, 15092
+selected executions, and 187488 domain-level predicate requests, including
+failed requests. Internal recursive subchecks are excluded from that event count.
+There were 64 cross-arm membership checks and zero mismatches. Scanned tuples,
+ranked candidates and executed constructions are different counts.
+The scan ordinals reached 85 (zero-based) in the wider diagnostic; this normal
+run did not itself need the former 128-tuple boundary. The artificial 32768-tuple
+test verifies continuation beyond that separate boundary.
+
+### Acquisition rerun
+
+The acquisition-stage condition labels are defined independently of the later
+factorial labels: A is initial DSL, B learns only at cycle 0, C allows recursive
+learning, D uses C's saved state with acquired roots inactive, and E flattens
+acquired calls before learning.
+
+| Acquisition condition | Archived definitions | Highest generation | Solved / 16 | Evaluation seconds |
+|---|---:|---:|---:|---:|
+| A | 0 | 0 | 8 | 19.530 |
+| B | 2 | 1 | 8 | 16.110 |
+| C | 16 | 1 | 6 | 29.712 |
+| D | 16, inactive | 1 | 8 | 19.846 |
+| E | 16 | 1 | 6 | 29.242 |
+
+C acquired two definitions per cycle, but no accepted definition has an acquired
+parent. Thus recursive acquisition did not reoccur in this corrected eight-cycle
+trajectory. The earlier generation-2 observation belongs to the different,
+prefix-limited trajectory and is not a result of this run. The recursion code
+was not disabled. Learning still uses its declared 3000-pair and two-admission
+budgets. Its input sample reached 512 entries at cycle 2 (zero-based).
+
+### Fixed-library factorial rerun
+
+These are the 16 definitions produced by this invocation, not the previous
+16-definition archive. A/B use primitives only; C/D enable the new archive.
+A/C use original ordering; B/D use contract-guided soft ordering. Each task
+has the same 112-application and 6000-primitive-operation limits.
+
+| Condition | Regression solved / 16 | Applications | Total task seconds | Changed-coordinate solved / 16 | Total task seconds |
+|---|---:|---:|---:|---:|---:|
+| A | 8 | 1014 | 19.419 | 8 | 19.437 |
+| B | 8 | 904 | 16.767 | 8 | 17.153 |
+| C | 6 | 1140 | 30.240 | 6 | 31.024 |
+| D | 8 | 904 | 27.610 | 8 | 27.949 |
+
+C/D executed acquired constructions 20/47 times on the regression set and
+20/48 times on changed coordinates. Nevertheless, every solved task's acquired
+ancestor count is zero. D's gain over C recovers two tasks that A and B already
+solve. The solve interaction is +2, but this is not a solve beyond the initial
+DSL and does not establish beneficial acquired-morphism use. D is also slower
+than B. None of the eight tasks unsolved by A was solved in the 448-application
+diagnostic (16 arm/task runs). This remains a budgeted non-result, not a proof
+of nonexpressibility or of MORTRA's principle failing.
+
+### Evidence and analysis
+
+[The Actions artifact](https://github.com/corcondor/mortra/actions/runs/34908552962/artifacts/10374072207)
+has ID `10374072207`, 61275536 bytes and service-reported SHA256
+`30ac5e43b17c2c63768be81f876a5d54182cd8c299dad9aa4e9d674f67d49b63`.
+Its extracted contents were also repackaged as
+`reports/geometry-complete-revalidation-evidence.zip`, SHA256
+`e6c68d83bb9e225dd459dc21d512ca8fd04b88cba25f71f475380bb0ab367f52`.
+The package is not byte-identical to the service ZIP; it preserves the extracted
+files. All 45 extracted files (1371033154 uncompressed bytes) were hash-compared
+against the repackaged ZIP; `package-verification.json` records the check.
+`reports/complete-enumeration-actions-34908552962.log` is the fresh
+Actions log. `reports/complete-enumeration-artifact-metadata.json` preserves the
+service metadata.
+
+`reports/geometry-complete-audit/` contains the copied verification, environment,
+frozen stage inputs and library provenance, plus read-only event aggregation.
+The acquisition inventory covers all 25 registered operations across the
+different archives; the selection inventory covers all 7 primitives and all
+16 newly acquired operations. Zero-use operations remain in the inventory.
+Failed predicate checks and refusal reasons are retained in the JSON summaries.
+Conditional construction effects that fail their geometric nondegeneracy check
+are not published as facts.
+
+The read-only inventory commands were:
+
+```
+.venv/Scripts/python.exe scripts/audit_geometry_execution.py --run reports/complete-enumeration-actions-34908552962/semantic-geometry-f966f3efa4004be1b817c5fe08a412a86357f8e5-34908552962/semantic-feedback-normal/acquisition --output reports/geometry-complete-audit/acquisition
+.venv/Scripts/python.exe scripts/audit_geometry_execution.py --run reports/complete-enumeration-actions-34908552962/semantic-geometry-f966f3efa4004be1b817c5fe08a412a86357f8e5-34908552962/semantic-feedback-normal/selection --output reports/geometry-complete-audit/selection
+```
+
+`executed-bindings.json` groups `selected_execution` records by cohort, arm,
+task index, state and family and counts distinct input tuples.
+`acquisition-executed-bindings.json` groups successful `certified_history`
+records by stage, condition, task SHA, certificate source parent and family.
+The parent is read from the output point's certificate, not guessed from term
+syntax. These files are post-run analysis, never inputs to acquisition/selection.
+
+Conclusion: the arbitrary candidate-prefix defect is corrected and continuing
+training actually uses later bindings. Effective search coverage remains poor
+under the fixed budget, and a learned-library capability gain is not established.
+No results were added by hand and no solver/parser/proof rules were changed.
+Old records have not been deleted; their full-space interpretations are marked
+withdrawn rather than silently replaced by these fresh numbers.
