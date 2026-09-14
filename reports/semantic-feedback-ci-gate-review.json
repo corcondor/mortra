@@ -1,0 +1,23 @@
+{
+  "review_probe_only": true,
+  "normal_experiment_modified": false,
+  "reviewed_source_sha": "ce274f49b6fc769d85704129119d98b931c227be",
+  "workflow": ".github/workflows/mortra-paper-guided-geometry-ci.yml",
+  "step": "Verify contracts, feedback and existing library regressions",
+  "defect": "Unspecified Linux shell does not enable pipefail; tee can mask a failing pytest exit code.",
+  "probe_shell": "C:/Program Files/Git/bin/bash.exe",
+  "probe_pipeline": "false | tee /dev/null",
+  "before_arguments": ["--noprofile", "--norc", "-e", "-c"],
+  "before_exit_code": 0,
+  "after_arguments": ["--noprofile", "--norc", "-eo", "pipefail", "-c"],
+  "after_exit_code": 1,
+  "fix": "Specify shell: bash on the logged test step so GitHub invokes bash with -eo pipefail.",
+  "prior_xml_audit": {
+    "workflow_run_id": 34885354682,
+    "passed": 151,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0
+  },
+  "documentation": "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsshell"
+}
