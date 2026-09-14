@@ -69,7 +69,7 @@ def linear_readout(basis, expression, variables):
 
 
 class Domain:
-    def __init__(self, spec):
+    def __init__(self, spec, *, primitive_exclusions=()):
         spec = deepcopy(spec)
         self.spec = spec
         self.kind = spec["kind"]
@@ -120,6 +120,16 @@ class Domain:
         self.operations = list(spec["operations"])
         if not self.operations or set(self.operations) - allowed:
             raise ValueError("operation outside the exact typed fragment")
+        self.primitive_exclusions = frozenset(primitive_exclusions)
+        removable = allowed | {"var", "const"} | {"pull:"+g for g in self.actions}
+        if self.primitive_exclusions-removable:
+            raise ValueError("unknown excluded primitive")
+        if self.primitive_exclusions:
+            self.key = digest([spec, sorted(self.primitive_exclusions)])
+            self.scope = dict(self.scope, domain=self.key, excluded_primitives=sorted(self.primitive_exclusions))
+            self.operations = [o for o in self.operations if o not in self.primitive_exclusions]
+            self.actions = {g: a for g, a in self.actions.items()
+                            if "pull" not in self.primitive_exclusions and "pull:"+g not in self.primitive_exclusions}
 
     def _finite(self):
         n = len(self.models)
@@ -138,8 +148,8 @@ class Domain:
                       "field": "QQ", "states": n, "legality": "not represented"}
 
     def seeds(self):
-        return [term("var", name=n) for n in self.names] + [term("const", value="0"),
-                                                               term("const", value="1")]
+        return [p for p in ([term("var", name=n) for n in self.names] + [term("const", value="0"),
+                                                               term("const", value="1")]) if p["op"] not in self.primitive_exclusions]
 
     def parse_literal(self, value):
         return parse_literal(value) if getattr(self, "syntax_cache_enabled", True) else sp.sympify(value)
@@ -150,6 +160,8 @@ class Domain:
                    "not": 1, "add": 2, "mul": 2, "eq": 2, "and": 2}
         if op not in arities or len(args) != arities[op]:
             raise ValueError("invalid typed term")
+        if op in self.primitive_exclusions:
+            raise ValueError("excluded primitive")
         if op not in {"var", "const"} and op not in self.operations:
             raise ValueError("undeclared operation")
         if op == "var" and t["name"] not in self.names:

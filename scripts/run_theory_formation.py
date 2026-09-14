@@ -25,7 +25,8 @@ def source_seal():
     files = sorted([*ROOT.joinpath("math_os_prototype").glob("*.py"),
                     ROOT/"scripts/run_theory_formation.py", ROOT/"scripts/verify_theory_formation.py",
                     ROOT/"scripts/verify_theory_tasks.py", ROOT/"scripts/verify_theory_dsl.py",
-                    ROOT/"scripts/verify_theory_semantic_edit.py", ROOT/"scripts/verify_temporal_utility.py"])
+                    ROOT/"scripts/verify_theory_semantic_edit.py", ROOT/"scripts/verify_temporal_utility.py",
+                    ROOT/"scripts/verify_basis_quality.py"])
     return {p.relative_to(ROOT).as_posix(): digest(p.read_text(encoding="utf-8")) for p in files}
 
 
@@ -37,6 +38,7 @@ def main(argv=None):
     parser.add_argument("--cycles", type=int)
     parser.add_argument("--queries", type=Path)
     parser.add_argument("--knowledge", type=Path)
+    parser.add_argument("--exclude-primitive", action="append", default=[])
     parser.add_argument("--temporal-plan", type=Path,
                         help="frozen internal temporal holdout and active-DSL measurement plan")
     parser.add_argument("--semantic-edits", action="store_true")
@@ -67,6 +69,7 @@ def main(argv=None):
                 "corpus_refresh": args.refresh_corpus,
                 "eligible_sources": args.eligible_sources,
                 "temporal_options": temporal,
+                "primitive_exclusions": args.exclude_primitive,
                 "syntax_cache_enabled": not args.uncached_syntax,
                 "test_input_channel": "no interactive input or dynamic source loading",
                 "intervention_claim": "fixed code/config checked; not cryptographic proof of no interference"}
@@ -84,13 +87,15 @@ def main(argv=None):
                 or prior.get("corpus_refresh", False) != args.refresh_corpus
                 or prior.get("eligible_sources", False) != args.eligible_sources
                 or prior.get("temporal_options") != temporal
+                or prior.get("primitive_exclusions", []) != args.exclude_primitive
                 or prior.get("syntax_cache_enabled", True) != (not args.uncached_syntax)):
             raise ValueError("resume inputs or code changed; start a separately labelled experiment")
         old = json.loads(args.resume.read_text(encoding="utf-8"))
     engine = Theory(config, **old["flags"], state=old) if args.knowledge else Theory(config, theorem_reuse=args.condition != "no-theorems",
                     representation_reuse=args.condition != "no-representations",
                     dsl_reuse=args.condition not in {"no-dsl", "initial-only"}, semantic_edits=args.semantic_edits,
-                    corpus_refresh=args.refresh_corpus, eligible_sources=args.eligible_sources, temporal_options=temporal, state=old)
+                    corpus_refresh=args.refresh_corpus, eligible_sources=args.eligible_sources, temporal_options=temporal,
+                    primitive_exclusions=args.exclude_primitive, state=old)
     engine.domain.syntax_cache_enabled = not args.uncached_syntax
     failure = None
     queries = None

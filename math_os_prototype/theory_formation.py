@@ -33,7 +33,7 @@ def configure(config):
     if set(config["budget"]) - set(DEFAULT_BUDGET):
         raise ValueError("unknown budget key")
     budget = dict(DEFAULT_BUDGET, **config["budget"])
-    if any(type(v) is not int or v < (0 if k in {"shared_spaces", "definitions"} else 1)
+    if any(type(v) is not int or v < (0 if k in {"shared_spaces", "definitions", "representations"} else 1)
            for k, v in budget.items()):
         raise ValueError("positive integer resource bounds required")
     return dict(deepcopy(config), budget=budget)
@@ -92,9 +92,9 @@ def rewrite(t, rules, scope, domain=None):
 
 class Theory:
     def __init__(self, config, *, theorem_reuse=True, representation_reuse=True, dsl_reuse=True,
-                 semantic_edits=False, corpus_refresh=False, eligible_sources=False, temporal_options=None, state=None):
+                 semantic_edits=False, corpus_refresh=False, eligible_sources=False, temporal_options=None, primitive_exclusions=(), state=None):
         self.config = configure(config)
-        self.domain = Domain(self.config["domain"])
+        self.domain = Domain(self.config["domain"], primitive_exclusions=primitive_exclusions)
         self.budget = self.config["budget"]
         self.flags = {"theorem_reuse": theorem_reuse, "representation_reuse": representation_reuse,
                       "dsl_reuse": dsl_reuse}
@@ -107,6 +107,8 @@ class Theory:
         if temporal_options is not None:
             from math_os_prototype.temporal_utility import configure as temporal_configure
             self.flags["temporal_options"] = temporal_configure(temporal_options)
+        if primitive_exclusions:
+            self.flags["primitive_exclusions"] = sorted(set(primitive_exclusions))
         if state is not None:
             state = deepcopy(state)
             seal = state.pop("sha256", None)

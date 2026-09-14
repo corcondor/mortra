@@ -740,10 +740,18 @@ class Vocabulary:
             raise ValueError("observation synthesis requires a complete finite model")
         if task["scope"] != self.domain.scope or task.get("requirements"):
             raise ValueError("query scope or additional requirements are unsupported")
-        allowed = {"id", "scope", "values", "budget", "requirements"}
+        allowed = {"id", "scope", "values", "budget", "requirements", "result_type"}
         if set(task) - allowed or len(task["values"]) != len(self.domain.models):
             raise ValueError("query takes values, not a witness or a route")
-        target = [str(sp.Rational(v)) for v in task["values"]]
+        result_type = task.get("result_type", "scalar")
+        if result_type == "predicate":
+            if any(str(v) not in {"True", "False"} for v in task["values"]):
+                raise ValueError("predicate specifications require exact booleans")
+            target = list(map(str, task["values"]))
+        elif result_type == "scalar":
+            target = [str(sp.Rational(v)) for v in task["values"]]
+        else:
+            raise ValueError("unsupported result type")
         budget = task["budget"]
         required = {"states", "depth", "program_size", "expanded_size"}
         if not required <= set(budget) <= required | {"work"} or any(
@@ -865,11 +873,11 @@ class Vocabulary:
             facts = [initial_fact(self.accepts(p), payload(p)) for p in seeds]
             if any(f.value is None for f in facts):
                 raise ValueError("size bounds exclude common initial inputs")
-            plan = synthesize_typed_plan(facts, operations, ["scalar"],
+            plan = synthesize_typed_plan(facts, operations, [result_type],
                 max_depth=budget["depth"], max_states=budget["states"], fair=True,
-                goal_predicates={"scalar": lambda f: f.value["values"] == target},
+                goal_predicates={result_type: lambda f: f.value["values"] == target},
                 value_key=lambda sort, v: digest(v["values"]))
-            solution = plan.goals.get("scalar")
+            solution = plan.goals.get(result_type)
             if solution is not None:
                 began = time.perf_counter()
                 try:
@@ -898,10 +906,42 @@ class Vocabulary:
         active_bits = (structural_bits if acquired and definitions_enabled else 0)+(certified_bits if acquired else 0)+(equation_bits if execution_mode == "edited" else 0)
         if selected is not None and self.temporal:
             active_bits = self.temporal.library_bits(selected, relation_ids=None if execution_mode == "edited" else [])
+        elif selected is not None:
+            from math_os_prototype.theory_semantic_edit import dependencies, immutable_definition
+            roots = []
+            for key in selected:
+                kind, name = key.split(":", 1)
+                if kind == "definition":
+                    d = next(d for d in self.state["definitions"] if d["id"] == name)
+                    roots.append({"op": lib.USE, "abstraction": d["index"], "arguments": {}})
+                elif kind == "representation":
+                    roots.append(term("represented", binding=name))
+                elif kind == "recurrence":
+                    roots.append(term("recurrence", procedure=name))
+                else:
+                    raise ValueError("unknown selected operation")
+            used = dependencies(self, roots)
+            equations = [r for r in self.state["semantic_relations"] if "definition:"+str(r["definition_index"]) in used] if execution_mode == "edited" else []
+            used.update(dependencies(self, [r["right"] for r in equations]))
+            pieces = []
+            for key in used:
+                kind, name = key.split(":", 1)
+                if kind == "definition":
+                    pieces.append(immutable_definition(next(d for d in self.state["definitions"] if str(d["index"]) == name)))
+                elif kind == "representation":
+                    r = materialize(self.theory.state, name)
+                    pieces.append({k: r.get(k) for k in ("basis", "action_matrices", "readout", "scope", "certificate", "binding_certificate")})
+                elif kind == "procedure":
+                    pieces.append(self.law(name)[1])
+            pieces.extend(equations)
+            active_bits = sum(lib.cost(p) for p in {digest(p): p for p in pieces}.values())
         literal_cache = _parsed_literal.cache_info()
         counter.update(literal_parse_cache_hits=literal_cache.hits, literal_parse_cache_misses=literal_cache.misses,
                        literal_parse_cache_entries=literal_cache.currsize)
         return {"task": task["id"], "solved": program is not None, "program": program,
+            "found_program_nodes": program_size(program) if program else None,
+            "found_plan_depth": plan.goals[result_type].depth if program and plan else None,
+            "unique_facts": len(plan.facts) if plan else None,
             "definitions_used": sorted(references(program)),
             "states_explored": len(seeds)+counter["attempted_applications"], "costs": counter,
             "work": work, "independent_replay_work": replay_work,
