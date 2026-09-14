@@ -31,32 +31,33 @@ def point(name):
     return {"op": "var", "name": name}
 
 
-def validate(term):
+def validate(term, *, fragment=None):
     if not isinstance(term, dict):
         raise ValueError("point term must be a mapping")
     if term.get("op") == "var" and set(term) == {"op", "name"}:
         if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", term["name"]):
             raise ValueError("invalid point parameter")
         return
-    if (set(term) != {"op", "args"} or term["op"] not in ARITIES
-            or len(term["args"]) != ARITIES[term["op"]]):
+    arities = ARITIES if fragment is None else fragment.arities
+    if (set(term) != {"op", "args"} or term["op"] not in arities
+            or len(term["args"]) != arities[term["op"]]):
         raise ValueError("outside the declared rational construction fragment")
     for argument in term["args"]:
-        validate(argument)
+        validate(argument, fragment=fragment)
 
 
-def parameters(term):
-    validate(term)
+def parameters(term, *, fragment=None):
+    validate(term, fragment=fragment)
     if term["op"] == "var":
         return [term["name"]]
-    return list(dict.fromkeys(p for a in term["args"] for p in parameters(a)))
+    return list(dict.fromkeys(p for a in term["args"] for p in parameters(a, fragment=fragment)))
 
 
-def dag(term):
+def dag(term, *, fragment=None):
     """Identical deterministic subterms share one locally bound point."""
-    validate(term)
+    validate(term, fragment=fragment)
     steps, memo = [], {}
-    occupied = set(parameters(term))
+    occupied = set(parameters(term, fragment=fragment))
     def visit(node):
         if node["op"] == "var":
             return node["name"]
@@ -107,7 +108,9 @@ def exact_zero(expression):
     return bool(numerator == 0 if replay is None else replay)
 
 
-def primitive(elaborator, family, output, inputs):
+def primitive(elaborator, family, output, inputs, *, fragment=None):
+    if fragment is not None:
+        return fragment.primitive(elaborator, family, output, inputs)
     if family not in ARITIES or len(inputs) != ARITIES[family]:
         raise ValueError("unsupported primitive")
     getattr(elaborator, "_"+family)((output, *inputs))
@@ -130,7 +133,7 @@ def relation_polynomial(elaborator, relation):
                            tuple(relation["points"]))
 
 
-def certify_body(body):
+def certify_body(body, *, fragment=None):
     """Derive input guards, a rational witness, and triangular uniqueness.
 
     Existence is substitution in the *relational* bridge's equations.
@@ -143,10 +146,10 @@ def certify_body(body):
         nonlocal identity_checks
         identity_checks += 1
         return exact_zero(expression)
-    steps, output = dag(body)
+    steps, output = dag(body, fragment=fragment)
     if not steps:
         raise ValueError("not a construction")
-    names = parameters(body)
+    names = parameters(body, fragment=fragment)
     explicit, relational = _JGEXElaborator(), _RelationalJGEXElaborator()
     coords = {n: tuple(sp.Symbol(n+axis, real=True) for axis in ("x", "y")) for n in names}
     explicit.coordinates.update(coords)
@@ -156,8 +159,8 @@ def certify_body(body):
     for step in steps:
         family, y, args = step["family"], step["output"], step["inputs"]
         e0, d0 = len(relational.equations), len(explicit.denominators)
-        primitive(explicit, family, y, args)
-        primitive(relational, family, y, args)
+        primitive(explicit, family, y, args, fragment=fragment)
+        primitive(relational, family, y, args, fragment=fragment)
         value = tuple(sp.cancel(v) for v in explicit.coordinates[y])
         if any(v.has(sp.zoo, sp.nan, sp.oo) for v in value):
             raise ValueError("undefined witness")
@@ -173,7 +176,10 @@ def certify_body(body):
         for v in value:
             step_guards.update(factors(v.as_numer_denom()[1]))
         inherited = set(guards)
-        if family == "foot":
+        if fragment is not None:
+            geometry_guards.append({"predicate": "polynomial_nonzero",
+                                    "points": args, "input_factors": sorted(step_guards)})
+        elif family == "foot":
             a, b = args[1:]
             delta = relational._sub(relational.coordinates[b], relational.coordinates[a])
             raw_guard = relational._dot(delta, delta)
@@ -192,18 +198,23 @@ def certify_body(body):
         checks = [str(sp.cancel(e.subs(substitution, simultaneous=True))) for e in block]
         if not all(check(sp.sympify(e)) for e in checks):
             raise ValueError("relational witness replay failed")
-        current_relations = geometric_relations(step)
+        current_relations = geometric_relations(step) if fragment is None else fragment.relations(step)
+        lower = relation_polynomial if fragment is None else fragment.relation_polynomial
         for relation in current_relations:
-            residual = relation_polynomial(relational, relation)
+            residual = lower(relational, relation)
             if not check(residual.subs(substitution, simultaneous=True)):
                 raise ValueError("guaranteed relation replay failed")
         # Coordinate midpoint equations are equivalent to a sum of their
         # squares only over the declared real field. Other rows are +/- C rows.
         transfer = []
         for relation in current_relations:
-            poly = relation_polynomial(relational, relation)
+            poly = lower(relational, relation)
             reference = sum(e*e for e in block) if family == "midpoint" else None
-            if reference is not None:
+            if fragment is not None:
+                # The rational witness is the unique output under the recorded
+                # determinants. Effects follow by substitution in that witness.
+                ok = check(poly.subs(substitution, simultaneous=True))
+            elif reference is not None:
                 ok = check(poly-reference)
             else:
                 ok = any(check(poly-sign*e) for e in block for sign in (1, -1))
@@ -224,7 +235,7 @@ def certify_body(body):
         "applicability": {"input_nonzero_polynomials": sorted(guards), "geometry_pullbacks": geometry_guards},
         "construction_relation": {"geometry": relations, "polynomials": equations},
         "guaranteed_relation": relations, "nondegeneracy_conditions": sorted(guards),
-        "branch_conditions": [], "representation_scopes": SCOPE,
+        "branch_conditions": [], "representation_scopes": SCOPE if fragment is None else fragment.scope,
         "witness": witnesses, "dependency_graph": {s["output"]: s["inputs"] for s in steps},
         "exact_certificate": {"method": "rational_witness_and_triangular_linear_uniqueness",
             "steps": proofs, "existence": True, "guarantee": True,

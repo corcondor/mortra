@@ -81,7 +81,7 @@ def main(argv=None):
     if config["domain"].get("kind") == "geometry":
         if args.resume or args.knowledge or args.queries or args.condition != "learn":
             parser.error("Geometry uses formal task inputs, not scalar archive/queries or training conditions")
-        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction"}:
+        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback"}:
             from importlib.metadata import distributions
             from math_os_prototype.theory_geometry_acquisition import run_contract_geometry
             write(args.output/"environment.json", {
@@ -95,7 +95,10 @@ def main(argv=None):
                 required_seed = config.get("protocol", {}).get("python_hash_seed")
                 if required_seed is not None and os.environ.get("PYTHONHASHSEED") != str(required_seed):
                     raise ValueError("set PYTHONHASHSEED before launching Python as declared in the frozen protocol")
-                if config["domain"]["mode"] == "morphism_contraction":
+                if config["domain"]["mode"] == "semantic_feedback":
+                    from math_os_prototype.theory_geometry_feedback import run_semantic_feedback
+                    result = run_semantic_feedback(config, args.output)
+                elif config["domain"]["mode"] == "morphism_contraction":
                     from math_os_prototype.theory_geometry_contraction import run_contraction_geometry
                     result = run_contraction_geometry(config, args.output)
                 else:

@@ -3,6 +3,13 @@ name: Verify paper-guided geometry portfolio
 on:
   push:
     paths:
+      - "math_os_prototype/geometry_semantic_dsl.py"
+      - "math_os_prototype/theory_geometry_feedback.py"
+      - "math_os_prototype/geometry_contracts.py"
+      - "math_os_prototype/theory_action_domain.py"
+      - "scripts/run_theory_formation.py"
+      - "tests/test_geometry_semantic_feedback.py"
+      - "configs/theory-geometry-semantic-feedback.json"
       - "worker/backend/numerical_incidence_auxiliary.py"
       - "worker/backend/typed_bidirectional_priority.py"
       - "worker/backend/constructible_groebner.py"
@@ -26,6 +33,10 @@ on:
       - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
   pull_request:
     paths:
+      - "math_os_prototype/geometry_semantic_dsl.py"
+      - "math_os_prototype/theory_geometry_feedback.py"
+      - "tests/test_geometry_semantic_feedback.py"
+      - "configs/theory-geometry-semantic-feedback.json"
       - "worker/backend/**"
       - "scripts/export_hageo409_jgex.py"
       - "scripts/finalize_geometry_proof_portfolio.py"
@@ -38,6 +49,37 @@ permissions:
   contents: read
 
 jobs:
+  semantic-feedback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-test.txt
+            requirements-geometry-contracts.txt
+      - name: Install declared exact geometry dependencies
+        run: python -m pip install -r requirements-geometry-contracts.txt
+      - name: Verify contracts, feedback and existing library regressions
+        run: |
+          mkdir -p reports
+          python -m pytest -q tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
+      - name: Frozen normal-entry A B C D E experiment
+        run: python scripts/run_theory_formation.py --config configs/theory-geometry-semantic-feedback.json --output reports/semantic-feedback-normal
+      - name: Preserve fresh evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-geometry-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            reports/semantic-feedback-tests.*
+            reports/semantic-feedback-normal/
   exact-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 15

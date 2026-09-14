@@ -22,13 +22,15 @@ class ActionDomain(Protocol):
     def is_goal(self, state) -> bool: ...
 
 
-def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progress=None):
+def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progress=None,
+                         initial_facts=None):
     primitives = tuple(RuntimePrimitive(
         family, (domain.sort,), domain.sort, lambda args: None,
         alternatives=lambda args, family=family: domain.alternatives(family, args[0].value),
     ) for family in domain.families)
     return synthesize_typed_plan(
-        [initial_fact(domain.sort, domain.initial())], primitives, [domain.sort],
+        ([initial_fact(domain.sort, domain.initial())] if initial_facts is None else initial_facts),
+        primitives, [domain.sort],
         goal_predicates={domain.sort: lambda fact: domain.is_goal(fact.value)},
         value_key=lambda sort, state: domain.key(state),
         max_depth=max_depth, max_states=max_states, fair=True, progress=progress,
