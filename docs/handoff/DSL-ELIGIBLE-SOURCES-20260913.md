@@ -1,5 +1,8 @@
 # Abstraction source eligibility under a fixed pair budget
 
+Fresh Linux CI results and the next unresolved selection question are recorded
+in [the results report](DSL-ELIGIBLE-SOURCES-RESULTS-20260914.md).
+
 ## Starting evidence, not a new runtime acquisition
 
 Base: `c1978ca3f029e18c5444b0d4f503b49b12195c30`, whose code is the
