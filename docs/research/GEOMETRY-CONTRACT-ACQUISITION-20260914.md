@@ -164,6 +164,14 @@ scientific criterion fails. Omitting `--require-chain` checks correctness alone.
 Local tests: 98 passed, 1 skipped. This includes previously uncommitted geometry
 regression tests; a clean committed checkout may have a different test count.
 
+Post-run boundary fix: generated construction points and existential variables
+now choose fresh names even when an input is named `v2` or `local0`. This is an
+alpha-renaming correction, not a new geometry operation or a changed task set.
+The expanded local suite passed 99 tests, with 1 skipped. The first Actions run
+`34818428044` at `bb197b93a94442058604060a0b27b1f974e7e1a9` was cancelled by the
+developer so the corrected immutable commit could be tested separately. Its
+partial outputs are not a successful reproduction.
+
 The existing **Verify MORTRA Kernels** workflow gains a `geometry-contracts`
 dispatch choice. Supply `target_ref` and full `expected_sha`. It runs the existing
 q-directed verification, new contract tests, the normal acquisition comparison,

@@ -56,20 +56,24 @@ def dag(term):
     """Identical deterministic subterms share one locally bound point."""
     validate(term)
     steps, memo = [], {}
+    occupied = set(parameters(term))
     def visit(node):
         if node["op"] == "var":
             return node["name"]
         key = digest(node)
         if key not in memo:
             inputs = [visit(a) for a in node["args"]]
-            name = f"local{len(steps)}"
+            index = len(steps)
+            name = f"local{index}"
+            while name in occupied:
+                index += 1
+                name = f"local{index}"
+            occupied.add(name)
             steps.append({"family": node["op"], "inputs": inputs, "output": name,
                           "term": deepcopy(node)})
             memo[key] = name
         return memo[key]
     output = visit(term)
-    if set(parameters(term)) & {s["output"] for s in steps}:
-        raise ValueError("parameter captures a local point")
     return steps, output
 
 

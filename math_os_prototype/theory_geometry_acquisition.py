@@ -194,7 +194,11 @@ class RationalGeometryDomain:
             local_terms = {n: state["terms"][v] for n, v in mapping.items()}
             added = []
             for s in steps:
-                name = f"v{len(child['points'])}"
+                index = len(child["points"])
+                name = f"v{index}"
+                while name in child["points"]:
+                    index += 1
+                    name = f"v{index}"
                 mapping[s["output"]] = name
                 local_term = {"op": s["family"], "args": [local_terms[a] for a in s["inputs"]]}
                 local_terms[s["output"]] = local_term

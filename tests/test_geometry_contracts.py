@@ -53,8 +53,8 @@ def test_degenerate_composition_and_scope_rejected():
         g.certify_body(term("foot", "p", "a", "a"))
     with pytest.raises(ValueError):
         g.certify_body(term("circle", "a", "b", "c"))
-    with pytest.raises(ValueError):
-        g.dag(term("midpoint", "local0", "b"))
+    steps, _ = g.dag(term("midpoint", "local0", "b"))
+    assert steps[0]["output"] not in {"local0", "b"}
 
 
 def test_guard_not_removed_by_coordinate_cancellation():
@@ -113,3 +113,15 @@ def test_acquired_registry_allows_argument_aliases_and_checks_real_guard():
     assert domain.apply(domain.initial(), TypedConstructionCandidate(h["id"], ("a", "p", "a", "b"), ())) is not None
     assert domain.apply(domain.initial(), TypedConstructionCandidate(h["id"], ("a", "p", "a", "a"), ())) is None
     assert domain.events[-1]["event"] == "reject"
+
+
+def test_generated_points_do_not_capture_input_labels():
+    task = {"id": "labels-only", "points": ["v2", "local0"],
+            "goal_polynomials": ["2*ux-v2x-local0x", "2*uy-v2y-local0y"]}
+    config = {"seed": 0, "wall_seconds": 60, "max_primitive_operations": 20,
+              "max_states": 8, "per_family_limit": 12}
+    result = solve(task, config)
+    assert result["solved"]
+    assert result["state"]["points"]["v2"] == ["v2x", "v2y"]
+    assert result["state"]["points"]["local0"] == ["local0x", "local0y"]
+    assert independent_replay(result)["passed"]
