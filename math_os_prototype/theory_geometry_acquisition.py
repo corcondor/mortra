@@ -110,14 +110,28 @@ class RationalGeometryDomain:
             for a, b in combinations([*step["inputs"], *step["outputs"]], 2):
                 graph[a].add(b)
                 graph[b].add(a)
+        options = self.candidate_options(family, state)
+        audit = options.setdefault("audit", {})
         rows = enumerate_typed_candidates(points=names, graph=graph,
             goal_multiplicity=multiplicity, generated_points=set(names)-set(self.task["points"]),
             families=[self.registry[family]], used_keys=set(),
-            per_family_limit=self.config["per_family_limit"], ranking="structural", seed=self.config["seed"])
+            per_family_limit=self.config["per_family_limit"], ranking="structural", seed=self.config["seed"],
+            **options)
+        self.costs["offered_candidates"] += len(rows)
+        self.costs["examined_input_tuples"] += audit["examined_input_tuples"]
+        self.costs["precondition_filtered"] += audit["precondition_filtered"]
+        self.log(event="candidate_audit", family=family, parent=self.key(state), **audit)
         self.costs["candidate_generation_seconds"] += time.perf_counter()-started
         self.log(event="enumerate", family=family, parent=self.key(state),
+                 active_points=names, active_point_count=len(names),
                  candidates=[{"key": c.key, "inputs": c.inputs} for c in rows])
         return rows
+
+    def candidate_options(self, family, state):
+        return {"max_input_tuples_per_family": self.config.get("max_input_tuples_per_family")}
+
+    def public_outputs(self, contract, steps):
+        return [s["output"] for s in steps]
 
     def alternatives(self, family, state):
         for candidate in self.candidates(family, state):
@@ -152,11 +166,12 @@ class RationalGeometryDomain:
         env = {n: coords[v] for n, v in zip(source_names, candidate.inputs, strict=True)}
         steps, final = gc.dag(body)
         count = len(steps)
+        public_outputs = self.public_outputs(h, steps)
         self.budget(count)
         self.costs["primitive_equivalent_operations"] += count
         start = time.perf_counter()
         try:
-            if acquired and self.mode == "certified":
+            if acquired and self.mode in {"certified", "summarized", "hiding_only"}:
                 symbol_map = {n+axis: sp.Symbol(n+axis, real=True) for n in source_names for axis in ("x", "y")}
                 replacement = {symbol_map[n+axis]: env[n][i] for n in source_names for i, axis in enumerate(("x", "y"))}
                 guards = [gc.parse(e, symbol_map).subs(replacement, simultaneous=True)
@@ -166,9 +181,11 @@ class RationalGeometryDomain:
                 self.costs["contract_check_seconds"] += time.perf_counter()-start
                 execution = time.perf_counter()
                 for s in steps:
+                    if s["output"] not in public_outputs:
+                        continue
                     env[s["output"]] = tuple(sp.cancel(gc.parse(e, symbol_map).subs(replacement, simultaneous=True))
                                               for e in h["witness"][s["output"]])
-                self.costs["certified_witness_evaluations"] += count
+                self.costs["certified_witness_evaluations"] += len(public_outputs)
                 self.costs["execution_seconds"] += time.perf_counter()-execution
                 certificate = h["id"]
             else:
@@ -194,25 +211,34 @@ class RationalGeometryDomain:
             local_terms = {n: state["terms"][v] for n, v in mapping.items()}
             added = []
             for s in steps:
+                local_term = {"op": s["family"], "args": [local_terms[a] for a in s["inputs"]]}
+                local_terms[s["output"]] = local_term
+                if s["output"] not in public_outputs:
+                    continue
                 index = len(child["points"])
                 name = f"v{index}"
                 while name in child["points"]:
                     index += 1
                     name = f"v{index}"
                 mapping[s["output"]] = name
-                local_term = {"op": s["family"], "args": [local_terms[a] for a in s["inputs"]]}
-                local_terms[s["output"]] = local_term
                 child["points"][name] = list(map(str, env[s["output"]]))
                 child["terms"][name] = local_term
                 added.append(name)
             action = {"family": candidate.family, "inputs": list(candidate.inputs), "outputs": added,
                       "output": mapping[final], "body": body, "term": term,
                       "primitive_equivalent_operations": count, "certificate": certificate}
+            if len(public_outputs) < count:
+                action["contraction"] = {"summary_id": h["summary"]["id"],
+                    "local_mapping": {n: mapping[n] for n in public_outputs},
+                    "private_locals": [s["output"] for s in steps if s["output"] not in public_outputs],
+                    "refined": False}
             child["path"].append(action)
             child["certificates"].append(certificate)
             child["primitive_equivalent_depth"] += count
             self.costs["successful_applications"] += 1
             self.costs["successful_acquired_applications"] += int(acquired)
+            self.costs["exposed_objects"] += len(added)
+            self.costs["hidden_objects"] += count-len(added)
             self.log(event="apply", action=action, parent=self.key(state), child=self.key(child))
             return PrimitiveResult(child, action)
         except ValueError as exc:
@@ -229,6 +255,9 @@ class RationalGeometryDomain:
         if key in self.goal_cache:
             return self.goal_cache[key] is not None
         started = time.perf_counter()
+        self.costs["goal_checked_states"] += 1
+        self.costs["state_object_count_sum"] += len(state["points"])
+        self.costs["max_state_object_count"] = max(self.costs["max_state_object_count"], len(state["points"]))
         for name, coords in self.coordinates(state).items():
             replacement = {self.symbols["ux"]: coords[0], self.symbols["uy"]: coords[1]}
             residuals = [sp.cancel(e.subs(replacement, simultaneous=True)) for e in self.goals]
@@ -245,11 +274,13 @@ class RationalGeometryDomain:
         return False
 
 
-def solve(task, config, contracts=(), *, mode="certified", emit=lambda e: None):
+def solve(task, config, contracts=(), *, mode="certified", emit=lambda e: None, domain_class=RationalGeometryDomain):
     start = time.perf_counter()
-    domain = RationalGeometryDomain(task, config, contracts, mode=mode, emit=emit)
+    domain = domain_class(task, config, contracts, mode=mode, emit=emit)
+    explored, retained = None, None
     try:
         plan = search_action_domain(domain, max_depth=config["max_primitive_operations"], max_states=config["max_states"])
+        explored, retained = plan.states_explored, len(plan.facts)
         goal = plan.goals.get(domain.sort)
         state = goal.value if goal else None
         stop = "proved" if goal else "candidate_or_state_budget"
@@ -265,9 +296,11 @@ def solve(task, config, contracts=(), *, mode="certified", emit=lambda e: None):
     return {"task": deepcopy(task), "task_sha256": task_identity(task), "solved": bool(state), "stop_reason": stop,
             "state": state, "proof": proof, "costs": dict(domain.costs), "events": domain.events,
             "wall_seconds": time.perf_counter()-start,
+            "states_explored": explored, "states_retained": retained,
             "wall_budget_is_soft": True,
             "proof_length": sum(s["primitive_equivalent_operations"] for s in used) if state else None,
             "macro_proof_length": len(used) if state else None,
+            "expanded_primitive_proof_depth": len(gc.dag(proof["term"])[0]) if proof else None,
             "proof_actions": used,
             "goal_acquired_calls": [s["family"] for s in used if s["family"] in domain.contracts],
             "false_proofs": None, "false_proof_scope": "requires independent replay"}

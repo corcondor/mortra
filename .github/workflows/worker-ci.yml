@@ -79,7 +79,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, geometry, geometry-contracts, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
+        options: [worker, q-directed, theory-formation, geometry, geometry-contracts, geometry-contraction, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -157,7 +157,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 60 || 20 }}
+    timeout-minutes: ${{ inputs.verification_suite == 'geometry-contraction' && 60 || inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 60 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -181,6 +181,7 @@ jobs:
       BASIS_MODE: ${{ inputs.verification_suite == 'basis-quality' }}
       GEOMETRY_MODE: ${{ inputs.verification_suite == 'geometry' || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913') }}
       CONTRACT_MODE: ${{ inputs.verification_suite == 'geometry-contracts' }}
+      CONTRACTION_MODE: ${{ inputs.verification_suite == 'geometry-contraction' }}
       PYTHONHASHSEED: "0"
     steps:
       - name: Set output location
@@ -255,7 +256,7 @@ jobs:
           python ci-control/scripts/verify_q_directed_ci.py --execute \
             --repo target --output "$VERIFY_OUTPUT"
       - name: Install the declared rational contract fragment dependencies
-        if: env.CONTRACT_MODE == 'true'
+        if: env.CONTRACT_MODE == 'true' || env.CONTRACTION_MODE == 'true'
         working-directory: target
         shell: bash
         run: |
@@ -273,6 +274,20 @@ jobs:
             --output "$VERIFY_OUTPUT/geometry-contracts" 2>&1 | tee "$VERIFY_OUTPUT/contract-run.log"
           python scripts/replay_geometry_contracts.py --run "$VERIFY_OUTPUT/geometry-contracts" \
             --output "$VERIFY_OUTPUT/contract-replay.json" --require-chain 2>&1 | tee "$VERIFY_OUTPUT/contract-replay.log"
+      - name: Test certified morphism contraction and frozen fresh cohort
+        if: env.CONTRACTION_MODE == 'true'
+        working-directory: target
+        shell: bash
+        run: |
+          python -m pytest tests/test_geometry_contracts.py tests/test_geometry_contraction.py \
+            tests/test_theory_geometry.py tests/test_theory_dsl.py tests/test_theory_formation.py \
+            worker/backend/test_typed_geometry_stalk.py -q \
+            --junitxml="$VERIFY_OUTPUT/contraction-tests.xml" 2>&1 | tee "$VERIFY_OUTPUT/contraction-tests.log"
+          python scripts/run_theory_formation.py --config configs/theory-geometry-morphism-contraction.json \
+            --output "$VERIFY_OUTPUT/geometry-contraction" 2>&1 | tee "$VERIFY_OUTPUT/contraction-run.log"
+          python scripts/replay_geometry_contraction.py --run "$VERIFY_OUTPUT/geometry-contraction" \
+            --output "$VERIFY_OUTPUT/contraction-replay.json" --require-scientific-pass \
+            2>&1 | tee "$VERIFY_OUTPUT/contraction-replay.log"
       - name: Test theory formation guards
         if: env.THEORY_MODE == 'true'
         working-directory: target

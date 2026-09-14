@@ -904,6 +904,8 @@ def enumerate_typed_candidates(
     required_input_points: set[str] | None = None,
     max_input_tuples_per_family: int | None = None,
     audit: dict[str, object] | None = None,
+    binding_precondition: Callable[[ConstructionFamily, tuple[str, ...]], bool] | None = None,
+    effect_priority: Callable[[TypedConstructionCandidate], tuple[object, ...]] | None = None,
 ) -> list[TypedConstructionCandidate]:
     """Enumerate a balanced finite candidate set from typed structure only."""
 
@@ -938,6 +940,7 @@ def enumerate_typed_candidates(
     orbit = set(orbit_inputs)
     selected: list[TypedConstructionCandidate] = []
     examined_input_tuples = 0
+    precondition_filtered = 0
     truncated_families: list[str] = []
     for family in families:
         family_candidates: list[TypedConstructionCandidate] = []
@@ -1042,6 +1045,9 @@ def enumerate_typed_candidates(
             key = f"{family.name}({','.join(inputs)})"
             if key in used_keys:
                 continue
+            if binding_precondition is not None and not binding_precondition(family, inputs):
+                precondition_filtered += 1
+                continue
             # HAGeo Pass@K uses seeded random ranking.  Its shuffle and role
             # balancing only inspect the family and input tuple, so computing
             # the expensive 19-field structural rank for every rejected tuple
@@ -1057,6 +1063,7 @@ def enumerate_typed_candidates(
         if ranking == "structural":
             family_candidates.sort(
                 key=lambda candidate: (
+                    effect_priority(candidate) if effect_priority else (),
                     0
                     if candidate.family == orbit_family
                     and bool(orbit.intersection(candidate.inputs))
@@ -1088,6 +1095,7 @@ def enumerate_typed_candidates(
         audit.update(
             {
                 "examined_input_tuples": examined_input_tuples,
+                "precondition_filtered": precondition_filtered,
                 "max_input_tuples_per_family": max_input_tuples_per_family,
                 "truncated_family_count": len(truncated_families),
                 "truncated_families": truncated_families,

@@ -1,0 +1,416 @@
+{
+  "domain": {
+    "kind": "geometry",
+    "mode": "morphism_contraction"
+  },
+  "protocol": {
+    "seeds": [
+      101,
+      211
+    ],
+    "training_depths": [
+      1,
+      2,
+      3,
+      1,
+      2,
+      3
+    ],
+    "evaluation_depths": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "python_hash_seed": 0,
+    "grammar": "chain: midpoint(previous, earlier point) or foot(previous, distinct base pair); width alternates 3/4",
+    "rejection": "undefined/duplicate specification or initial-point output only; never solver results",
+    "conditions": [
+      "primitive_only",
+      "syntactic_macro",
+      "certified_morphism",
+      "summarized",
+      "hiding_only"
+    ],
+    "ablation": "single most used summarized H, tie by content ID; all evaluation tasks",
+    "regression": "original four tasks, excluded from fresh cohort",
+    "witness_channel": "evaluator-only file; no file path or program supplied to solver",
+    "scientific_gate": "no lost baseline/exposed solve; hidden objects; lower expansion/state/goal cost vs exposed; used-H causal ablation; exact replay",
+    "tuning": "no task, seed, budget changes after mechanism evaluation"
+  },
+  "search": {
+    "seed": 17,
+    "max_states": 120,
+    "max_primitive_operations": 360,
+    "wall_seconds": 120,
+    "per_family_limit": 12,
+    "max_input_tuples_per_family": 256
+  },
+  "acquisition": {
+    "pairs": 3000,
+    "max_parameters": 4,
+    "min_steps": 2,
+    "max_steps": 4,
+    "capacity": 4
+  },
+  "training": [
+    {
+      "id": "fresh-training-101-0",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax + cx - 2*ux",
+        "ay + cy - 2*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-training-101-1",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax + bx/3 - 4*ux/3",
+        "ay + by/3 - 4*uy/3"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-training-101-2",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax + 2*bx + cx - 4*ux",
+        "ay + 2*by + cy - 4*uy"
+      ],
+      "nonzero": [
+        "bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2"
+      ]
+    },
+    {
+      "id": "fresh-training-101-3",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax + bx - 2*ux",
+        "ay + by - 2*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-training-101-4",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "bx + cx - 2*ux",
+        "by + cy - 2*uy"
+      ],
+      "nonzero": [
+        "bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2"
+      ]
+    },
+    {
+      "id": "fresh-training-101-5",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax + cx/2 + dx/2 - 2*ux",
+        "ay + cy/2 + dy/2 - 2*uy"
+      ],
+      "nonzero": [
+        "cx**2 - 2*cx*dx + cy**2 - 2*cy*dy + dx**2 + dy**2"
+      ]
+    },
+    {
+      "id": "fresh-training-211-0",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "bx + cx - 2*ux",
+        "by + cy - 2*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-training-211-1",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "bx*cx**2 - 2*bx*cx*dx + bx*dx**2 + by*cx*cy - by*cx*dy - by*cy*dx + by*dx*dy + cx**3 - 2*cx**2*dx - 2*cx**2*ux + cx*cy**2 - 3*cx*cy*dy + cx*dx**2 + 4*cx*dx*ux + 2*cx*dy**2 + cy**2*dx - 2*cy**2*ux - cy*dx*dy + 4*cy*dy*ux - 2*dx**2*ux - 2*dy**2*ux",
+        "bx*cx*cy - bx*cx*dy - bx*cy*dx + bx*dx*dy + by*cy**2 - 2*by*cy*dy + by*dy**2 + cx**2*cy + cx**2*dy - 2*cx**2*uy - 3*cx*cy*dx - cx*dx*dy + 4*cx*dx*uy + cy**3 - 2*cy**2*dy - 2*cy**2*uy + 2*cy*dx**2 + cy*dy**2 + 4*cy*dy*uy - 2*dx**2*uy - 2*dy**2*uy"
+      ],
+      "nonzero": [
+        "cx**2 - 2*cx*dx + cy**2 - 2*cy*dy + dx**2 + dy**2"
+      ]
+    },
+    {
+      "id": "fresh-training-211-2",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax**2*bx + ax**2*cx - 2*ax**2*ux - ax*ay*by + ax*ay*cy - 2*ax*bx**2 - 2*ax*bx*cx + 4*ax*bx*ux + ax*by**2 - ax*by*cy + 2*ay**2*bx - 2*ay**2*ux - 3*ay*bx*by - ay*bx*cy + 4*ay*by*ux + bx**3 + bx**2*cx - 2*bx**2*ux + bx*by**2 + bx*by*cy - 2*by**2*ux",
+        "ax**2*by - ax**2*uy - ax*ay*bx/2 + ax*ay*cx/2 - 3*ax*bx*by/2 + 2*ax*bx*uy - ax*by*cx/2 + ay**2*by/2 + ay**2*cy/2 - ay**2*uy + ay*bx**2/2 - ay*bx*cx/2 - ay*by**2 - ay*by*cy + 2*ay*by*uy + bx**2*by/2 - bx**2*uy + bx*by*cx/2 + by**3/2 + by**2*cy/2 - by**2*uy"
+      ],
+      "nonzero": [
+        "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2",
+        "ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2"
+      ]
+    },
+    {
+      "id": "fresh-training-211-3",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "bx + cx - 2*ux",
+        "by + cy - 2*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-training-211-4",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax + 3*bx - 4*ux",
+        "ay + 3*by - 4*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-training-211-5",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax**2*bx - ax**2*ux + ax*ay*by - ax*ay*cy - 2*ax*bx*cx - ax*by*cy + 2*ax*cx*ux + ax*cy**2 + ay**2*cx - ay**2*ux - ay*by*cx - ay*cx*cy + 2*ay*cy*ux + bx*cx**2 + by*cx*cy - cx**2*ux - cy**2*ux",
+        "ax**2*cy - ax**2*uy + ax*ay*bx - ax*ay*cx - ax*bx*cy - ax*cx*cy + 2*ax*cx*uy + ay**2*by - ay**2*uy - ay*bx*cx - 2*ay*by*cy + ay*cx**2 + 2*ay*cy*uy + bx*cx*cy + by*cy**2 - cx**2*uy - cy**2*uy"
+      ],
+      "nonzero": [
+        "ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2",
+        "bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2"
+      ]
+    }
+  ],
+  "evaluation": [
+    {
+      "id": "fresh-evaluation-101-0",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax + bx - 2*ux",
+        "ay + by - 2*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-evaluation-101-1",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax*cx**2 - 2*ax*cx*dx + ax*dx**2 + ay*cx*cy - ay*cx*dy - ay*cy*dx + ay*dx*dy - cx**2*ux - cx*cy*dy + 2*cx*dx*ux + cx*dy**2 + cy**2*dx - cy**2*ux - cy*dx*dy + 2*cy*dy*ux - dx**2*ux - dy**2*ux",
+        "ax*cx*cy - ax*cx*dy - ax*cy*dx + ax*dx*dy + ay*cy**2 - 2*ay*cy*dy + ay*dy**2 + cx**2*dy - cx**2*uy - cx*cy*dx - cx*dx*dy + 2*cx*dx*uy - cy**2*uy + cy*dx**2 + 2*cy*dy*uy - dx**2*uy - dy**2*uy"
+      ],
+      "nonzero": [
+        "ax**2 - 2*ax*dx + ay**2 - 2*ay*dy + dx**2 + dy**2",
+        "cx**2 - 2*cx*dx + cy**2 - 2*cy*dy + dx**2 + dy**2"
+      ]
+    },
+    {
+      "id": "fresh-evaluation-101-2",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax + bx + 6*cx - 8*ux",
+        "ay + by + 6*cy - 8*uy"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "fresh-evaluation-101-3",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax**3 + ax**2*cx - 2*ax**2*dx - 2*ax**2*ux + ax*ay**2 + ax*ay*cy/2 - 5*ax*ay*dy/2 - 2*ax*cx*dx - ax*cy*dy/2 + ax*dx**2 + 4*ax*dx*ux + 3*ax*dy**2/2 + ay**2*cx/2 + ay**2*dx/2 - 2*ay**2*ux - ay*cx*dy - ay*cy*dx/2 - ay*dx*dy/2 + 4*ay*dy*ux + cx*dx**2 + cx*dy**2/2 + cy*dx*dy/2 - 2*dx**2*ux - 2*dy**2*ux",
+        "ax**2*ay + ax**2*cy/2 + ax**2*dy/2 - 2*ax**2*uy + ax*ay*cx/2 - 5*ax*ay*dx/2 - ax*cx*dy/2 - ax*cy*dx - ax*dx*dy/2 + 4*ax*dx*uy + ay**3 + ay**2*cy - 2*ay**2*dy - 2*ay**2*uy - ay*cx*dx/2 - 2*ay*cy*dy + 3*ay*dx**2/2 + ay*dy**2 + 4*ay*dy*uy + cx*dx*dy/2 + cy*dx**2/2 + cy*dy**2 - 2*dx**2*uy - 2*dy**2*uy"
+      ],
+      "nonzero": [
+        "ax**2 - 2*ax*dx + ay**2 - 2*ay*dy + dx**2 + dy**2",
+        "bx**2 - 2*bx*cx + by**2 - 2*by*cy + cx**2 + cy**2"
+      ]
+    },
+    {
+      "id": "fresh-evaluation-211-0",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "cx - ux",
+        "cy - uy"
+      ],
+      "nonzero": [
+        "ax**2 - 2*ax*cx + ay**2 - 2*ay*cy + cx**2 + cy**2"
+      ]
+    },
+    {
+      "id": "fresh-evaluation-211-1",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "bx + dx - 2*ux",
+        "by + dy - 2*uy"
+      ],
+      "nonzero": [
+        "cx**2 - 2*cx*dx + cy**2 - 2*cy*dy + dx**2 + dy**2"
+      ]
+    },
+    {
+      "id": "fresh-evaluation-211-2",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "ax**3 - ax**2*bx + 2*ax**2*cx - 4*ax**2*ux + ax*ay**2 - 4*ax*ay*by + 2*ax*ay*cy - ax*bx**2 - 4*ax*bx*cx + 8*ax*bx*ux + 3*ax*by**2 - 2*ax*by*cy + 3*ay**2*bx - 4*ay**2*ux - 4*ay*bx*by - 2*ay*bx*cy + 8*ay*by*ux + bx**3 + 2*bx**2*cx - 4*bx**2*ux + bx*by**2 + 2*bx*by*cy - 4*by**2*ux",
+        "ax**2*ay + 3*ax**2*by - 4*ax**2*uy - 4*ax*ay*bx + 2*ax*ay*cx - 4*ax*bx*by + 8*ax*bx*uy - 2*ax*by*cx + ay**3 - ay**2*by + 2*ay**2*cy - 4*ay**2*uy + 3*ay*bx**2 - 2*ay*bx*cx - ay*by**2 - 4*ay*by*cy + 8*ay*by*uy + bx**2*by - 4*bx**2*uy + 2*bx*by*cx + by**3 + 2*by**2*cy - 4*by**2*uy"
+      ],
+      "nonzero": [
+        "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2"
+      ]
+    },
+    {
+      "id": "fresh-evaluation-211-3",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "ax*bx**2*cx**2 - 2*ax*bx**2*cx*dx + ax*bx**2*dx**2 + ax*bx*by*cx*cy - ax*bx*by*cx*dy - ax*bx*by*cy*dx + ax*bx*by*dx*dy - 2*ax*bx*cx**2*dx - ax*bx*cx*cy*dy + 4*ax*bx*cx*dx**2 + ax*bx*cx*dy**2 + ax*bx*cy*dx*dy - 2*ax*bx*dx**3 - ax*bx*dx*dy**2 - ax*by*cx*cy*dx + ax*by*cx*dx*dy + ax*by*cy*dx**2 - ax*by*dx**2*dy + ax*cx**2*dx**2 + ax*cx*cy*dx*dy - 2*ax*cx*dx**3 - ax*cx*dx*dy**2 - ax*cy*dx**2*dy + ax*dx**4 + ax*dx**2*dy**2 + ay*bx*by*cx**2 - 2*ay*bx*by*cx*dx + ay*bx*by*dx**2 - ay*bx*cx**2*dy + 2*ay*bx*cx*dx*dy - ay*bx*dx**2*dy + ay*by**2*cx*cy - ay*by**2*cx*dy - ay*by**2*cy*dx + ay*by**2*dx*dy - ay*by*cx**2*dx - 2*ay*by*cx*cy*dy + 2*ay*by*cx*dx**2 + 2*ay*by*cx*dy**2 + 2*ay*by*cy*dx*dy - ay*by*dx**3 - 2*ay*by*dx*dy**2 + ay*cx**2*dx*dy + ay*cx*cy*dy**2 - 2*ay*cx*dx**2*dy - ay*cx*dy**3 - ay*cy*dx*dy**2 + ay*dx**3*dy + ay*dx*dy**3 + 3*bx**3*cx**2 - 6*bx**3*cx*dx + 2*bx**3*cy**2 - 4*bx**3*cy*dy + 3*bx**3*dx**2 + 2*bx**3*dy**2 + bx**2*by*cx*cy - bx**2*by*cx*dy - bx**2*by*cy*dx + bx**2*by*dx*dy - 6*bx**2*cx**2*dx - 4*bx**2*cx**2*ux - bx**2*cx*cy*dy + 12*bx**2*cx*dx**2 + 8*bx**2*cx*dx*ux + bx**2*cx*dy**2 - 2*bx**2*cy**2*dx - 4*bx**2*cy**2*ux + 5*bx**2*cy*dx*dy + 8*bx**2*cy*dy*ux - 6*bx**2*dx**3 - 4*bx**2*dx**2*ux - 3*bx**2*dx*dy**2 - 4*bx**2*dy**2*ux + 3*bx*by**2*cx**2 - 6*bx*by**2*cx*dx + 2*bx*by**2*cy**2 - 4*bx*by**2*cy*dy + 3*bx*by**2*dx**2 + 2*bx*by**2*dy**2 - 7*bx*by*cx**2*dy - 3*bx*by*cx*cy*dx + 17*bx*by*cx*dx*dy - 4*bx*by*cy**2*dy + 3*bx*by*cy*dx**2 + 8*bx*by*cy*dy**2 - 10*bx*by*dx**2*dy - 4*bx*by*dy**3 + 3*bx*cx**2*dx**2 + 8*bx*cx**2*dx*ux + 4*bx*cx**2*dy**2 + 3*bx*cx*cy*dx*dy - 6*bx*cx*dx**3 - 16*bx*cx*dx**2*ux - 11*bx*cx*dx*dy**2 - 2*bx*cy**2*dx**2 + 8*bx*cy**2*dx*ux + 2*bx*cy**2*dy**2 + bx*cy*dx**2*dy - 16*bx*cy*dx*dy*ux - 4*bx*cy*dy**3 + 3*bx*dx**4 + 8*bx*dx**3*ux + 5*bx*dx**2*dy**2 + 8*bx*dx*dy**2*ux + 2*bx*dy**4 + by**3*cx*cy - by**3*cx*dy - by**3*cy*dx + by**3*dx*dy + by**2*cx**2*dx - 4*by**2*cx**2*ux - 4*by**2*cx*cy*dy - 2*by**2*cx*dx**2 + 8*by**2*cx*dx*ux + 4*by**2*cx*dy**2 + 2*by**2*cy**2*dx - 4*by**2*cy**2*ux + 8*by**2*cy*dy*ux + by**2*dx**3 - 4*by**2*dx**2*ux - 2*by**2*dx*dy**2 - 4*by**2*dy**2*ux - by*cx**2*dx*dy + 8*by*cx**2*dy*ux + 2*by*cx*cy*dx**2 + 5*by*cx*cy*dy**2 - 16*by*cx*dx*dy*ux - 5*by*cx*dy**3 - 4*by*cy**2*dx*dy + 8*by*cy**2*dy*ux - 2*by*cy*dx**3 + 3*by*cy*dx*dy**2 - 16*by*cy*dy**2*ux + by*dx**3*dy + 8*by*dx**2*dy*ux + by*dx*dy**3 + 8*by*dy**3*ux - 4*cx**2*dx**2*ux - 4*cx**2*dy**2*ux - 2*cx*cy*dx**2*dy - 2*cx*cy*dy**3 + 8*cx*dx**3*ux + 2*cx*dx**2*dy**2 + 8*cx*dx*dy**2*ux + 2*cx*dy**4 + 2*cy**2*dx**3 - 4*cy**2*dx**2*ux + 2*cy**2*dx*dy**2 - 4*cy**2*dy**2*ux - 2*cy*dx**3*dy + 8*cy*dx**2*dy*ux - 2*cy*dx*dy**3 + 8*cy*dy**3*ux - 4*dx**4*ux - 8*dx**2*dy**2*ux - 4*dy**4*ux",
+        "ax*bx**2*cx*cy - ax*bx**2*cx*dy - ax*bx**2*cy*dx + ax*bx**2*dx*dy + ax*bx*by*cy**2 - 2*ax*bx*by*cy*dy + ax*bx*by*dy**2 - 2*ax*bx*cx*cy*dx + 2*ax*bx*cx*dx*dy - ax*bx*cy**2*dy + 2*ax*bx*cy*dx**2 + 2*ax*bx*cy*dy**2 - 2*ax*bx*dx**2*dy - ax*bx*dy**3 - ax*by*cy**2*dx + 2*ax*by*cy*dx*dy - ax*by*dx*dy**2 + ax*cx*cy*dx**2 - ax*cx*dx**2*dy + ax*cy**2*dx*dy - ax*cy*dx**3 - 2*ax*cy*dx*dy**2 + ax*dx**3*dy + ax*dx*dy**3 + ay*bx*by*cx*cy - ay*bx*by*cx*dy - ay*bx*by*cy*dx + ay*bx*by*dx*dy - ay*bx*cx*cy*dy + ay*bx*cx*dy**2 + ay*bx*cy*dx*dy - ay*bx*dx*dy**2 + ay*by**2*cy**2 - 2*ay*by**2*cy*dy + ay*by**2*dy**2 - ay*by*cx*cy*dx + ay*by*cx*dx*dy - 2*ay*by*cy**2*dy + ay*by*cy*dx**2 + 4*ay*by*cy*dy**2 - ay*by*dx**2*dy - 2*ay*by*dy**3 + ay*cx*cy*dx*dy - ay*cx*dx*dy**2 + ay*cy**2*dy**2 - ay*cy*dx**2*dy - 2*ay*cy*dy**3 + ay*dx**2*dy**2 + ay*dy**4 + bx**3*cx*cy - bx**3*cx*dy - bx**3*cy*dx + bx**3*dx*dy + 2*bx**2*by*cx**2 - 4*bx**2*by*cx*dx + 3*bx**2*by*cy**2 - 6*bx**2*by*cy*dy + 2*bx**2*by*dx**2 + 3*bx**2*by*dy**2 + 2*bx**2*cx**2*dy - 4*bx**2*cx**2*uy - 4*bx**2*cx*cy*dx + 8*bx**2*cx*dx*uy + bx**2*cy**2*dy - 4*bx**2*cy**2*uy + 4*bx**2*cy*dx**2 - 2*bx**2*cy*dy**2 + 8*bx**2*cy*dy*uy - 2*bx**2*dx**2*dy - 4*bx**2*dx**2*uy + bx**2*dy**3 - 4*bx**2*dy**2*uy + bx*by**2*cx*cy - bx*by**2*cx*dy - bx*by**2*cy*dx + bx*by**2*dx*dy - 4*bx*by*cx**2*dx - 3*bx*by*cx*cy*dy + 8*bx*by*cx*dx**2 + 3*bx*by*cx*dy**2 - 7*bx*by*cy**2*dx + 17*bx*by*cy*dx*dy - 4*bx*by*dx**3 - 10*bx*by*dx*dy**2 - 4*bx*cx**2*dx*dy + 8*bx*cx**2*dx*uy + 5*bx*cx*cy*dx**2 + 2*bx*cx*cy*dy**2 + 3*bx*cx*dx**2*dy - 16*bx*cx*dx**2*uy - 2*bx*cx*dy**3 - bx*cy**2*dx*dy + 8*bx*cy**2*dx*uy - 5*bx*cy*dx**3 - 16*bx*cy*dx*dy*uy + bx*dx**3*dy + 8*bx*dx**3*uy + bx*dx*dy**3 + 8*bx*dx*dy**2*uy + 2*by**3*cx**2 - 4*by**3*cx*dx + 3*by**3*cy**2 - 6*by**3*cy*dy + 2*by**3*dx**2 + 3*by**3*dy**2 - 2*by**2*cx**2*dy - 4*by**2*cx**2*uy - by**2*cx*cy*dx + 5*by**2*cx*dx*dy + 8*by**2*cx*dx*uy - 6*by**2*cy**2*dy - 4*by**2*cy**2*uy + by**2*cy*dx**2 + 12*by**2*cy*dy**2 + 8*by**2*cy*dy*uy - 3*by**2*dx**2*dy - 4*by**2*dx**2*uy - 6*by**2*dy**3 - 4*by**2*dy**2*uy + 2*by*cx**2*dx**2 - 2*by*cx**2*dy**2 + 8*by*cx**2*dy*uy + 3*by*cx*cy*dx*dy - 4*by*cx*dx**3 + by*cx*dx*dy**2 - 16*by*cx*dx*dy*uy + 4*by*cy**2*dx**2 + 3*by*cy**2*dy**2 + 8*by*cy**2*dy*uy - 11*by*cy*dx**2*dy - 6*by*cy*dy**3 - 16*by*cy*dy**2*uy + 2*by*dx**4 + 5*by*dx**2*dy**2 + 8*by*dx**2*dy*uy + 3*by*dy**4 + 8*by*dy**3*uy + 2*cx**2*dx**2*dy - 4*cx**2*dx**2*uy + 2*cx**2*dy**3 - 4*cx**2*dy**2*uy - 2*cx*cy*dx**3 - 2*cx*cy*dx*dy**2 - 2*cx*dx**3*dy + 8*cx*dx**3*uy - 2*cx*dx*dy**3 + 8*cx*dx*dy**2*uy - 4*cy**2*dx**2*uy - 4*cy**2*dy**2*uy + 2*cy*dx**4 + 2*cy*dx**2*dy**2 + 8*cy*dx**2*dy*uy + 8*cy*dy**3*uy - 4*dx**4*uy - 8*dx**2*dy**2*uy - 4*dy**4*uy"
+      ],
+      "nonzero": [
+        "bx**2 - 2*bx*dx + by**2 - 2*by*dy + dx**2 + dy**2",
+        "cx**2 - 2*cx*dx + cy**2 - 2*cy*dy + dx**2 + dy**2"
+      ]
+    }
+  ],
+  "regression": [
+    {
+      "id": "unseen-01",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "8*ux-5*ax-3*bx",
+        "8*uy-5*ay-3*by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "unseen-02",
+      "points": [
+        "a",
+        "b"
+      ],
+      "goal_polynomials": [
+        "8*ux-3*ax-5*bx",
+        "8*uy-3*ay-5*by"
+      ],
+      "nonzero": []
+    },
+    {
+      "id": "unseen-03",
+      "points": [
+        "a",
+        "b",
+        "c"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "4*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    },
+    {
+      "id": "unseen-04",
+      "points": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "goal_polynomials": [
+        "(ux-ax)*(by-ay)-(uy-ay)*(bx-ax)",
+        "2*((ux-ax)*(bx-ax)+(uy-ay)*(by-ay))-((cx+dx-2*ax)*(bx-ax)+(cy+dy-2*ay)*(by-ay))"
+      ],
+      "nonzero": [
+        "(bx-ax)**2+(by-ay)**2"
+      ]
+    }
+  ]
+}

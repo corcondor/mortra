@@ -1,0 +1,23 @@
+........................................F........s...................... [ 59%]
+.................................................                        [100%]
+================================== FAILURES ===================================
+__________ test_source_subdag_shared_internal_point_becomes_boundary __________
+
+    def test_source_subdag_shared_internal_point_becomes_boundary():
+        shared = term("midpoint", "a", "b")
+        body = term("midpoint", "p", shared)
+        full = term("midpoint", shared, body)
+        h, _ = gc.certify_body(body)
+        h["source_proof_traces"] = [{"source_proof": "proof", "matches": [{"path": [1],
+            "binding": {n: gc.point(n) for n in ("p", "a", "b")}}]}]
+        boundary, evidence = source_interfaces(h, [{"source_proof": "proof", "program": full}])
+>       assert boundary == ["local0"]
+E       AssertionError: assert ['local0', 'local1'] == ['local0']
+E         
+E         Left contains one more item: 'local1'
+E         Use -v to get more diff
+
+tests\test_geometry_contraction.py:165: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_geometry_contraction.py::test_source_subdag_shared_internal_point_becomes_boundary
+1 failed, 119 passed, 1 skipped in 30.39s
