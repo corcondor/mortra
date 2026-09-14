@@ -33,6 +33,52 @@ def reach_key(state):
     return digest(sorted({tuple(o["coordinates"]) for o in state.objects.values()}))
 
 
+def syntax_size(term):
+    """AST nodes, not serialized identifier bytes or measured execution cost."""
+    if library.is_hole(term) or term.get("op") == "var":
+        return 1
+    children = term["arguments"].values() if library.is_call(term) else term["args"]
+    return 1+sum(syntax_size(a) for a in children)
+
+
+def refactor_corpus(corpus, bank):
+    """Use certified definitions in the learning view; retain executed evidence."""
+    started = time.perf_counter()
+    rows, proofs = [], []
+    checks = 0
+    expansion_cost = Counter()
+    for entry in corpus:
+        original = entry["program"]
+        current = deepcopy(original)
+        # Each accepted replacement strictly reduces AST size. Old definitions
+        # and old execution records are never edited, including their use nodes.
+        while True:
+            alternatives = []
+            for h in bank.archive:
+                sites = library.select_sites(library.match_sites(h["template"], current))
+                checks += 1
+                if not sites:
+                    continue
+                rewritten = library.rewrite(current, h["id"], h["template"], sites)
+                if syntax_size(rewritten) < syntax_size(current):
+                    alternatives.append((syntax_size(rewritten), h["id"], rewritten))
+            if not alternatives:
+                break
+            _, name, rewritten = min(alternatives, key=lambda r: r[:2])
+            if dsl.expand(current, bank.table, expansion_cost) != dsl.expand(rewritten, bank.table, expansion_cost):
+                raise ValueError("learning refactoring changed primitive semantics")
+            proofs.append({"history": entry["id"], "morphism": name,
+                "before_sha256": digest(current), "after_sha256": digest(rewritten),
+                "before_nodes": syntax_size(current), "after_nodes": syntax_size(rewritten),
+                "proof": "identical full primitive expansion under certified definition table",
+                "table_sha256": bank.table["sha256"]})
+            current = rewritten
+        rows.append(dict(entry, program=current, source_program=entry.get("source_program", original)))
+    return rows, {"proofs": proofs, "matching_checks": checks,
+                  "expansion_cost": dict(expansion_cost),
+                  "seconds": time.perf_counter()-started}
+
+
 class GeometryLibrary:
     def __init__(self):
         self.archive = []
@@ -95,6 +141,7 @@ class SemanticGeometryDomain:
         self.reached.add(reach_key(self.start_state))
 
     def sync(self):
+        started = time.perf_counter()
         self.contracts = {h["id"]: h for h in self.bank.archive if h["id"] in self.active}
         available = {h["id"] for h in self.bank.archive}
         if set(self.active)-available:
@@ -103,6 +150,21 @@ class SemanticGeometryDomain:
         for h in self.contracts.values():
             self.registry[h["id"]] = ConstructionFamily(h["id"], len(h["parameters"]), "ordered", allow_repeated_inputs=True)
         self.families = tuple(self.registry)
+        self.input_guards = {}
+        for family in self.families:
+            cert = (self.contracts[family]["exact_certificate"] if family in self.contracts
+                    else self.bank.schemas[family])
+            names = [p["name"] for p in cert["typed_parameters"]]
+            symbols = {n+a: sp.Symbol(n+a, real=True) for n in names for a in ("x", "y")}
+            symbols.update({s: sp.Symbol(s, real=True)
+                for p in cert["local_auxiliary_variables"] for s in p["coordinates"]})
+            expressions = list(cert["applicability"]["input_nonzero_polynomials"])
+            expressions.extend(e for g in cert["applicability"].get("sequential_nonzero_polynomials", [])
+                               for e in g["parent_factors"])
+            inputs = {symbols[n+a] for n in names for a in ("x", "y")}
+            guards = [gc.parse(e, symbols) for e in expressions]
+            self.input_guards[family] = (names, symbols, [g for g in guards if g.free_symbols <= inputs])
+        self.costs["registry_sync_seconds"] += time.perf_counter()-started
 
     def initial(self):
         return deepcopy(self.start_state)
@@ -138,13 +200,31 @@ class SemanticGeometryDomain:
             goal_multiplicity=demands if self.policy == "SOLVE" else {},
             generated_points=set(names)-set(self.task["points"]), families=[self.registry[family]],
             per_family_limit=self.config["per_family_limit"], seed=self.config["seed"],
-            max_input_tuples_per_family=self.config["max_input_tuples"], audit=audit)
+            max_input_tuples_per_family=self.config["max_input_tuples"], audit=audit,
+            binding_precondition=lambda f, args: self.binding_admissible(state, f.name, args))
         self.costs["candidate_generation_seconds"] += time.perf_counter()-start
         self.costs["examined_input_tuples"] += audit.get("examined_input_tuples", 0)
+        self.costs["input_guard_filtered"] += audit.get("precondition_filtered", 0)
         for row in rows:
             key = (family, self.key(state), tuple(row.inputs))
             if key not in self.attempted:
                 yield lambda c=row, k=key: self.apply(state, c, k)
+
+    def binding_admissible(self, state, family, args):
+        """Only reject a proved-false guard; unresolved local guards remain live."""
+        started = time.perf_counter()
+        try:
+            names, symbols, guards = self.input_guards[family]
+            mapping = dict(zip(names, args, strict=True))
+            replacement = {symbols[n+a]: sp.Rational(state.objects[v]["coordinates"][i])
+                for n, v in mapping.items() for i, a in enumerate(("x", "y"))}
+            for guard in guards:
+                self.costs["candidate_guard_checks"] += 1
+                if sp.cancel(guard.xreplace(replacement)) == 0:
+                    return False
+            return True
+        finally:
+            self.costs["candidate_guard_seconds"] += time.perf_counter()-started
 
     def apply(self, state, candidate, attempt):
         if self.stop_reason:
@@ -332,11 +412,11 @@ class SemanticGeometryDomain:
         return False
 
     def search(self, applications):
-        self.sync()
         progress = RuntimeSearchProgress()
         initial_count = len(self.facts) if self.facts is not None else 1
         self.window_started = time.perf_counter()
         try:
+            self.sync()
             plan = search_action_domain(self, max_depth=self.config["max_depth"],
                 max_states=initial_count+applications, progress=progress, initial_facts=self.facts)
         finally:
@@ -372,12 +452,21 @@ def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
             return 1+sum(size(a) for a in node["arguments"].values())
         return int(node.get("op") in dsl.FRAGMENT.arities)+sum(size(a) for a in node.get("args", []))
     old = {h["id"] for h in bank.archive}
-    accepted, rejected = [], []
+    accepted, rejected, refactorings, selection_rounds = [], [], [], []
     with library.grammar(dsl.validate_semantic):
-        proposals = library.candidates(corpus, pairs=config["pairs"], limit=config["max_parameters"],
+        input_corpus = deepcopy(corpus)
+        if not flatten:
+            corpus, refactoring = refactor_corpus(corpus, bank)
+            refactorings.append(refactoring)
+        # Preserve both views for proposal generation, but never count two
+        # variants of one history twice when measuring acquisition utility.
+        proposal_corpus = list(corpus)
+        proposal_corpus.extend(e for e, r in zip(input_corpus, corpus, strict=True)
+                               if e["program"] != r["program"])
+        proposals = library.candidates(proposal_corpus, pairs=config["pairs"], limit=config["max_parameters"],
                                        source_filter=lambda n: size(n) >= config["min_semantic_operations"],
                                        deduplicate_sources=True)
-        eligible = []
+        admissible = []
         for p in proposals["candidates"]:
             try:
                 body = dsl.definition_body(p["template"])
@@ -386,22 +475,43 @@ def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
                 expanded = dsl.expand(body, bank.table)
                 if len(gc.dag(expanded, fragment=dsl.FRAGMENT)[0]) > config["max_primitive_steps"]:
                     continue
+                identity = "geom.semantic."+digest({"template": p["template"], "scope": dsl.FRAGMENT.scope})[:20]
+                if identity in old:
+                    continue
+                admissible.append((p, identity))
+            except (ValueError, TypeError, KeyError) as exc:
+                rejected.append({"candidate": p["id"], "reason": str(exc)})
+        attempted = set()
+        for _ in range(min(config["certification_budget"], config["per_cycle_capacity"])):
+            eligible = []
+            for p, identity in admissible:
+                if p["id"] in attempted:
+                    continue
                 sources = [{"history": c["id"], "task_sha256": c["task_sha256"],
+                            "learning_program_sha256": digest(c["program"]),
+                            "source_program_sha256": digest(c.get("source_program", c["program"])),
                             "matches": library.match_sites(p["template"], c["program"])} for c in corpus]
                 sources = [s for s in sources if s["matches"]]
                 if len({s["task_sha256"] for s in sources}) < config["min_contexts"]:
                     continue
-                identity = "geom.semantic."+digest({"template": p["template"], "scope": dsl.FRAGMENT.scope})[:20]
-                if identity in old:
-                    continue
                 utility = library.utility(corpus, p["template"], index=identity)
                 if utility["failures"]:
                     raise ValueError("syntactic abstraction roundtrip failed")
+                before = sum(syntax_size(c["program"]) for c in corpus)
+                after = sum(syntax_size(c["program"]) for c in utility["rewritten"])
+                definition = 1+len(library.holes(p["template"]))+syntax_size(p["template"])
+                utility["syntax_nodes"] = {"before": before, "after": after,
+                    "definition": definition, "net_saved": before-after-definition,
+                    "model": "one per AST node; binder and each parameter once; IDs not bytes"}
                 eligible.append((p, sources, utility))
-            except (ValueError, TypeError, KeyError) as exc:
-                rejected.append({"candidate": p["id"], "reason": str(exc)})
-        eligible.sort(key=lambda e: (-len(e[1]), -e[2]["utility_bits"], e[0]["id"]))
-        for p, sources, utility in eligible[:config["certification_budget"]]:
+            eligible.sort(key=lambda e: (-e[2]["syntax_nodes"]["net_saved"], -len(e[1]), e[0]["id"]))
+            selection_rounds.append([{"candidate": p["id"], "history_support": len(s),
+                "syntax_nodes": u["syntax_nodes"], "json_utility_bits": u["utility_bits"]}
+                for p, s, u in eligible])
+            if not eligible or eligible[0][2]["syntax_nodes"]["net_saved"] <= 0:
+                break
+            p, sources, utility = eligible[0]
+            attempted.add(p["id"])
             certify_started = time.perf_counter()
             emit({"event": "certification_start", "cycle": config["cycle"],
                   "candidate": p["id"], "template": p["template"], "sources": sources})
@@ -414,14 +524,18 @@ def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
                     accepted.append(h)
                 emit({"event": "certification_complete", "candidate": p["id"],
                       "seconds": time.perf_counter()-certify_started, "morphism": h["id"]})
+                corpus, refactoring = refactor_corpus(corpus, bank)
+                refactorings.append(refactoring)
             except (ValueError, TypeError, KeyError) as exc:
                 rejected.append({"candidate": p["id"], "reason": str(exc)})
                 emit({"event": "certification_refused", "candidate": p["id"],
                       "seconds": time.perf_counter()-certify_started, "reason": str(exc)})
     return {"accepted": accepted, "rejected": rejected, "corpus": corpus,
-            "proposals": proposals, "eligible": len(eligible), "flattened_before_learning": flatten,
+            "input_corpus": input_corpus, "refactorings": refactorings,
+            "selection_rounds": selection_rounds,
+            "proposals": proposals, "eligible": len(admissible), "flattened_before_learning": flatten,
             "seconds": time.perf_counter()-start,
-            "selection_rule": "distinct-history support, net description bits, content hash; no evaluation feedback"}
+            "selection_rule": "positive marginal AST-node saving including definition, history support, content hash; no evaluation feedback"}
 
 
 def run_semantic_feedback(config, output):

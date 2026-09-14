@@ -9,7 +9,8 @@ import pytest
 from math_os_prototype import geometry_contracts as gc
 from math_os_prototype import geometry_semantic_dsl as dsl
 from math_os_prototype import library_compression as lib
-from math_os_prototype.theory_geometry_feedback import GeometryLibrary, SemanticGeometryDomain, acquire, reach_key
+from math_os_prototype.theory_geometry_feedback import (
+    GeometryLibrary, SemanticGeometryDomain, acquire, reach_key, refactor_corpus, syntax_size)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -190,7 +191,7 @@ def test_generated_call_survives_into_later_learning_input(bank):
     original = acquire(d.histories, deepcopy(bank), small)
     flat = acquire(d.histories, deepcopy(bank), small, flatten=True)
     assert any(lib.calls_in(c["program"]) for c in original["corpus"])
-    assert not any(lib.calls_in(c["program"]) for c in flat["corpus"])
+    assert not any(lib.calls_in(c["program"]) for c in flat["input_corpus"])
 
 
 def test_search_frontier_continues_and_no_goal_hard_gate(bank):
@@ -233,3 +234,57 @@ def test_failed_independent_goal_replay_is_not_a_solution(bank, monkeypatch):
     assert d.solution is None
     assert d.costs["goal_replay_failures"] == 1
     assert not d.is_goal(state)
+
+
+def test_name_length_is_not_semantic_program_size():
+    short = {"op": "use", "abstraction": "h", "arguments": {"f0": gc.point("a")}}
+    long = deepcopy(short)
+    long["abstraction"] = "h"*200
+    long["arguments"]["f0"] = gc.point("long_point_name")
+    assert syntax_size(short) == syntax_size(long) == 2
+
+
+def test_existing_library_refactors_learning_view_not_execution_evidence(bank):
+    bank = deepcopy(bank)
+    f0, f1, f2 = (lib.program_hole(i) for i in range(3))
+    template = {"op": "midpoint", "args": [f0, {"op": "midpoint", "args": [f1, f2]}]}
+    h = dsl.certify_definition(template, [])
+    bank.register(h)
+    original = lib.instantiate_term(template, {"f0": gc.point("a"), "f1": gc.point("b"), "f2": gc.point("c")})
+    corpus = [{"id": "development_history", "program": original, "task_sha256": "development_task"}]
+    before = deepcopy(corpus)
+    with lib.grammar(dsl.validate_semantic):
+        rewritten, audit = refactor_corpus(corpus, bank)
+        unchanged, second = refactor_corpus(rewritten, bank)
+    assert corpus == before
+    assert h["id"] in lib.calls_in(rewritten[0]["program"])
+    assert rewritten[0]["source_program"] == original
+    assert dsl.expand(rewritten[0]["program"], bank.table) == original
+    assert audit["proofs"] and audit["matching_checks"]
+    assert unchanged == rewritten and not second["proofs"]
+
+
+def test_binding_guard_filters_only_proved_input_degeneracy(bank):
+    bank = deepcopy(bank)
+    f = [lib.program_hole(i) for i in range(4)]
+    h = dsl.certify_definition({"op": "orthocenter", "args": [
+        {"op": "circle", "args": f[:3]}, f[0], f[3]]}, [])
+    bank.register(h)
+    d = domain(bank, active=[h["id"]])
+    state = d.initial()
+    assert not d.binding_admissible(state, h["id"], ("a", "a", "b", "c"))
+    assert d.binding_admissible(state, h["id"], ("a", "b", "c", "d"))
+    assert d.binding_admissible(state, "midpoint", ("a", "a"))
+    assert not d.costs["witness_evaluations"]
+    assert d.costs["candidate_guard_checks"] > 0
+
+
+def test_later_local_guard_is_not_guessed_during_candidate_generation(bank):
+    bank = deepcopy(bank)
+    f = [lib.program_hole(i) for i in range(4)]
+    h = dsl.certify_definition({"op": "foot", "args": [f[0],
+        {"op": "midpoint", "args": [f[1], f[2]]}, f[3]]}, [])
+    bank.register(h)
+    d = domain(bank, {"points": {"a": [0, 2], "b": [0, 0], "c": [2, 0], "d": [1, 0]}}, active=[h["id"]])
+    assert d.binding_admissible(d.initial(), h["id"], ("a", "b", "c", "d"))
+    assert apply(d, d.initial(), h["id"], ("a", "b", "c", "d")) is None
