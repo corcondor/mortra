@@ -73,6 +73,7 @@ on:
           - configs/theory-geometry-selection-factorial.json
           - configs/theory-geometry-semantic-feedback.json
           - configs/theory-geometry-semantic-feedback-eight-cycles.json
+          - configs/theory-geometry-failure-location.json
 
 permissions:
   contents: read
@@ -103,6 +104,12 @@ jobs:
           python -m pytest -q tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
       - name: Frozen normal-entry geometry comparison
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
+      - name: Verify diagnostic analysis on synthetic inputs
+        if: env.EXPERIMENT_CONFIG == 'configs/theory-geometry-failure-location.json'
+        run: python -m pytest -q tests/test_geometry_failure_diagnostic.py --junitxml=reports/failure-diagnostic-tests.xml
+      - name: Diagnose fresh trace without feeding witnesses to search
+        if: env.EXPERIMENT_CONFIG == 'configs/theory-geometry-failure-location.json'
+        run: python scripts/diagnose_geometry_failure_location.py --run reports/semantic-feedback-normal --witnesses configs/geometry-failure-witnesses.json --output reports/failure-location-analysis
       - name: Preserve fresh evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -111,6 +118,8 @@ jobs:
           path: |
             reports/semantic-feedback-tests.*
             reports/semantic-feedback-normal/
+            reports/failure-diagnostic-tests.xml
+            reports/failure-location-analysis/
   exact-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 15

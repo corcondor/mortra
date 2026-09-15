@@ -1,0 +1,29 @@
+{
+  "domain": {"kind": "geometry", "mode": "selection_factorial"},
+  "protocol": {
+    "python_hash_seed": 0,
+    "baseline_sha": "1e1f61e41f938db61bfdccf785e9df7f15762fe5",
+    "conditions": {"A": [false, false], "B": [false, true], "C": [true, false], "D": [true, true]},
+    "factors": ["stored_library_enabled", "contract_ranking_enabled"],
+    "candidate_invariance": "Complete streams. Ranking permutes each page, never removes its remaining stream. Compare A/B and C/D at identical states.",
+    "selection": "Unchanged existing policy; no backward planner or witness injection.",
+    "fair_original_round_every": 4,
+    "no_acquisition_or_policy_learning": true,
+    "evaluation_status": "Previously inspected regression goals and previously inspected changed-coordinate instances; diagnostic reproduction, not fresh held-out generalization.",
+    "holdout_seed": 2026091501,
+    "holdout_coordinate_range": [-9, 9],
+    "diagnostic_status": "Separate 448-application unchanged autonomous searches on A-unsolved regression tasks. No hand-provided construction enters these runs."
+  },
+  "source_archive": {
+    "path": "reports/geometry-complete-revalidation-evidence.zip",
+    "sha256": "e6c68d83bb9e225dd459dc21d512ca8fd04b88cba25f71f475380bb0ab367f52",
+    "run_id": "34908552962",
+    "source_sha": "f966f3efa4004be1b817c5fe08a412a86357f8e5",
+    "member_prefix": "semantic-geometry-f966f3efa4004be1b817c5fe08a412a86357f8e5-34908552962/semantic-feedback-normal/acquisition/",
+    "library_sha256": "e5b2b9397b84b7cd2f2971e085482d6c34cedde6f5021865e614cd1dc40e3f74",
+    "plan_sha256": "416f1e3e9b6a2e69ee3c1b4c061e7b1847092862dfeadb67624d817575653769"
+  },
+  "search": {"seed": 17, "max_depth": 6000, "candidate_enumeration": "complete", "max_candidate_checks": 100000, "max_primitive_operations": 6000, "wall_seconds": 600, "ranking_window": 16, "trace_predicates": true},
+  "applications": 112,
+  "diagnostic": {"enabled": true, "conditions": ["A", "D"], "applications": 448, "max_primitive_operations": 24000, "wall_seconds": 300}
+}

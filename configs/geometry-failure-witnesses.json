@@ -1,0 +1,15 @@
+{
+  "provenance": "Developer-supplied diagnostic witnesses, never normal-run inputs or MORTRA discoveries.",
+  "cohort": "regression",
+  "templates": [
+    ["midpoint", "a", "b"],
+    ["foot", "a", "c", "d"],
+    ["circle", "a", "b", "c"],
+    ["orthocenter", "a", "b", "c"],
+    ["intersection_ll", "a", "b", ["midpoint", "c", "d"], ["circle", "c", "d", "a"]],
+    ["intersection_ll", ["midpoint", "a", "b"], ["circle", "a", "b", "c"], ["midpoint", "c", "d"], ["circle", "c", "d", "a"]],
+    ["intersection_ll", "a", "c", "b", ["reflect", "b", "c", "d"]],
+    ["mirror", "c", ["foot", ["circle", "a", "b", "c"], "c", "d"]]
+  ],
+  "task_template_indices": [0, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6, 7, 4, 5, 6, 7]
+}
