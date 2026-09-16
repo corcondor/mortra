@@ -544,6 +544,7 @@ class _JGEXElaborator:
         self._parameter_index = 0
         self._clause_index = 0
         self.enable_affine_local_lemmas = enable_affine_local_lemmas
+        self.preserve_intersection_distinctness = False
         self.progress_callback: Callable[[dict[str, object]], None] | None = None
 
     def _emit_progress(self, operation: str, **metrics: object) -> None:
@@ -1989,6 +1990,8 @@ class _JGEXElaborator:
             self._emit_progress(
                 "existing_root_exclusion_completed", clause_index=clause_index
             )
+        if self.preserve_intersection_distinctness:
+            self._record_intersection_distinctness(clause, existing_coordinates)
         introduced_variables = tuple(self.variables[variable_start:])
         preserve_boundary = bool(
             self.enable_affine_local_lemmas
@@ -2059,6 +2062,47 @@ class _JGEXElaborator:
             clause_index=clause_index,
         )
         return names
+
+    def _record_intersection_distinctness(self, clause, existing_coordinates) -> None:
+        """Translate source two-locus freshness; do not derive it from a goal.
+
+        Newclid's reduce_intersection rejects every existing point when it
+        intersects two loci. This premise does not depend on which old points
+        can cheaply be recognized as roots of the locus equations.
+        """
+        loci = {"on_line", "on_pline", "on_tline", "on_bline", "on_aline",
+                "angle_bisector", "on_circle", "on_circum", "on_dia", "eqdistance"}
+        if (len(clause.points) != 1 or len(clause.constructions) != 2
+                or any(c.name not in loci for c in clause.constructions)):
+            return
+        output = str(clause.points[0])
+        if output in existing_coordinates:
+            return
+        x, y = self.coordinates[output]
+        for name, (a, b) in existing_coordinates.items():
+            expression = (x-a)**2 + (y-b)**2
+            numerator, denominator = sp.cancel(expression).as_numer_denom()
+            if numerator == 0:
+                raise ValueError("two-locus intersection cannot reuse an existing point")
+            assumption = f"diff {output} {name}"
+            if assumption in self.normalization_assumptions:
+                continue
+            self.denominators.extend((numerator, denominator))
+            self.normalization_assumptions.append(assumption)
+            residual = sp.cancel(expression - numerator / denominator)
+            if residual != 0:
+                raise ValueError("intersection distinctness encoding failed")
+            material = repr((str(clause), output, name, numerator, denominator))
+            self.structural_lemma_certificates.append(StructuralLocalLemmaCertificate(
+                theorem="source_two_locus_distinctness",
+                source_clause_indices=(self._clause_index - 1,),
+                inputs=(name,), output=output, hidden_points=(),
+                boundary_equations=(f"{_safe(numerator)} != 0",),
+                replay_residuals=(_safe(residual),),
+                nonzero_conditions=(f"{_safe(numerator)} != 0", f"{_safe(denominator)} != 0"),
+                semantic_assumption="JGEX reduce_intersection: a two-locus output differs from every existing point",
+                composition_certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
+                composition_replayed=True, replayed=True))
 
     def _dispatch(self, name: str, args: tuple[str, ...]) -> None:
         if name == "on_line":
@@ -4009,6 +4053,7 @@ def _prepare_exact_system(
     representation: str = "explicit",
     progress_callback: Callable[[dict[str, object]], None] | None = None,
     expand_equations: bool = True,
+    preserve_intersection_distinctness: bool = False,
 ) -> tuple[
     _JGEXElaborator,
     tuple[str, ...],
@@ -4058,6 +4103,7 @@ def _prepare_exact_system(
     else:
         raise ValueError(f"unknown exact representation: {representation}")
     elaborator.progress_callback = progress_callback
+    elaborator.preserve_intersection_distinctness = preserve_intersection_distinctness
     for (
         _center_clause_index,
         _center_name,
@@ -6063,6 +6109,7 @@ def lower_jgex_to_exact_obligation(
     natural_language: str | None = None,
     enable_affine_local_lemmas: bool = False,
     enable_structural_lemmas: bool = True,
+    preserve_intersection_distinctness: bool = False,
     representation: str = "explicit",
     max_saturation_rounds: int = 1,
     local_max_steps: int | None = None,
@@ -6120,6 +6167,7 @@ def lower_jgex_to_exact_obligation(
         representation=base_representation,
         progress_callback=preparation_progress,
         expand_equations=False,
+        preserve_intersection_distinctness=preserve_intersection_distinctness,
     )
     typed_goal_decomposition = _typed_goal_decomposition(
         elaborator,

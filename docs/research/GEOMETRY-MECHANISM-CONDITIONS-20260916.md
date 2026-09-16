@@ -116,5 +116,48 @@ regression suite was running concurrently. `stop-note.json` records the stop;
 the partial outputs remain. This is not a completed mathematical comparison.
 No input, witness, or runtime source was changed during that execution.
 
-Shared Actions references will be appended after the immutable-commit run
-finishes. No solved-count improvement is asserted here.
+## First immutable-commit result: rational witness derivation
+
+Commit: `e556ab8ec58eb3fb3f3e44bd3d2bdfba8f15d5b0`.
+[Actions 35056838364](https://github.com/corcondor/mortra/actions/runs/35056838364)
+passed: 271 tests, 1 skipped; the separate exact-kernel job also passed.
+The unchanged eight-task cohort produced six proved and independently replayed
+goals, one application-budget stop, and one timeout. All six were already
+provable at the original state; no acquired library was used. The witness
+derivation change did not improve this cohort's solved count.
+
+The run's `minimum_scientific_success=false` is retained. A successful workflow
+means the experiment and its checks ran, not that the research objective was met.
+The downloaded artifact is under `reports/geometry-affine-actions-35056838364/`.
+
+## Separate source-scope correction
+
+The installed Newclid implementation `newclid/jgex/geometries.py`, function
+`reduce_intersection`, rejects an intersection of two loci if it coincides
+with any previously existing point. In contrast, a single locus samples a
+point and does not use that two-locus rejection loop. The existing polynomial
+bridge only retained some structurally obvious existing-root exclusions.
+
+The new optional `source_scope` proof-request operation translates the existing
+two-locus noncoincidence premise into nonzero squared distances. This is a
+source-language premise, NOT a theorem derived from the equality constraints,
+nor a choice of the desired goal's branch. It does not enforce numerical
+sampling tolerances or select between two still-admissible distinct roots.
+Its use is explicitly recorded in the certificate's semantic assumptions.
+Only recognized line/circle locus constructors are handled; no claim is made
+about arbitrary constructors or natural-language inputs.
+
+The existing typed planner can choose this operation and compose it with the
+other exact representation operations. No task-dependent option is supplied.
+The request space changes, but the frozen cohort and all budgets remain fixed.
+Auxiliary extension certification and independent replay use the same scope
+option. If a new auxiliary adds noncoincidence premises absent from the
+original scope, the conservative-extension gate refuses it; no such premise
+may be smuggled into a proof of the original problem.
+
+Eight synthetic source-scope development tests passed in 11.14 seconds
+(`reports/geometry-source-scope-dev-01.xml`). They include automatic selection
+of the new operation, point renaming, a false single-locus claim, and refusal
+of auxiliary scope strengthening. These are developer-authored regression
+fixtures, not autonomous discoveries or unseen evaluation results.
+This correction is evaluated at a separate immutable commit and Actions run.

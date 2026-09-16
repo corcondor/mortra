@@ -9,6 +9,7 @@ on:
       - "tests/test_geometry_symbolic_dsl.py"
       - "tests/test_geometry_affine_definition.py"
       - "tests/test_geometry_closure_contract.py"
+      - "tests/test_geometry_source_scope.py"
       - "worker/backend/jgex_exact_constraint_bridge.py"
       - "scripts/verify_geometry_symbolic_dsl.py"
       - "scripts/verify_theory_geometry.py"
@@ -60,6 +61,7 @@ on:
       - "tests/test_geometry_symbolic_dsl.py"
       - "tests/test_geometry_affine_definition.py"
       - "tests/test_geometry_closure_contract.py"
+      - "tests/test_geometry_source_scope.py"
       - "scripts/verify_geometry_symbolic_dsl.py"
       - "scripts/verify_theory_geometry.py"
       - "configs/theory-geometry-autonomous-solve.json"
@@ -127,7 +129,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p reports
-          python -m pytest -q tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
+          python -m pytest -q tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
+      - name: Verify source scope and existing bridge regressions
+        shell: bash
+        run: |
+          python -m pytest -q worker/backend/test_jgex_exact_constraint_bridge.py -k 'two_locus or line_circle or affine_compression or altered_congruence or point_renaming or segment' --junitxml=reports/source-bridge-tests.xml | tee reports/source-bridge-tests.log
       - name: Frozen normal-entry geometry comparison
         if: ${{ !contains(env.EXPERIMENT_CONFIG, 'theory-geometry-autonomous-solve') }}
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
@@ -150,6 +156,7 @@ jobs:
           name: semantic-geometry-${{ github.sha }}-${{ github.run_id }}
           path: |
             reports/semantic-feedback-tests.*
+            reports/source-bridge-tests.*
             reports/semantic-feedback-normal/
             reports/failure-diagnostic-tests.xml
             reports/failure-location-analysis/

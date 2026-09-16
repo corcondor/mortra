@@ -459,7 +459,9 @@ def replay_goal(domain, state):
     extension = None
     if state.get("certification_route") == "augmented_exact_with_conservative_extension":
         other = GeometryDomain(domain.task, domain.config)
-        extension = other.certify_extension(str(domain.formulation), state["statement"])
+        extension = other.certify_extension(str(domain.formulation), state["statement"],
+            preserve_intersection_distinctness=state["extension_certificate"].get(
+                "preserve_intersection_distinctness", False))
     return {"passed": bool(rows) and all(r["passed"] for r in rows)
             and (extension is None or extension["accepted"]),
             "certificate_replays": rows, "extension": extension,

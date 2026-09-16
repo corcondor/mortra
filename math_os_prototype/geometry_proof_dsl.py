@@ -32,7 +32,8 @@ def request_options(request):
         raise ValueError("relational chart required for relational transformations")
     return dict(representation=representation,
                 enable_affine_local_lemmas=request["affine"],
-                enable_structural_lemmas=request["structural"])
+                enable_structural_lemmas=request["structural"],
+                preserve_intersection_distinctness=request.get("source_scope", False))
 
 
 def proof_operations():
@@ -43,6 +44,7 @@ def proof_operations():
         "goal_slice": ("ExactProofRequest", "ExactProofRequest"),
         "affine": ("ExactProofRequest", "ExactProofRequest"),
         "structural": ("ExactProofRequest", "ExactProofRequest"),
+        "source_scope": ("ExactProofRequest", "ExactProofRequest"),
         "certify": ("ExactProofRequest", "ExactGeometryCertificate"),
     }
 
@@ -225,7 +227,7 @@ def search_exact_proof(statement, *, budget=64, max_depth=7, emit=lambda e: None
 
     def chart(args, name):
         value = {"statement": args[0].value, "chart": name, "local_elimination": False,
-                 "goal_slice": False, "affine": False, "structural": False}
+                 "goal_slice": False, "affine": False, "structural": False, "source_scope": False}
         return PrimitiveResult(value, {"operation": name+"_chart", "input": digest(args[0].value)})
 
     def transform(args, operation):
@@ -276,7 +278,7 @@ def search_exact_proof(statement, *, budget=64, max_depth=7, emit=lambda e: None
                      lambda a, name=name: chart(a, name)) for name in ("explicit", "relational")]
     primitives += [RuntimePrimitive(name, ("ExactProofRequest",), "ExactProofRequest",
                       lambda a, name=name: transform(a, name))
-                   for name in ("local_elimination", "goal_slice", "affine", "structural")]
+                   for name in ("local_elimination", "goal_slice", "affine", "structural", "source_scope")]
     primitives.append(RuntimePrimitive("certify", ("ExactProofRequest",), "ExactGeometryCertificate", certify))
     start = time.perf_counter()
     try:

@@ -325,7 +325,9 @@ class GeometryDomain:
                 state["certified"] = all(c["accepted"] for c in state["certificates"])
                 state["certification_route"] = "original_and_augmented_exact"
                 if not state["certified"] and state["certificates"][-1]["accepted"]:
-                    extension = self.certify_extension(str(self.formulation), state["statement"])
+                    selected = state["certificates"][-1].get("options", {})
+                    extension = self.certify_extension(str(self.formulation), state["statement"],
+                        preserve_intersection_distinctness=selected.get("preserve_intersection_distinctness", False))
                     state["extension_certificate"] = extension
                     state["certified"] = extension["accepted"]
                     state["certification_route"] = "augmented_exact_with_conservative_extension"
@@ -334,14 +336,14 @@ class GeometryDomain:
             self.costs["certification_seconds"] += time.perf_counter()-start
         return state
 
-    def certify_extension(self, original, augmented):
+    def certify_extension(self, original, augmented, *, preserve_intersection_distinctness=False):
         """Check a rational chart extension without re-proving the original goal.
 
         Reuse the bridge's elaborator and affine elimination certificates.
         Local variables must eliminate to rational witnesses without changing
         old coordinates, constraints, or the original regularity scope.
         """
-        cache_key = digest([original, augmented])
+        cache_key = digest([original, augmented, preserve_intersection_distinctness])
         if cache_key in self.extension_cache:
             self.costs["extension_cache_hits"] += 1
             return self.extension_cache[cache_key]
@@ -351,7 +353,8 @@ class GeometryDomain:
         import sympy as sp
         start = time.perf_counter()
         result = {"accepted": False, "kind": "rational_chart_conservative_extension",
-                  "original_sha256": digest(original), "augmented_sha256": digest(augmented)}
+                  "original_sha256": digest(original), "augmented_sha256": digest(augmented),
+                  "preserve_intersection_distinctness": preserve_intersection_distinctness}
         try:
             base_form, aug_form = map(JGEXFormulation.from_text, (original, augmented))
             prefix = len(base_form.setup_clauses)
@@ -359,9 +362,11 @@ class GeometryDomain:
                     or tuple(base_form.setup_clauses) != tuple(aug_form.setup_clauses[:prefix])):
                 raise ValueError("not an extension of the identical source and goal")
             base, *_, base_goal, base_eqs, base_vars = _prepare_exact_system(
-                original, enable_structural_lemmas=False)
+                original, enable_structural_lemmas=False,
+                preserve_intersection_distinctness=preserve_intersection_distinctness)
             extended, *_, aug_goal, aug_eqs, aug_vars = _prepare_exact_system(
-                augmented, enable_structural_lemmas=False)
+                augmented, enable_structural_lemmas=False,
+                preserve_intersection_distinctness=preserve_intersection_distinctness)
             if base.normalization_assumptions != extended.normalization_assumptions:
                 raise ValueError("extension changes the normalization scope")
             # Polynomial-ring generators are not all chart parameters. Only
