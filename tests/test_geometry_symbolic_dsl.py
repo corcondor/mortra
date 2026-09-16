@@ -224,3 +224,60 @@ def test_existing_backend_alias_also_returns_to_acquisition(bank):
     history = domain.histories[-1]
     assert history["program"]["op"] == dsl.FRAGMENT.canonical_family("circumcenter")
     assert history["compilation_certificate"]["all_residuals_zero"]
+
+
+def test_repeated_bindings_are_deferred_not_removed(bank):
+    bank, h = acquired_bank(bank)
+    domain = SymbolicDSLDomain(TASK, dict(CONFIG, distinct_bindings_first=True), bank, active=[h["id"]])
+    old = SymbolicDSLDomain(TASK, CONFIG, bank, active=[h["id"]])
+    before = list(old.candidates(h["id"], old.initial()))
+    after = list(domain.candidates(h["id"], domain.initial()))
+    assert {c.key for c in before} == {c.key for c in after}
+    assert len(set(after[0].inputs)) == len(after[0].inputs)
+    assert any(len(set(c.inputs)) == 1 for c in after)
+
+
+def test_bounded_proof_timeout_is_not_a_certificate():
+    from math_os_prototype.geometry_proof_dsl import bounded_proof
+    with pytest.raises(TimeoutError):
+        bounded_proof(TASK["statement"], {}, 0.000001, lambda e: None)
+
+
+def test_timed_out_method_does_not_block_other_proof_requests(monkeypatch):
+    from math_os_prototype import geometry_proof_dsl as proof
+    from dataclasses import dataclass
+    @dataclass
+    class Certificate:
+        exact_replay: bool = True
+        remainder: str = "0"
+        vacuous_unit_ideal: bool = False
+        untransported_nonzero_conditions: tuple = ()
+        certificate_sha256: str = "synthetic timeout recovery test"
+    def bounded(statement, options, seconds, emit):
+        if options["representation"] == "explicit":
+            raise TimeoutError("test budget")
+        return Certificate()
+    monkeypatch.setattr(proof, "bounded_proof", bounded)
+    result = proof.search_exact_proof(TASK["statement"], attempt_seconds=1)
+    assert result["accepted"]
+    assert result["proof_attempts"][0]["timed_out"]
+    assert result["proof_dsl_costs"]["exact_prover_timeouts"] == 1
+    assert result["options"]["representation"] == "relational"
+
+
+def test_symbolic_solver_selects_proof_and_independently_replays(tmp_path):
+    from math_os_prototype.geometry_symbolic_dsl import run_symbolic_solver
+    result = run_symbolic_solver({"task": TASK, "search": dict(CONFIG, max_states=10)}, tmp_path)
+    assert result["proved"] and result["replay_passed"]
+    assert result["acquired_archive_size"] == 0
+    assert result["proof_dsl_programs"][0][0]["operation"] == "explicit_chart"
+    assert result["costs"]["exact_prover_calls"] == 1
+    assert result["llm_calls"] == 0
+
+
+def test_symbolic_solver_does_not_answer_false_goal(tmp_path):
+    from math_os_prototype.geometry_symbolic_dsl import run_symbolic_solver
+    result = run_symbolic_solver({"task": {"statement": "a b c = triangle a b c ? perp a b b c"},
+        "search": dict(CONFIG, max_states=1, proof_dsl_budget=16)}, tmp_path)
+    assert not result["proved"]
+    assert result["status"] == "formalization_refusal"

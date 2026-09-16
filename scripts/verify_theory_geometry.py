@@ -23,12 +23,23 @@ def execute(config, config_path, output, log_path, timeout):
     start = time.perf_counter()
     with log_path.open("w", encoding="utf-8") as log:
         try:
-            completed = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
-                                       timeout=timeout)
+            process = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
+                start_new_session=os.name != "nt",
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0)
+            process.wait(timeout=timeout)
             path = output/"verification.json"
             result = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {
-                "proved": False, "status": "process_failure", "returncode": completed.returncode}
+                "proved": False, "status": "process_failure", "returncode": process.returncode}
+            result.setdefault("proved", False)
+            result.setdefault("status", "solver_failure")
         except subprocess.TimeoutExpired:
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                               capture_output=True, check=False)
+            else:
+                import signal
+                os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
             result = {"proved": False, "status": "timeout", "false_proofs": 0}
     return result, command, time.perf_counter()-start
 
@@ -42,6 +53,12 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     plan = json.loads(args.plan.read_text(encoding="utf-8"))
+    if "task_source" in plan:
+        from math_os_prototype.representation_progress import digest
+        source = json.loads((ROOT/plan["task_source"]["path"]).read_text(encoding="utf-8"))
+        if digest(source["tasks"]) != plan["task_source"]["tasks_sha256"]:
+            raise ValueError("frozen task source changed")
+        plan["tasks"] = source["tasks"]
     write(args.output/"source-plan.json", plan)
     if args.backend:
         plan["search"]["deduction_backend"] = args.backend
@@ -63,7 +80,12 @@ def main():
     write(args.output/"source-seal.json", seal)
     rows = []
     for index, task in enumerate(plan["tasks"]):
-        config = {"domain": {"kind": "geometry"}, "task": task, "search": plan["search"]}
+        config = {"domain": plan.get("domain", {"kind": "geometry"}),
+                  "task": task, "search": plan["search"]}
+        if "protocol" in plan:
+            config["protocol"] = plan["protocol"]
+        if "source_archive" in plan:
+            config.update(source_archive=plan["source_archive"], use_acquired=plan.get("use_acquired", True))
         config_path = args.output/f"task-{index}.json"
         output = args.output/f"run-{index}"
         result, command, seconds = execute(config, config_path, output,
@@ -79,6 +101,12 @@ def main():
                 except json.JSONDecodeError:
                     # A timed-out process may leave an incomplete final record.
                     pass
+        symbolic_applications = [e for e in events if e["event"] == "symbolic_dsl_apply"]
+        row["symbolic_trace_counts"] = {
+            "executed": len(symbolic_applications),
+            "acquired": sum(e["action"]["call"].get("op") == "use" for e in symbolic_applications),
+            "proof_attempts": sum(e["event"] == "proof_dsl_attempt" for e in events),
+            "proof_timeouts": sum(e["event"] == "proof_dsl_attempt" and e.get("timed_out", False) for e in events)}
         applications = [e for e in events if e["event"] == "apply"]
         row["trace_counts"] = {
             "native_backward_compilations": sum(e["event"] == "native_backward_compilation" for e in events),
@@ -143,7 +171,7 @@ def main():
         "sources_unchanged": source_seal() == seal,
         "sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
-        "acquired_comparison": "unavailable: no provenance-certified acquired geometry library",
+        "acquired_comparison": "stored archive" if plan.get("source_archive") else "initial library only",
         "global_unseen_claim": False}
     summary["execution_completed"] = sum(r["result"].get("execution_completed", False) for r in rows)
     summary["native_feedback_edges"] = sum(len(r["native_feedback_edges"]) for r in rows)
@@ -160,7 +188,7 @@ def main():
     write(args.output/"verification.json", summary)
     print(json.dumps(summary, indent=2))
     return int(not summary["sources_unchanged"] or any(r["result"]["status"] in {
-        "solver_failure", "process_failure"} for r in rows))
+        "solver_failure", "process_failure", "replay_failure"} for r in rows))
 
 
 if __name__ == "__main__":

@@ -53,6 +53,16 @@ class RuntimeTypedPlannerTests(unittest.TestCase):
         self.assertFalse(plan.complete)
         self.assertEqual(plan.open_goal_sorts, ("CertifiedAnswer",))
 
+    def test_goal_sort_terminates_before_another_expensive_alternative(self):
+        def alternatives(args):
+            yield lambda: PrimitiveResult(7, {"verified": True})
+            yield lambda: self.fail("goal already reached")
+        plan = synthesize_typed_plan([initial_fact("A", 1)], [
+            RuntimePrimitive("prove", ("A",), "Proof", lambda a: None, alternatives)],
+            ["Proof"], fair=True)
+        self.assertTrue(plan.complete)
+        self.assertEqual(plan.states_explored, 2)
+
 
 if __name__ == "__main__":
     unittest.main()

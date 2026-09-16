@@ -188,6 +188,16 @@ class GeometryDomain:
                 len(c["obligation"]["quotient_certificate"]) +
                 len(c["obligation"]["local_lemma_certificates"]) + 1
                 for c in state["certificates"] if c["accepted"]), "unit": "algebraic certificate components"}
+            if self.config.get("stop_on_certified_goal", False):
+                state["relations_before_exact_closure"] = before
+                state["closure_stop_reason"] = "goal_already_certified"
+                self.costs["closure_calls"] += 1
+                self.costs["closure_seconds"] += time.perf_counter()-start
+                self.log(event="exact_closure", state_key=self.key(state), path=path,
+                    assumptions=assumptions, checked_relations=[],
+                    certified_relations=[goal], goal_certified=True,
+                    stop_reason=state["closure_stop_reason"])
+                return state
         # Keep the first vocabulary conservative: no directed-angle/branch
         # recognition is invented here. Other existing goal semantics still work.
         limit = min(self.config.get("closure_steps", 1000), self.config["per_family_limit"])
@@ -418,6 +428,7 @@ class GeometryDomain:
             result = search_exact_proof(statement,
                 budget=self.config.get("proof_dsl_budget", 64),
                 emit=lambda event: self.log(**event),
+                attempt_seconds=self.config.get("proof_attempt_seconds"),
                 backend_limits=self.config.get("proof_backend_limits"))
             self.costs.update(result["proof_dsl_costs"])
             self.certificate_cache[statement] = result

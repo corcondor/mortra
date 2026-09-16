@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
-from itertools import combinations, permutations, product
+from itertools import chain, combinations, permutations, product
 import random
 from typing import Any, Callable, Hashable, Iterable, Mapping, Sequence, TypeVar
 
@@ -884,7 +884,7 @@ def construction_role_adjacency_weight(
 
 
 def iter_complete_typed_candidates(*, points, graph, goal_multiplicity,
-                                  generated_points, family):
+                                  generated_points, family, distinct_first=False):
     """Enumerate every tuple allowed by the declared input symmetry.
 
     Ordering is a preference, never a membership test. No point subset,
@@ -895,7 +895,13 @@ def iter_complete_typed_candidates(*, points, graph, goal_multiplicity,
     ordered = tuple(sorted(set(points), key=lambda p: (
         -goal_multiplicity.get(p, 0), 0 if p in generated_points else 1,
         distances.get(p, 10_000), p)))
-    for inputs in _family_inputs(ordered, family):
+    if distinct_first and family.symmetry == "ordered" and family.allow_repeated_inputs:
+        inputs_stream = chain(permutations(ordered, family.input_arity),
+            (row for row in product(ordered, repeat=family.input_arity)
+             if len(set(row)) < len(row)))
+    else:
+        inputs_stream = _family_inputs(ordered, family)
+    for inputs in inputs_stream:
         yield TypedConstructionCandidate(family.name, inputs, ())
 
 

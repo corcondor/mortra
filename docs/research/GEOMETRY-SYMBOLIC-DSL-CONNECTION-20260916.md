@@ -85,4 +85,32 @@ PowerShellでは起動前に `$env:PYTHONHASHSEED='0'` を設定する。
 
 ## 最終実行
 
-最終固定コードでの結果とActionsの参照は、完走・独立再生を確認してから追記する。
+この接続段階の検証コードは `5368841baf1726f2ba8f35e289e269ff5e7f44f0`。
+ローカルの `reports/symbolic-dsl-integration-03` と、[Actions 35051505875](https://github.com/corcondor/mortra/actions/runs/35051505875) の両方で完走した。
+[共有成果物](https://github.com/corcondor/mortra/actions/runs/35051505875/artifacts/10429256881) に入力・依存版・全試行・証明・独立再生を保存した。
+
+- Actionsの関連テストは245成功・1スキップ。別ジョブの厳密カーネル検査も成功した。
+- 両環境で1536試行、248履歴（異なるIDは207件）、取得定義2件、取得射の成功実行18件となった。
+- 独立再生は両環境で248/248一致し、2定義も再認証した。Windowsの独立再生は27.050秒、Linuxは10.460秒だった。
+- ソースのハッシュ一覧・入力設定・定義ID・本体・引数・依存先は一致した。archiveファイル全体のバイト列は実測費用を含むため一致しない。
+- WindowsはPython 3.12.10、ActionsはLinux / Python 3.12.14。実行中のソース変更は検出されなかった。
+- 18件すべてが既存点を返した。取得射によって新しい点に到達した実績ではない。
+- 最終周期の抽象化入力に、この18件の呼び出しを含む実行履歴が入った。ただし、その周期の新規取得は0件だった。
+- 回帰評価2問は初期・取得射あり・取得射無効の全条件で2/2。能力向上とは判定しない。
+
+以下の矢印は記録に存在する受け渡しだけを示す。`midpoint` は中点、`mirror` は点に関する対称移動である。取得された二つの定義はいずれも第1世代である。
+
+```text
+formal JGEX + empty acquired archive
+  -> 248 certified execution records
+  -> h(f1,f2,f0) = mirror(f1, midpoint(f2,f0))
+     k(f1,f2,f0) = midpoint(f1, midpoint(f2,f0))
+  -> constructor registry containing h and k
+  -> 18 automatically selected calls, all returning existing points
+  -> exact replay + next acquisition input
+  -> next acquired definition: NOT OBSERVED
+```
+
+例として履歴 `b51afe103ad64920b5e4295282a06f1c314a7db7ce7c06b832ffe684ab675286` は `h(p1,p1,p1)` を選び、記号的な同一性検査で `p1` を返した。これを非自明な問題解決と読み替えてはいけない。
+
+この結果の後、ユーザーから自律的な問題解決まで進める指示を受けた。以降の改修と実験は別のコード版・別の実行記録として扱う。

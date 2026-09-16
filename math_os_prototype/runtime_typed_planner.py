@@ -330,7 +330,9 @@ def synthesize_typed_plan(
             facts_by_id[fact.id] = fact
             seen_values.add(result_key)
             changed = True
-            if primitive.target_sort in goal_predicates and goal_predicates[primitive.target_sort](fact):
+            if primitive.target_sort in goals_tuple and (
+                    primitive.target_sort not in goal_predicates
+                    or goal_predicates[primitive.target_sort](fact)):
                 current = {}
                 for f in facts:
                     current.setdefault(f.sort, []).append(f)

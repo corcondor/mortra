@@ -82,7 +82,7 @@ def main(argv=None):
     if config["domain"].get("kind") == "geometry":
         if args.resume or args.knowledge or args.queries or args.condition != "learn":
             parser.error("Geometry uses formal task inputs, not scalar archive/queries or training conditions")
-        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback", "selection_factorial", "complete_revalidation", "symbolic_dsl"}:
+        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback", "selection_factorial", "complete_revalidation", "symbolic_dsl", "symbolic_solve"}:
             from importlib.metadata import distributions
             from math_os_prototype.theory_geometry_acquisition import run_contract_geometry
             write(args.output/"environment.json", {
@@ -96,7 +96,10 @@ def main(argv=None):
                 required_seed = config.get("protocol", {}).get("python_hash_seed")
                 if required_seed is not None and os.environ.get("PYTHONHASHSEED") != str(required_seed):
                     raise ValueError("set PYTHONHASHSEED before launching Python as declared in the frozen protocol")
-                if config["domain"]["mode"] == "symbolic_dsl":
+                if config["domain"]["mode"] == "symbolic_solve":
+                    from math_os_prototype.geometry_symbolic_dsl import run_symbolic_solver
+                    result = run_symbolic_solver(config, args.output)
+                elif config["domain"]["mode"] == "symbolic_dsl":
                     from math_os_prototype.geometry_symbolic_dsl import run_symbolic_feedback
                     result = run_symbolic_feedback(config, args.output)
                 elif config["domain"]["mode"] == "complete_revalidation":

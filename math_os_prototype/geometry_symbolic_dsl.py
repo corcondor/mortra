@@ -233,7 +233,8 @@ class SymbolicDSLDomain(GeometryDomain):
                 yield TypedConstructionCandidate(c.family, c.inputs, c.rank)
         for c in iter_complete_typed_candidates(points=names, graph=graph,
                 goal_multiplicity=Counter(self.native_goal.arguments),
-                generated_points={s["output"] for s in state["path"]}, family=self.registry[family]):
+                generated_points={s["output"] for s in state["path"]}, family=self.registry[family],
+                distinct_first=self.config.get("distinct_bindings_first", False)):
             if c.key not in seen:
                 yield c
 
@@ -425,3 +426,102 @@ def run_symbolic_feedback(config, output):
     write("histories.json", histories)
     write("result.json", result)
     return result
+
+
+def replay_goal(domain, state):
+    """Replay the selected certificate, not an oracle for subsequent search."""
+    from math_os_prototype.geometry_proof_dsl import bounded_proof, accepted_obligation
+    from worker.backend.jgex_exact_constraint_bridge import lower_jgex_to_exact_obligation
+    started = time.perf_counter()
+    rows = []
+    for certificate in state["certificates"]:
+        if not certificate.get("accepted"):
+            continue
+        options = certificate.get("options", dict(
+            enable_affine_local_lemmas=False, enable_structural_lemmas=False))
+        options = dict(options, **domain.config.get("proof_backend_limits", {}))
+        try:
+            seconds = domain.config.get("proof_attempt_seconds")
+            if seconds is not None:
+                proof = bounded_proof(certificate["statement"], options, seconds, lambda e: None)
+            else:
+                proof = lower_jgex_to_exact_obligation(certificate["statement"], **options)
+            passed = (accepted_obligation(proof) and proof.certificate_sha256 ==
+                      certificate["obligation"]["certificate_sha256"])
+            rows.append({"statement": certificate["statement"], "passed": passed,
+                         "certificate_sha256": proof.certificate_sha256})
+        except (ValueError, RuntimeError, TimeoutError) as exc:
+            rows.append({"statement": certificate["statement"], "passed": False,
+                         "error": type(exc).__name__+": "+str(exc)})
+    extension = None
+    if state.get("certification_route") == "augmented_exact_with_conservative_extension":
+        other = GeometryDomain(domain.task, domain.config)
+        extension = other.certify_extension(str(domain.formulation), state["statement"])
+    return {"passed": bool(rows) and all(r["passed"] for r in rows)
+            and (extension is None or extension["accepted"]),
+            "certificate_replays": rows, "extension": extension,
+            "seconds": time.perf_counter()-started, "fed_back_to_search": False}
+
+
+def run_symbolic_solver(config, output):
+    """Solve a formal goal with the same DSL, without the discovery override."""
+    import hashlib
+    from pathlib import Path
+    from math_os_prototype.runtime_typed_planner import RuntimeSearchProgress
+    def write(name, value):
+        (output/name).write_text(json.dumps(value, indent=2)+"\n", encoding="utf-8")
+    def emit(event):
+        with (output/"events.jsonl").open("a", encoding="utf-8") as f:
+            f.write(json.dumps(event)+"\n")
+    started = time.perf_counter()
+    bank = GeometryLibrary()
+    source = config.get("source_archive")
+    if source:
+        data = Path(source["path"]).read_bytes()
+        if hashlib.sha256(data).hexdigest() != source["sha256"]:
+            raise ValueError("stored archive hash mismatch")
+        for h in json.loads(data):
+            bank.register(h)
+    active = [h["id"] for h in bank.archive] if config.get("use_acquired", True) else ()
+    write("archive.json", bank.archive)
+    search = dict(config["search"], stop_on_certified_goal=True)
+    try:
+        domain = SymbolicDSLDomain(config["task"], search, bank, active=active, emit=emit)
+        domain.initial()
+    except ValueError as exc:
+        emit({"event": "formalization_refusal", "error": str(exc)})
+        return {"execution_completed": True, "proved": False,
+                "status": "formalization_refusal", "error": str(exc),
+                "wall_seconds": time.perf_counter()-started, "llm_calls": 0}
+    write("morphisms.json", [domain.contract(f) for f in domain.families])
+    progress = RuntimeSearchProgress()
+    plan = search_action_domain(domain, max_depth=config["search"]["max_depth"],
+        max_states=config["search"]["max_states"], progress=progress)
+    search_seconds = time.perf_counter()-started
+    goal = plan.goals.get(domain.sort)
+    state = goal.value if goal else domain.initial()
+    write("state.json", state)
+    write("proof-program.json", plan.proof_program)
+    write("histories.json", domain.histories)
+    write("frontier.json", {"states": len(plan.facts), "progress": asdict(progress),
+          "open_goals": plan.open_goal_sorts, "maximum_depth": max(f.depth for f in plan.facts)})
+    checked = replay_goal(domain, state) if goal else {"passed": False, "reason": "no certified goal"}
+    write("replay.json", checked)
+    return {"execution_completed": True, "proved": bool(goal) and checked["passed"],
+        "status": ("proved" if checked["passed"] else "replay_failure") if goal
+            else "application_budget" if plan.states_explored >= config["search"]["max_states"]
+            else "depth_or_candidate_exhaustion",
+        "initial_goal_certified": domain.initial()["certified"],
+        "auxiliary_count": len(state["path"]) if goal else 0,
+        "acquired_calls_in_goal_path": sum(s["family"] in domain.learned for s in state["path"]) if goal else 0,
+        "acquired_archive_size": len(bank.archive), "acquired_active_size": len(active),
+        "acquisition_performed": False, "costs": dict(domain.costs),
+        "library_registration_costs": dict(bank.costs),
+        "search_seconds_including_registration": search_seconds,
+        "verification_seconds": checked.get("seconds", 0),
+        "wall_seconds": time.perf_counter()-started,
+        "replay_passed": checked["passed"],
+        "certificate_replay_failures": int(bool(goal) and not checked["passed"]),
+        "external_deduction_used": False, "llm_calls": 0,
+        "proof_route": state.get("certification_route"),
+        "proof_dsl_programs": [c.get("proof_program", []) for c in state["certificates"] if c.get("accepted")]}

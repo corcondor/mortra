@@ -6,6 +6,7 @@ in the trace. A request or a sampled diagram is never a proof.
 """
 from collections import Counter
 from dataclasses import asdict
+import multiprocessing as mp
 import time
 
 from sympy.polys.polyerrors import CoercionFailed, PolynomialError
@@ -46,8 +47,55 @@ def proof_operations():
     }
 
 
+def _proof_worker(connection, statement, options):
+    """One bounded proof attempt. No search decisions or external input here."""
+    from worker.backend.jgex_exact_constraint_bridge import lower_jgex_to_exact_obligation
+    try:
+        result = lower_jgex_to_exact_obligation(statement, **options,
+            progress_callback=lambda e: connection.send(("progress", e)))
+        connection.send(("result", result))
+    except Exception as exc:
+        connection.send(("error", type(exc).__name__+": "+str(exc)))
+    finally:
+        connection.close()
+
+
+def bounded_proof(statement, options, seconds, emit):
+    """Charge process startup, computation and transfer to the same attempt."""
+    if seconds <= 0:
+        raise ValueError("positive proof attempt timeout required")
+    context = mp.get_context("spawn")
+    receiver, sender = context.Pipe(duplex=False)
+    worker = context.Process(target=_proof_worker, args=(sender, statement, options))
+    start = time.perf_counter()
+    try:
+        worker.start()
+        sender.close()
+        while True:
+            remaining = seconds-(time.perf_counter()-start)
+            if remaining <= 0 or not receiver.poll(remaining):
+                raise TimeoutError("proof attempt budget exhausted")
+            try:
+                kind, payload = receiver.recv()
+            except EOFError as exc:
+                raise RuntimeError("proof worker exited without a result") from exc
+            if kind == "progress":
+                emit(payload)
+            elif kind == "result":
+                return payload
+            else:
+                raise RuntimeError(payload)
+    finally:
+        if worker.pid is not None:
+            if worker.is_alive():
+                worker.terminate()
+            worker.join()
+        receiver.close()
+        sender.close()
+
+
 def search_exact_proof(statement, *, budget=64, max_depth=7, emit=lambda e: None,
-                       backend_limits=None):
+                       backend_limits=None, attempt_seconds=None):
     """The shared planner chooses requests and their compositions.
 
     All switches refer to the existing bridge. No task name, auxiliary, chart
@@ -84,12 +132,19 @@ def search_exact_proof(statement, *, budget=64, max_depth=7, emit=lambda e: None
         row = {"request": request, "options": options, "accepted": False}
         emit({"event": "proof_dsl_attempt_started", "request": request})
         try:
-            obligation = lower_jgex_to_exact_obligation(statement, **options, **limits,
-                progress_callback=lambda e: emit({"event": "proof_backend_progress",
-                                                  "request_sha256": digest(request), **e}))
+            progress = lambda e: emit({"event": "proof_backend_progress",
+                                      "request_sha256": digest(request), **e})
+            if attempt_seconds is None:
+                obligation = lower_jgex_to_exact_obligation(statement, **options, **limits,
+                                                           progress_callback=progress)
+            else:
+                obligation = bounded_proof(statement, dict(options, **limits), attempt_seconds, progress)
             row.update(accepted=accepted_obligation(obligation), obligation=asdict(obligation))
-        except (ValueError, NotImplementedError, CoercionFailed, PolynomialError) as exc:
+        except (ValueError, NotImplementedError, CoercionFailed, PolynomialError,
+                TimeoutError, RuntimeError) as exc:
             row["refusal"] = type(exc).__name__+": "+str(exc)
+            row["timed_out"] = isinstance(exc, TimeoutError)
+            costs["exact_prover_timeouts"] += int(row["timed_out"])
         row["seconds"] = time.perf_counter()-start
         costs["exact_prover_seconds"] += row["seconds"]
         attempts.append(row)
