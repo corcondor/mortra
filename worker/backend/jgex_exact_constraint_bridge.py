@@ -5698,6 +5698,28 @@ def _contract_equations_by_known_units(
     return tuple(contracted_equations), tuple(certificates)
 
 
+def _coefficient_ground(*expressions):
+    """QQ, or the Gaussian rationals when a residual carries the imaginary unit.
+
+    `_similar_triangles_polynomial` deliberately combines the real and the
+    imaginary residual of a directed similarity into a single Gaussian-rational
+    polynomial: every coordinate variable is real, so that one polynomial
+    vanishes exactly when both residuals do. Its docstring says so.
+
+    The ideal machinery below then has to be given a ground domain that can hold
+    such a coefficient. Built over plain `QQ` the expression is not convertible
+    and the attempt raises before any reduction is tried, so a task whose goal
+    is a similarity never reaches a proof attempt at all. Choosing the ground
+    domain from the expressions themselves changes nothing where no imaginary
+    unit occurs, because `QQ` is then selected exactly as before.
+    """
+    for expression in expressions:
+        has = getattr(expression, "has", None)
+        if has is not None and has(sp.I):
+            return sp.QQ_I
+    return sp.QQ
+
+
 def _replay_groebner_certificate(
     *,
     goal: sp.Expr,
@@ -5977,10 +5999,11 @@ def _principal_ideal_quotient(
             key=sp.default_sort_key,
         )
     )
+    ground = _coefficient_ground(goal, equation)
     coefficient_domain = (
-        sp.QQ.frac_field(*coefficient_parameters)
+        ground.frac_field(*coefficient_parameters)
         if coefficient_parameters
-        else sp.QQ
+        else ground
     )
     try:
         quotient, remainder = sp.div(
@@ -6474,10 +6497,11 @@ def lower_jgex_to_exact_obligation(
                 key=sp.default_sort_key,
             )
         )
+        ground = _coefficient_ground(*equations, goal_polynomial)
         coefficient_domain = (
-            sp.QQ.frac_field(*coefficient_parameters)
+            ground.frac_field(*coefficient_parameters)
             if coefficient_parameters
-            else sp.QQ
+            else ground
         )
         terminal_checkpoint = _terminal_groebner_checkpoint(
             equations,
@@ -6528,7 +6552,7 @@ def lower_jgex_to_exact_obligation(
                     equations,
                     *full_variables,
                     order="grevlex",
-                    domain=sp.QQ,
+                    domain=_coefficient_ground(*equations),
                     method=groebner_method,
                 )
                 full_basis_expressions = tuple(

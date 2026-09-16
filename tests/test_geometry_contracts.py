@@ -125,3 +125,46 @@ def test_generated_points_do_not_capture_input_labels():
     assert result["state"]["points"]["v2"] == ["v2x", "v2y"]
     assert result["state"]["points"]["local0"] == ["local0x", "local0y"]
     assert independent_replay(result)["passed"]
+
+
+def test_coefficient_ground_holds_a_gaussian_residual():
+    """A directed-similarity residual is one Gaussian-rational polynomial.
+
+    `_similar_triangles_polynomial` combines the real and imaginary residuals
+    into one expression on purpose. Built over plain QQ the ideal machinery
+    cannot convert it and raises before attempting any reduction, which is what
+    stopped every proof attempt on a similarity goal.
+    """
+    from worker.backend.jgex_exact_constraint_bridge import _coefficient_ground
+
+    x, y, base = sp.symbols("_apex_x_1 _apex_y_2 _base_0", real=True)
+    gaussian = x + sp.I * y - base
+    real_only = x * y - base
+
+    assert _coefficient_ground(real_only) is sp.QQ
+    assert _coefficient_ground(gaussian) is sp.QQ_I
+    assert _coefficient_ground(real_only, gaussian) is sp.QQ_I
+
+    # The operations the bridge performs, over each ground domain.
+    with pytest.raises(ValueError):
+        sp.div(gaussian * gaussian, gaussian, x, y,
+               domain=sp.QQ.frac_field(base))
+    quotient, remainder = sp.div(
+        gaussian * gaussian, gaussian, x, y,
+        domain=_coefficient_ground(gaussian).frac_field(base))
+    assert sp.expand(remainder) == 0
+    assert sp.expand(quotient - gaussian) == 0
+
+    with pytest.raises(ValueError):
+        sp.groebner([gaussian, x - y], x, y, domain=sp.QQ.frac_field(base))
+    assert sp.groebner([gaussian, x - y], x, y,
+                       domain=_coefficient_ground(gaussian).frac_field(base))
+
+
+def test_coefficient_ground_leaves_real_systems_on_the_rationals():
+    """Nothing changes where no imaginary unit occurs."""
+    from worker.backend.jgex_exact_constraint_bridge import _coefficient_ground
+
+    a, b, c = sp.symbols("a b c", real=True)
+    assert _coefficient_ground(a * b - c, a + b, sp.Integer(3)) is sp.QQ
+    assert _coefficient_ground() is sp.QQ
