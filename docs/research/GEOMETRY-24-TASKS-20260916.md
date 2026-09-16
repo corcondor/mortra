@@ -102,3 +102,66 @@ PYTHONHASHSEED=0 python scripts/verify_theory_geometry.py \
 
 The retry will preserve successes, timeouts, errors and replay results separately,
 and compare each task with run 35059517991. No code will be edited during the run.
+
+## Fresh time-extension results
+
+Actions run: https://github.com/corcondor/mortra/actions/runs/35060935705
+
+Tested commit: `fa6e10a4c80fb0cdd5d9dcec39597fc6f7b443ad`.
+Artifact: https://github.com/corcondor/mortra/actions/runs/35060935705/artifacts/10433505558
+Artifact digest: `sha256:1aef667dd7fca15cc4aaf2f8353671125b85128cf56bf78108db7c77621c902a`.
+
+The retry proved **0/7 additional tasks**. The cumulative proved count remains
+17/24 from the preceding run. Three tasks reached the unchanged construction
+application budget of 256 before their time limit. Four reached 300 seconds.
+These are resource-limited negative results, not proofs of unprovability or
+exhaustion of the complete candidate space.
+
+The table uses positions from the original 24-task cohort. Proof attempts count
+completed attempt records, including refusals and errors. Construction attempts
+are separately counted and may be refused before execution.
+
+| Original position | Retry stop | Seconds | Proof attempts before / after | Construction attempts before / after | Constructions executed after |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 3 | application budget | 91.776 | 308 / 520 | 153 / 256 | 14 |
+| 9 | task time limit | 300.011 | 80 / 440 | 22 / 240 | 18 |
+| 15 | task time limit | 300.014 | 38 / 171 | 0 / 6 | 3 |
+| 17 | application budget | 127.021 | 200 / 560 | 114 / 256 | 20 |
+| 22 | task time limit | 300.014 | 17 / 9 | 0 / 0 | 0 |
+| 23 | application budget | 244.773 | 155 / 680 | 39 / 256 | 18 |
+| 24 | task time limit | 300.011 | 43 / 230 | 1 / 78 | 5 |
+
+Total retry subprocess time was 1663.620107 seconds (27.73 minutes), excluding
+workflow setup and regression tests. The workflow's semantic job took 33m35s.
+Completed proof attempts increased from 841 to 2610 across these seven tasks;
+construction attempts increased from 329 to 1092. Neither increase is a gain
+in solved capability. Timing differences also include hosted-machine variability;
+this is not a controlled machine-speed benchmark.
+
+Observed failure distinctions:
+
+- Position 15: all 171 completed proof attempts returned coefficient conversion
+  errors (69 `CoercionFailed`, 102 rational-function conversion `ValueError`).
+  Expressions containing `I` were rejected by a rational coefficient field.
+  This exception persists under longer time, so time alone did not repair it.
+- Position 22: all nine completed attempts timed out at the new 30-second limit.
+  The last unfinished attempt was a seven-equation, ten-variable Groebner
+  computation. Increasing per-attempt time reduced completed attempts from 17
+  to 9 despite a longer total limit. No auxiliary construction was reached.
+- Positions 3, 17 and 23 reached the fixed application budget. Increasing only
+  task time further would not continue these same runs beyond that stop.
+- Positions 9 and 24 executed additional constructions but still did not obtain
+  an accepted proof. No conclusion about their ultimate solvability follows.
+
+Fresh tests again passed: 279 passed / 1 skipped (304.57 seconds), bridge subset
+10 passed (3.45 seconds), exact kernel 64 passed (1.84 seconds). One existing
+serialization warning remains. The source seal is unchanged. No new proof was
+accepted, so there was no new successful-proof replay; `replay_passed=false` in
+completed unsolved records must not be read as rejection of an accepted proof.
+Actions success means execution and evidence collection completed, not that the
+seven tasks were solved.
+
+The complete machine-readable comparison is
+`docs/research/GEOMETRY-TIME-EXTENSION-20260916.json`. Original tasks, per-task
+configurations, commands, source seals, traces and refusal/error records are in
+the linked artifact. No runtime intervention or solver edit was made.

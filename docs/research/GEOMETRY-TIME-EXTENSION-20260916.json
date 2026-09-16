@@ -1,0 +1,156 @@
+{
+  "previous_run": "35059517991",
+  "retry_run": "35060935705",
+  "sha": "fa6e10a4c80fb0cdd5d9dcec39597fc6f7b443ad",
+  "total_subprocess_seconds": 1663.620107046,
+  "additional_proved": 0,
+  "combined_proved": 17,
+  "combined_total": 24,
+  "rows": [
+    {
+      "id": "examples/complete2/000/complete_017_ex-gao_gao_L_L022-1.gex",
+      "old_status": "timeout",
+      "new_status": "application_budget",
+      "old_seconds": 90.01156065100002,
+      "new_seconds": 91.776117247,
+      "old_proof_attempts": 308,
+      "new_proof_attempts": 520,
+      "new_proof_timeouts": 0,
+      "old_construction_attempts": 153,
+      "new_construction_attempts": 256,
+      "new_executed_constructions": 14,
+      "runtime_error_attempts": 0,
+      "error_groups": [],
+      "last_backend_stage": "certificate_completed",
+      "last_event": "symbolic_dsl_refusal"
+    },
+    {
+      "id": "examples/complete2/unsolved1/complete_003_6_GDD_FULL_more_E023-14.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 90.00696316800003,
+      "new_seconds": 300.010978848,
+      "old_proof_attempts": 80,
+      "new_proof_attempts": 440,
+      "new_proof_timeouts": 0,
+      "old_construction_attempts": 22,
+      "new_construction_attempts": 240,
+      "new_executed_constructions": 18,
+      "runtime_error_attempts": 0,
+      "error_groups": [],
+      "last_backend_stage": "certificate_completed",
+      "last_event": "symbolic_dsl_apply_started"
+    },
+    {
+      "id": "examples/complete2/006/complete_001_6_GDD_FULL_61-80_72.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 90.01251730299998,
+      "new_seconds": 300.0139318319999,
+      "old_proof_attempts": 38,
+      "new_proof_attempts": 171,
+      "new_proof_timeouts": 0,
+      "old_construction_attempts": 0,
+      "new_construction_attempts": 6,
+      "new_executed_constructions": 3,
+      "runtime_error_attempts": 171,
+      "error_groups": [
+        {
+          "count": 69,
+          "message": "RuntimeError: CoercionFailed: Cannot convert _apex_x_1 + I*_apex_y_2 - _base_0 of type <class 'sympy.core.add.Add'> to QQ(_apex_x_1,_apex_y_2,_base_0)"
+        },
+        {
+          "count": 102,
+          "message": "RuntimeError: ValueError: expected an expression convertible to a rational function in Rational function field in _apex_x_1, _apex_y_2, _base_0 over QQ with lex order, got -I*_apex_x_1*_apex_y_2 + _apex_y_2**2"
+        }
+      ],
+      "last_backend_stage": "principal_ideal_scan_started",
+      "last_event": "proof_dsl_attempt_started"
+    },
+    {
+      "id": "new_unsolved/0.gex",
+      "old_status": "timeout",
+      "new_status": "application_budget",
+      "old_seconds": 90.01130775000001,
+      "new_seconds": 127.02141440000014,
+      "old_proof_attempts": 200,
+      "new_proof_attempts": 560,
+      "new_proof_timeouts": 0,
+      "old_construction_attempts": 114,
+      "new_construction_attempts": 256,
+      "new_executed_constructions": 20,
+      "runtime_error_attempts": 0,
+      "error_groups": [],
+      "last_backend_stage": "certificate_completed",
+      "last_event": "symbolic_dsl_refusal"
+    },
+    {
+      "id": "examples/complete2/005/complete_008_ex-gao_ex160_e122.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 90.01010875599991,
+      "new_seconds": 300.0135414219999,
+      "old_proof_attempts": 17,
+      "new_proof_attempts": 9,
+      "new_proof_timeouts": 9,
+      "old_construction_attempts": 0,
+      "new_construction_attempts": 0,
+      "new_executed_constructions": 0,
+      "runtime_error_attempts": 0,
+      "error_groups": [],
+      "last_backend_stage": "groebner_started",
+      "last_event": "proof_backend_progress"
+    },
+    {
+      "id": "examples/complete2/000/complete_016_ex-gao_gao_M_M021-64.gex",
+      "old_status": "timeout",
+      "new_status": "application_budget",
+      "old_seconds": 90.00731282899994,
+      "new_seconds": 244.77294177299996,
+      "old_proof_attempts": 155,
+      "new_proof_attempts": 680,
+      "new_proof_timeouts": 0,
+      "old_construction_attempts": 39,
+      "new_construction_attempts": 256,
+      "new_executed_constructions": 18,
+      "runtime_error_attempts": 0,
+      "error_groups": [],
+      "last_backend_stage": "certificate_completed",
+      "last_event": "symbolic_dsl_refusal"
+    },
+    {
+      "id": "examples/complete2/000/complete_016_ex-gao_gao_M_M024-94.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 90.00856687699991,
+      "new_seconds": 300.011181524,
+      "old_proof_attempts": 43,
+      "new_proof_attempts": 230,
+      "new_proof_timeouts": 0,
+      "old_construction_attempts": 1,
+      "new_construction_attempts": 78,
+      "new_executed_constructions": 5,
+      "runtime_error_attempts": 0,
+      "error_groups": [],
+      "last_backend_stage": "saturation_progress",
+      "last_event": "proof_backend_progress"
+    }
+  ],
+  "conditions": {
+    "task_timeout_seconds": {
+      "before": 90,
+      "after": 300
+    },
+    "proof_attempt_seconds": {
+      "before": 5,
+      "after": 30
+    },
+    "construction_attempt_limit": 256,
+    "solver_source_changed": false
+  },
+  "artifact": {
+    "id": 10433505558,
+    "url": "https://github.com/corcondor/mortra/actions/runs/35060935705/artifacts/10433505558",
+    "digest": "sha256:1aef667dd7fca15cc4aaf2f8353671125b85128cf56bf78108db7c77621c902a"
+  }
+}
