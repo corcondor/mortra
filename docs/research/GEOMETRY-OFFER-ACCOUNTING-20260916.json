@@ -1,0 +1,151 @@
+{
+  "baseline_run": "35060935705",
+  "experiment_run": "35069966974",
+  "sha": "49ab45fca84420cdf350f5bea767c3bbcdaa0f91",
+  "single_change": "search.max_offers; max_states then counts accepted applications",
+  "additional_proved": 0,
+  "combined_proved": 17,
+  "combined_total": 24,
+  "statuses_after": {
+    "timeout": 7
+  },
+  "false_proofs_detected": 0,
+  "sources_unchanged": true,
+  "tests": {
+    "semantic": "283 passed, 1 skipped",
+    "bridge_subset": "10 passed",
+    "exact_kernel": "passed"
+  },
+  "artifact": {
+    "id": 10436752536,
+    "url": "https://github.com/corcondor/mortra/actions/runs/35069966974/artifacts/10436752536"
+  },
+  "diagnosis_from_baseline_artifact": {
+    "applications_offered": 1085,
+    "applications_that_produced_a_state": 76,
+    "refusals": 1009,
+    "families_offered": 38,
+    "families_never_accepted": 30,
+    "refusals_belonging_to_those_families": 845,
+    "exact_duplicate_offers": 0,
+    "method": "each symbolic_dsl_apply_started paired with the outcome event that followed it, over run-0,1,3,5,6 events.jsonl"
+  },
+  "rows": [
+    {
+      "position": 3,
+      "id": "examples/complete2/000/complete_017_ex-gao_gao_L_L022-1.gex",
+      "old_status": "application_budget",
+      "new_status": "timeout",
+      "old_seconds": 91.776117247,
+      "new_seconds": 300.0,
+      "old_offers": 256,
+      "new_offers": 1179,
+      "old_executed": 14,
+      "new_executed": 66,
+      "old_proof_attempts": 520,
+      "new_proof_attempts": 1602
+    },
+    {
+      "position": 9,
+      "id": "examples/complete2/unsolved1/complete_003_6_GDD_FULL_more_E023-14.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 300.010978848,
+      "new_seconds": 300.0,
+      "old_offers": 240,
+      "new_offers": 230,
+      "old_executed": 18,
+      "new_executed": 17,
+      "old_proof_attempts": 440,
+      "new_proof_attempts": 437
+    },
+    {
+      "position": 15,
+      "id": "examples/complete2/006/complete_001_6_GDD_FULL_61-80_72.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 300.0139318319999,
+      "new_seconds": 300.0,
+      "old_offers": 6,
+      "new_offers": 6,
+      "old_executed": 3,
+      "new_executed": 3,
+      "old_proof_attempts": 171,
+      "new_proof_attempts": 171,
+      "note": "coefficient-domain errors, addressed by a separate branch that failed"
+    },
+    {
+      "position": 17,
+      "id": "new_unsolved/0.gex",
+      "old_status": "application_budget",
+      "new_status": "timeout",
+      "old_seconds": 127.02141440000014,
+      "new_seconds": 300.0,
+      "old_offers": 256,
+      "new_offers": 985,
+      "old_executed": 20,
+      "new_executed": 64,
+      "old_proof_attempts": 560,
+      "new_proof_attempts": 1520
+    },
+    {
+      "position": 22,
+      "id": "examples/complete2/005/complete_008_ex-gao_ex160_e122.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 300.0135414219999,
+      "new_seconds": 300.0,
+      "old_offers": 0,
+      "new_offers": 0,
+      "old_executed": 0,
+      "new_executed": 0,
+      "old_proof_attempts": 9,
+      "new_proof_attempts": 9,
+      "note": "never reaches the construction layer; deliberately not addressed"
+    },
+    {
+      "position": 23,
+      "id": "examples/complete2/000/complete_016_ex-gao_gao_M_M021-64.gex",
+      "old_status": "application_budget",
+      "new_status": "timeout",
+      "old_seconds": 244.77294177299996,
+      "new_seconds": 300.0,
+      "old_offers": 256,
+      "new_offers": 305,
+      "old_executed": 18,
+      "new_executed": 20,
+      "old_proof_attempts": 680,
+      "new_proof_attempts": 799
+    },
+    {
+      "position": 24,
+      "id": "examples/complete2/000/complete_016_ex-gao_gao_M_M024-94.gex",
+      "old_status": "timeout",
+      "new_status": "timeout",
+      "old_seconds": 300.011181524,
+      "new_seconds": 300.0,
+      "old_offers": 78,
+      "new_offers": 78,
+      "old_executed": 5,
+      "new_executed": 5,
+      "old_proof_attempts": 230,
+      "new_proof_attempts": 232
+    }
+  ],
+  "second_experiment": {
+    "branch": "codex/geometry-gaussian-ground-20260916",
+    "sha": "d59b5d66642ef8ed59699778f47c67f740933a01",
+    "run": "35070346016",
+    "conclusion": "failure",
+    "failed_on": "tests/test_theory_geometry.py::test_actions_complex_similarity_obligation_is_refused",
+    "reason": "the change widens a declared capability boundary. Commit aaf2a8ff1855268a81008f7fddd9001aaad8c339 records CoercionFailed as an unsupported obligation deliberately, as a domain boundary refusal rather than support for complex-coefficient geometry",
+    "test_modified": false,
+    "merged": false
+  },
+  "not_claimed": [
+    "no task is shown to be provable or unprovable by this solver",
+    "reaching a time limit is neither a completed search nor a proof",
+    "more executed constructions is more search, not better search",
+    "the two runs used different hosted machines; timing is not a benchmark"
+  ]
+}
