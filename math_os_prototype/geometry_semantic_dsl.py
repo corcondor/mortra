@@ -176,6 +176,43 @@ def definition_body(template):
     return body
 
 
+def close_point_parameters(template, *, limit):
+    """Lift source Point leaves, preserving repeated-leaf and existing-hole sharing.
+
+    This proposes a broader definition, not an equality theorem. Call-site
+    roundtrips and universal construction certification remain obligatory.
+    """
+    occupied = set(library.holes(template))
+    bindings = {}
+
+    def walk(node):
+        if library.is_hole(node):
+            return deepcopy(node)
+        if isinstance(node, dict) and node.get("op") == "var":
+            gc.validate(node)
+            name = node["name"]
+            if name not in bindings:
+                if len(occupied) >= limit:
+                    raise ValueError("parameter closure exceeds parameter budget")
+                index = 0
+                while f"f{index}" in occupied:
+                    index += 1
+                bindings[name] = library.program_hole(index)
+                occupied.add(f"f{index}")
+            return deepcopy(bindings[name])
+        if isinstance(node, dict):
+            return {k: walk(v) for k, v in node.items()}
+        if isinstance(node, list):
+            return [walk(v) for v in node]
+        return node
+
+    closed = walk(template)
+    if len(occupied) > limit:
+        raise ValueError("parameter closure exceeds parameter budget")
+    definition_body(closed)
+    return closed, bindings
+
+
 def conditions(predicate, args):
     if predicate in {"perp", "para", "npara"}:
         return [("diff", tuple(args[:2])), ("diff", tuple(args[2:]))]

@@ -229,7 +229,9 @@ def test_contract_generated_candidate_is_executed_and_recorded(monkeypatch):
 @pytest.mark.parametrize("extension,accepted", [
     ("m = midpoint m p0 p1", True),
     ("m = free m", False),
-    ("m = foot m p2 p0 p1", False),
+    # The normalized triangle explicitly assumes its base is nonzero.
+    ("m = foot m p2 p0 p1", True),
+    ("m = foot m p2 p0 p0", False),
     ("m = on_line m p0 p1, on_circle m p0 p2", False),
 ])
 def test_conservative_extension_guards(extension, accepted):

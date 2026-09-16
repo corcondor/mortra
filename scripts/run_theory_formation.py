@@ -28,7 +28,8 @@ def source_seal():
                     ROOT/"scripts/verify_theory_semantic_edit.py", ROOT/"scripts/verify_temporal_utility.py",
                     ROOT/"scripts/verify_basis_quality.py", ROOT/"scripts/verify_theory_geometry.py",
                     ROOT/"scripts/freeze_geometry_cohort.py", ROOT/"scripts/replay_geometry_contracts.py",
-                    ROOT/"scripts/freeze_geometry_contraction.py", ROOT/"scripts/replay_geometry_contraction.py"])
+                    ROOT/"scripts/freeze_geometry_contraction.py", ROOT/"scripts/replay_geometry_contraction.py",
+                    ROOT/"scripts/verify_geometry_symbolic_dsl.py"])
     files += sorted(ROOT.joinpath("worker/backend").glob("*.py"))
     files += [ROOT/"requirements-geometry.txt", ROOT/"requirements-geometry-contracts.txt"]
     return {p.relative_to(ROOT).as_posix(): digest(p.read_text(encoding="utf-8")) for p in files}
@@ -81,7 +82,7 @@ def main(argv=None):
     if config["domain"].get("kind") == "geometry":
         if args.resume or args.knowledge or args.queries or args.condition != "learn":
             parser.error("Geometry uses formal task inputs, not scalar archive/queries or training conditions")
-        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback", "selection_factorial", "complete_revalidation"}:
+        if config["domain"].get("mode") in {"contract_acquisition", "morphism_contraction", "semantic_feedback", "selection_factorial", "complete_revalidation", "symbolic_dsl"}:
             from importlib.metadata import distributions
             from math_os_prototype.theory_geometry_acquisition import run_contract_geometry
             write(args.output/"environment.json", {
@@ -95,7 +96,10 @@ def main(argv=None):
                 required_seed = config.get("protocol", {}).get("python_hash_seed")
                 if required_seed is not None and os.environ.get("PYTHONHASHSEED") != str(required_seed):
                     raise ValueError("set PYTHONHASHSEED before launching Python as declared in the frozen protocol")
-                if config["domain"]["mode"] == "complete_revalidation":
+                if config["domain"]["mode"] == "symbolic_dsl":
+                    from math_os_prototype.geometry_symbolic_dsl import run_symbolic_feedback
+                    result = run_symbolic_feedback(config, args.output)
+                elif config["domain"]["mode"] == "complete_revalidation":
                     from math_os_prototype.theory_geometry_selection import run_complete_revalidation
                     result = run_complete_revalidation(config, args.output)
                 elif config["domain"]["mode"] == "selection_factorial":

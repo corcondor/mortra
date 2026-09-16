@@ -1,0 +1,30 @@
+{
+  "domain": {"kind": "geometry", "mode": "symbolic_dsl"},
+  "protocol": {
+    "python_hash_seed": 0,
+    "input_kind": "formal JGEX assumptions and goals, no auxiliary hints or acquired definitions",
+    "purpose": "connect symbolic geometry solving, learned morphisms, and existing exact proof selection",
+    "evaluation_use": "development regression only; no unseen capability claim"
+  },
+  "cycles": 2,
+  "training_applications_per_cycle": 96,
+  "evaluation_applications": 32,
+  "search": {
+    "seed": 17, "max_depth": 5, "closure_steps": 0, "per_family_limit": 8,
+    "proof_dsl": true, "proof_dsl_budget": 64,
+    "proof_backend_limits": {"local_max_steps": 8, "local_max_output_terms": 64}
+  },
+  "acquisition": {
+    "pairs": 3000, "max_parameters": 4, "min_contexts": 2,
+    "min_semantic_operations": 2, "max_primitive_steps": 4,
+    "per_cycle_capacity": 2, "certification_budget": 2, "corpus_capacity": 512
+  },
+  "training": [
+    {"statement": "a b c = triangle a b c; m = midpoint m a b ? cong a m b m"},
+    {"statement": "a b c = triangle a b c; d = midpoint d a b; e = midpoint e a c ? para d e b c"}
+  ],
+  "evaluation": [
+    {"statement": "a b c = triangle a b c; h = on_tline h b a c, on_tline h c a b ? perp a h b c"},
+    {"statement": "a b c = triangle a b c; d = on_line d a b; e = on_line e a c, on_pline e d b c ? eqratio a d a b a e a c"}
+  ]
+}

@@ -372,7 +372,14 @@ class GeometryDomain:
                 raise ValueError("extension changes original constraints")
             if not all(check(e) for e in aug_eqs[len(base_eqs):]):
                 raise ValueError("extension adds nontrivial constraints")
-            known_factors = {f for e in base.denominators for f in factors(e)}
+            # Gauge regularity is part of the original theorem's scope too.
+            # Ignoring it refused, for example, a foot on the nonzero base of
+            # a normalized triangle. Read only explicit polynomial != 0 rows.
+            symbols = {str(s): s for xy in base.coordinates.values() for e in xy for s in e.free_symbols}
+            from math_os_prototype.geometry_contracts import parse
+            scope_nonzero = [parse(c.removesuffix(" != 0"), symbols)
+                             for c in base.normalization_assumptions if c.endswith(" != 0")]
+            known_factors = {f for e in [*base.denominators, *scope_nonzero] for f in factors(e)}
             required_factors = {f for e in extended.denominators for f in factors(e)}
             if not required_factors <= known_factors:
                 raise ValueError("extension requires unproved nonzero conditions")
@@ -406,6 +413,15 @@ class GeometryDomain:
         if statement in self.certificate_cache:
             self.costs["exact_certificate_cache_hits"] += 1
             return self.certificate_cache[statement]
+        if self.config.get("proof_dsl"):
+            from math_os_prototype.geometry_proof_dsl import search_exact_proof
+            result = search_exact_proof(statement,
+                budget=self.config.get("proof_dsl_budget", 64),
+                emit=lambda event: self.log(**event),
+                backend_limits=self.config.get("proof_backend_limits"))
+            self.costs.update(result["proof_dsl_costs"])
+            self.certificate_cache[statement] = result
+            return result
         self.costs["exact_prover_calls"] += 1
         self.log(event="exact_check_started", statement=statement)
         start = time.perf_counter()

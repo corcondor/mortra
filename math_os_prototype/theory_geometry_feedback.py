@@ -527,8 +527,18 @@ def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
                                        source_filter=lambda n: size(n) >= config["min_semantic_operations"],
                                        deduplicate_sources=True)
         admissible = []
+        closed_seen = set()
+        parameter_closures = []
         for p in proposals["candidates"]:
             try:
+                template, bindings = dsl.close_point_parameters(p["template"], limit=config["max_parameters"])
+                parameter_closures.append({"source_candidate": p["id"], "template": template,
+                    "lifted_points": bindings, "candidate": digest(template)[:16]})
+                if digest(template) in closed_seen:
+                    continue
+                closed_seen.add(digest(template))
+                p = dict(p, id=digest(template)[:16], template=template,
+                         source_candidate=p["id"], lifted_points=bindings)
                 body = dsl.definition_body(p["template"])
                 if size(body) < config["min_semantic_operations"]:
                     continue
@@ -593,7 +603,8 @@ def acquire(histories, bank, config, *, flatten=False, emit=lambda e: None):
     return {"accepted": accepted, "rejected": rejected, "corpus": corpus,
             "input_corpus": input_corpus, "refactorings": refactorings,
             "selection_rounds": selection_rounds,
-            "proposals": proposals, "eligible": len(admissible), "flattened_before_learning": flatten,
+            "proposals": proposals, "parameter_closures": parameter_closures,
+            "eligible": len(admissible), "flattened_before_learning": flatten,
             "seconds": time.perf_counter()-start,
             "selection_rule": "positive marginal AST-node saving including definition, history support, content hash; no evaluation feedback"}
 
