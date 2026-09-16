@@ -16,6 +16,8 @@ def main():
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--count", type=int, default=8)
+    parser.add_argument("--retain", type=Path,
+                        help="keep a previously frozen prefix verbatim, then append source-ranked new tasks")
     args = parser.parse_args()
     lines = [s.strip() for s in args.dataset.read_text(encoding="utf-8").splitlines() if s.strip()]
     candidates = []
@@ -32,7 +34,19 @@ def main():
             candidates.append({"id": name, "statement": statement, "selection_key": key})
         except ValueError:
             continue
-    tasks = sorted(candidates, key=lambda t: t["selection_key"])[:args.count]
+    retained = json.loads(args.retain.read_text(encoding="utf-8"))["tasks"] if args.retain else []
+    if args.count < len(retained):
+        raise ValueError("count cannot discard retained tasks")
+    by_id = {t["id"]: t for t in candidates}
+    retained_ids = {t["id"] for t in retained}
+    if len(retained_ids) != len(retained):
+        raise ValueError("retained cohort has duplicate task IDs")
+    for task in retained:
+        if (task["id"] not in by_id or str(JGEXFormulation.from_text(task["statement"]))
+                != str(JGEXFormulation.from_text(by_id[task["id"]]["statement"]))):
+            raise ValueError("retained task differs from pinned source")
+    tasks = retained + [t for t in sorted(candidates, key=lambda t: t["selection_key"])
+                        if t["id"] not in retained_ids][:args.count-len(retained)]
     plan = {"origin": "Newclid pinned dataset, supplied auxiliary clauses removed",
             "unseen_scope": "not used in this adapter's development; global historical exposure unverified",
             "source_file": args.dataset.name,
@@ -44,6 +58,11 @@ def main():
                        "seed": 917401, "max_depth": 2, "max_states": 65,
                        "per_family_limit": 8, "closure_steps": 1000},
             "task_timeout_seconds": 180}
+    if args.retain:
+        plan["retained_prefix"] = {"path": args.retain.as_posix(), "count": len(retained),
+            "sha256": hashlib.sha256(args.retain.read_bytes()).hexdigest()}
+        plan["selection"] = ("retain the existing prefix verbatim; append source-ranked new task IDs; "
+                             "no solver results used for selection")
     with args.output.open("x", encoding="utf-8") as f:
         json.dump(plan, f, indent=2)
         f.write("\n")
