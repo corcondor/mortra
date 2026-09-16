@@ -103,6 +103,8 @@ def main():
                     pass
         symbolic_applications = [e for e in events if e["event"] == "symbolic_dsl_apply"]
         row["symbolic_trace_counts"] = {
+            "started": sum(e["event"] == "symbolic_dsl_apply_started" for e in events),
+            "construction_verified": sum(e["event"] == "symbolic_dsl_construction_verified" for e in events),
             "executed": len(symbolic_applications),
             "acquired": sum(e["action"]["call"].get("op") == "use" for e in symbolic_applications),
             "proof_attempts": sum(e["event"] == "proof_dsl_attempt" for e in events),

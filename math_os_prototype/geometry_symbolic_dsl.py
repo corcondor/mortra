@@ -296,6 +296,7 @@ class SymbolicDSLDomain(GeometryDomain):
                 "clauses": clauses, "primitive_operations": operations}
         setup, goal = state["statement"].split("?", 1)
         statement = setup.strip()+"; "+"; ".join(clauses)+" ? "+goal.strip()
+        self.log(event="symbolic_dsl_apply_started", parent_key=self.key(state), action=step)
         # A numeric filter must never justify a guard. Check the symbolic
         # extension before giving its assumptions to deduction or learning.
         extension = self.certify_extension(state["statement"], statement)
@@ -337,6 +338,8 @@ class SymbolicDSLDomain(GeometryDomain):
             self.log(event="symbolic_dsl_numeric_filter_refusal", action=step, reason=str(exc))
             return None
         self.costs["numeric_construction_seconds"] += time.perf_counter()-numeric_start
+        self.log(event="symbolic_dsl_construction_verified", parent_key=self.key(state),
+                 action=step, extension_sha256=extension["certificate_sha256"])
         child = self.close(problem, statement, [*state["path"], step], state)
         child["terms"] = deepcopy(state["terms"])
         for n, term in outputs:

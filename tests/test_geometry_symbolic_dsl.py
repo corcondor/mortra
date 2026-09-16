@@ -281,3 +281,51 @@ def test_symbolic_solver_does_not_answer_false_goal(tmp_path):
         "search": dict(CONFIG, max_states=1, proof_dsl_budget=16)}, tmp_path)
     assert not result["proved"]
     assert result["status"] == "formalization_refusal"
+
+
+def test_reused_worker_preserves_certificates_and_does_not_reuse_answers(monkeypatch):
+    from dataclasses import asdict
+    from math_os_prototype.geometry_proof_dsl import ProofSession, bounded_proof
+    monkeypatch.setenv("PYTHONHASHSEED", "0")
+    statements = [TASK["statement"], "a b c = triangle a b c ? perp a b b c"]
+    session = ProofSession()
+    try:
+        for statement in statements:
+            reused = session.run(statement, {}, 20, lambda e: None)
+            isolated = bounded_proof(statement, {}, 20, lambda e: None)
+            assert asdict(reused) == asdict(isolated)
+        assert session.costs["proof_worker_starts"] == 1
+        assert session.costs["proof_worker_reused_requests"] == 1
+        assert session.costs["proof_worker_completed_backend_seconds"] > 0
+        assert session.costs["proof_worker_request_seconds"] >= session.costs["proof_worker_startup_seconds"]
+    finally:
+        session.close()
+    assert session.worker is None and session.connection is None
+
+
+def test_reused_worker_discards_timed_out_and_failed_requests():
+    from math_os_prototype.geometry_proof_dsl import ProofSession, accepted_obligation
+    session = ProofSession()
+    try:
+        with pytest.raises(TimeoutError):
+            session.run(TASK["statement"], {}, 0.000001, lambda e: None)
+        assert session.worker is None and session.connection is None
+        assert accepted_obligation(session.run(TASK["statement"], {}, 20, lambda e: None))
+        with pytest.raises(RuntimeError):
+            session.run(TASK["statement"], {"representation": "invalid"}, 20, lambda e: None)
+        assert session.worker is None
+        assert accepted_obligation(session.run(TASK["statement"], {}, 20, lambda e: None))
+        assert session.costs["proof_worker_starts"] == 3
+        assert session.costs["proof_worker_resets"] == 2
+    finally:
+        session.close()
+
+
+def test_proof_dsl_worker_reuse_is_explicit_and_bounded():
+    with pytest.raises(ValueError, match="finite"):
+        search_exact_proof(TASK["statement"], reuse_worker=True)
+    result = search_exact_proof(TASK["statement"], reuse_worker=True, attempt_seconds=20)
+    assert result["accepted"]
+    assert result["proof_dsl_costs"]["proof_worker_starts"] == 1
+    assert result["proof_dsl_costs"]["exact_prover_calls"] == 1
+    assert result["proof_dsl_costs"]["proof_worker_cleanup_seconds"] > 0

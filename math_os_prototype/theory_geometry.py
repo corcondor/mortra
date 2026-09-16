@@ -429,6 +429,7 @@ class GeometryDomain:
                 budget=self.config.get("proof_dsl_budget", 64),
                 emit=lambda event: self.log(**event),
                 attempt_seconds=self.config.get("proof_attempt_seconds"),
+                reuse_worker=self.config.get("reuse_proof_worker", False),
                 backend_limits=self.config.get("proof_backend_limits"))
             self.costs.update(result["proof_dsl_costs"])
             self.certificate_cache[statement] = result
