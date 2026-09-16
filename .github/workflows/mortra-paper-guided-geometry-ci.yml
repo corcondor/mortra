@@ -148,7 +148,7 @@ jobs:
       - name: Verify unchanged upstream parsing and state tests
         shell: bash
         run: |
-          python -m pytest -q --import-mode=importlib vendor/newclid/tests/test_problem.py vendor/newclid/tests/test_jgex_builds.py vendor/newclid/tests/test_permutation_generator.py --junitxml=reports/newclid-upstream-tests.xml | tee reports/newclid-upstream-tests.log
+          python -m pytest -q --import-mode=importlib -p no:cacheprovider vendor/newclid/tests/test_problem.py vendor/newclid/tests/test_jgex_builds.py vendor/newclid/tests/test_permutation_generator.py --junitxml=reports/newclid-upstream-tests.xml | tee reports/newclid-upstream-tests.log
       - name: Verify source scope and existing bridge regressions
         shell: bash
         run: |
