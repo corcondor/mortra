@@ -59,6 +59,10 @@ class RuntimePlan:
     proof_program: tuple[dict[str, Any], ...]
     states_explored: int
     open_goal_sorts: tuple[str, ...]
+    #: applications offered to the domain, whether or not they produced a state.
+    #: `states_explored` counts offers too unless `max_offers` is supplied; see
+    #: `synthesize_typed_plan`.
+    offers_examined: int = 0
 
     @property
     def complete(self) -> bool:
@@ -71,6 +75,7 @@ class RuntimeSearchProgress:
 
     states_explored: int = 0
     states_retained: int = 0
+    offers_examined: int = 0
     applications_started: int = 0
     applications_completed: int = 0
     pending_streams: int = 0
@@ -147,6 +152,7 @@ def synthesize_typed_plan(
     *,
     max_depth: int = 12,
     max_states: int = 2048,
+    max_offers: int | None = None,
     goal_predicates: dict[str, Callable[[RuntimeFact], bool]] | None = None,
     value_key: Callable[[str, Any], str] | None = None,
     fair: bool = False,
@@ -160,6 +166,21 @@ def synthesize_typed_plan(
     A custom value_key must be an exact congruence for the supplied primitives.
     The planner cannot infer that premise from samples. `fair` interleaves
     attempted applications, including rejected or duplicate applications.
+
+    `max_offers` changes what `max_states` counts, and nothing else.
+
+    Left at None the planner keeps its original accounting: every application
+    offered to the domain costs one unit of `max_states`, whether the domain
+    accepted it or refused it. A domain that refuses most of what it is offered
+    therefore spends its budget on refusals rather than on states.
+
+    Set to an integer, `max_states` counts only applications that produced a
+    state, and `max_offers` separately caps how many offers may be examined.
+    Termination is then guaranteed by `max_offers` rather than by `max_states`.
+
+    This is an accounting change and nothing else. It does not alter which
+    candidates are generated, the order they are offered in, which of them the
+    domain accepts, or any proof.
     """
 
     if rank_fair_rounds and (not fair or original_order_every < 1):
@@ -185,12 +206,19 @@ def synthesize_typed_plan(
     seen_values = {(fact.sort, value_key(fact.sort, fact.value)) for fact in facts}
     attempted: set[tuple[str, tuple[str, ...]]] = set()
     states_explored = len(facts)
+    offers_examined = 0
+    count_refused_offers = max_offers is None
     progress = progress if progress is not None else RuntimeSearchProgress()
     progress.states_explored = states_explored
     progress.states_retained = len(facts)
+    progress.offers_examined = 0
     progress.applications_started = progress.applications_completed = 0
 
-    while states_explored < max_states:
+    def exhausted() -> bool:
+        return states_explored >= max_states or (
+            max_offers is not None and offers_examined >= max_offers)
+
+    while not exhausted():
         by_sort: dict[str, list[RuntimeFact]] = {}
         for fact in facts:
             by_sort.setdefault(fact.sort, []).append(fact)
@@ -203,6 +231,7 @@ def synthesize_typed_plan(
                 proof_program=program,
                 states_explored=states_explored,
                 open_goal_sorts=(),
+                offers_examined=offers_examined,
             )
 
         def arguments_for(primitive):
@@ -303,15 +332,18 @@ def synthesize_typed_plan(
 
         changed = False
         for primitive, arguments, dependency_ids, depth, invoke in attempts():
-            if states_explored >= max_states:
+            if exhausted():
                 break
             progress.applications_started += 1
             result = invoke()
             progress.applications_completed += 1
-            states_explored += 1
-            progress.states_explored = states_explored
+            offers_examined += 1
+            progress.offers_examined = offers_examined
+            if count_refused_offers or result is not None:
+                states_explored += 1
+                progress.states_explored = states_explored
             if result is None:
-                if states_explored >= max_states:
+                if exhausted():
                     break
                 continue
             result_key = (primitive.target_sort, value_key(primitive.target_sort, result.value))
@@ -340,8 +372,9 @@ def synthesize_typed_plan(
                 if len(reached) == len(goals_tuple):
                     return RuntimePlan(goals=reached, facts=tuple(facts),
                         proof_program=_proof_program(reached.values(), facts_by_id),
-                        states_explored=states_explored, open_goal_sorts=())
-            if states_explored >= max_states:
+                        states_explored=states_explored, open_goal_sorts=(),
+                        offers_examined=offers_examined)
+            if exhausted():
                 break
         if not changed:
             break
@@ -356,4 +389,5 @@ def synthesize_typed_plan(
         proof_program=_proof_program(goal_map.values(), facts_by_id),
         states_explored=states_explored,
         open_goal_sorts=tuple(sort for sort in goals_tuple if sort not in goal_map),
+        offers_examined=offers_examined,
     )

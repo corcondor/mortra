@@ -23,7 +23,7 @@ class ActionDomain(Protocol):
 
 
 def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progress=None,
-                         initial_facts=None):
+                         initial_facts=None, max_offers=None):
     primitives = tuple(RuntimePrimitive(
         family, (domain.sort,), domain.sort, lambda args: None,
         alternatives=lambda args, family=family: domain.alternatives(family, args[0].value),
@@ -33,7 +33,8 @@ def search_action_domain(domain: ActionDomain, *, max_depth, max_states, progres
         primitives, [domain.sort],
         goal_predicates={domain.sort: lambda fact: domain.is_goal(fact.value)},
         value_key=lambda sort, state: domain.key(state),
-        max_depth=max_depth, max_states=max_states, fair=True, progress=progress,
+        max_depth=max_depth, max_states=max_states, max_offers=max_offers,
+        fair=True, progress=progress,
         rank_fair_rounds=getattr(domain, "rank_fair_rounds", False),
         original_order_every=getattr(domain, "original_order_every", 4),
         fair_state_streams=getattr(domain, "fair_state_streams", False),

@@ -1,0 +1,74 @@
+{
+  "domain": {
+    "kind": "geometry",
+    "mode": "symbolic_solve"
+  },
+  "protocol": {
+    "source_run_id": "35060935705",
+    "purpose": "Re-run the same seven unresolved tasks with one change: the application budget counts accepted applications instead of offers",
+    "evaluation_status": "Previously attempted tasks; not unseen evaluation",
+    "input": "Identical original assumptions and goals; no auxiliary or answer injected",
+    "solver_baseline_sha": "f4334cead7ca669f044bf6d2c3143fae735cee79",
+    "python_hash_seed": 0,
+    "single_change": "search.max_offers is added. With it, max_states counts only applications that produced a state, and max_offers caps how many applications may be offered. Without it the planner is unchanged.",
+    "unchanged": "Task timeout 300s, proof attempt 30s, seed 917401, depth 5, max_states 257, per_family_limit 8, proof_dsl_budget 256, candidate generation, candidate order, certifier, proof backend and every task object",
+    "max_offers_rationale": "4096 is chosen to be non-binding against the 300-second task limit: the recorded run reached 256 offers in 92-245 seconds, so time stops these tasks before the offer cap does. What the change alters is therefore the accounting, not the permitted amount of work",
+    "selection": "All seven non-proved results, in original frozen order"
+  },
+  "search": {
+    "deduction_backend": "exact",
+    "seed": 917401,
+    "max_depth": 5,
+    "max_states": 257,
+    "per_family_limit": 8,
+    "closure_steps": 0,
+    "proof_dsl": true,
+    "proof_dsl_budget": 256,
+    "proof_attempt_seconds": 30,
+    "distinct_bindings_first": true,
+    "proof_backend_limits": {
+      "local_max_steps": 8,
+      "local_max_output_terms": 64
+    },
+    "reuse_proof_worker": true,
+    "max_offers": 4096
+  },
+  "task_timeout_seconds": 300,
+  "tasks": [
+    {
+      "id": "examples/complete2/000/complete_017_ex-gao_gao_L_L022-1.gex",
+      "statement": "a b = segment a b; c = on_bline c a b; d = on_line d a c; e = on_circle e c d, on_line e b c ? cong a e b d",
+      "selection_key": "088ab94d2c79775ec948d2b18256643632cc68e1ddd73ea8f0b6c4e0a481ad32"
+    },
+    {
+      "id": "examples/complete2/unsolved1/complete_003_6_GDD_FULL_more_E023-14.gex",
+      "statement": "a b c = triangle a b c; d = midpoint d b a; e = angle_bisector e c d a, on_line e a c; f = angle_bisector f c d b, on_line f c b ? para a b e f",
+      "selection_key": "0d4005a5118d3b1588b55913d4e1e7dc915c7da0bb486c9ae789e8080026a51d"
+    },
+    {
+      "id": "examples/complete2/006/complete_001_6_GDD_FULL_61-80_72.gex",
+      "statement": "a b c = triangle a b c; d = circle d a b c; e = on_circle e d a; f = foot f e a c; g = foot g e a b ? simtri b c e g f e",
+      "selection_key": "2003b637e7d6e405790cff8dcf469d77a2d0f3e496bf6f4afa0e272327aa441e"
+    },
+    {
+      "id": "new_unsolved/0.gex",
+      "statement": "c d b = triangle c d b; e = midpoint e c d; a = eqdistance a d c b, on_pline a b d c; f = midpoint f b a ? perp a b e f",
+      "selection_key": "26083ad21376c98bbd81084f0097a26b796eafcde9a368fd966faef6dfc8c990"
+    },
+    {
+      "id": "examples/complete2/005/complete_008_ex-gao_ex160_e122.gex",
+      "statement": "a b = segment a b; c = on_circle c a b; d = on_circle d a b; e = on_circle e a b, on_pline e d b c; f = on_circle f a b; g = on_circle g a b, on_pline g d c f ? para b g e f",
+      "selection_key": "340ce517700edc6648122dd76264d83a276bd0f0a2bdc4dbf6fef7cc180ac292"
+    },
+    {
+      "id": "examples/complete2/000/complete_016_ex-gao_gao_M_M021-64.gex",
+      "statement": "a b = segment a b; d = midpoint d b a; c = on_circle c b a, on_circle c a b; e = on_line e a c, on_circle e d a; f = on_circle f d a, on_line f b c ? cong a e e f",
+      "selection_key": "3b1e84b3f2628767ac9c4672e65f9c0d5682eff7487d3f4bf5be6e230b04ecb8"
+    },
+    {
+      "id": "examples/complete2/000/complete_016_ex-gao_gao_M_M024-94.gex",
+      "statement": "a b c = triangle a b c; d = on_circle d a b, on_circle d c b; e = on_line e d a, on_circle e a d; f = on_line f d c, on_circle f c d ? coll b e f",
+      "selection_key": "3e2c0d11ba769fb4e1cd76d4accfdcdbc877ca81d4158d348d338acf665479e3"
+    }
+  ]
+}

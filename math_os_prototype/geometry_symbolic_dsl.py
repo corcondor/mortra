@@ -500,8 +500,13 @@ def run_symbolic_solver(config, output):
                 "wall_seconds": time.perf_counter()-started, "llm_calls": 0}
     write("morphisms.json", [domain.contract(f) for f in domain.families])
     progress = RuntimeSearchProgress()
+    # `max_offers` is absent unless a plan asks for it. Absent, the planner keeps
+    # its original accounting, in which a refused application costs a unit of
+    # `max_states` exactly as an accepted one does.
+    max_offers = config["search"].get("max_offers")
     plan = search_action_domain(domain, max_depth=config["search"]["max_depth"],
-        max_states=config["search"]["max_states"], progress=progress)
+        max_states=config["search"]["max_states"], max_offers=max_offers,
+        progress=progress)
     search_seconds = time.perf_counter()-started
     goal = plan.goals.get(domain.sort)
     state = goal.value if goal else domain.initial()
@@ -515,7 +520,11 @@ def run_symbolic_solver(config, output):
     return {"execution_completed": True, "proved": bool(goal) and checked["passed"],
         "status": ("proved" if checked["passed"] else "replay_failure") if goal
             else "application_budget" if plan.states_explored >= config["search"]["max_states"]
+            else "offer_budget" if max_offers is not None and plan.offers_examined >= max_offers
             else "depth_or_candidate_exhaustion",
+        "states_explored": plan.states_explored,
+        "offers_examined": plan.offers_examined,
+        "max_offers": max_offers,
         "initial_goal_certified": domain.initial()["certified"],
         "auxiliary_count": len(state["path"]) if goal else 0,
         "acquired_calls_in_goal_path": sum(s["family"] in domain.learned for s in state["path"]) if goal else 0,
