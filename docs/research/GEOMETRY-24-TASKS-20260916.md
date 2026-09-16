@@ -54,3 +54,51 @@ remain in the artifact. The run must not be edited or supplemented after launch.
 Results will separately report the retained eight, the additional sixteen,
 proof/verification outcomes, procedure choices, and costs. There is no training
 or acquired-library comparison in this evaluation.
+
+## Fresh 24-task results
+
+Actions run: https://github.com/corcondor/mortra/actions/runs/35059517991
+
+Tested commit: `6df235b353153913bc50390ae6d628a267318aff`.
+Artifact: https://github.com/corcondor/mortra/actions/runs/35059517991/artifacts/10431809829
+Artifact digest: `sha256:468982721efd3c694d4ff1e233da11616e82095d490f0fae88c2d9afa2b932c0`.
+
+Fresh tests: 279 passed and 1 skipped in the semantic suite, 10 passed in the
+bridge subset, and 64 passed in the exact-kernel suite (353 passed total).
+The solver proved 17/24 tasks, with independent replay passing for all 17.
+The retained prefix remained 7/8; the additional tasks yielded 10/16.
+Seven tasks reached the 90-second task limit. No false proof was detected.
+All successful proofs used the original state, without auxiliary constructions
+or an acquired library. This is not evidence of acquired-library improvement.
+The runner's `minimum_scientific_success=false` refers to its stronger auxiliary
+feedback criterion, not to failure of these 17 proof replays.
+
+Task subprocess time totaled 765.583798 seconds. The traces contain 884 completed
+proof attempts, 329 construction attempts started and 18 constructions executed.
+The seven unresolved tasks are the original one-based positions 3, 9, 15, 17,
+22, 23 and 24. Task 15 includes coefficient-domain conversion errors; task 22
+has 17 individual five-second proof timeouts. Longer time alone is not assumed
+to repair the conversion errors.
+
+## Preregistered time-extension retry
+
+At the user's request, retry every unresolved task, in its original order.
+The new plan is `configs/theory-geometry-autonomous-solve-extended-20260916.json`.
+All seven task objects are preserved exactly from the frozen cohort. This is
+a retry of previously observed tasks, not a new held-out evaluation.
+
+Only the task timeout (90 to 300 seconds) and individual proof timeout (5 to
+30 seconds) change. Solver source, seed, depth, candidate budgets, worker reuse,
+and algebraic limits remain fixed. These two time changes are evaluated together;
+the experiment does not identify their separate causal effects.
+No target lemma, auxiliary point, answer, or desired procedure is supplied.
+The existing workflow and its 60-minute outer ceiling are reused.
+
+```sh
+PYTHONHASHSEED=0 python scripts/verify_theory_geometry.py \
+  --plan configs/theory-geometry-autonomous-solve-extended-20260916.json \
+  --output reports/semantic-feedback-normal
+```
+
+The retry will preserve successes, timeouts, errors and replay results separately,
+and compare each task with run 35059517991. No code will be edited during the run.
