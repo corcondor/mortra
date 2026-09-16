@@ -49,3 +49,88 @@ construction attempts and executions, observed depth and refusal reasons, and
 subprocess wall time. Compare the first 256 construction attempts to the previous
 run and count newly attempted constructions beyond that prefix. Preserve resource
 stops without claiming the full search space has been exhausted.
+
+## Fresh Actions results
+
+Run: https://github.com/corcondor/mortra/actions/runs/35084901403
+
+Tested SHA: `f0f0807b1d7c6c1376fc7bfabff8adb460c997a8`.
+Artifact: https://github.com/corcondor/mortra/actions/runs/35084901403/artifacts/10443791636
+The downloaded archive SHA256 is
+`ca14e7d1b8ff6306a94c252551fc4dcad832bddfc0df977d240f97e61429bf2c`.
+The executed plan equals the committed plan. Source hashes stayed unchanged.
+The artifact records 279 passed / 1 skipped in the main test subset and
+10 passed / 76 deselected in the bridge subset.
+
+All three tasks stopped at `application_budget`, with no additional proof.
+The combined previously reported cohort remains 17/24; this retry did not rerun
+the other 21 tasks. This is not a fresh 24-task validation.
+
+| Original position | Prior attempts | New attempts | Matching initial attempts | Verified constructions | Proof attempts | Wall seconds |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 3 | 256 | 1024 | 256 | 58 | 1440 | 449.567 |
+| 17 | 256 | 1024 | 256 | 66 | 1600 | 1181.292 |
+| 23 | 256 | 1024 | 256 | 62 | 1800 | 1184.239 |
+
+Prefix equality compares each parent-state key and candidate key, in order.
+Every task has 1024 distinct such pairs and 768 attempts beyond the old prefix.
+All reached depth 3, below the permitted depth 5. All 38 construction families
+were attempted: 36 families 27 times and two families 26 times, per task.
+There were no completed proof-attempt timeouts or logged RuntimeError refusals
+in these three tasks. Total task subprocess time was 2815.098 seconds.
+
+Construction certification refused 966, 958 and 962 attempts respectively.
+Reasons include unproved nonzero conditions, non-affine or algebraic extensions,
+changes to normalization scope, false guards and unsupported `nperp` requirements.
+These counts are not evidence that every refused construction is mathematically
+invalid: some are outside the implemented certificate fragment. Detailed counts,
+frontier data and costs are in the companion JSON. Increasing the budget alone
+did not solve these tasks; this run does not isolate a single sufficient cause.
+
+The fixed DSL generated and tried the candidates, without runtime hints or LLM
+calls. No acquired library was supplied, and `acquisition_performed=false`.
+This tests autonomous search within the supplied language, not online learning.
+
+## Local storage recovery
+
+C: had zero free bytes while retrieving the artifact. No files were deleted.
+Partial NTFS compression of the existing environment at
+`C:/Users/81808/.openclaw/workspace/mortra-geometry-semantic-feedback-20260915/.venv`
+was followed by 3,837,550,592 observed free bytes. Compression was intentionally
+stopped after sufficient space was available; full compression is not claimed.
+Python, SymPy, NumPy and Newclid imports succeeded afterwards. The command below
+passed 13 tests in 5.78 seconds locally; these are separate from the Actions tests.
+
+```powershell
+& 'C:/Users/81808/.openclaw/workspace/mortra-geometry-semantic-feedback-20260915/.venv/Scripts/python.exe' -B -m pytest -q tests/test_geometry_closure_contract.py tests/test_geometry_source_scope.py -p no:cacheprovider
+```
+
+The artifact download was resumed, completed and checked against the published
+digest. ZIP entries were read without expanding a second copy of the large logs.
+
+## Newclid dependency and cost distinction
+
+This run uses MORTRA's exact proof path, not Newclid's deductive engine.
+However, removing the package is not currently supported: `GeometryDomain`
+uses its JGEX parser, construction definitions and initial diagram builder;
+`SymbolicDSLDomain.apply` uses its problem classes and numerical constructor;
+the exact constraint bridge uses its parser/definitions; and
+`native_rule_theorems` imports its declarative rules. These are supplied knowledge
+and infrastructure, not mathematics acquired during this run.
+
+The local Newclid 3.0.1 package plus metadata occupies 1,742,831 logical bytes
+(about 1.66 MiB), excluding dependencies and checkout copies. Shared scientific
+packages cannot be attributed exclusively to Newclid or safely removed with it.
+
+Across these three tasks, measured numerical construction took 0.101922 seconds
+and initial construction took 0.008802 seconds. Exact proof calls took
+1803.215047 seconds and construction-extension certification took 968.419998
+seconds. Costs are nested and must not be added indiscriminately. Imports, rule
+loading and parsing inside certification are not separately isolated by these
+timers. The evidence does not identify Newclid as the dominant slowdown.
+
+A semantics-preserving replacement of the remaining input/construction boundary
+could retain proof capability, but a complete removal comparison has not been
+performed. No unchanged-score or speedup claim is made. Merely uninstalling the
+package would currently break runtime imports. Solver code and dependencies were
+not changed during this storage recovery and evidence audit.
