@@ -215,3 +215,12 @@ def test_existing_point_return_does_not_require_fresh_numeric_construction(bank,
     assert domain.costs["primitive_equivalent_operations"] == 2
     assert domain.costs["numeric_construction_calls"] == 0
     assert domain.costs["acquired_successful_executions"] == 1
+
+
+def test_existing_backend_alias_also_returns_to_acquisition(bank):
+    domain = SymbolicDSLDomain(TASK, CONFIG, bank, discover=True)
+    result = domain.apply(domain.initial(), TypedConstructionCandidate("circumcenter", ("p0", "p1", "p2"), ()))
+    assert result is not None
+    history = domain.histories[-1]
+    assert history["program"]["op"] == dsl.FRAGMENT.canonical_family("circumcenter")
+    assert history["compilation_certificate"]["all_residuals_zero"]

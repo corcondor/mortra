@@ -79,6 +79,15 @@ class EuclideanFragment:
              "predicate_policy": "polynomial equality plus explicit geometric nondegeneracy",
              "circle_operation": "Point^3 -> Point (circumcenter), not a Circle carrier"}
 
+    backend_aliases = {"circle": "circumcenter"}
+
+    @staticmethod
+    def canonical_family(name):
+        if name in EuclideanFragment.arities:
+            return name
+        return next((family for family, backend in EuclideanFragment.backend_aliases.items()
+                     if backend == name), None)
+
     @staticmethod
     def primitive(elaborator, family, output, inputs):
         if family not in EuclideanFragment.arities or len(inputs) != EuclideanFragment.arities[family]:
@@ -90,7 +99,7 @@ class EuclideanFragment:
             else:
                 elaborator.coordinates[output] = elaborator._line_intersection(*inputs)
         else:
-            name = "circumcenter" if family == "circle" else family
+            name = EuclideanFragment.backend_aliases.get(family, family)
             getattr(elaborator, "_"+name)((output, *inputs))
 
     @staticmethod

@@ -201,7 +201,8 @@ class SymbolicDSLDomain(GeometryDomain):
                 if len(clause.points) != 1 or len(clause.constructions) != 1:
                     continue
                 construction = clause.constructions[0]
-                family, args = str(construction.name), tuple(map(str, construction.args))
+                family = dsl.FRAGMENT.canonical_family(str(construction.name))
+                args = tuple(map(str, construction.args))
                 output = str(clause.points[0])
                 if (family in dsl.FRAGMENT.arities and args and args[0] == output
                         and len(args)-1 == dsl.FRAGMENT.arities[family]
@@ -268,11 +269,12 @@ class SymbolicDSLDomain(GeometryDomain):
         if not set(candidate.inputs) <= names:
             raise ValueError("candidate refers to an unavailable Point")
         h = self.learned.get(candidate.family)
+        semantic_family = dsl.FRAGMENT.canonical_family(candidate.family)
         if h:
             call = instantiate_call(h, candidate.inputs)
         else:
-            call = {"op": candidate.family, "args": [gc.point(n) for n in candidate.inputs]}
-        if h or candidate.family in dsl.FRAGMENT.arities:
+            call = {"op": semantic_family or candidate.family, "args": [gc.point(n) for n in candidate.inputs]}
+        if h or semantic_family is not None:
             clauses, output, primitive, outputs = compile_call(call, self.bank.table, names)
         else:
             output = self.next_output(state)
@@ -303,7 +305,7 @@ class SymbolicDSLDomain(GeometryDomain):
         unabridged_statement, unabridged_extension = statement, extension
         compilation = None
         aliasing = None
-        if h or candidate.family in dsl.FRAGMENT.arities:
+        if h or semantic_family is not None:
             clauses, outputs, aliasing = alias_existing_points(state["statement"], primitive, outputs)
             output = outputs[-1][0]
             statement = (setup.strip()+("; "+"; ".join(clauses) if clauses else "")+" ? "+goal.strip())
