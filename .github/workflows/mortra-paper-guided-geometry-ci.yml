@@ -104,6 +104,7 @@ on:
           - configs/theory-geometry-autonomous-solve-worker-reuse.json
           - configs/theory-geometry-autonomous-solve-24-20260916.json
           - configs/theory-geometry-autonomous-solve-extended-20260916.json
+          - configs/theory-geometry-autonomous-solve-1024-20260916.json
 
 permissions:
   contents: read
@@ -111,7 +112,7 @@ permissions:
 jobs:
   semantic-feedback:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: ${{ inputs.experiment_config == 'configs/theory-geometry-autonomous-solve-1024-20260916.json' && 90 || 60 }}
     env:
       PYTHONHASHSEED: "0"
       EXPERIMENT_CONFIG: ${{ inputs.experiment_config || 'configs/theory-geometry-complete-revalidation.json' }}
