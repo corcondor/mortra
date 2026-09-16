@@ -337,9 +337,9 @@ class GeometryDomain:
     def certify_extension(self, original, augmented):
         """Check a rational chart extension without re-proving the original goal.
 
-        Reuse the bridge's elaborator and exact arithmetic. No new variables,
-        constraints, old coordinates, or unproved regularity may be introduced.
-        Other extension types are refused, not assumed conservative.
+        Reuse the bridge's elaborator and affine elimination certificates.
+        Local variables must eliminate to rational witnesses without changing
+        old coordinates, constraints, or the original regularity scope.
         """
         cache_key = digest([original, augmented])
         if cache_key in self.extension_cache:
@@ -362,10 +362,39 @@ class GeometryDomain:
                 original, enable_structural_lemmas=False)
             extended, *_, aug_goal, aug_eqs, aug_vars = _prepare_exact_system(
                 augmented, enable_structural_lemmas=False)
-            if tuple(base_vars) != tuple(aug_vars):
-                raise ValueError("extension introduces free or algebraic variables")
             if base.normalization_assumptions != extended.normalization_assumptions:
                 raise ValueError("extension changes the normalization scope")
+            # Polynomial-ring generators are not all chart parameters. Only
+            # genuinely new state variables may be eliminated here.
+            parameters = set(base.variables)
+            added_variables = tuple(v for v in extended.variables if v not in parameters)
+            source_guards = tuple(extended.denominators)
+            all_symbols = {str(v): v for v in extended.variables}
+            lemma_start = len(extended.local_lemma_certificates)
+            if added_variables:
+                if len(extended.equations) < len(base.equations):
+                    raise ValueError("extension removes original constraints")
+                extended._compress_affine_clause(
+                    clause_index=prefix, vocabulary=(), equation_start=len(base.equations),
+                    introduced_variables=added_variables)
+                aug_eqs = tuple(extended.equations)
+            derivations = extended.local_lemma_certificates[lemma_start:]
+            if any(v not in parameters for v in extended.variables):
+                raise ValueError("extension introduces free or algebraic variables")
+            if any(not lemma.replayed for lemma in derivations):
+                raise ValueError("extension witness derivation did not replay")
+            from math_os_prototype.geometry_contracts import parse
+            # Recheck pre-elimination guards too. A substituted zero guard
+            # cannot be dropped as though it were a redundant equation.
+            for guard in (*source_guards, *(parse(l.coefficient, all_symbols) for l in derivations)):
+                for lemma in derivations:
+                    guard = guard.subs(all_symbols[lemma.variable], parse(lemma.replacement, all_symbols))
+                numerator, denominator = sp.cancel(guard).as_numer_denom()
+                if numerator == 0 or denominator == 0 or guard.has(sp.zoo, sp.nan):
+                    raise ValueError("extension witness violates an original existence guard")
+                extended.denominators.extend((numerator, denominator))
+            result["witness_derivations"] = [asdict(lemma) for lemma in derivations]
+            self.costs["extension_affine_eliminations"] += len(derivations)
             checks = []
             def check(value):
                 self.costs["extension_identity_checks"] += 1
@@ -396,12 +425,12 @@ class GeometryDomain:
             added = {n: p for n, p in extended.coordinates.items() if n not in base.coordinates}
             for coords in added.values():
                 for value in coords:
-                    if not value.free_symbols <= set(base_vars) or value.has(sp.Float):
+                    if not value.free_symbols <= parameters or value.has(sp.Float):
                         raise ValueError("extension is outside the rational chart fragment")
                     for part in sp.cancel(value).as_numer_denom():
-                        if base_vars:
+                        if parameters:
                             try:
-                                sp.Poly(part, *base_vars, domain=sp.QQ)
+                                sp.Poly(part, *sorted(parameters, key=str), domain=sp.QQ)
                             except (sp.PolynomialError, sp.polys.polyerrors.CoercionFailed) as exc:
                                 raise ValueError("nonrational extension witness") from exc
                         elif part.is_Rational is not True:
@@ -409,7 +438,7 @@ class GeometryDomain:
             result.update(accepted=True, identity_checks=len(checks), all_residuals_zero=all(checks),
                 point_witnesses={n: list(map(str, p)) for n, p in added.items()},
                 original_regularity=sorted(known_factors), required_regularity=sorted(required_factors),
-                scope="original explicit chart under its declared regularity; no new constraints or free variables")
+                scope="original explicit chart under its declared regularity; no new constraints or surviving free variables")
         except (ValueError, NotImplementedError, CoercionFailed, PolynomialError) as exc:
             result["refusal_reason"] = str(exc)
         result["certificate_sha256"] = digest(result)

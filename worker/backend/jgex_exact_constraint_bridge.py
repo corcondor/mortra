@@ -1438,6 +1438,9 @@ class _JGEXElaborator:
         names = tuple(construction.name for construction in constructions)
         unsupported = set(names) - self.SUPPORTED
         if unsupported:
+            if len(constructions) == 1 and len(clause.points) == 1:
+                self._elaborate_affine_definition(clause)
+                return names
             raise ValueError(
                 "unsupported JGEX constructions: " + ", ".join(sorted(unsupported))
             )
@@ -1545,6 +1548,93 @@ class _JGEXElaborator:
                 tuple(str(arg) for arg in construction.args),
             )
         return names
+
+    def _elaborate_affine_definition(self, clause) -> None:
+        """Derive a unique rational witness from declared predicate equations.
+
+        No construction-name formulas or numerical sketches are used. All
+        effects must replay, including nonlinear effects not used to solve the
+        affine subsystem. Existence guards remain explicit proof obligations.
+        """
+        from itertools import combinations
+
+        construction = clause.constructions[0]
+        definition = JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS).get(construction.name)
+        if definition is None:
+            raise ValueError(f"unknown construction definition: {construction.name}")
+        actual = tuple(map(str, construction.args))
+        formal = tuple(map(str, definition.args))
+        if len(actual) != len(formal):
+            raise ValueError("construction definition arity mismatch")
+        mapping = dict(zip(formal, actual, strict=True))
+        outputs = tuple(mapping[str(n)] for n in definition.output_points)
+        if outputs != tuple(map(str, clause.points)) or len(outputs) != 1:
+            raise ValueError("affine definition requires one declared output")
+        output = outputs[0]
+        if output in self.coordinates or output in actual[1:]:
+            raise ValueError("affine definition requires a fresh output")
+        if not set(actual[1:]) <= set(self.coordinates):
+            raise ValueError("affine definition has unavailable inputs")
+
+        def tokens(item):
+            name, *args = str(item.string).split()
+            return name, tuple(mapping.get(n, n) for n in args)
+
+        for item in definition.requirements.constructions:
+            name, args = tokens(item)
+            if output in args:
+                raise ValueError("output-dependent existence guard is unsupported")
+            if name == "diff" and len(args) == 2:
+                guard = self._distance_squared(*args)
+            elif name == "ncoll" and len(args) == 3:
+                guard = self.goal("coll", args)
+            elif name == "npara" and len(args) == 4:
+                guard = self.goal("para", args)
+            else:
+                raise ValueError(f"unsupported affine definition requirement: {name}")
+            if sp.cancel(guard) == 0:
+                raise ValueError("affine definition has an identically false guard")
+            self.denominators.append(guard)
+
+        coordinates = self._free_point(output)
+        effects = [tokens(item) for row in definition.clauses for item in row.constructions]
+        allowed = {"coll", "para", "perp", "cong", "midp"}
+        if not effects or any(name not in allowed for name, _ in effects):
+            raise ValueError("definition effects are outside the affine witness fragment")
+        equations = [self.goal(name, args) for name, args in effects]
+        affine = [e for e in equations if sp.Poly(e, *coordinates).total_degree() == 1]
+        witness = None
+        determinant = None
+        for pair in combinations(affine, 2):
+            matrix, rhs = sp.linear_eq_to_matrix(pair, coordinates)
+            det = sp.cancel(matrix.det())
+            if det == 0:
+                continue
+            values = tuple(sp.cancel(v / det) for v in matrix.adjugate() * rhs)
+            if any(set(coordinates) & v.free_symbols for v in values):
+                continue
+            witness, determinant = values, det
+            break
+        if witness is None:
+            raise ValueError("declared relations do not determine a unique affine witness")
+        substitution = dict(zip(coordinates, witness, strict=True))
+        residuals = tuple(sp.cancel(e.subs(substitution, simultaneous=True)) for e in equations)
+        if any(r != 0 for r in residuals):
+            raise ValueError("affine witness fails a declared construction effect")
+        self.coordinates[output] = witness
+        self.variables = [v for v in self.variables if v not in coordinates]
+        self.existential_coordinate_variables.difference_update(coordinates)
+        self.denominators.append(determinant)
+        material = repr((definition.model_dump(mode="json"), actual, witness, determinant, residuals))
+        self.structural_lemma_certificates.append(StructuralLocalLemmaCertificate(
+            theorem="declared_predicate_unique_affine_witness",
+            source_clause_indices=(self._clause_index - 1,), inputs=actual[1:], output=output,
+            hidden_points=(), boundary_equations=tuple(map(_safe, equations)),
+            replay_residuals=tuple(map(_safe, residuals)),
+            nonzero_conditions=(f"{_safe(determinant)} != 0",),
+            semantic_assumption="all declared requirements; unique affine subsystem; all effects replayed",
+            composition_certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
+            composition_replayed=True, replayed=True))
 
     @staticmethod
     def _point_arguments(clause) -> tuple[str, ...]:
