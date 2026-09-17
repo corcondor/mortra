@@ -1,0 +1,52 @@
+{
+  "domain": {
+    "kind": "algebraic_structures",
+    "mode": "collapse_preprocessing_for_homology_with_representatives"
+  },
+  "protocol": {
+    "design": "docs/research/ALGEBRAIC-STRUCTURES-20260917.md",
+    "python_hash_seed": 0,
+    "baseline": "min-fill",
+    "primary": "acquired",
+    "operation_cap": 5000000,
+    "training_count": 24,
+    "fresh_count": 48,
+    "development_seeds": [
+      20260917101,
+      20260917102,
+      20260917301,
+      20260917311,
+      20260917401
+    ],
+    "development_counts": {
+      "20260917101": 6,
+      "20260917102": 4,
+      "20260917301": 24,
+      "20260917311": 24,
+      "20260917401": 4
+    },
+    "fresh_seed_source": {
+      "beacon": "drand default chain (pedersen-bls-chained, period 30 s)",
+      "chain_hash": "8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce",
+      "endpoints": [
+        "https://api.drand.sh",
+        "https://drand.cloudflare.com"
+      ],
+      "round": 6474376,
+      "salt": "mortra-algebraic-structures-fresh-1"
+    },
+    "interference": "Training and fresh seeds are both derived from the drand round (different salts) fixed in the freezing commit before publication; the system reduces the training complexes itself; generators and procedures read no reference answer.",
+    "training_salt": "mortra-algebraic-structures-training-1",
+    "development_generators": {
+      "20260917101": "generate",
+      "20260917102": "generate",
+      "20260917301": "generate_model_tasks",
+      "20260917311": "generate_model_tasks",
+      "20260917401": "generate_model_tasks"
+    },
+    "development_training_seed": 20260917311,
+    "primary_metric": "total operations of solve_homology (entry updates, reindexing, move records, lifting, queue pushes and pops); unsolved tasks count at operation_cap",
+    "primary_question": "Betti numbers b_0, b_1 with audited representatives: collapse (certified free-face collapses, then elimination) against direct elimination, by total counted operations including queue pushes and pops; improvement requires binding, unchanged modules, no overlap, zero incorrect answers in every condition, all tasks solved by both, lower collapse total, and bootstrap 95% upper bound of the ratio of totals below 1 (10,000 task resamples seeded by the fresh seed).",
+    "secondary": "Minimal models, reported without a claim: baseline ordering (min-fill) against the acquired one-split ordering rule (key primary), exploration by successive halving, and every fixed ordering; algebraic operations and totals including the queue; oracle ratio."
+  }
+}
