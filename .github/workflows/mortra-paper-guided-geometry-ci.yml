@@ -7,6 +7,9 @@ on:
       - "tests/test_algebraic_structures.py"
       - "scripts/run_algebraic_structures_eval.py"
       - "configs/algebraic-structures-*.json"
+      - "math_os_prototype/operation_*.py"
+      - "tests/test_operation_integration.py"
+      - "scripts/run_operation_integration.py"
       - "math_os_prototype/geometry_relational_*.py"
       - "tests/test_geometry_relational_*.py"
       - "scripts/run_relational_geometry_eval.py"
@@ -71,6 +74,9 @@ on:
       - "tests/test_algebraic_structures.py"
       - "scripts/run_algebraic_structures_eval.py"
       - "configs/algebraic-structures-*.json"
+      - "math_os_prototype/operation_*.py"
+      - "tests/test_operation_integration.py"
+      - "scripts/run_operation_integration.py"
       - "math_os_prototype/geometry_relational_*.py"
       - "tests/test_geometry_relational_*.py"
       - "scripts/run_relational_geometry_eval.py"
@@ -162,7 +168,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p reports
-          python -m pytest -q tests/test_vendored_newclid.py tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py tests/test_geometry_relational_dsl.py tests/test_geometry_relational_edit.py tests/test_algebraic_structures.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
+          python -m pytest -q tests/test_vendored_newclid.py tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py tests/test_geometry_relational_dsl.py tests/test_geometry_relational_edit.py tests/test_algebraic_structures.py tests/test_operation_integration.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
       - name: Verify unchanged upstream parsing and state tests
         shell: bash
         run: |

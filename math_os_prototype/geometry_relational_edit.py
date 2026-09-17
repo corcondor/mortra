@@ -16,6 +16,8 @@ relies on replay with the argument substituted.
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import dataclass
+from typing import Any, Callable
 
 from math_os_prototype import geometry_contracts as gc
 from math_os_prototype import geometry_relational_dsl as rdsl
@@ -29,10 +31,55 @@ class EditRefused(ValueError):
 
 
 # ---------------------------------------------------------------------------
+# The domain a program is written in
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class EditDomain:
+    """What the calculus needs to know about a language: arities, sorts, and how a
+    definition is accepted. The grammar, the hygiene rules, unfolding, folding,
+    splicing and anti-unification are the same for every domain.
+
+    `register` is the acceptance gate. For the relational geometry language it is
+    `define`, which re-derives an exact certificate for every declared post atom.
+    A domain that certifies elsewhere (the contract layer derives a composite's
+    guarantee from the guarantees of its steps) supplies its own gate; a domain
+    with no gate at all cannot register definitions.
+    """
+
+    name: str
+    id_prefix: str
+    param_sort: Callable[[str], str]
+    arity: Callable[[str], int]
+    has_primitive: Callable[[str], bool]
+    instantiated_post: Callable[[str], list] | None = None
+    register: Callable[..., dict] | None = None
+
+
+def _geometry_arity(prim):
+    return len(rdsl.primitive_contracts()[prim]["params"])
+
+
+def _geometry_register(body, post, table=None, *, parents=(), generation=None, domain=None):
+    return define(body, post, table, parents=parents, generation=generation)
+
+
+GEOMETRY = EditDomain(
+    name="relational-geometry",
+    id_prefix="rel.",
+    param_sort=lambda name: "Point",
+    arity=_geometry_arity,
+    has_primitive=lambda prim: prim in rdsl.primitive_contracts(),
+    instantiated_post=lambda prim: _instantiated_post(prim),
+    register=_geometry_register,
+)
+
+
+# ---------------------------------------------------------------------------
 # Definitions, unfolding and folding
 # ---------------------------------------------------------------------------
 
-def validate_program(program, table=None):
+def validate_program(program, table=None, *, domain=GEOMETRY):
     """Name hygiene: parameters and step outputs are distinct identifiers; every argument is bound earlier."""
     table = table or {}
     params = program.get("params")
@@ -51,8 +98,11 @@ def validate_program(program, table=None):
             raise EditRefused("step outputs must be fresh identifiers")
         if any(a not in bound for a in step["args"]):
             raise EditRefused("unbound argument")
-        if "prim" in step and len(step["args"]) != len(rdsl.primitive_contracts()[step["prim"]]["params"]):
-            raise EditRefused("primitive arity mismatch")
+        if "prim" in step:
+            if not domain.has_primitive(step["prim"]):
+                raise EditRefused("unknown primitive")
+            if len(step["args"]) != domain.arity(step["prim"]):
+                raise EditRefused("primitive arity mismatch")
         if "call" in step and step["call"] not in table:
             raise EditRefused("unknown callee")
         bound.add(step["out"])
@@ -60,13 +110,13 @@ def validate_program(program, table=None):
         raise EditRefused("result must be a step output")
 
 
-def _primitive_program(body, table):
+def _primitive_program(body, table, *, domain=GEOMETRY):
     """Unfold every call (recursively) into primitive steps.
 
     Fresh local names start with an underscore, which no validated parameter or
     step name can, so unfolding cannot capture a parameter.
     """
-    validate_program(body, table)
+    validate_program(body, table, domain=domain)
     steps, counter = [], [0]
     def fresh():
         counter[0] += 1
@@ -81,7 +131,7 @@ def _primitive_program(body, table):
                 local[step["out"]] = out
             elif "call" in step:
                 callee = table[step["call"]]
-                validate_program(callee["body"], table)
+                validate_program(callee["body"], table, domain=domain)
                 names = [p["name"] for p in callee["params"]]
                 if len(names) != len(args):
                     raise EditRefused("call arity mismatch")
@@ -93,8 +143,8 @@ def _primitive_program(body, table):
     return {"params": list(body["params"]), "steps": steps, "result": result}
 
 
-def unfold(body, table):
-    return _primitive_program(body, table)
+def unfold(body, table, *, domain=GEOMETRY):
+    return _primitive_program(body, table, domain=domain)
 
 
 def define(body, post, table=None, *, parents=(), generation=None):
@@ -128,7 +178,7 @@ def call_step(definition, out, args):
     return {"out": out, "call": definition["id"], "args": list(args)}
 
 
-def fold(body, definition, table):
+def fold(body, definition, table, *, domain=GEOMETRY):
     """Replace one occurrence of a definition's body by a call, checked by identical unfolding."""
     pattern = definition["body"]
     for start in range(len(body["steps"])-len(pattern["steps"])+1):
@@ -151,7 +201,8 @@ def fold(body, definition, table):
         args = [mapping[p] for p in pattern["params"]]
         steps = body["steps"][:start]+[call_step(definition, window[-1]["out"], args)]+body["steps"][start+len(window):]
         folded = {"params": body["params"], "steps": steps, "result": body["result"]}
-        if _expansion_key(unfold(folded, table | {definition["id"]: definition})) == _expansion_key(unfold(body, table)):
+        if (_expansion_key(unfold(folded, table | {definition["id"]: definition}, domain=domain))
+                == _expansion_key(unfold(body, table, domain=domain))):
             return folded
     raise EditRefused("definition body does not occur")
 
@@ -170,14 +221,12 @@ def _expansion_key(program):
 # Substitution inside a body (R2)
 # ---------------------------------------------------------------------------
 
-def substitute(definition, step_out, replacement, table=None):
-    """Replace the step producing `step_out` by `replacement` (a program over that step's inputs).
+def splice_step(body, step_out, replacement):
+    """Replace the step producing `step_out` by `replacement`, a program over that step's inputs.
 
-    Accepted only if every post atom of the definition re-certifies exactly on
-    the edited body and non-vacuity still holds. The result is a new generation.
+    Pure rewriting: names stay hygienic and the interface arity is checked. Whether
+    the result may be registered is the domain's decision, not this function's.
     """
-    table = table or {}
-    body = definition["body"]
     index = next((i for i, s in enumerate(body["steps"]) if s["out"] == step_out), None)
     if index is None:
         raise EditRefused("no such step")
@@ -195,10 +244,22 @@ def substitute(definition, step_out, replacement, table=None):
                         "args": [binding.get(a, local.get(a, a)) for a in step["args"]]})
     if replacement["result"] not in local:
         raise EditRefused("replacement result must be a step")
-    edited = {"params": body["params"], "steps": body["steps"][:index]+renamed+body["steps"][index+1:],
-              "result": body["result"]}
-    return define(edited, [tuple([p, tuple(a)]) for p, a in definition["post"]], table,
-                  parents=[definition["id"]], generation=definition["generation"]+1)
+    return {"params": body["params"], "steps": body["steps"][:index]+renamed+body["steps"][index+1:],
+            "result": body["result"]}
+
+
+def substitute(definition, step_out, replacement, table=None, *, domain=GEOMETRY):
+    """Replace the step producing `step_out` by `replacement` (a program over that step's inputs).
+
+    Accepted only if every post atom of the definition re-certifies on the edited
+    body and non-vacuity still holds. The result is a new generation.
+    """
+    table = table or {}
+    edited = splice_step(definition["body"], step_out, replacement)
+    if domain.register is None:
+        raise EditRefused("domain cannot register definitions")
+    return domain.register(edited, [tuple([p, tuple(a)]) for p, a in definition["post"]], table,
+                           parents=[definition["id"]], generation=definition["generation"]+1, domain=domain)
 
 
 def _fresh(name, occupied):
@@ -212,7 +273,7 @@ def _fresh(name, occupied):
 # Abstraction to operation and relation parameters (R2), instantiation by replay
 # ---------------------------------------------------------------------------
 
-def abstract_operation(first, second):
+def abstract_operation(first, second, *, domain=GEOMETRY):
     """Anti-unify two definitions with the same step skeleton.
 
     Positions where the primitive family differs become one Op parameter each.
@@ -224,7 +285,6 @@ def abstract_operation(first, second):
     if len(a["steps"]) != len(b["steps"]) or a["params"] != b["params"] or a["result"] != b["result"]:
         raise EditRefused("different skeletons")
     steps, parameters, fixed = [], [], 0
-    contracts = rdsl.primitive_contracts()
     for left, right in zip(a["steps"], b["steps"], strict=True):
         if left["out"] != right["out"] or left["args"] != right["args"]:
             raise EditRefused("different sharing structure")
@@ -234,9 +294,12 @@ def abstract_operation(first, second):
             continue
         if "prim" not in left or "prim" not in right:
             raise EditRefused("only primitive positions are lifted")
-        if len(contracts[left["prim"]]["params"]) != len(contracts[right["prim"]]["params"]):
+        if domain.arity(left["prim"]) != domain.arity(right["prim"]):
             raise EditRefused("operation arity differs")
-        interface = sorted(set(_instantiated_post(left["prim"])) & set(_instantiated_post(right["prim"])))
+        if domain.instantiated_post is None:
+            raise EditRefused("domain publishes no operation interface")
+        interface = sorted(set(domain.instantiated_post(left["prim"]))
+                           & set(domain.instantiated_post(right["prim"])))
         name = f"op{len(parameters)}"
         parameters.append({"name": name, "sort": "Op", "inputs": len(left["args"]), "outputs": 1,
                            "interface": [[i[0], list(i[1])] for i in interface],
@@ -249,13 +312,13 @@ def abstract_operation(first, second):
     post = sorted({tuple([p, tuple(x)]) for p, x in first["post"]} & {tuple([p, tuple(x)]) for p, x in second["post"]})
     if not post:
         raise EditRefused("no shared certified post atom")
-    definition = {"params": [{"name": p, "sort": "Point"} for p in a["params"]]+parameters,
+    definition = {"params": [{"name": p, "sort": domain.param_sort(p)} for p in a["params"]]+parameters,
                   "body": {"params": a["params"], "steps": steps, "result": a["result"]},
                   "post": [[p, list(x)] for p, x in post], "parents": [first["id"], second["id"]],
                   "generation": 1+max(first["generation"], second["generation"]),
                   "applicability": "an Op argument's certified post must include the interface, "
                                    "and every post atom must re-certify on the instantiated body"}
-    definition["id"] = "rel.ho."+digest({k: definition[k] for k in ("params", "body", "post")})[:20]
+    definition["id"] = domain.id_prefix+"ho."+digest({k: definition[k] for k in ("params", "body", "post")})[:20]
     return definition
 
 
@@ -265,26 +328,30 @@ def _instantiated_post(family):
                                                for x in r["args"])) for r in contract["post"]]
 
 
-def instantiate_operation(higher, arguments, table=None):
-    """Instantiate Op parameters; applicability is decided by interface inclusion and exact re-certification."""
+def instantiate_operation(higher, arguments, table=None, *, domain=GEOMETRY):
+    """Instantiate Op parameters; applicability is decided by interface inclusion and re-certification."""
     body = deepcopy(higher["body"])
     for parameter in higher["params"]:
         if parameter["sort"] != "Op":
             continue
         family = arguments.get(parameter["name"])
-        if family not in rdsl.primitive_contracts():
+        if family is None or not domain.has_primitive(family):
             raise EditRefused("Op argument must be a certified primitive")
-        if len(rdsl.primitive_contracts()[family]["params"]) != parameter["inputs"]:
+        if domain.arity(family) != parameter["inputs"]:
             raise EditRefused("Op argument arity mismatch")
-        provided = set(_instantiated_post(family))
+        if domain.instantiated_post is None:
+            raise EditRefused("domain publishes no operation interface")
+        provided = set(domain.instantiated_post(family))
         if not {tuple([p, tuple(x)]) for p, x in parameter["interface"]} <= provided:
             raise EditRefused("Op argument does not provide the interface")
         for step in body["steps"]:
             if step.get("ovar") == parameter["name"]:
                 del step["ovar"]
                 step["prim"] = family
-    return define(body, [tuple([p, tuple(a)]) for p, a in higher["post"]], table,
-                  parents=[higher["id"]], generation=higher["generation"]+1)
+    if domain.register is None:
+        raise EditRefused("domain cannot register definitions")
+    return domain.register(body, [tuple([p, tuple(a)]) for p, a in higher["post"]], table,
+                           parents=[higher["id"]], generation=higher["generation"]+1, domain=domain)
 
 
 def abstract_relation(programs):
