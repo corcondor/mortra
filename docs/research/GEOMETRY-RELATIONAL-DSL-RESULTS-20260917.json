@@ -1,0 +1,254 @@
+{
+ "summary": {
+  "regression": {
+   "tasks": 16,
+   "completed": 16,
+   "solved_audited": {
+    "A": 8,
+    "B": 8,
+    "N0": 8,
+    "N": 14,
+    "NL": 14,
+    "NLF": 14
+   },
+   "claimed": {
+    "A": 8,
+    "B": 8,
+    "N0": 8,
+    "N": 14,
+    "NL": 14,
+    "NLF": 14
+   },
+   "false_solutions": {
+    "A": 0,
+    "B": 0,
+    "N0": 0,
+    "N": 0,
+    "NL": 0,
+    "NLF": 0
+   },
+   "via_fallback": {
+    "A": 0,
+    "B": 0,
+    "N0": 0,
+    "N": 0,
+    "NL": 0,
+    "NLF": 0
+   },
+   "primary": "NLF",
+   "baseline": "B",
+   "discordant_wins": 6,
+   "discordant_losses": 0,
+   "one_sided_binomial_p": 0.015625,
+   "applications": {
+    "A": 1014,
+    "B": 904,
+    "N0": 68,
+    "N": 64,
+    "NL": 64,
+    "NLF": 256
+   },
+   "seconds_warm_cache": {
+    "A": 19.660845045000144,
+    "B": 16.946013107000056,
+    "N0": 1.7018402170002105,
+    "N": 0.7085337579999873,
+    "NL": 2.774068560000046,
+    "NLF": 7.835420624999983
+   },
+   "exact_checks": {
+    "A": 24609,
+    "B": 19990,
+    "N0": 732,
+    "N": 3142,
+    "NL": 3358,
+    "NLF": 9054
+   },
+   "library_exact_certifications": {
+    "A": 0,
+    "B": 0,
+    "N0": 0,
+    "N": 0,
+    "NL": 91,
+    "NLF": 34
+   }
+  },
+  "fresh": {
+   "tasks": 48,
+   "completed": 48,
+   "solved_audited": {
+    "A": 12,
+    "B": 17,
+    "N0": 11,
+    "N": 17,
+    "NL": 31,
+    "NLF": 31
+   },
+   "claimed": {
+    "A": 12,
+    "B": 17,
+    "N0": 11,
+    "N": 17,
+    "NL": 31,
+    "NLF": 31
+   },
+   "false_solutions": {
+    "A": 0,
+    "B": 0,
+    "N0": 0,
+    "N": 0,
+    "NL": 0,
+    "NLF": 0
+   },
+   "via_fallback": {
+    "A": 0,
+    "B": 0,
+    "N0": 0,
+    "N": 0,
+    "NL": 0,
+    "NLF": 0
+   },
+   "primary": "NLF",
+   "baseline": "B",
+   "discordant_wins": 14,
+   "discordant_losses": 0,
+   "one_sided_binomial_p": 6.103515625e-05,
+   "applications": {
+    "A": 4523,
+    "B": 3886,
+    "N0": 114,
+    "N": 341,
+    "NL": 278,
+    "NLF": 1970
+   },
+   "seconds_warm_cache": {
+    "A": 90.55445519699981,
+    "B": 88.86687937300042,
+    "N0": 0.4405965759996775,
+    "N": 22.256984161000446,
+    "NL": 11.597047198000382,
+    "NLF": 99.06433883299985
+   },
+   "exact_checks": {
+    "A": 149503,
+    "B": 130553,
+    "N0": 1720,
+    "N": 169513,
+    "NL": 28033,
+    "NLF": 92802
+   },
+   "library_exact_certifications": {
+    "A": 0,
+    "B": 0,
+    "N0": 0,
+    "N": 0,
+    "NL": 128,
+    "NLF": 118
+   }
+  },
+  "robustness": {
+   "baseline_applications": 448,
+   "tasks": 14,
+   "baseline_solved": 1
+  }
+ },
+ "criterion": {
+  "complete": true,
+  "binding": true,
+  "sources_unchanged": true,
+  "more_solved": true,
+  "p_below_0_05": true,
+  "zero_false_solutions": true,
+  "no_regression_losses": true,
+  "regression_losses": [],
+  "improvement": true
+ },
+ "unrun": [],
+ "sha": "a62e93143520e90154e1e1d9992207f031d463c0",
+ "library": {
+  "digest": "c92b442e8ab3127b73a34beb12d813c85bfe9024c0243763fb17fac265d01191",
+  "costs_after_acquisition": {
+   "float_evaluations": 1872,
+   "trivial_patterns": 1189,
+   "distinct_programs": 281,
+   "indexed_patterns": 211,
+   "index_seconds": 19.289291162000012
+  },
+  "seconds": 19.291494710999984,
+  "programs": 281,
+  "patterns": 211,
+  "spec": {
+   "inputs": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "predicates": [
+    "coll",
+    "perp",
+    "para",
+    "cong",
+    "cyclic",
+    "midp",
+    "eqangle"
+   ],
+   "max_depth": 2,
+   "instances": 8,
+   "level_two": "exactly one argument from the previous level, the others inputs",
+   "version": 2
+  },
+  "reads_tasks": false,
+  "costs_after_runs": {
+   "float_evaluations": 1872,
+   "trivial_patterns": 1189,
+   "distinct_programs": 281,
+   "indexed_patterns": 211,
+   "index_seconds": 19.289291162000012,
+   "exact_certifications": 371,
+   "float_candidates_refused_exactly": 181
+  }
+ },
+ "modules_after": {
+  "math_os_prototype/__init__.py": "e6e1193d5c55798b2ac6b620413e646b82397411d0c76131051cab2d77dac788",
+  "math_os_prototype/geometry_contracts.py": "2640dd3061d4437a3e2df5b42da7de305719554514702ed2649ad164e97ae806",
+  "math_os_prototype/geometry_relational_cohort.py": "e9ccd69faf3d051c2ab73ca1c8fd7be91649bd927ab109d278a117203486f720",
+  "math_os_prototype/geometry_relational_dsl.py": "f5e3fae05d404e0b7f20fcecc605793eded29cfdbc52aaa14c8217e397461875",
+  "math_os_prototype/geometry_relational_library.py": "052c70837240f41f6fadc2a12f0a94808d4cf53f485ea90eaa442d1f72f52bf4",
+  "math_os_prototype/geometry_relational_search.py": "287757550493194ac0e942f806a97a932ba6f48f399eeacc2266f099bbf10460",
+  "math_os_prototype/geometry_semantic_dsl.py": "56e437228a4421ad1dab3a5d758495ca596452af5035a34e42b8f4284a719adc",
+  "math_os_prototype/holonomic_parametric_learning.py": "f0c109be755e73ce8100b2f781e38c9280ab3f82c56b82b7c4b4a27b9ab1d1e0",
+  "math_os_prototype/holonomic_relation_reuse.py": "1658a00f1691abebf0ce6f35daba773aa7fd1a9af51208d427b96d8bed5c6035",
+  "math_os_prototype/holonomic_route_discovery.py": "ce42f614bc0db8610e595b5d17587ab458aea00756c0b5f19ce5d838abf5767c",
+  "math_os_prototype/library_compression.py": "55c92110bbf8848852e788d8f52480d79506ef2c8358c00f5e228512638116f4",
+  "math_os_prototype/representation_progress.py": "8e5208ca8d6217a6685fbfb785a4246c4c0684de711803cfed5046c10bcf6b8d",
+  "math_os_prototype/runtime_typed_planner.py": "72f8c510b8de60745690bbca2cc8c3312da529de97c804d2a2e4c631d61c1c59",
+  "math_os_prototype/theory_action_domain.py": "719f66dd083dbe8178973a3ee7d1714d3032855a60f43bef4dbe3341534ed4c6",
+  "math_os_prototype/theory_geometry_feedback.py": "4c2b861037e0aed8a295d7dba485b18bd470207da7b366bb4cc226e726ad56f7",
+  "math_os_prototype/theory_geometry_selection.py": "d06fc37a656efecfb4e648cb830636661d6177a6d8dda4b2183c8e6c2557b50d",
+  "scripts/run_relational_geometry_eval.py": "da1b030d0c0acae0b70e38151a5be134d852767c017eecc62e67c2a25ac9faec",
+  "worker/backend/certified_buchberger.py": "ef1b1656688dc9c2e3a6623c5aa60b1092890c95c15387e2c62ed3e3ed016b6a",
+  "worker/backend/chordal_buchberger_elimination.py": "1a09b3aa6a1c2a545216444c53e59ef39c48c6a30c20c739293d946ba1de2c6f",
+  "worker/backend/geometry_local_lemma_certificate.py": "28b36d73ccf2acb7182ffbe74c226a8b80f4a5cf0dec5d8134fcb647e5a9bfb1",
+  "worker/backend/geometry_proof_hypergraph.py": "c89be7b430669436fd34f645682a4ea924498ac4fb3e4ce17f7057574a8abb8d",
+  "worker/backend/geometry_semantic_constraints.py": "04ed76ad712674f1fd7d4b16b195d2276f37eeb5136549e375d004c019afbc38",
+  "worker/backend/jgex_exact_constraint_bridge.py": "d60c8fd81e4c612db0990968b25775dcc1db2f633c7eec214a4d59ef30173e8f",
+  "worker/backend/jgex_gclc_translator.py": "be7e9a1451c39e99ab74e1f63f54e2449d8fc8117e15184c94c10f7f85a7b339",
+  "worker/backend/jgex_legacy_normalizer.py": "0fe38fb217ac3cbee9f127e38566d802f7290c3ade6695549af0ddf2f1580473",
+  "worker/backend/local_polynomial_elimination.py": "1f05b2c569de6c1c9295a2d996ef9bff1c73ae6927f349170f6e0f5f2349c256",
+  "worker/backend/polynomial_obligation_alignment.py": "cc72b0d56cbbcd7449bc427c2d7464f99931a2bd9320adc45c063eaa2d8b4417",
+  "worker/backend/polynomial_proof_residual.py": "9cb121bc5a5b75a314ce6e9504ee2f15030ccaed6076b9eda41bce3d8c95d713",
+  "worker/backend/symbolic_sheaf_coordination.py": "e8b71de6a9cb8dffdd3534a954e71ebda713ee2bea405aef4a6dcf45b9f1107b",
+  "worker/backend/typed_candidate_alignment.py": "bdebca075f51fb9436d68bb17bb040ed7f5744b3bbbeba808a26d743a00e28ad",
+  "worker/backend/typed_geometry_stalk.py": "0b82bcebe91ac29a9af6f01612ed973663d308b8ebdc72bf0bb41e1c2b64568f",
+  "worker/backend/typed_logic_circuit.py": "e9fe2033af9b2094e80d5a4bfcbefcd7e143d0a52bce23aa48f90cce7c78fabe",
+  "worker/backend/typed_open_proof_dag.py": "b461fe77bbdf7e18b1ac03d22f10604b4b8c7ef5421f115d6ec369e5434217fa"
+ },
+ "total_seconds": 521.915486351,
+ "claims_not_made": [
+  "instance-level constructions are not universal theorems",
+  "metarules, the producer enumeration grammar and the fallback are supplied search machinery",
+  "a charged application in N counts one distinct execution per task; in A and B one attempt per state",
+  "the solve comparison does not exercise the edit or abstraction operations (R2/R3); those are covered only by the structural tests",
+  "a budget stop is not impossibility"
+ ]
+}
