@@ -1,0 +1,82 @@
+{
+  "domain": {
+    "kind": "geometry",
+    "mode": "relational_dsl_comparison"
+  },
+  "protocol": {
+    "design": "docs/research/GEOMETRY-RELATIONAL-DSL-20260917.md",
+    "python_hash_seed": 0,
+    "conditions": [
+      "A",
+      "B",
+      "N0",
+      "N",
+      "NL",
+      "NLF"
+    ],
+    "primary": "NLF",
+    "baseline": "B",
+    "applications": 112,
+    "cohorts": [
+      "regression",
+      "fresh"
+    ],
+    "fresh_count": 48,
+    "library_max_depth": 2,
+    "sealed_sources": "all project modules loaded by the run are hashed before and after (environment.json modules, result.json modules_after)",
+    "interference": "No task, goal template, witness or solver output is read by the producer enumeration or the cohort generator. The fresh cohort seed comes from the drand round in fresh_seed_source, fixed before that round is published; the cohort is generated only inside the binding run.",
+    "fresh_seed_source": {
+      "beacon": "drand default chain (pedersen-bls-chained, period 30 s)",
+      "chain_hash": "8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce",
+      "endpoints": [
+        "https://api.drand.sh",
+        "https://drand.cloudflare.com"
+      ],
+      "round": 6473927,
+      "salt": "mortra-relational-dsl-fresh-1",
+      "rule": "seed = int(sha256(salt + \":\" + randomness).hexdigest()[:8], 16); the round is fixed in the freezing commit before it is published; the first workflow_dispatch at the freezing SHA is binding; any run that writes fresh-cohort.json uses up the round",
+      "round_fixed_while_latest_published_round_was": 6473827
+    },
+    "development_seeds": [
+      20260917001,
+      20260917002
+    ],
+    "development_counts": {
+      "20260917001": 48,
+      "20260917002": 2
+    },
+    "max_total_seconds": 16200,
+    "robustness": {
+      "baseline_applications": 448,
+      "on": "fresh tasks solved by the primary and not by the baseline at 112"
+    }
+  },
+  "regression_source": {
+    "path": "reports/geometry-complete-revalidation-evidence.zip",
+    "sha256": "e6c68d83bb9e225dd459dc21d512ca8fd04b88cba25f71f475380bb0ab367f52",
+    "member_prefix": "semantic-geometry-f966f3efa4004be1b817c5fe08a412a86357f8e5-34908552962/semantic-feedback-normal/acquisition/",
+    "library_sha256": "e5b2b9397b84b7cd2f2971e085482d6c34cedde6f5021865e614cd1dc40e3f74",
+    "plan_sha256": "416f1e3e9b6a2e69ee3c1b4c061e7b1847092862dfeadb67624d817575653769"
+  },
+  "existing_search": {
+    "seed": 17,
+    "max_depth": 6000,
+    "candidate_enumeration": "complete",
+    "max_candidate_checks": 100000,
+    "max_primitive_operations": 6000,
+    "wall_seconds": 600,
+    "ranking_window": 16,
+    "trace_predicates": false
+  },
+  "relational_search": {
+    "wall_seconds": 600,
+    "max_plan_steps": 8,
+    "guaranteed_applications": 40,
+    "guaranteed_expansions": 2000,
+    "partial_root_coverage": true,
+    "partial_applications": 16,
+    "partial_expansions": 1000,
+    "library_programs_per_binding": 2,
+    "fallback": "B"
+  }
+}
