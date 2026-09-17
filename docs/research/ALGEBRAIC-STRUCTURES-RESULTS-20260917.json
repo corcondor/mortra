@@ -1,0 +1,142 @@
+{
+ "freezing_sha": "0732d38f56d7f5afbd605987ca31907c9ff5dfa5",
+ "workflow_run_id": "35246474788",
+ "artifact": "semantic-geometry-0732d38f56d7f5afbd605987ca31907c9ff5dfa5-35246474788",
+ "drand_round": 6474376,
+ "round_publication_unix": 1789662300,
+ "config_commit_unix": 1789661714,
+ "dispatch_created": "2026-09-17T16:25:18Z",
+ "fresh_seed": 2554164160,
+ "training_seed": 3224785382,
+ "beacon": [
+  {
+   "endpoint": "https://api.drand.sh",
+   "record": {
+    "round": 6474376,
+    "randomness": "a03eefa25a4cc7011e2bf08cbf31870908ced772b7417280b83360595e8613dd",
+    "signature": "8a5bf3b9976dfb0120ca90149b84fd05e5779b210eb636ac52aaa52ea641c2bb74746e2e028e253086e366aed4c0dfee0c16f6aa98ab0338e1fe393c26ff0853f256b371bc00c9a37925e51d8af7545c4aba3868621c0e6a5e66069099571d51",
+    "previous_signature": "abbf88a8087c6da78cbf51a92e53aa08bfe2a2755b84043e74df4511681444be008bf1eb6ea21bdf068586061ecdbdb900e96b1a4c2ab8c736d10a5b52b106401c25183bd2293899d6dc8cb20afc45ef17e05ef15a52e74361430723a9f074b2"
+   }
+  },
+  {
+   "endpoint": "https://drand.cloudflare.com",
+   "error": "HTTP Error 403: Forbidden"
+  }
+ ],
+ "primary_betti": {
+  "tasks": 48,
+  "solved": {
+   "direct": 48,
+   "collapse": 48
+  },
+  "incorrect_claims": {
+   "direct": 0,
+   "collapse": 0
+  },
+  "total_operations": {
+   "direct": 418896,
+   "collapse": 386915
+  },
+  "ratio_collapse_to_direct": 0.9236540812039266,
+  "bootstrap_95": [
+   0.8939775845230898,
+   0.9456846089856599
+  ],
+  "wins": 47,
+  "losses": 1
+ },
+ "criterion": {
+  "binding": true,
+  "sources_unchanged": true,
+  "no_overlap": true,
+  "zero_incorrect_answers": true,
+  "all_tasks_solved_direct_and_collapse": true,
+  "collapse_total_lower": true,
+  "bootstrap_upper_below_1": true,
+  "improvement": true
+ },
+ "secondary_minimal_models": {
+  "tasks": 48,
+  "solved": {
+   "min-fill": 48,
+   "acquired": 48,
+   "explore": 48,
+   "top-first": 48,
+   "bottom-first": 48,
+   "short-boundary": 48,
+   "few-cofaces": 48
+  },
+  "incorrect_claims": {
+   "min-fill": 0,
+   "acquired": 0,
+   "explore": 0,
+   "top-first": 0,
+   "bottom-first": 0,
+   "short-boundary": 0,
+   "few-cofaces": 0
+  },
+  "total_operations": {
+   "min-fill": 309404,
+   "acquired": 301799,
+   "explore": 773129,
+   "top-first": 328337,
+   "bottom-first": 304348,
+   "short-boundary": 319480,
+   "few-cofaces": 313318
+  },
+  "ratio_primary_to_baseline": 0.9754204858372871,
+  "bootstrap_95": [
+   0.9559306919737296,
+   0.9978876351212993
+  ],
+  "wins": 35,
+  "losses": 13,
+  "oracle_ratio_to_baseline": 0.9539857273984822,
+  "explore_ratio_to_baseline": 2.498768600276661,
+  "total_operations_including_queue": {
+   "min-fill": 2179528,
+   "acquired": 1707177,
+   "explore": 3233910,
+   "top-first": 2513069,
+   "bottom-first": 1697604,
+   "short-boundary": 2341052,
+   "few-cofaces": 2463198
+  },
+  "queue_operations": {
+   "min-fill": 1870124,
+   "acquired": 1405378,
+   "explore": 2460781,
+   "top-first": 2184732,
+   "bottom-first": 1393256,
+   "short-boundary": 2021572,
+   "few-cofaces": 2149880
+  },
+  "acquired_choices": {
+   "min-fill": 0,
+   "top-first": 28,
+   "bottom-first": 20,
+   "short-boundary": 0,
+   "few-cofaces": 0
+  }
+ },
+ "secondary_flags": {
+  "acquired_total_lower_than_min_fill": true,
+  "acquired_bootstrap_upper_below_1": true
+ },
+ "rule": {
+  "feature": "size",
+  "threshold": 576,
+  "at_or_below": "top-first",
+  "above": "bottom-first",
+  "training_cost": 120195,
+  "training_items": 24,
+  "default_training_cost": 126062
+ },
+ "claims_not_made": [
+  "the minimal model and its homotopy data are classical linear algebra over QQ",
+  "orderings are supplied; training runs every ordering and fits a one-split selection rule",
+  "the primary metric counts all operations of solve_homology including the queue; for minimal models algebraic work and queue work are reported separately",
+  "operation counts are a declared deterministic cost, not wall time"
+ ],
+ "total_seconds": 67.78809507
+}
