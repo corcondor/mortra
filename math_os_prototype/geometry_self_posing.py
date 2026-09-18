@@ -34,12 +34,17 @@ from math_os_prototype import geometry_relational_dsl as rdsl
 from math_os_prototype.representation_progress import digest
 
 GOAL_PREDICATES = ("coll", "perp", "para", "cong", "cyclic", "midp", "eqangle")
-INPUT_NAMES = ("a", "b", "c", "d")
+INPUT_NAMES = ("a", "b", "c", "d", "e", "f")
 FAMILIES = tuple(rdsl.primitive_contracts())
 
 
 def sample_points(rng, count=4):
-    """A configuration with no repeated point and no collinear triple."""
+    """A configuration with no repeated point and no collinear triple.
+
+    More points make a harder task family: a goal that mentions four or more of
+    them cannot be retrieved from the library at all, because retrieval binds at
+    most three fixed names, so the search has to compose the construction itself.
+    """
     names = INPUT_NAMES[:count]
     for _ in range(10000):
         points = {n: [rng.randint(-9, 9), rng.randint(-9, 9)] for n in names}
@@ -314,3 +319,193 @@ def rename_and_move(record, rng):
                            "families": [s["prim"] for s in steps], "candidate_count": len(solutions)},
                 "signature": record["signature"], "probe": "renamed_and_moved"}
     return None
+
+
+# ---------------------------------------------------------------------------
+# A ladder: a task whose construction extends another task's construction
+# ---------------------------------------------------------------------------
+
+def choose_goals(rng, coordinates, hidden, points, *, goal_count, samples=24, stats=None,
+                 prefer=("cyclic", "cong", "eqangle", "perp"), minimum_distinct_points=0):
+    """Goal relations for one hidden point, or None when no usable set is found.
+
+    Relations that hold for every configuration are discarded, a set that an input
+    point already satisfies is discarded, and the set must leave finitely many
+    candidates with the constructed point among them. Sets that mention a circle
+    or an angle condition are tried first, because those were the weak ones.
+    """
+    stats = stats if stats is not None else Counter()
+    relations = holding_relations(rng, coordinates, hidden, list(points), samples=samples, stats=stats)
+    if len(relations) < goal_count:
+        stats["too_few_relations"] += 1
+        return None
+    rng.shuffle(relations)
+    interesting = [r for r in relations if r[0] in prefer]
+    ordered = interesting+[r for r in relations if r not in interesting]
+    for chosen in combinations(ordered[:7], goal_count):
+        if len({p for p, _ in chosen}) < 2:
+            stats["single_predicate_goal"] += 1
+            continue
+        goals = [{"predicate": p, "points": [("u" if a == hidden else a) for a in args]} for p, args in chosen]
+        mentioned = {a for g in goals for a in g["points"] if a != "u"}
+        if len(mentioned) < minimum_distinct_points:
+            stats["too_few_distinct_points"] += 1
+            continue
+        if len({rdsl.canonical_atom(g["predicate"], tuple(g["points"])) for g in goals}) != goal_count:
+            stats["duplicate_atoms"] += 1
+            continue
+        if any(all(rdsl.atom_holds(g["predicate"], tuple(name if a == "u" else a for a in g["points"]),
+                                   coordinates) for g in goals) for name in points):
+            stats["input_point_satisfies_goal"] += 1
+            continue
+        solutions = finite_candidates(goals, points, stats)
+        if solutions is None:
+            stats["not_finite"] += 1
+            continue
+        constructed = tuple(sp.Rational(v) for v in coordinates[hidden])
+        if constructed not in {tuple(s) for s in solutions}:
+            stats["constructed_point_not_recovered"] += 1
+            continue
+        return {"goals": goals, "candidates": len(solutions), "solution": [str(v) for v in constructed]}
+    stats["no_usable_goal_set"] += 1
+    return None
+
+
+def extend_construction(rng, coordinates, steps, extra, *, attempts=80):
+    """Continue a construction, each new step consuming the point the previous one made.
+
+    That is what makes the earlier part necessary: the extension cannot be
+    rebuilt without the point the base construction produced.
+    """
+    coordinates = dict(coordinates)
+    steps = [dict(step) for step in steps]
+    available = [name for name in coordinates]
+    for index in range(extra):
+        previous = steps[-1]["out"]
+        for _ in range(attempts):
+            family = rng.choice(FAMILIES)
+            parameters = rdsl.primitive_contracts()[family]["params"]
+            if len(available) < len(parameters):
+                continue
+            arguments = [previous]+[rng.choice(available) for _ in range(len(parameters)-1)]
+            rng.shuffle(arguments)
+            if len(set(arguments)) < len(parameters) or previous not in arguments:
+                continue
+            if rdsl.binding_returns_input(family, arguments):
+                continue
+            xy, _ = rdsl.execute_primitive(family, arguments, coordinates)
+            if xy is None or any(xy == value for value in coordinates.values()):
+                continue
+            name = f"k{index}"
+            coordinates[name] = xy
+            available.append(name)
+            steps.append({"out": name, "prim": family, "args": list(arguments)})
+            break
+        else:
+            return None, None
+    return steps, coordinates
+
+
+def pose_ladder(rng, *, base_depth=2, extra_steps=1, goal_count=3, samples=24, stats=None,
+                input_points=4, minimum_distinct_points=0):
+    """Two tasks from one construction: the base, and the base extended.
+
+    The extended construction contains the base construction as a prefix and uses
+    the point it produced, so an operation acquired from the base is exactly the
+    block the extended task needs. Both are published the same way: the input
+    configuration and the goal relations, with everything else hidden.
+    """
+    stats = stats if stats is not None else Counter()
+    points = sample_points(rng, input_points)
+    steps, coordinates = build_construction(rng, points, base_depth)
+    if steps is None:
+        stats["construction_failed"] += 1
+        return None
+    base = choose_goals(rng, coordinates, steps[-1]["out"], points, goal_count=goal_count,
+                        samples=samples, stats=stats, minimum_distinct_points=minimum_distinct_points)
+    if base is None:
+        return None
+    extended_steps, extended_coordinates = extend_construction(rng, coordinates, steps, extra_steps)
+    if extended_steps is None:
+        stats["extension_failed"] += 1
+        return None
+    top = choose_goals(rng, extended_coordinates, extended_steps[-1]["out"], points,
+                       goal_count=goal_count, samples=samples, stats=stats,
+                       minimum_distinct_points=minimum_distinct_points)
+    if top is None:
+        return None
+    stats["ladders"] += 1
+    ladder = digest([[s["prim"] for s in extended_steps], sorted(
+        rdsl.canonical_atom(g["predicate"], tuple(g["points"])) for g in top["goals"])])
+    def record(goal_record, construction, level):
+        task = {"points": points, "goals": goal_record["goals"]}
+        return {"task": task, "level": level, "ladder": ladder,
+                "hidden": {"steps": construction, "solution": goal_record["solution"],
+                           "depth": len(construction),
+                           "families": [s["prim"] for s in construction],
+                           "candidate_count": goal_record["candidates"]},
+                "signature": structure_signature(construction,
+                                                 [(g["predicate"], tuple(g["points"]))
+                                                  for g in goal_record["goals"]])}
+    return {"base": record(base, steps, "base"), "top": record(top, extended_steps, "top")}
+
+
+def pose_ladders(seed, count, *, base_depth=2, extra_steps=1, goal_count=3, attempts=3000, samples=24,
+                 input_points=4, minimum_distinct_points=0):
+    """A batch of ladders with distinct extended structures."""
+    rng = random.Random(seed)
+    stats, ladders, seen = Counter(), [], set()
+    for _ in range(attempts):
+        if len(ladders) == count:
+            break
+        record = pose_ladder(rng, base_depth=base_depth, extra_steps=extra_steps,
+                             goal_count=goal_count, samples=samples, stats=stats,
+                             input_points=input_points,
+                             minimum_distinct_points=minimum_distinct_points)
+        if record is None:
+            continue
+        if record["top"]["signature"] in seen or record["base"]["signature"] in seen:
+            stats["duplicate_structure"] += 1
+            continue
+        seen.add(record["top"]["signature"])
+        seen.add(record["base"]["signature"])
+        ladders.append(record)
+    return {"seed": seed, "ladders": ladders, "rejections": dict(stats)}
+
+
+# ---------------------------------------------------------------------------
+# Reading a posed task
+# ---------------------------------------------------------------------------
+
+JAPANESE = {
+    "coll": "{0}, {1}, {2} は同一直線上にある",
+    "perp": "直線{0}{1} と 直線{2}{3} は直交する",
+    "para": "直線{0}{1} と 直線{2}{3} は平行である",
+    "cong": "線分{0}{1} と 線分{2}{3} の長さが等しい",
+    "cyclic": "{0}, {1}, {2}, {3} は同一円周上にある",
+    "midp": "{0} は 線分{1}{2} の中点である",
+    "eqangle": "角({0}{1}, {2}{3}) と 角({4}{5}, {6}{7}) が等しい",
+}
+
+ENGLISH = {
+    "coll": "{0}, {1} and {2} are collinear",
+    "perp": "line {0}{1} is perpendicular to line {2}{3}",
+    "para": "line {0}{1} is parallel to line {2}{3}",
+    "cong": "segment {0}{1} has the length of segment {2}{3}",
+    "cyclic": "{0}, {1}, {2} and {3} lie on one circle",
+    "midp": "{0} is the midpoint of {1}{2}",
+    "eqangle": "the angle between {0}{1} and {2}{3} equals the angle between {4}{5} and {6}{7}",
+}
+
+
+def render(task, *, language="japanese"):
+    """The posed task as a sentence. Nothing of the construction appears in it."""
+    table = JAPANESE if language == "japanese" else ENGLISH
+    points = "、".join(f"{name}({x}, {y})" for name, (x, y) in task["points"].items()) \
+        if language == "japanese" else ", ".join(f"{name}({x}, {y})" for name, (x, y) in task["points"].items())
+    conditions = [table[goal["predicate"]].format(*goal["points"]) for goal in task["goals"]]
+    if language == "japanese":
+        return (f"点 {points} が与えられている。"
+                f"次をすべて満たす点 u を作図せよ：" + "、かつ".join(conditions) + "。")
+    return (f"Given {points}, construct a point u such that "
+            + ", and ".join(conditions) + ".")
