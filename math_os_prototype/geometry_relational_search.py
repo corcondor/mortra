@@ -64,6 +64,12 @@ class RelationalSynthesis:
         self.emit = emit or (lambda event: None)
         self.costs = Counter()
         self.contracts = rdsl.primitive_contracts()
+        # A learned policy is data: it may reorder the families that are offered,
+        # and nothing else. An unknown or missing order leaves the kernel order.
+        order = (config or {}).get("family_order")
+        if order:
+            ranked = sorted(self.contracts, key=lambda f: (order.index(f) if f in order else len(order), f))
+            self.contracts = {f: self.contracts[f] for f in ranked}
         self.shapes = rdsl.transfer_shapes() if transfer else {}
         self.inputs = {n: tuple(sp.Rational(v) for v in xy) for n, xy in task["points"].items()}
         self.coordinates = dict(self.inputs)

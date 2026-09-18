@@ -519,7 +519,21 @@ def binary_error(tensor, terms):
     return {key for key, value in residual.items() if value}
 
 
-def search_decomposition(tensor, *, target_rank, steps=400000, seed=0, counter=None, restarts=10):
+def binary_split(terms, index, rng):
+    """A plus transition over GF(2): one term becomes two, and the tensor is unchanged.
+
+    u (x) v (x) w = u (x) v (x) (w - z) + u (x) v (x) z. The rank goes up by one,
+    which is how a walk leaves a place where no flip reduces anything.
+    """
+    left, right, out = terms[index]
+    if len(out) < 2:
+        return None
+    piece = frozenset([rng.choice(sorted(out))])
+    return terms[:index]+[(left, right, out-piece), (left, right, piece)]+terms[index+1:]
+
+
+def search_decomposition(tensor, *, target_rank, steps=400000, seed=0, counter=None, restarts=10,
+                         patience=None, split_probability=0.0):
     """Search for a decomposition of rank at most `target_rank` by flips over GF(2).
 
     Every state of the walk is an exact decomposition of the same tensor over
@@ -532,9 +546,19 @@ def search_decomposition(tensor, *, target_rank, steps=400000, seed=0, counter=N
     for restart in range(restarts):
         rng = random.Random(seed*1000+restart)
         terms = list(best)
+        since_improvement = 0
         for _ in range(max(1, steps//restarts)):
             if len(best) <= target_rank:
                 break
+            since_improvement += 1
+            wants_room = patience is not None and since_improvement > patience
+            if (wants_room or rng.random() < split_probability) and len(terms) <= len(best):
+                split = binary_split(terms, rng.randrange(len(terms)), rng)
+                _charge(counter, "discover")
+                if split is not None:
+                    terms = split
+                    since_improvement = 0
+                continue
             index, other = rng.randrange(len(terms)), rng.randrange(len(terms))
             if index == other:
                 continue
@@ -548,6 +572,7 @@ def search_decomposition(tensor, *, target_rank, steps=400000, seed=0, counter=N
                 if len(terms) < len(best):
                     best = list(terms)
                     history.append(len(best))
+                    since_improvement = 0
     return {"terms": best, "rank": len(best), "history": history,
             "reached_target": len(best) <= target_rank,
             "exact_over_gf2": not binary_error(tensor, best)}
