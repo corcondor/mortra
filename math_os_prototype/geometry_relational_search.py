@@ -18,11 +18,12 @@ from __future__ import annotations
 
 from collections import Counter
 import heapq
-from itertools import product
+from itertools import permutations, product
 import time
 
 import sympy as sp
 
+from math_os_prototype import geometry_backsubstitution as backward
 from math_os_prototype import geometry_contracts as gc
 from math_os_prototype import geometry_relational_dsl as rdsl
 from math_os_prototype import geometry_semantic_dsl as dsl
@@ -399,6 +400,179 @@ class RelationalSynthesis:
         if root is not None and self.solution is None and self._goal_holds(root):
             self._accept(root)
 
+    # -- one step, outside a plan -----------------------------------------
+    def _apply(self, family, arguments, cap):
+        """Execute one primitive the way the plan executor does, and accept if it meets the goals."""
+        key = rdsl.canonical_step(family, list(arguments))
+        if key in self.executed:
+            return self.executed[key]
+        if rdsl.binding_returns_input(family, list(arguments)):
+            self.costs["identity_bindings_excluded"] += 1
+            self.executed[key] = None
+            return None
+        if self.costs["applications"] >= cap:
+            self.stop_reason = "application_budget"
+            return None
+        self.costs["applications"] += 1
+        started = time.perf_counter()
+        xy, reason = rdsl.execute_primitive(key[0], list(key[1]), self.coordinates, self.costs)
+        self.costs["execution_seconds"] += time.perf_counter()-started
+        if xy is None:
+            self.costs["refused_applications"] += 1
+            self.executed[key] = None
+            self.emit({"event": "relational_refusal", "family": key[0], "inputs": list(key[1]),
+                       "reason": reason})
+            return None
+        existing = next((n for n in self.names if self.coordinates[n] == xy), None)
+        if existing is not None:
+            self.costs["duplicate_outputs"] += 1
+            self.executed[key] = existing
+            return existing
+        name = f"n{len(self.names)}"
+        self.coordinates[name] = xy
+        self.names.append(name)
+        self.terms[name] = {"op": key[0], "args": [self.terms[a] for a in key[1]]}
+        self.executed[key] = name
+        self.emit({"event": "relational_execution", "family": key[0], "inputs": list(key[1]),
+                   "output": name})
+        if self.solution is None and self._goal_holds(name):
+            self._accept(name)
+        return name
+
+    # -- reading the goal backwards through a last operation ----------------
+    def _backward_candidates(self, cap, rounds):
+        """Points to decide a specification against: the known ones, then short constructions."""
+        yield from list(self.names)
+        for _ in range(rounds):
+            frontier = list(self.names)
+            for family, contract in self.contracts.items():
+                arity = len(contract["params"])
+                for arguments in permutations(frontier, arity):
+                    if self.costs["applications"] >= cap or self.solution is not None:
+                        return
+                    name = self._apply(family, arguments, cap)
+                    if name is not None and name not in frontier:
+                        yield name
+
+    def _backward_specifications(self, polynomials, budget, degree_bound, term_bound):
+        """The specifications an unknown argument of a last operation would have to satisfy.
+
+        Yielded one at a time, cheapest operation first, so that a point can be
+        decided against a specification as soon as that specification exists. It is
+        the specification that drives the search for a point, not the other way
+        round, and nothing is constructed before the first one is known.
+        """
+        seen = set()
+        families = sorted(self.contracts, key=lambda f: (len(self.contracts[f]["params"]), f))
+        for family in families:
+            parameters = self.contracts[family]["params"]
+            for unknown_parameter in parameters:
+                others = [p for p in parameters if p != unknown_parameter]
+                for assignment in permutations(list(self.inputs), len(others)):
+                    if self.costs["backward_specifications_built"] >= budget:
+                        self.costs["backward_specification_budget_reached"] += 1
+                        return
+                    binding = dict(zip(others, assignment, strict=True))
+                    key = (family, unknown_parameter, tuple(sorted(binding.items())))
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    self.costs["backward_specifications_built"] += 1
+                    try:
+                        specification = backward.intermediate_specification(
+                            self.goal_atoms, self.coordinates, family, binding, unknown_parameter,
+                            counter=self.costs, degree_bound=degree_bound, term_bound=term_bound,
+                            polynomials=polynomials)
+                    except backward.BackwardBudget:
+                        self.costs["backward_refused_by_bound"] += 1
+                        continue
+                    if specification is None:
+                        continue
+                    self.costs["backward_specifications_kept"] += 1
+                    yield specification
+
+    def _backward_try(self, specifications, name, cap):
+        """Decide one point against every specification; on a match, apply the last operation."""
+        for specification in specifications:
+            if name in specification["binding"].values():
+                continue
+            if not backward.satisfied(specification, self.coordinates[name], counter=self.costs):
+                continue
+            self.costs["backward_specification_met"] += 1
+            parameters = self.contracts[specification["family"]]["params"]
+            arguments = [name if p == specification["unknown"] else specification["binding"][p]
+                         for p in parameters]
+            self.emit({"event": "backward_specification_met", "family": specification["family"],
+                       "unknown": specification["unknown"], "point": name,
+                       "specification": backward.readable(specification)})
+            before = self.solution
+            self._apply(specification["family"], arguments, cap)
+            if self.solution is not None and self.solution is not before:
+                self.solution["via"] = "backward_substitution"
+                self.solution["backward"] = {
+                    "specification": backward.readable(specification),
+                    "intermediate_point": name,
+                    "intermediate_term": self.terms.get(name),
+                    "last_operation": specification["family"], "arguments": list(arguments)}
+                return True
+        return False
+
+    def _backward_phase(self, applications):
+        """Read the goals backwards through a last operation, then look for a point that fits.
+
+        One argument of the last operation is left unknown and the others are bound
+        to input points. The goal polynomials are substituted through the
+        operation's own output function, which gives the unknown a specification of
+        polynomial equalities, non-zero conditions and applicability atoms. Known
+        points are decided against it first; then short constructions are built, one
+        at a time, and each is decided as soon as it exists. The phase has an
+        allowance of its own, and a run that grants it is only comparable with a run
+        of the same total budget.
+        """
+        started = time.perf_counter()
+        allowance = self.config.get("backward_applications", 300)
+        reserve = self.config.get("backward_reserve", 8)
+        cap = self.costs["applications"]+allowance
+        search_cap = max(self.costs["applications"], cap-reserve)
+        self.costs["backward_allowance"] = allowance
+        polynomials = backward.goal_polynomials(self.goal_atoms, self.coordinates, counter=self.costs)
+        specifications = []
+        for specification in self._backward_specifications(
+                polynomials, self.config.get("backward_specifications", 400),
+                self.config.get("backward_degree_bound", 6),
+                self.config.get("backward_term_bound", 400)):
+            specifications.append(specification)
+            for name in list(self.names):
+                self.costs["backward_points_decided"] += 1
+                if self._backward_try([specification], name, cap):
+                    self.costs["backward_seconds"] += time.perf_counter()-started
+                    return
+        if not specifications:
+            self.costs["backward_seconds"] += time.perf_counter()-started
+            return
+        rounds = self.config.get("backward_rounds", 1)
+        for _ in range(rounds):
+            frontier = list(self.names)
+            for family, contract in self.contracts.items():
+                for arguments in permutations(frontier, len(contract["params"])):
+                    if self.solution is not None or self.costs["applications"] >= search_cap:
+                        self.costs["backward_seconds"] += time.perf_counter()-started
+                        return
+                    name = self._apply(family, arguments, search_cap)
+                    if self.solution is not None:
+                        # the point met the goals outright while being built: that is the
+                        # ordinary acceptance path, not the specification, and is recorded so
+                        self.solution.setdefault("via", "backward_forward_construction")
+                        self.costs["backward_seconds"] += time.perf_counter()-started
+                        return
+                    if name is None or name in frontier:
+                        continue
+                    self.costs["backward_points_decided"] += 1
+                    if self._backward_try(specifications, name, cap):
+                        self.costs["backward_seconds"] += time.perf_counter()-started
+                        return
+        self.costs["backward_seconds"] += time.perf_counter()-started
+
     def _fallback_solution_passes(self, solution):
         """Same acceptance as directed solutions: primitive replay, exact goal atoms, not an input point."""
         try:
@@ -490,6 +664,13 @@ class RelationalSynthesis:
             self.costs["search_seconds"] += time.perf_counter()-started
         if self.solution is None and self.stop_reason != "wall_time_budget" and self.costs["applications"] < applications:
             self.stop_reason = "directed_phases_complete"
+        if (self.solution is None and self.config.get("backward_substitution")
+                and self.stop_reason in ("directed_phases_complete", "application_budget",
+                                         "plan_expansion_budget", "plans_exhausted")
+                and time.perf_counter()-started < wall):
+            self._backward_phase(applications)
+            if self.solution is not None:
+                self.stop_reason = "proved"
         remaining = applications-self.costs["applications"]
         elapsed = time.perf_counter()-started
         wall = self.config.get("wall_seconds", 600)
