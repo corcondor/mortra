@@ -22,7 +22,7 @@ from math_os_prototype import geometry_relational_edit as edit
 from math_os_prototype import geometry_relational_library as lib
 from math_os_prototype import geometry_semantic_dsl as dsl
 
-SLOTS = ("p0", "p1", "p2")
+SLOTS = ("p0", "p1", "p2", "p3", "p4")
 
 
 def body_from_solution(solution, goals):
@@ -40,7 +40,7 @@ def body_from_solution(solution, goals):
     mentioned = [a for goal in goals for a in goal["points"] if a != "u"]
     names = list(dict.fromkeys(parameters+mentioned))
     if len(names) > len(SLOTS):
-        return None, f"{len(names)} distinct points at the interface, more than the retrieval slots"
+        return None, f"{len(names)} distinct points at the interface, more than the {len(SLOTS)} slots"
     renaming = {name: SLOTS[index] for index, name in enumerate(names)}
     body = {"params": [renaming[name] for name in names],
             "steps": [{"out": step["output"], "prim": step["family"],

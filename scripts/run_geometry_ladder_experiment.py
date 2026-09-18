@@ -71,6 +71,8 @@ def main():
     parser.add_argument("--seed", type=int, default=20261001)
     parser.add_argument("--extra-steps", type=int, default=1)
     parser.add_argument("--input-points", type=int, default=5)
+    parser.add_argument("--ladders-from", default=None,
+                        help="reuse the ladders of an earlier run instead of posing new ones")
     parser.add_argument("--distinct-points", type=int, default=4,
                         help="how many named points the goals must mention; above the three retrieval "
                              "slots the library cannot answer the goal directly")
@@ -107,12 +109,18 @@ def main():
                                      "seconds": time.perf_counter()-began}
     say(f"{len(base_index.programs)} programs in {report['starting_vocabulary']['seconds']:.0f}s")
 
-    say("posing ladders")
     began = time.perf_counter()
-    batch = posing.pose_ladders(arguments.seed, arguments.ladders, base_depth=2,
-                                extra_steps=arguments.extra_steps, goal_count=3, attempts=6000,
-                                input_points=arguments.input_points,
-                                minimum_distinct_points=arguments.distinct_points)
+    if arguments.ladders_from:
+        say(f"reusing the ladders posed by {arguments.ladders_from}")
+        earlier = json.loads((Path(arguments.ladders_from)/"ladders.json").read_text())
+        batch = {"ladders": earlier["trained"]+earlier["held_out"], "rejections": {"reused": True}}
+        report["protocol"]["ladders_reused_from"] = arguments.ladders_from
+    else:
+        say("posing ladders")
+        batch = posing.pose_ladders(arguments.seed, arguments.ladders, base_depth=2,
+                                    extra_steps=arguments.extra_steps, goal_count=3, attempts=6000,
+                                    input_points=arguments.input_points,
+                                    minimum_distinct_points=arguments.distinct_points)
     say(f"{len(batch['ladders'])} ladders in {time.perf_counter()-began:.0f}s")
     report["posing"] = {"requested": arguments.ladders, "posed": len(batch["ladders"]),
                         "rejections": batch["rejections"], "seconds": time.perf_counter()-began}

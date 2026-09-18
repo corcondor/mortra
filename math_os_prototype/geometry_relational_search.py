@@ -246,7 +246,10 @@ class RelationalSynthesis:
         """Acquired programs whose exactly certified contract produces every spec atom."""
         from itertools import permutations
         fixed = list(dict.fromkeys(a for _, args in spec for a in args if a != "v"))
-        slots = ("p0", "p1", "p2")
+        # How many named points a retrieved program may be bound to. The enumerated
+        # index is written over three, so three is the default; a library holding
+        # operations over more says so in the configuration.
+        slots = tuple(self.config.get("library_slots", ("p0", "p1", "p2")))
         if len(fixed) > len(slots):
             return []
         limit = self.config.get("library_programs_per_binding", 2)

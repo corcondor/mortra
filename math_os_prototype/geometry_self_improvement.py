@@ -34,6 +34,9 @@ START_POLICY = {
     "guaranteed_applications": 40, "guaranteed_expansions": 2000,
     "partial_root_coverage": True, "partial_applications": 16, "partial_expansions": 1000,
     "max_plan_steps": 6, "wall_seconds": 20, "library_programs_per_binding": 2,
+    # the enumerated index is written over three named points; an operation acquired
+    # from a task whose goals mention more is stored over as many as it needs
+    "library_slots": ("p0", "p1", "p2", "p3", "p4"),
 }
 
 COST_KEYS = ("applications", "plan_expansions", "polynomial_checks", "predicate_prover_calls",
