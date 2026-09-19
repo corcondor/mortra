@@ -1,0 +1,1247 @@
+{
+ "environment": {
+  "sha": "35b9086585cde12ff0e757e2904ddf6c517a314a",
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "convention": {
+  "a point becomes": "a black disk of radius r, opaque, on white paper",
+  "radius_paper_units": 0.015625,
+  "lattice_spacing": 0.03125,
+  "one radius for every image": true,
+  "largest reachable black coverage": 0.7853981633974483,
+  "why": "disks on a lattice of spacing h with r = h/2 are tangent at closest and never overlap, so coverage is (inked sites) x pi r^2 / area and cannot pass pi/4",
+  "what carries tone": "the number and placement of points, nothing else",
+  "clipping": "a lattice site is inked or not; whole disks are drawn, and a disk whose centre is near the paper edge is drawn and clipped by the page, the same rule in the image and in the measurement"
+ },
+ "determinism": {
+  "randomness": "none: the selection is an ordered-dither threshold on the lattice indices, so the same inputs give the same points",
+  "seed": null
+ },
+ "images": [
+  {
+   "image": "a-pale",
+   "description": "the sheet filled sparsely",
+   "dots": 1593,
+   "radius_paper_units": 0.015625,
+   "paper": [
+    0.0,
+    0.0,
+    4.0,
+    3.0
+   ],
+   "pixels_per_unit": 300,
+   "svg": {
+    "path": "reports\\ink\\a-pale.svg",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "circles": 1593
+   },
+   "png": {
+    "path": "reports\\ink\\a-pale.png",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "dots": 1593,
+    "supersample": 3,
+    "note": "the disks are drawn opaque black at a higher resolution and box-averaged down, so a pixel on a disk's edge holds the fraction of it that is covered. That grey is a rasterisation artefact of the sampling, not a drawn tone; the SVG holds the disks themselves"
+   },
+   "svg_check": {
+    "distinct_radii": [
+     "4.6875"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "disks_pairwise_disjoint": true,
+   "drawing_seconds": 0.11155689999941387,
+   "geometry_statistics": {},
+   "target_black_coverage": 0.1,
+   "inked_site_fraction": 0.12732395447351627,
+   "selection_rule": "ordered dither, constant level",
+   "local_windows": [
+    {
+     "window_name": "cell 0,0",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 0,1",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      1.0,
+      1.0,
+      2.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 0,2",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      2.0,
+      1.0,
+      3.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 1,0",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      0.0,
+      2.0,
+      1.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 1,1",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      1.0,
+      2.0,
+      2.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 1,2",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      2.0,
+      2.0,
+      3.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 2,0",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      0.0,
+      3.0,
+      1.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 2,1",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      1.0,
+      3.0,
+      2.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 2,2",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 3,0",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      0.0,
+      4.0,
+      1.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 3,1",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      1.0,
+      4.0,
+      2.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 3,2",
+     "black_coverage": 0.0976,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      2.0,
+      4.0,
+      3.0
+     ],
+     "disks_considered": 145,
+     "black_coverage_from_whole_disks": 0.08666991451553872,
+     "disks_wholly_inside": 113,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    }
+   ],
+   "local_coverage": {
+    "mean": 0.0976,
+    "min": 0.0976,
+    "max": 0.0976,
+    "spread": 0.0,
+    "note": "these windows are whole cells of the sheet, and the dither pattern repeats with a period that divides them, so they can agree exactly; the windows below do not line up with that period"
+   },
+   "offset_windows": [
+    {
+     "window_name": "offset 0",
+     "black_coverage": 0.096,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.14285714285714285,
+      0.2,
+      0.6428571428571429,
+      0.7
+     ],
+     "disks_considered": 36,
+     "black_coverage_from_whole_disks": 0.0859029241215959,
+     "disks_wholly_inside": 28,
+     "disks_crossing_the_edge": 8,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 1",
+     "black_coverage": 0.096,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.8428571428571429,
+      0.2,
+      1.3428571428571427,
+      0.7
+     ],
+     "disks_considered": 36,
+     "black_coverage_from_whole_disks": 0.0859029241215959,
+     "disks_wholly_inside": 28,
+     "disks_crossing_the_edge": 8,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 2",
+     "black_coverage": 0.096,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.542857142857143,
+      0.2,
+      2.0428571428571427,
+      0.7
+     ],
+     "disks_considered": 36,
+     "black_coverage_from_whole_disks": 0.0859029241215959,
+     "disks_wholly_inside": 28,
+     "disks_crossing_the_edge": 8,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 3",
+     "black_coverage": 0.096,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.242857142857143,
+      0.2,
+      2.742857142857143,
+      0.7
+     ],
+     "disks_considered": 40,
+     "black_coverage_from_whole_disks": 0.07363107781851078,
+     "disks_wholly_inside": 24,
+     "disks_crossing_the_edge": 16,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 4",
+     "black_coverage": 0.096,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.942857142857143,
+      0.2,
+      3.442857142857143,
+      0.7
+     ],
+     "disks_considered": 41,
+     "black_coverage_from_whole_disks": 0.07669903939428206,
+     "disks_wholly_inside": 25,
+     "disks_crossing_the_edge": 16,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    }
+   ],
+   "local_coverage_off_the_dither_period": {
+    "mean": 0.096,
+    "min": 0.096,
+    "max": 0.096,
+    "spread": 0.0
+   },
+   "error_against_target": -0.0023999999999999994
+  },
+  {
+   "image": "b-dark",
+   "description": "the same sheet filled densely",
+   "dots": 9585,
+   "radius_paper_units": 0.015625,
+   "paper": [
+    0.0,
+    0.0,
+    4.0,
+    3.0
+   ],
+   "pixels_per_unit": 300,
+   "svg": {
+    "path": "reports\\ink\\b-dark.svg",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "circles": 9585
+   },
+   "png": {
+    "path": "reports\\ink\\b-dark.png",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "dots": 9585,
+    "supersample": 3,
+    "note": "the disks are drawn opaque black at a higher resolution and box-averaged down, so a pixel on a disk's edge holds the fraction of it that is covered. That grey is a rasterisation artefact of the sampling, not a drawn tone; the SVG holds the disks themselves"
+   },
+   "svg_check": {
+    "distinct_radii": [
+     "4.6875"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "disks_pairwise_disjoint": true,
+   "drawing_seconds": 0.8931324000004679,
+   "geometry_statistics": {},
+   "target_black_coverage": 0.6,
+   "inked_site_fraction": 0.7639437268410976,
+   "selection_rule": "ordered dither, constant level",
+   "local_windows": [
+    {
+     "window_name": "cell 0,0",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 0,1",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      1.0,
+      1.0,
+      2.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 0,2",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      2.0,
+      1.0,
+      3.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 1,0",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      0.0,
+      2.0,
+      1.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 1,1",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      1.0,
+      2.0,
+      2.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 1,2",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      2.0,
+      2.0,
+      3.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 2,0",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      0.0,
+      3.0,
+      1.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 2,1",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      1.0,
+      3.0,
+      2.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 2,2",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 3,0",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      0.0,
+      4.0,
+      1.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 3,1",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      1.0,
+      4.0,
+      2.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "cell 3,2",
+     "black_coverage": 0.596,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      2.0,
+      4.0,
+      3.0
+     ],
+     "disks_considered": 837,
+     "black_coverage_from_whole_disks": 0.5622039587600874,
+     "disks_wholly_inside": 733,
+     "disks_crossing_the_edge": 104,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    }
+   ],
+   "local_coverage": {
+    "mean": 0.596,
+    "min": 0.596,
+    "max": 0.596,
+    "spread": 0.0,
+    "note": "these windows are whole cells of the sheet, and the dither pattern repeats with a period that divides them, so they can agree exactly; the windows below do not line up with that period"
+   },
+   "offset_windows": [
+    {
+     "window_name": "offset 0",
+     "black_coverage": 0.6028,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.14285714285714285,
+      0.2,
+      0.6428571428571429,
+      0.7
+     ],
+     "disks_considered": 212,
+     "black_coverage_from_whole_disks": 0.5522330836388308,
+     "disks_wholly_inside": 180,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 1",
+     "black_coverage": 0.6028,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.8428571428571429,
+      0.2,
+      1.3428571428571427,
+      0.7
+     ],
+     "disks_considered": 212,
+     "black_coverage_from_whole_disks": 0.5522330836388308,
+     "disks_wholly_inside": 180,
+     "disks_crossing_the_edge": 32,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 2",
+     "black_coverage": 0.6028,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.542857142857143,
+      0.2,
+      2.0428571428571427,
+      0.7
+     ],
+     "disks_considered": 214,
+     "black_coverage_from_whole_disks": 0.5460971604872883,
+     "disks_wholly_inside": 178,
+     "disks_crossing_the_edge": 36,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 3",
+     "black_coverage": 0.6028,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.242857142857143,
+      0.2,
+      2.742857142857143,
+      0.7
+     ],
+     "disks_considered": 221,
+     "black_coverage_from_whole_disks": 0.5307573526084318,
+     "disks_wholly_inside": 173,
+     "disks_crossing_the_edge": 48,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "offset 4",
+     "black_coverage": 0.6028,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.942857142857143,
+      0.2,
+      3.442857142857143,
+      0.7
+     ],
+     "disks_considered": 221,
+     "black_coverage_from_whole_disks": 0.5307573526084318,
+     "disks_wholly_inside": 173,
+     "disks_crossing_the_edge": 48,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    }
+   ],
+   "local_coverage_off_the_dither_period": {
+    "mean": 0.6028,
+    "min": 0.6028,
+    "max": 0.6028,
+    "spread": 0.0
+   },
+   "error_against_target": -0.0040000000000000036
+  },
+  {
+   "image": "c-ramp",
+   "description": "point density rising from left to right",
+   "dots": 5907,
+   "radius_paper_units": 0.015625,
+   "paper": [
+    0.0,
+    0.0,
+    4.0,
+    3.0
+   ],
+   "pixels_per_unit": 300,
+   "svg": {
+    "path": "reports\\ink\\c-ramp.svg",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "circles": 5907
+   },
+   "png": {
+    "path": "reports\\ink\\c-ramp.png",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "dots": 5907,
+    "supersample": 3,
+    "note": "the disks are drawn opaque black at a higher resolution and box-averaged down, so a pixel on a disk's edge holds the fraction of it that is covered. That grey is a rasterisation artefact of the sampling, not a drawn tone; the SVG holds the disks themselves"
+   },
+   "svg_check": {
+    "distinct_radii": [
+     "4.6875"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "disks_pairwise_disjoint": true,
+   "drawing_seconds": 0.642906099998072,
+   "geometry_statistics": {},
+   "target_black_coverage": [
+    0.04,
+    0.7
+   ],
+   "selection_rule": "ordered dither, level linear in x",
+   "bands": [
+    {
+     "window_name": "band 0",
+     "black_coverage": 0.0832,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.0,
+      0.0,
+      0.5,
+      3.0
+     ],
+     "disks_considered": 197,
+     "black_coverage_from_whole_disks": 0.06596117387908257,
+     "disks_wholly_inside": 129,
+     "disks_crossing_the_edge": 68,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.08124999999999999,
+     "error": 0.0019500000000000073
+    },
+    {
+     "window_name": "band 1",
+     "black_coverage": 0.1652,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      0.5,
+      0.0,
+      1.0,
+      3.0
+     ],
+     "disks_considered": 367,
+     "black_coverage_from_whole_disks": 0.1385695978390029,
+     "disks_wholly_inside": 271,
+     "disks_crossing_the_edge": 96,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.16374999999999998,
+     "error": 0.0014500000000000346
+    },
+    {
+     "window_name": "band 2",
+     "black_coverage": 0.248,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.0,
+      0.0,
+      1.5,
+      3.0
+     ],
+     "disks_considered": 537,
+     "black_coverage_from_whole_disks": 0.21731394495046583,
+     "disks_wholly_inside": 425,
+     "disks_crossing_the_edge": 112,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.24625,
+     "error": 0.0017500000000000016
+    },
+    {
+     "window_name": "band 3",
+     "black_coverage": 0.3348,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      1.5,
+      0.0,
+      2.0,
+      3.0
+     ],
+     "disks_considered": 705,
+     "black_coverage_from_whole_disks": 0.30321686907206175,
+     "disks_wholly_inside": 593,
+     "disks_crossing_the_edge": 112,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.32874999999999993,
+     "error": 0.006050000000000055
+    },
+    {
+     "window_name": "band 4",
+     "black_coverage": 0.4148,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.0,
+      0.0,
+      2.5,
+      3.0
+     ],
+     "disks_considered": 873,
+     "black_coverage_from_whole_disks": 0.37684794689057255,
+     "disks_wholly_inside": 737,
+     "disks_crossing_the_edge": 136,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.41124999999999995,
+     "error": 0.003550000000000053
+    },
+    {
+     "window_name": "band 5",
+     "black_coverage": 0.4928,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      2.5,
+      0.0,
+      3.0,
+      3.0
+     ],
+     "disks_considered": 1053,
+     "black_coverage_from_whole_disks": 0.44434310155754075,
+     "disks_wholly_inside": 869,
+     "disks_crossing_the_edge": 184,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.4937499999999999,
+     "error": -0.0009499999999998954
+    },
+    {
+     "window_name": "band 6",
+     "black_coverage": 0.5708,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      0.0,
+      3.5,
+      3.0
+     ],
+     "disks_considered": 1221,
+     "black_coverage_from_whole_disks": 0.5179741793760515,
+     "disks_wholly_inside": 1013,
+     "disks_crossing_the_edge": 208,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.5762499999999999,
+     "error": -0.005449999999999955
+    },
+    {
+     "window_name": "band 7",
+     "black_coverage": 0.662,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.5,
+      0.0,
+      4.0,
+      3.0
+     ],
+     "disks_considered": 1405,
+     "black_coverage_from_whole_disks": 0.6079677189320091,
+     "disks_wholly_inside": 1189,
+     "disks_crossing_the_edge": 216,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap",
+     "target_black_coverage": 0.65875,
+     "error": 0.003250000000000086
+    }
+   ],
+   "monotone_in_x": true,
+   "largest_band_error": 0.006050000000000055
+  },
+  {
+   "image": "d-shadow",
+   "description": "the shadow a segment casts from a point light, inked densely inside and sparsely outside",
+   "dots": 5977,
+   "radius_paper_units": 0.015625,
+   "paper": [
+    1.2,
+    0.0,
+    5.2,
+    3.0
+   ],
+   "pixels_per_unit": 300,
+   "svg": {
+    "path": "reports\\ink\\d-shadow.svg",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "circles": 5977
+   },
+   "png": {
+    "path": "reports\\ink\\d-shadow.png",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "dots": 5977,
+    "supersample": 3,
+    "note": "the disks are drawn opaque black at a higher resolution and box-averaged down, so a pixel on a disk's edge holds the fraction of it that is covered. That grey is a rasterisation artefact of the sampling, not a drawn tone; the SVG holds the disks themselves"
+   },
+   "svg_check": {
+    "distinct_radii": [
+     "4.6875"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "disks_pairwise_disjoint": true,
+   "drawing_seconds": 1.0686550999998872,
+   "geometry_statistics": {
+    "primitive_applications": 12513,
+    "intersection_ll": 12513,
+    "meets_the_line_but_not_the_segment": 4588,
+    "occluded": 7925
+   },
+   "light": [
+    0.0,
+    1.5
+   ],
+   "occluder": [
+    [
+     1.0,
+     1.2
+    ],
+    [
+     1.0,
+     1.8
+    ]
+   ],
+   "window": [
+    1.2,
+    0.0,
+    5.2,
+    3.0
+   ],
+   "target_black_coverage": {
+    "inside": 0.55,
+    "outside": 0.06
+   },
+   "dots_inside_the_shadow": 5585,
+   "dots_outside": 392,
+   "selection_rule": "ordered dither whose level is set by the occlusion relation at the site",
+   "relation": "exists P: P on segment(A,B) and P strictly between L and X, reduced to the single candidate intersection_ll(L,X,A,B)",
+   "local_windows": [
+    {
+     "window_name": "inside the shadow",
+     "black_coverage": 0.5428,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      1.3,
+      3.5,
+      1.7
+     ],
+     "disks_considered": 153,
+     "black_coverage_from_whole_disks": 0.44868938045655005,
+     "disks_wholly_inside": 117,
+     "disks_crossing_the_edge": 36,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "above the shadow",
+     "black_coverage": 0.0597,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      2.8,
+      3.5,
+      2.95
+     ],
+     "disks_considered": 7,
+     "black_coverage_from_whole_disks": 0.0409061543436171,
+     "disks_wholly_inside": 4,
+     "disks_crossing_the_edge": 3,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    },
+    {
+     "window_name": "below the shadow",
+     "black_coverage": 0.0597,
+     "method": "sample-cell centres",
+     "resolution": "200x200 cells over the window",
+     "window": [
+      3.0,
+      0.05,
+      3.5,
+      0.2
+     ],
+     "disks_considered": 7,
+     "black_coverage_from_whole_disks": 0.0409061543436171,
+     "disks_wholly_inside": 4,
+     "disks_crossing_the_edge": 3,
+     "exact_while": "no disk crosses the window edge, and disks do not overlap"
+    }
+   ],
+   "shadow_outline": {
+    "vertices": [
+     [
+      1.2,
+      1.14
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.2,
+      0.0
+     ],
+     [
+      5.2,
+      3.0
+     ],
+     [
+      5.0,
+      3.0
+     ],
+     [
+      1.2,
+      1.86
+     ]
+    ],
+    "area_of_the_shadow_in_the_window": 7.668,
+    "built_by": "intersection_ll of each boundary ray with each side of the window, plus the window corners that are in shadow",
+    "not_the_same_as": "the area the ink covers, which is the black coverage times the area"
+   }
+  },
+  {
+   "image": "d2-shadow",
+   "description": "the same procedure with the light above and the occluder horizontal",
+   "dots": 2465,
+   "radius_paper_units": 0.015625,
+   "paper": [
+    0.0,
+    0.0,
+    4.0,
+    3.0
+   ],
+   "pixels_per_unit": 300,
+   "svg": {
+    "path": "reports\\ink\\d2-shadow.svg",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "circles": 2465
+   },
+   "png": {
+    "path": "reports\\ink\\d2-shadow.png",
+    "width": 1200,
+    "height": 900,
+    "radius_px": 4.6875,
+    "dots": 2465,
+    "supersample": 3,
+    "note": "the disks are drawn opaque black at a higher resolution and box-averaged down, so a pixel on a disk's edge holds the fraction of it that is covered. That grey is a rasterisation artefact of the sampling, not a drawn tone; the SVG holds the disks themselves"
+   },
+   "svg_check": {
+    "distinct_radii": [
+     "4.6875"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "disks_pairwise_disjoint": true,
+   "drawing_seconds": 0.3659117999995942,
+   "geometry_statistics": {
+    "primitive_applications": 12512,
+    "intersection_ll": 12512,
+    "meets_the_line_but_not_the_segment": 9646,
+    "parallel_or_degenerate": 128,
+    "behind_the_light_or_beyond_the_point": 441,
+    "occluded": 2297
+   },
+   "light": [
+    0.5,
+    3.0
+   ],
+   "occluder": [
+    [
+     1.5,
+     2.0
+    ],
+    [
+     2.3,
+     2.0
+    ]
+   ],
+   "window": [
+    0.0,
+    0.0,
+    4.0,
+    3.0
+   ],
+   "dots_inside_the_shadow": 1635,
+   "dots_outside": 830,
+   "shadow_outline": {
+    "vertices": [
+     [
+      3.5,
+      0.0
+     ],
+     [
+      4.0,
+      0.0
+     ],
+     [
+      4.0,
+      1.0555555555555556
+     ],
+     [
+      2.3,
+      2.0
+     ],
+     [
+      1.5,
+      2.0
+     ]
+    ],
+    "area_of_the_shadow_in_the_window": 2.1972222222222224
+   },
+   "selection_rule": "the same ordered dither driven by the same occlusion relation, with the light and occluder moved"
+  }
+ ],
+ "measurements": {},
+ "lattice": {
+  "sheet_cells": [
+   4,
+   3
+  ],
+  "depth": 5,
+  "points": 12513,
+  "built_by": "midpoint for the unit cell, midpoint and mirror to translate it over the sheet, through execute_primitive",
+  "primitive_applications": 23933,
+  "seconds": 3.301488799999788
+ },
+ "targets": {
+  "black_coverage": {
+   "pale": 0.1,
+   "dark": 0.6,
+   "ramp_low": 0.04,
+   "ramp_high": 0.7,
+   "shadow_inside": 0.55,
+   "shadow_outside": 0.06
+  },
+  "inked_site_fraction": {
+   "pale": 0.12732395447351627,
+   "dark": 0.7639437268410976,
+   "ramp_low": 0.050929581789406514,
+   "ramp_high": 0.8912676813146139,
+   "shadow_inside": 0.7002817496043395,
+   "shadow_outside": 0.07639437268410976
+  }
+ },
+ "reused": [
+  "geometry_relational_dsl.execute_primitive for every constructed point",
+  "the fragment's midpoint, mirror and intersection_ll primitives",
+  "the polynomial meaning of coll, cong and midp, composed by hand into the region relations",
+  "Pillow, already a dependency of the repository"
+ ],
+ "newly_connected": [
+  "a lattice iteration over the sheet",
+  "an ordered-dither selection rule",
+  "an SVG writer and a PNG writer that draw only what they are given",
+  "a coverage measurement by sample cells"
+ ],
+ "not_claimed": [
+  "no new geometric predicate and no new primitive: the region relations are compositions of coll, cong, midp and diff with auxiliary points",
+  "the reduction of the existential to one intersection point assumes the light is off the line of the occluder and that a ray parallel to it meets nothing",
+  "a rational witness failing to exist does not mean a real one does not; the disk relation is decided by its reduced inequality, not by searching for rational U and V",
+  "the coverage figures are sample-cell approximations at the stated resolution, not areas computed exactly",
+  "the grey along a disk's edge in a PNG is the rasteriser's averaging, not a drawn tone",
+  "nothing here is an artistic technique the system discovered; it is the connection from geometry to ink"
+ ],
+ "total_seconds": 633.4644757999995
+}
