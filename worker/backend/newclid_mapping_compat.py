@@ -3,18 +3,29 @@
 Keep literal arguments literal, skip syntactically inadmissible predicate
 instances, and preserve the type of a triangle under its existing symmetries.
 """
+from functools import lru_cache
 from itertools import permutations
 
-from newclid.rule_matching import mapping_matcher as mm
-from newclid.rule_matching import efficient_statement as es
-from newclid.predicates import predicate_class_from_type
-from newclid.predicates._index import PredicateType
-from newclid.problem import PredicateConstruction
-from newclid.justifications.justification import RuleApplication
-from newclid.symbols.lines_registry import LineMerge
+
+def _newclid():
+    """The Newclid boundaries this module pins, imported where they are used."""
+    from newclid.rule_matching import mapping_matcher as mm
+    from newclid.rule_matching import efficient_statement as es
+    from newclid.predicates import predicate_class_from_type
+    from newclid.predicates._index import PredicateType
+    from newclid.problem import PredicateConstruction
+    from newclid.justifications.justification import RuleApplication
+    from newclid.symbols.lines_registry import LineMerge
+    return {"mm": mm, "es": es, "predicate_class_from_type": predicate_class_from_type,
+            "PredicateType": PredicateType, "PredicateConstruction": PredicateConstruction,
+            "RuleApplication": RuleApplication, "LineMerge": LineMerge}
 
 
 def install_triangle_mapping_compat():
+    newclid = _newclid()
+    mm, es = newclid["mm"], newclid["es"]
+    predicate_class_from_type = newclid["predicate_class_from_type"]
+    PredicateType, LineMerge = newclid["PredicateType"], newclid["LineMerge"]
     if LineMerge.__hash__ is None:
         # Match the existing CircleMerge/Assumption hash contract.
         LineMerge.__hash__ = lambda self: hash(self.predicate)
@@ -60,36 +71,61 @@ def install_triangle_mapping_compat():
     es.triangle_perms = triangle_perms
 
 
-class ValidatedMappingMatcher(mm.MappingMatcher):
-    def __init__(self):
-        install_triangle_mapping_compat()
-        super().__init__(mm.FilterMapper())
-        self.unsupported = set()
+@lru_cache(maxsize=1)
+def _validated_mapping_matcher():
+    """Build the matcher class the first time it is asked for.
 
-    def _match_generic(self, rule, proof):
-        result = set()
-        # The pinned predicate factory explicitly has no constructor for
-        # these two types. Record the missing interface, never assume a result.
-        unsupported = {PredicateType.ANGLE_EQUATION, PredicateType.LENGTH_EQUATION}
-        if any(PredicateType(c.name) in unsupported for c in rule.premises+rule.conclusions):
-            self.unsupported.add(rule.id)
+    It subclasses a Newclid class, so defining it at module level made importing
+    this module require Newclid. `__getattr__` below keeps the name reachable.
+    """
+    newclid = _newclid()
+    mm, predicate_class_from_type = newclid["mm"], newclid["predicate_class_from_type"]
+    PredicateType = newclid["PredicateType"]
+    PredicateConstruction = newclid["PredicateConstruction"]
+    RuleApplication = newclid["RuleApplication"]
+
+    class ValidatedMappingMatcher(mm.MappingMatcher):
+        def __init__(self):
+            install_triangle_mapping_compat()
+            super().__init__(mm.FilterMapper())
+            self.unsupported = set()
+
+        def _match_generic(self, rule, proof):
+            result = set()
+            # The pinned predicate factory explicitly has no constructor for
+            # these two types. Record the missing interface, never assume a result.
+            unsupported = {PredicateType.ANGLE_EQUATION, PredicateType.LENGTH_EQUATION}
+            if any(PredicateType(c.name) in unsupported
+                   for c in rule.premises+rule.conclusions):
+                self.unsupported.add(rule.id)
+                return result
+            points = [p.name for p in proof.symbols.points]
+
+            def instantiate(construction, mapping):
+                args = tuple(mapping[a] if str(a)[0].isalpha() else a
+                             for a in construction.variables)
+                kind = PredicateType(construction.name)
+                if predicate_class_from_type(kind).preparse(args) is None:
+                    return None
+                return mm.predicate_from_construction(
+                    PredicateConstruction.from_predicate_type_and_args(kind, args),
+                    proof.symbols.points)
+
+            for mapping in self.theorem_mapper.mappings(rule, points, proof=proof):
+                premises = tuple(instantiate(p, mapping) for p in rule.premises)
+                if any(p is None or not proof.check(p) for p in premises):
+                    continue
+                for conclusion in rule.conclusions:
+                    predicate = instantiate(conclusion, mapping)
+                    if predicate is not None:
+                        result.add(RuleApplication(predicate=predicate, rule=rule,
+                                                   premises=premises))
             return result
-        points = [p.name for p in proof.symbols.points]
 
-        def instantiate(construction, mapping):
-            args = tuple(mapping[a] if str(a)[0].isalpha() else a for a in construction.variables)
-            kind = PredicateType(construction.name)
-            if predicate_class_from_type(kind).preparse(args) is None:
-                return None
-            return mm.predicate_from_construction(
-                PredicateConstruction.from_predicate_type_and_args(kind, args), proof.symbols.points)
+    return ValidatedMappingMatcher
 
-        for mapping in self.theorem_mapper.mappings(rule, points, proof=proof):
-            premises = tuple(instantiate(p, mapping) for p in rule.premises)
-            if any(p is None or not proof.check(p) for p in premises):
-                continue
-            for conclusion in rule.conclusions:
-                predicate = instantiate(conclusion, mapping)
-                if predicate is not None:
-                    result.add(RuleApplication(predicate=predicate, rule=rule, premises=premises))
-        return result
+
+def __getattr__(name):
+    if name == "ValidatedMappingMatcher":
+        return _validated_mapping_matcher()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

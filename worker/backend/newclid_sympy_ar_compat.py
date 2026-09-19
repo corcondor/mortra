@@ -8,18 +8,29 @@ pairs.  Keep the upstream deductor intact except for that collection boundary.
 from __future__ import annotations
 
 from fractions import Fraction
+from functools import lru_cache
 import importlib
-from typing import Iterator, cast
+from typing import Iterator, TYPE_CHECKING, cast
 
 import sympy as sp
-from newclid.deductors.sympy_ar.algebraic_manipulator import SympyARDeductor
-from newclid.deductors.sympy_ar.table_ratios import RatiosTable
-from newclid.numerical import close_enough
-from newclid.predicate_types import PredicateArgument
-from newclid.predicates._index import PredicateType
-from newclid.predicates.different import Diff
-from newclid.problem import PredicateConstruction
-from newclid.tools import fraction_to_ratio, get_quotient
+
+if TYPE_CHECKING:                   # for the annotations only; see `_newclid`
+    from newclid.deductors.sympy_ar.table_ratios import RatiosTable
+    from newclid.problem import PredicateConstruction
+
+
+def _newclid():
+    """The Newclid names this wrapper adapts, imported where they are used."""
+    from newclid.numerical import close_enough
+    from newclid.predicate_types import PredicateArgument
+    from newclid.predicates._index import PredicateType
+    from newclid.predicates.different import Diff
+    from newclid.problem import PredicateConstruction
+    from newclid.tools import fraction_to_ratio, get_quotient
+    return {"close_enough": close_enough, "PredicateArgument": PredicateArgument,
+            "PredicateType": PredicateType, "Diff": Diff,
+            "PredicateConstruction": PredicateConstruction,
+            "fraction_to_ratio": fraction_to_ratio, "get_quotient": get_quotient}
 
 
 def enumerate_lconsts_items(
@@ -27,6 +38,13 @@ def enumerate_lconsts_items(
 ) -> Iterator[tuple[PredicateConstruction, sp.Expr]]:
     """Enumerate constant lengths from the table's dictionary items."""
 
+    newclid = _newclid()
+    close_enough = newclid["close_enough"]
+    PredicateArgument = newclid["PredicateArgument"]
+    PredicateType = newclid["PredicateType"]
+    PredicateConstruction = newclid["PredicateConstruction"]
+    fraction_to_ratio = newclid["fraction_to_ratio"]
+    get_quotient = newclid["get_quotient"]
     for segment, expected_length_value in table.expected_lconsts.copy().items():
         lconst_expression = cast(sp.Expr, segment)
         subbed_in = table.inner_table.substitute_in_existing_expressions(
@@ -53,12 +71,29 @@ def enumerate_lconsts_items(
         )
 
 
-class MORTRASympyARDeductor(SympyARDeductor):
-    """Newclid's SymPy AR deductor with the constant-length iterator repaired."""
+@lru_cache(maxsize=1)
+def _mortra_sympy_ar_deductor():
+    """Build the deductor class the first time it is asked for.
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.ratio_enumerators[0] = enumerate_lconsts_items
+    It subclasses a Newclid class, so defining it at module level made importing
+    this module require Newclid. `__getattr__` below keeps the name reachable.
+    """
+    from newclid.deductors.sympy_ar.algebraic_manipulator import SympyARDeductor
+
+    class MORTRASympyARDeductor(SympyARDeductor):
+        """Newclid's SymPy AR deductor with the constant-length iterator repaired."""
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.ratio_enumerators[0] = enumerate_lconsts_items
+
+    return MORTRASympyARDeductor
+
+
+def __getattr__(name):
+    if name == "MORTRASympyARDeductor":
+        return _mortra_sympy_ar_deductor()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def install_variadic_diff_compat() -> None:
@@ -68,6 +103,9 @@ def install_variadic_diff_compat() -> None:
     original = predicates.predicate_from_construction
     if getattr(original, "_mortra_variadic_diff", False):
         return
+
+    newclid = _newclid()
+    PredicateType, Diff = newclid["PredicateType"], newclid["Diff"]
 
     def predicate_from_construction_compat(construction, points_registry):
         if construction.predicate_type == PredicateType.DIFFERENT:

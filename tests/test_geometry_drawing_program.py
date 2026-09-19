@@ -166,27 +166,28 @@ def test_the_same_body_always_gets_the_same_macro_name():
 # The geometric core does not need Newclid
 # ---------------------------------------------------------------------------
 
-def test_no_module_of_the_geometry_path_imports_newclid_at_import_time():
-    """A top-level newclid import anywhere in the chain makes the core need it to load."""
+def test_no_module_of_the_repository_imports_newclid_at_import_time():
+    """A top-level newclid import makes that module need Newclid to load at all.
+
+    Newclid stays vendored for the code that genuinely calls it. What must not
+    happen is a module-level import in a LIBRARY module, which makes an unrelated
+    import chain fail when Newclid is absent. Two things are exempt: test modules,
+    which guard themselves, and the scripts under scripts/, which are entry points
+    nothing imports — a script about Newclid may say so at its top.
+    """
     import re
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
     offenders = []
-    for name in ("math_os_prototype/geometry_drawing_program.py",
-                 "math_os_prototype/geometry_ink.py",
-                 "math_os_prototype/geometry_shadow_design.py",
-                 "math_os_prototype/geometry_relational_dsl.py",
-                 "math_os_prototype/geometry_semantic_dsl.py",
-                 "math_os_prototype/geometry_contracts.py",
-                 "math_os_prototype/geometry_relational_library.py",
-                 "worker/backend/jgex_exact_constraint_bridge.py",
-                 "worker/backend/jgex_legacy_normalizer.py",
-                 "worker/backend/jgex_gclc_translator.py"):
-        text = (root/name).read_text(encoding="utf-8")
-        if re.search(r"^(from|import) newclid", text, flags=re.M):
-            offenders.append(name)
-    assert not offenders, f"these import newclid at module level: {offenders}"
+    for folder in ("math_os_prototype", "worker/backend"):
+        for path in sorted((root/folder).glob("*.py")):
+            if path.name.startswith("test_"):
+                continue
+            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if re.match(r"^(from|import) newclid", line):
+                    offenders.append(f"{folder}/{path.name}:{number}: {line}")
+    assert not offenders, "these import newclid at module level:\n"+"\n".join(offenders)
 
 
 def test_the_whole_path_runs_with_newclid_made_unimportable():
@@ -223,3 +224,41 @@ def test_the_whole_path_runs_with_newclid_made_unimportable():
                               cwd=root, timeout=600)
     assert finished.returncode == 0, finished.stderr[-2000:]
     assert "ok" in finished.stdout
+
+
+def test_every_module_of_the_repository_imports_with_newclid_blocked():
+    """Not just the geometry path: nothing anywhere may need Newclid to load."""
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    program = (
+        "import builtins, importlib, sys\n"
+        "real = builtins.__import__\n"
+        "def guard(name, *a, **k):\n"
+        "    if name == 'newclid' or name.startswith('newclid.'):\n"
+        "        raise ImportError('blocked: '+name)\n"
+        "    return real(name, *a, **k)\n"
+        "builtins.__import__ = guard\n"
+        f"root = {str(root)!r}\n"
+        "sys.path.insert(0, root)\n"
+        "from pathlib import Path\n"
+        "blocked = []\n"
+        "for folder, package in (('math_os_prototype', 'math_os_prototype'),\n"
+        "                        ('worker/backend', 'worker.backend')):\n"
+        "    for path in sorted(Path(root, folder).glob('*.py')):\n"
+        "        if path.name == '__init__.py' or path.name.startswith('test_'):\n"
+        "            continue\n"
+        "        try:\n"
+        "            importlib.import_module(package+'.'+path.stem)\n"
+        "        except ImportError as failure:\n"
+        "            if 'blocked: newclid' in str(failure):\n"
+        "                blocked.append(package+'.'+path.stem)\n"
+        "        except BaseException:\n"
+        "            pass\n"
+        "print('BLOCKED', blocked)\n")
+    finished = subprocess.run([sys.executable, "-c", program], capture_output=True, text=True,
+                              cwd=root, timeout=900)
+    assert finished.returncode == 0, finished.stderr[-2000:]
+    assert "BLOCKED []" in finished.stdout, finished.stdout[-2000:]

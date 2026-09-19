@@ -14,7 +14,7 @@ import sys
 import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import matplotlib
 import numpy as np
@@ -22,17 +22,29 @@ import numpy as np
 matplotlib.use("Agg")
 
 from matplotlib import pyplot as plt
-from newclid.api import GeometricSolverBuilder, PythonDefault
-from newclid.jgex.formulation import JGEXFormulation
-from newclid.jgex.problem_builder import JGEXProblemBuilder
-from newclid.problem import predicate_to_construction
-from newclid.proof_data import proof_data_from_state
-
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
-from worker.backend.newclid_sympy_ar_compat import (
-    MORTRASympyARDeductor,
-    install_variadic_diff_compat,
-)
+
+if TYPE_CHECKING:                   # for the annotation only; see `_newclid`
+    from newclid.jgex.formulation import JGEXFormulation
+
+
+def _newclid():
+    """Newclid's solver interface, imported when a problem is actually solved."""
+    from newclid.api import GeometricSolverBuilder, PythonDefault
+    from newclid.jgex.formulation import JGEXFormulation
+    from newclid.jgex.problem_builder import JGEXProblemBuilder
+    from newclid.problem import predicate_to_construction
+    from newclid.proof_data import proof_data_from_state
+    from worker.backend.newclid_sympy_ar_compat import (
+        MORTRASympyARDeductor,
+        install_variadic_diff_compat,
+    )
+    return {"GeometricSolverBuilder": GeometricSolverBuilder, "PythonDefault": PythonDefault,
+            "JGEXFormulation": JGEXFormulation, "JGEXProblemBuilder": JGEXProblemBuilder,
+            "predicate_to_construction": predicate_to_construction,
+            "proof_data_from_state": proof_data_from_state,
+            "MORTRASympyARDeductor": MORTRASympyARDeductor,
+            "install_variadic_diff_compat": install_variadic_diff_compat}
 
 
 @dataclass(frozen=True)
@@ -134,9 +146,17 @@ def build_newclid_solution_artifact(
 
     normalized = text.strip()
     digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+    newclid = _newclid()
+    JGEXFormulation = newclid["JGEXFormulation"]
+    JGEXProblemBuilder = newclid["JGEXProblemBuilder"]
+    GeometricSolverBuilder = newclid["GeometricSolverBuilder"]
+    PythonDefault = newclid["PythonDefault"]
+    MORTRASympyARDeductor = newclid["MORTRASympyARDeductor"]
+    predicate_to_construction = newclid["predicate_to_construction"]
+    proof_data_from_state = newclid["proof_data_from_state"]
     formulation = JGEXFormulation.from_text(normalized)
     try:
-        install_variadic_diff_compat()
+        newclid["install_variadic_diff_compat"]()
         rng = np.random.default_rng(seed)
         # Parsing intentionally accepts both current Newclid syntax and the
         # older AlphaGeometry dialect used by the frozen benchmark.  Resolve

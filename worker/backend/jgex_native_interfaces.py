@@ -3,24 +3,34 @@
 Newclid supplies declarative data only. Importing this module neither starts
 an external deductor nor loads the experiment's Yuclid execution machinery.
 """
-from typing import Any
+from __future__ import annotations
 
-from newclid.all_rules import DEFAULT_RULES
-from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
-from newclid.jgex.definition import JGEXDefinition
-from newclid.jgex.formulation import JGEXFormulation
+from functools import lru_cache
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:                   # for the annotation only; see the helpers below
+    from newclid.jgex.formulation import JGEXFormulation
 from worker.backend.geometry_proof_hypergraph import Atom, Theorem, euclidean_relation_theorems
 from worker.backend.typed_candidate_alignment import instantiate_relation_templates
 from worker.backend.typed_construction_contracts import TypedConstructionContract
 from worker.backend.typed_geometry_stalk import ConstructionFamily
 
 
-DEFINITIONS = JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS)
+@lru_cache(maxsize=1)
+def definitions():
+    """Newclid's construction definitions, read the first time one is asked for.
+
+    This used to be a module-level constant, which made importing this module
+    require Newclid even to look at the adapters around it.
+    """
+    from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
+    from newclid.jgex.definition import JGEXDefinition
+    return JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS)
 
 
 def construction_relation_atoms(family: str, output: str, inputs: tuple[str, ...]) -> tuple[Atom, ...]:
     """Instantiate the formal conclusion atoms declared by a JGEX construction."""
-    definition = DEFINITIONS[family]
+    definition = definitions()[family]
     templates = []
     for clause in definition.clauses:
         for construction in clause.constructions:
@@ -32,7 +42,7 @@ def construction_relation_atoms(family: str, output: str, inputs: tuple[str, ...
 
 def construction_requirement_atoms(family: str, output: str, inputs: tuple[str, ...]) -> tuple[Atom, ...]:
     """Instantiate the declared existence/nondegeneracy side conditions."""
-    definition = DEFINITIONS[family]
+    definition = definitions()[family]
     templates = tuple(Atom(tokens[0], tokens[1:])
         for construction in definition.requirements.constructions
         if (tokens := tuple(str(construction.string).split())))
@@ -61,6 +71,8 @@ def _rule_atom(construction: Any) -> Atom:
 def native_rule_theorems() -> tuple[Theorem, ...]:
     """Expose explicit Newclid rules plus universal Euclidean AR morphisms."""
     theorems = []
+    from newclid.all_rules import DEFAULT_RULES
+
     for rule in sorted(DEFAULT_RULES, key=lambda item: item.id):
         premises = tuple(_rule_atom(item) for item in rule.premises)
         for index, conclusion in enumerate(rule.conclusions):

@@ -10,9 +10,19 @@ import hashlib
 from dataclasses import dataclass, field
 from typing import Mapping
 
-from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
-from newclid.jgex.definition import JGEXDefinition
-from newclid.jgex.formulation import JGEXFormulation
+
+
+def _jgex_schemas():
+    """Newclid's JGEX schemas, imported where a JGEX text is actually read.
+
+    Nothing else here touches Newclid, so importing this module must not
+    require it to be installed.
+    """
+    from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
+    from newclid.jgex.definition import JGEXDefinition
+    from newclid.jgex.formulation import JGEXFormulation
+    return ALL_JGEX_CONSTRUCTIONS, JGEXDefinition, JGEXFormulation
+
 
 from worker.backend.geometry_local_lemma_certificate import (
     external_homothety_boundary_certificates,
@@ -122,9 +132,10 @@ def _cc_tangent_certificate(args: tuple[str, ...]) -> JGEXStalkCertificate:
 
 
 def extract_jgex_relation_stalk(text: str) -> JGEXRelationStalk:
-    definitions = JGEXDefinition.to_dict(list(ALL_JGEX_CONSTRUCTIONS))
+    constructions, definition_type, formulation_type = _jgex_schemas()
+    definitions = definition_type.to_dict(list(constructions))
     formulation, report = normalize_legacy_formulation(
-        JGEXFormulation.from_text(text), definitions
+        formulation_type.from_text(text), definitions
     )
     if report.unresolved_constructions:
         raise ValueError("JGEX normalization left unresolved constructions")

@@ -14,7 +14,13 @@ import json
 from typing import Iterable
 
 import sympy as sp
-from newclid.jgex.formulation import JGEXFormulation
+
+
+def _jgex_formulation():
+    """Newclid's JGEX formulation, imported where a JGEX text is actually read."""
+    from newclid.jgex.formulation import JGEXFormulation
+    return JGEXFormulation
+
 
 from worker.backend.bounded_macaulay_membership import (
     BoundedMacaulayCertificate,
@@ -214,7 +220,7 @@ def _relation_candidates_with_provenance(
 
 
 def _replace_goal(text: str, atom: Atom) -> str:
-    formulation = JGEXFormulation.from_text(text.strip())
+    formulation = _jgex_formulation().from_text(text.strip())
     setup = "; ".join(map(str, formulation.setup_clauses))
     if not setup:
         raise ValueError("typed separator requires a nonempty JGEX setup")
@@ -792,7 +798,7 @@ def certify_typed_relation_separator(
         accepted_dag is not None and accepted_membership is not None
     )
     source_setup = "; ".join(
-        map(str, JGEXFormulation.from_text(source).setup_clauses)
+        map(str, _jgex_formulation().from_text(source).setup_clauses)
     )
     digest_payload = {
         "target": _render_atom(target),
