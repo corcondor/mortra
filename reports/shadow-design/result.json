@@ -1,0 +1,1689 @@
+{
+ "environment": {
+  "sha": "e2d1b468fe3f7af542bd8efee76f4f74762f298b",
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "protocol": {
+  "translation": "one rule for every task: an end of the shadow is where the boundary ray through an end of the occluder meets the screen, which is coll on the placement line and coll on the ray, with the order condition kept apart because the fragment cannot state an inequality",
+  "search": "geometry_self_improvement.solve, unchanged",
+  "drawing": "geometry_ink, unchanged",
+  "acquisition": "geometry_acquisition, unchanged"
+ },
+ "where_it_stopped": {
+  "what_was_asked": "one unknown point required to carry both ends of the wanted shadow",
+  "why_that_is_the_faithful_collapse": "the solver's task format is a set of given points and goals over them and one unknown; a goal set naming two unknown points cannot be written in it at all",
+  "runs": {
+   "directed search": {
+    "solved": false,
+    "stop_reason": "application_budget",
+    "seconds": 4.985451500004274,
+    "costs": {
+     "plan_expansions": 230,
+     "polynomial_checks": 11525,
+     "library_queries": 16640,
+     "max_queue": 2682,
+     "applications": 40
+    }
+   },
+   "with backward substitution": {
+    "solved": false,
+    "stop_reason": "application_budget",
+    "seconds": 317.4426228000011,
+    "costs": {
+     "plan_expansions": 230,
+     "polynomial_checks": 11525,
+     "library_queries": 16640,
+     "max_queue": 2682,
+     "applications": 332,
+     "backward_specifications_built": 400,
+     "backward_specifications_kept": 374,
+     "backward_specification_checks": 194499,
+     "backward_specification_budget_reached": 1
+    }
+   }
+  },
+  "connection_added": "solve_system: each unknown is posed to the same search as its own task over the given points and everything solved so far, so the unknowns share the light and the placement line and a later one may depend on an earlier one"
+ },
+ "development": {
+  "requirement": "development: place a segment so its shadow is a wanted interval",
+  "unknowns": [
+   "A",
+   "B"
+  ],
+  "solved": true,
+  "seconds": 0.043874099996173754,
+  "rows": [
+   {
+    "unknown": "A",
+    "goals": [
+     {
+      "predicate": "coll",
+      "points": [
+       "k1",
+       "k2",
+       "u"
+      ]
+     },
+     {
+      "predicate": "coll",
+      "points": [
+       "l",
+       "s",
+       "u"
+      ]
+     }
+    ],
+    "measurement": {
+     "solved": true,
+     "stop_reason": "proved",
+     "search_states": 1,
+     "primitive_applications": 1,
+     "primitive_expansion_operations": 1,
+     "checking": 34,
+     "library_certifications": 0,
+     "execution_seconds": 0.010817800000950228,
+     "search_seconds": 0.016315300003043376,
+     "wall_seconds": 0.01639440000144532,
+     "costs": {
+      "applications": 1,
+      "plan_expansions": 1,
+      "polynomial_checks": 28,
+      "predicate_prover_calls": 5,
+      "guard_checks": 1,
+      "library_queries": 120,
+      "library_exact_certifications": 0,
+      "identity_bindings_excluded": 0,
+      "refuted_before_charge": 0,
+      "duplicate_outputs": 0,
+      "distinctness_failures": 0,
+      "goal_replay_failures": 0
+     },
+     "seconds": 0.016410799995355774
+    },
+    "via": null,
+    "acquired_certificates_consulted_during_this_search": 0,
+    "acquired_operations_in_the_answer": [],
+    "ordering": {
+     "condition": "strictly_between(A, l, s)",
+     "holds": "True"
+    }
+   },
+   {
+    "unknown": "B",
+    "goals": [
+     {
+      "predicate": "coll",
+      "points": [
+       "k1",
+       "k2",
+       "u"
+      ]
+     },
+     {
+      "predicate": "coll",
+      "points": [
+       "l",
+       "t",
+       "u"
+      ]
+     }
+    ],
+    "measurement": {
+     "solved": true,
+     "stop_reason": "proved",
+     "search_states": 1,
+     "primitive_applications": 1,
+     "primitive_expansion_operations": 1,
+     "checking": 34,
+     "library_certifications": 0,
+     "execution_seconds": 0.007838000004994683,
+     "search_seconds": 0.012733900002785958,
+     "wall_seconds": 0.012808199993742164,
+     "costs": {
+      "applications": 1,
+      "plan_expansions": 1,
+      "polynomial_checks": 28,
+      "predicate_prover_calls": 5,
+      "guard_checks": 1,
+      "library_queries": 120,
+      "library_exact_certifications": 0,
+      "identity_bindings_excluded": 0,
+      "refuted_before_charge": 0,
+      "duplicate_outputs": 0,
+      "distinctness_failures": 0,
+      "goal_replay_failures": 0
+     },
+     "seconds": 0.01282329999958165
+    },
+    "via": null,
+    "acquired_certificates_consulted_during_this_search": 0,
+    "acquired_operations_in_the_answer": [],
+    "ordering": {
+     "condition": "strictly_between(B, l, t)",
+     "holds": "True"
+    }
+   }
+  ],
+  "costs": {
+   "plan_expansions": 2,
+   "transfer_certification_requests": 20,
+   "polynomial_checks": 56,
+   "library_queries": 240,
+   "max_queue": 46,
+   "guaranteed_plans_executed": 2,
+   "applications": 2,
+   "predicate_prover_calls": 10,
+   "guard_checks": 2,
+   "execution_seconds": 0.01865580000594491,
+   "guaranteed_stop_None": 2,
+   "guaranteed_applications_used": 2,
+   "search_seconds": 0.029049200005829334
+  },
+  "program": {
+   "params": [
+    "k1",
+    "k2",
+    "l",
+    "s",
+    "t",
+    "w1",
+    "w2"
+   ],
+   "steps": [
+    {
+     "out": "s1",
+     "prim": "intersection_ll",
+     "args": [
+      "k1",
+      "k2",
+      "l",
+      "s"
+     ]
+    },
+    {
+     "out": "s2",
+     "prim": "intersection_ll",
+     "args": [
+      "k1",
+      "k2",
+      "l",
+      "t"
+     ]
+    }
+   ],
+   "outputs": {
+    "A": "s1",
+    "B": "s2"
+   },
+   "primitive_steps": 2
+  },
+  "produced": {
+   "A": [
+    "1",
+    "6/5"
+   ],
+   "B": [
+    "1",
+    "9/5"
+   ]
+  },
+  "rerun_refused": null,
+  "verification": {
+   "passed": true,
+   "checks": [
+    {
+     "check": "the shadow on the receiving line has the wanted ends",
+     "receiving": [
+      "w1",
+      "w2"
+     ],
+     "wanted": [
+      "3",
+      "3/5",
+      "3",
+      "12/5"
+     ],
+     "produced": [
+      "3",
+      "3/5",
+      "3",
+      "12/5"
+     ],
+     "passed": true,
+     "reason": null
+    },
+    {
+     "check": "A lies on ['k1', 'k2']",
+     "passed": true
+    },
+    {
+     "check": "B lies on ['k1', 'k2']",
+     "passed": true
+    },
+    {
+     "check": "A is strictly between l and s",
+     "passed": "True",
+     "decided": "on the instance: an order condition is not a relation this fragment can certify"
+    },
+    {
+     "check": "B is strictly between l and t",
+     "passed": "True",
+     "decided": "on the instance: an order condition is not a relation this fragment can certify"
+    }
+   ]
+  },
+  "used_acquired_operations": []
+ },
+ "drawing": {
+  "lattice_points": 12513,
+  "primitive_applications": 23933,
+  "radius": 0.015625,
+  "spacing": 0.03125,
+  "images": [
+   {
+    "image": "dev-1-wanted",
+    "description": "what was asked: the two given lines dotted, and solid on the screen the interval the shadow has to cover",
+    "dots": 106,
+    "svg": "reports\\shadow-design\\dev-1-wanted.svg",
+    "png": "reports\\shadow-design\\dev-1-wanted.png",
+    "svg_check": {
+     "distinct_radii": [
+      "4.6875"
+     ],
+     "distinct_fills": [
+      "#000000"
+     ],
+     "non_circle_elements": [],
+     "one_radius": true,
+     "all_black": true,
+     "no_other_marks": true
+    }
+   },
+   {
+    "image": "dev-2-found",
+    "description": "what the search returned: solid on the placement line, the segment it chose",
+    "dots": 68,
+    "svg": "reports\\shadow-design\\dev-2-found.svg",
+    "png": "reports\\shadow-design\\dev-2-found.png",
+    "svg_check": {
+     "distinct_radii": [
+      "4.6875"
+     ],
+     "distinct_fills": [
+      "#000000"
+     ],
+     "non_circle_elements": [],
+     "one_radius": true,
+     "all_black": true,
+     "no_other_marks": true
+    }
+   },
+   {
+    "image": "dev-3-cast",
+    "description": "the shadow recomputed from the configuration the search returned",
+    "dots": 3821,
+    "svg": "reports\\shadow-design\\dev-3-cast.svg",
+    "png": "reports\\shadow-design\\dev-3-cast.png",
+    "svg_check": {
+     "distinct_radii": [
+      "4.6875"
+     ],
+     "distinct_fills": [
+      "#000000"
+     ],
+     "non_circle_elements": [],
+     "one_radius": true,
+     "all_black": true,
+     "no_other_marks": true
+    }
+   }
+  ]
+ },
+ "variants": [
+  {
+   "requirement": "the placement line is not parallel to the screen",
+   "unknowns": [
+    "A",
+    "B"
+   ],
+   "solved": true,
+   "seconds": 0.0496841000058339,
+   "rows": [
+    {
+     "unknown": "A",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "k1",
+        "k2",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "l",
+        "s",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.00691470000310801,
+      "search_seconds": 0.018860900003346615,
+      "wall_seconds": 0.018960299996251706,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.0189712999999756
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "ordering": {
+      "condition": "strictly_between(A, l, s)",
+      "holds": "True"
+     }
+    },
+    {
+     "unknown": "B",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "k1",
+        "k2",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "l",
+        "t",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.009435599997232202,
+      "search_seconds": 0.015300900005968288,
+      "wall_seconds": 0.015382300000055693,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.015394699999887962
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "ordering": {
+      "condition": "strictly_between(B, l, t)",
+      "holds": "True"
+     }
+    }
+   ],
+   "costs": {
+    "plan_expansions": 2,
+    "transfer_certification_requests": 20,
+    "polynomial_checks": 56,
+    "library_queries": 240,
+    "max_queue": 46,
+    "guaranteed_plans_executed": 2,
+    "applications": 2,
+    "predicate_prover_calls": 10,
+    "guard_checks": 2,
+    "execution_seconds": 0.016350300000340212,
+    "guaranteed_stop_None": 2,
+    "guaranteed_applications_used": 2,
+    "search_seconds": 0.0341618000093149
+   },
+   "program": {
+    "params": [
+     "k1",
+     "k2",
+     "l",
+     "s",
+     "t",
+     "w1",
+     "w2"
+    ],
+    "steps": [
+     {
+      "out": "s1",
+      "prim": "intersection_ll",
+      "args": [
+       "k1",
+       "k2",
+       "l",
+       "s"
+      ]
+     },
+     {
+      "out": "s2",
+      "prim": "intersection_ll",
+      "args": [
+       "k1",
+       "k2",
+       "l",
+       "t"
+      ]
+     }
+    ],
+    "outputs": {
+     "A": "s1",
+     "B": "s2"
+    },
+    "primitive_steps": 2
+   },
+   "produced": {
+    "A": [
+     "55/51",
+     "20/17"
+    ],
+    "B": [
+     "55/49",
+     "90/49"
+    ]
+   },
+   "rerun_refused": null,
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the shadow on the receiving line has the wanted ends",
+      "receiving": [
+       "w1",
+       "w2"
+      ],
+      "wanted": [
+       "3",
+       "3/5",
+       "3",
+       "12/5"
+      ],
+      "produced": [
+       "3",
+       "3/5",
+       "3",
+       "12/5"
+      ],
+      "passed": true,
+      "reason": null
+     },
+     {
+      "check": "A lies on ['k1', 'k2']",
+      "passed": true
+     },
+     {
+      "check": "B lies on ['k1', 'k2']",
+      "passed": true
+     }
+    ]
+   },
+   "used_acquired_operations": []
+  },
+  {
+   "requirement": "control: the placement line is only met beyond the screen",
+   "unknowns": [
+    "A",
+    "B"
+   ],
+   "solved": false,
+   "seconds": 0.04505580000113696,
+   "rows": [
+    {
+     "unknown": "A",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "k1",
+        "k2",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "l",
+        "s",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.006693499999528285,
+      "search_seconds": 0.015023399995698128,
+      "wall_seconds": 0.015096000002813525,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.015127600003324915
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "ordering": {
+      "condition": "strictly_between(A, l, s)",
+      "holds": "True"
+     }
+    },
+    {
+     "unknown": "B",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "k1",
+        "k2",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "l",
+        "t",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.00767430000269087,
+      "search_seconds": 0.013020899998082314,
+      "wall_seconds": 0.013096099995891564,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.013108700004522689
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "ordering": {
+      "condition": "strictly_between(B, l, t)",
+      "holds": "False"
+     }
+    }
+   ],
+   "costs": {
+    "plan_expansions": 2,
+    "transfer_certification_requests": 20,
+    "polynomial_checks": 56,
+    "library_queries": 240,
+    "max_queue": 46,
+    "guaranteed_plans_executed": 2,
+    "applications": 2,
+    "predicate_prover_calls": 10,
+    "guard_checks": 2,
+    "execution_seconds": 0.014367800002219155,
+    "guaranteed_stop_None": 2,
+    "guaranteed_applications_used": 2,
+    "search_seconds": 0.02804429999378044
+   },
+   "stopped_at": "B",
+   "stop_reason": "the order condition failed on the instance"
+  },
+  {
+   "requirement": "the occluder is known and the light is wanted",
+   "unknowns": [
+    "L"
+   ],
+   "solved": true,
+   "seconds": 0.02059949999966193,
+   "rows": [
+    {
+     "unknown": "L",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "a",
+        "s",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "b",
+        "t",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.00872930000332417,
+      "search_seconds": 0.014222099998733029,
+      "wall_seconds": 0.014306099998066202,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.014317799999844283
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": []
+    }
+   ],
+   "costs": {
+    "plan_expansions": 1,
+    "transfer_certification_requests": 10,
+    "polynomial_checks": 28,
+    "library_queries": 120,
+    "max_queue": 23,
+    "guaranteed_plans_executed": 1,
+    "applications": 1,
+    "predicate_prover_calls": 5,
+    "guard_checks": 1,
+    "execution_seconds": 0.00872930000332417,
+    "guaranteed_stop_None": 1,
+    "guaranteed_applications_used": 1,
+    "search_seconds": 0.014222099998733029
+   },
+   "program": {
+    "params": [
+     "a",
+     "b",
+     "k1",
+     "k2",
+     "s",
+     "t",
+     "w1",
+     "w2"
+    ],
+    "steps": [
+     {
+      "out": "s1",
+      "prim": "intersection_ll",
+      "args": [
+       "a",
+       "s",
+       "b",
+       "t"
+      ]
+     }
+    ],
+    "outputs": {
+     "L": "s1"
+    },
+    "primitive_steps": 1
+   },
+   "produced": {
+    "L": [
+     "0",
+     "3/2"
+    ]
+   },
+   "rerun_refused": null,
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the shadow on the receiving line has the wanted ends",
+      "receiving": [
+       "w1",
+       "w2"
+      ],
+      "wanted": [
+       "3",
+       "3/5",
+       "3",
+       "12/5"
+      ],
+      "produced": [
+       "3",
+       "3/5",
+       "3",
+       "12/5"
+      ],
+      "passed": true,
+      "reason": null
+     }
+    ]
+   },
+   "used_acquired_operations": []
+  },
+  {
+   "requirement": "the interval is given by its near end and its middle",
+   "unknowns": [
+    "A",
+    "T",
+    "B"
+   ],
+   "solved": true,
+   "seconds": 0.13359169999603182,
+   "rows": [
+    {
+     "unknown": "A",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "k1",
+        "k2",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "l",
+        "s",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.007651199994143099,
+      "search_seconds": 0.01273879999644123,
+      "wall_seconds": 0.012805300000763964,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.012816499998734798
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "ordering": {
+      "condition": "strictly_between(A, l, s)",
+      "holds": "True"
+     }
+    },
+    {
+     "unknown": "T",
+     "goals": [
+      {
+       "predicate": "midp",
+       "points": [
+        "m",
+        "s",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "w1",
+        "w2",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 4,
+      "library_certifications": 0,
+      "execution_seconds": 8.959999831859022e-05,
+      "search_seconds": 0.08843660000275122,
+      "wall_seconds": 0.08849259999988135,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 2,
+       "predicate_prover_calls": 2,
+       "guard_checks": 0,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.08850930000335211
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": []
+    },
+    {
+     "unknown": "B",
+     "goals": [
+      {
+       "predicate": "coll",
+       "points": [
+        "k1",
+        "k2",
+        "u"
+       ]
+      },
+      {
+       "predicate": "coll",
+       "points": [
+        "l",
+        "T",
+        "u"
+       ]
+      }
+     ],
+     "measurement": {
+      "solved": true,
+      "stop_reason": "proved",
+      "search_states": 1,
+      "primitive_applications": 1,
+      "primitive_expansion_operations": 1,
+      "checking": 34,
+      "library_certifications": 0,
+      "execution_seconds": 0.009259399994334672,
+      "search_seconds": 0.014988000002631452,
+      "wall_seconds": 0.015048599998408463,
+      "costs": {
+       "applications": 1,
+       "plan_expansions": 1,
+       "polynomial_checks": 28,
+       "predicate_prover_calls": 5,
+       "guard_checks": 1,
+       "library_queries": 120,
+       "library_exact_certifications": 0,
+       "identity_bindings_excluded": 0,
+       "refuted_before_charge": 0,
+       "duplicate_outputs": 0,
+       "distinctness_failures": 0,
+       "goal_replay_failures": 0
+      },
+      "seconds": 0.01505860000179382
+     },
+     "via": null,
+     "acquired_certificates_consulted_during_this_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "ordering": {
+      "condition": "strictly_between(B, l, T)",
+      "holds": "True"
+     }
+    }
+   ],
+   "costs": {
+    "plan_expansions": 3,
+    "transfer_certification_requests": 30,
+    "polynomial_checks": 58,
+    "library_queries": 360,
+    "max_queue": 47,
+    "guaranteed_plans_executed": 3,
+    "applications": 3,
+    "predicate_prover_calls": 12,
+    "guard_checks": 2,
+    "execution_seconds": 0.01700019998679636,
+    "guaranteed_stop_None": 3,
+    "guaranteed_applications_used": 3,
+    "search_seconds": 0.1161634000018239
+   },
+   "program": {
+    "params": [
+     "k1",
+     "k2",
+     "l",
+     "m",
+     "s",
+     "w1",
+     "w2"
+    ],
+    "steps": [
+     {
+      "out": "s1",
+      "prim": "intersection_ll",
+      "args": [
+       "k1",
+       "k2",
+       "l",
+       "s"
+      ]
+     },
+     {
+      "out": "s2",
+      "prim": "mirror",
+      "args": [
+       "s",
+       "m"
+      ]
+     },
+     {
+      "out": "s3",
+      "prim": "intersection_ll",
+      "args": [
+       "s2",
+       "l",
+       "k1",
+       "k2"
+      ]
+     }
+    ],
+    "outputs": {
+     "A": "s1",
+     "T": "s2",
+     "B": "s3"
+    },
+    "primitive_steps": 3
+   },
+   "produced": {
+    "A": [
+     "1",
+     "6/5"
+    ],
+    "T": [
+     "3",
+     "12/5"
+    ],
+    "B": [
+     "1",
+     "9/5"
+    ]
+   },
+   "rerun_refused": null,
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the shadow on the receiving line has the wanted ends",
+      "receiving": [
+       "w1",
+       "w2"
+      ],
+      "wanted": [
+       "3",
+       "3/5",
+       "3",
+       "12/5"
+      ],
+      "produced": [
+       "3",
+       "3/5",
+       "3",
+       "12/5"
+      ],
+      "passed": true,
+      "reason": null
+     },
+     {
+      "check": "A lies on ['k1', 'k2']",
+      "passed": true
+     },
+     {
+      "check": "B lies on ['k1', 'k2']",
+      "passed": true
+     }
+    ]
+   },
+   "used_acquired_operations": []
+  }
+ ],
+ "acquisition": {
+  "records": [
+   {
+    "from": "development: place a segment so its shadow is a wanted interval",
+    "records": [
+     {
+      "unknown": "A",
+      "acquired": true,
+      "registered": true,
+      "reason": null,
+      "index": 281,
+      "generation": 1,
+      "parents": [],
+      "steps": 1,
+      "body": {
+       "params": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+       ],
+       "steps": [
+        {
+         "out": "local0",
+         "prim": "intersection_ll",
+         "args": [
+          "p0",
+          "p1",
+          "p2",
+          "p3"
+         ]
+        }
+       ],
+       "result": "local0"
+      },
+      "declared_and_certified": [
+       [
+        "coll",
+        [
+         "p0",
+         "p1",
+         "v"
+        ]
+       ],
+       [
+        "coll",
+        [
+         "p2",
+         "p3",
+         "v"
+        ]
+       ]
+      ],
+      "held_only_at_this_configuration": [],
+      "lineage_recorded": null
+     },
+     {
+      "unknown": "B",
+      "acquired": true,
+      "registered": false,
+      "reason": "an identical program is already indexed",
+      "index": null,
+      "generation": null,
+      "parents": null,
+      "steps": null,
+      "body": {
+       "params": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+       ],
+       "steps": [
+        {
+         "out": "local0",
+         "prim": "intersection_ll",
+         "args": [
+          "p0",
+          "p1",
+          "p2",
+          "p3"
+         ]
+        }
+       ],
+       "result": "local0"
+      },
+      "declared_and_certified": [
+       [
+        "coll",
+        [
+         "p0",
+         "p1",
+         "v"
+        ]
+       ],
+       [
+        "coll",
+        [
+         "p2",
+         "p3",
+         "v"
+        ]
+       ]
+      ],
+      "held_only_at_this_configuration": [],
+      "lineage_recorded": null
+     }
+    ]
+   },
+   {
+    "from": "training: near end and middle",
+    "records": [
+     {
+      "unknown": "A",
+      "acquired": true,
+      "registered": false,
+      "reason": "an identical program is already indexed",
+      "index": null,
+      "generation": null,
+      "parents": null,
+      "steps": null,
+      "body": {
+       "params": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+       ],
+       "steps": [
+        {
+         "out": "local0",
+         "prim": "intersection_ll",
+         "args": [
+          "p0",
+          "p1",
+          "p2",
+          "p3"
+         ]
+        }
+       ],
+       "result": "local0"
+      },
+      "declared_and_certified": [
+       [
+        "coll",
+        [
+         "p0",
+         "p1",
+         "v"
+        ]
+       ],
+       [
+        "coll",
+        [
+         "p2",
+         "p3",
+         "v"
+        ]
+       ]
+      ],
+      "held_only_at_this_configuration": [],
+      "lineage_recorded": null
+     },
+     {
+      "unknown": "T",
+      "acquired": true,
+      "registered": false,
+      "reason": "an identical program is already indexed",
+      "index": null,
+      "generation": null,
+      "parents": null,
+      "steps": null,
+      "body": {
+       "params": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+       ],
+       "steps": [
+        {
+         "out": "local0",
+         "prim": "mirror",
+         "args": [
+          "p0",
+          "p1"
+         ]
+        }
+       ],
+       "result": "local0"
+      },
+      "declared_and_certified": [
+       [
+        "midp",
+        [
+         "p1",
+         "p0",
+         "v"
+        ]
+       ]
+      ],
+      "held_only_at_this_configuration": [
+       [
+        "coll",
+        [
+         "p2",
+         "p3",
+         "v"
+        ]
+       ]
+      ],
+      "lineage_recorded": null
+     },
+     {
+      "unknown": "B",
+      "acquired": true,
+      "registered": false,
+      "reason": "an identical program is already indexed",
+      "index": null,
+      "generation": null,
+      "parents": null,
+      "steps": null,
+      "body": {
+       "params": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+       ],
+       "steps": [
+        {
+         "out": "local0",
+         "prim": "intersection_ll",
+         "args": [
+          "p0",
+          "p1",
+          "p2",
+          "p3"
+         ]
+        }
+       ],
+       "result": "local0"
+      },
+      "declared_and_certified": [
+       [
+        "coll",
+        [
+         "p2",
+         "p3",
+         "v"
+        ]
+       ],
+       [
+        "coll",
+        [
+         "p1",
+         "p0",
+         "v"
+        ]
+       ]
+      ],
+      "held_only_at_this_configuration": [],
+      "lineage_recorded": null
+     }
+    ]
+   }
+  ],
+  "library": {
+   "enumerated": 281,
+   "acquired": 1,
+   "definitions": 1,
+   "generations": [
+    1
+   ],
+   "patterns": 212,
+   "digest": "df0d32de8a9da8773fa8afb26cea531f4bd0c36f0e89a49c772d2663626d20f4",
+   "acquired_operations": [
+    {
+     "index": 281,
+     "steps": 1,
+     "patterns": [
+      [
+       "coll",
+       [
+        "p0",
+        "p1",
+        "v"
+       ]
+      ],
+      [
+       "coll",
+       [
+        "p2",
+        "p3",
+        "v"
+       ]
+      ]
+     ],
+     "source": {
+      "note": "development: place a segment so its shadow is a wanted interval",
+      "unknown": "A",
+      "generation": 1,
+      "parents": [],
+      "calls": []
+     }
+    }
+   ]
+  },
+  "seconds": 0.6887975999998162,
+  "note": "the cost of acquiring is charged to condition B below"
+ },
+ "comparison": {
+  "protocol": "the requirements and the budget are fixed before either condition runs, and nothing is acquired from the evaluation requirements themselves",
+  "budget_applications": 40,
+  "A": {
+   "summary": {
+    "condition": "A: enumerated vocabulary only",
+    "requirements": 4,
+    "solved": 4,
+    "verified": 4,
+    "plan_expansions": 10,
+    "primitive_applications": 10,
+    "condition_checks": 202,
+    "library_queries": 1200,
+    "exact_certifications": 0,
+    "acquired_certificates_reused": 0,
+    "seconds": 0.27191709999897284,
+    "requirements_that_consulted_an_acquired_operation": 0,
+    "requirements_whose_answer_contains_an_acquired_operation": 0
+   },
+   "rows": [
+    {
+     "requirement": "evaluation 1: near end and middle, moved",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 3,
+     "acquired_certificates_consulted_during_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "seconds": 0.04577389999758452,
+     "costs": {
+      "plan_expansions": 3,
+      "transfer_certification_requests": 30,
+      "polynomial_checks": 58,
+      "library_queries": 360,
+      "max_queue": 47,
+      "guaranteed_plans_executed": 3,
+      "applications": 3,
+      "predicate_prover_calls": 12,
+      "guard_checks": 2,
+      "execution_seconds": 0.014799700002186,
+      "guaranteed_stop_None": 3,
+      "guaranteed_applications_used": 3,
+      "search_seconds": 0.03013430000282824
+     }
+    },
+    {
+     "requirement": "evaluation 2: near end and middle, moved again",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 3,
+     "acquired_certificates_consulted_during_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "seconds": 0.048264200006087776,
+     "costs": {
+      "plan_expansions": 3,
+      "transfer_certification_requests": 30,
+      "polynomial_checks": 58,
+      "library_queries": 360,
+      "max_queue": 47,
+      "guaranteed_plans_executed": 3,
+      "applications": 3,
+      "predicate_prover_calls": 12,
+      "guard_checks": 2,
+      "execution_seconds": 0.01455050000367919,
+      "guaranteed_stop_None": 3,
+      "guaranteed_applications_used": 3,
+      "search_seconds": 0.032986999991408084
+     }
+    },
+    {
+     "requirement": "evaluation 3: a different screen and placement line",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 3,
+     "acquired_certificates_consulted_during_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "seconds": 0.045279500001925044,
+     "costs": {
+      "plan_expansions": 3,
+      "transfer_certification_requests": 30,
+      "polynomial_checks": 58,
+      "library_queries": 360,
+      "max_queue": 47,
+      "guaranteed_plans_executed": 3,
+      "applications": 3,
+      "predicate_prover_calls": 12,
+      "guard_checks": 2,
+      "execution_seconds": 0.015689100000599865,
+      "guaranteed_stop_None": 3,
+      "guaranteed_applications_used": 3,
+      "search_seconds": 0.030219100008253008
+     }
+    },
+    {
+     "requirement": "the occluder is known and the light is wanted",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 1,
+     "acquired_certificates_consulted_during_search": 0,
+     "acquired_operations_in_the_answer": [],
+     "seconds": 0.02013279999664519,
+     "costs": {
+      "plan_expansions": 1,
+      "transfer_certification_requests": 10,
+      "polynomial_checks": 28,
+      "library_queries": 120,
+      "max_queue": 23,
+      "guaranteed_plans_executed": 1,
+      "applications": 1,
+      "predicate_prover_calls": 5,
+      "guard_checks": 1,
+      "execution_seconds": 0.007971400002134033,
+      "guaranteed_stop_None": 1,
+      "guaranteed_applications_used": 1,
+      "search_seconds": 0.013556500001868699
+     }
+    }
+   ]
+  },
+  "B": {
+   "summary": {
+    "condition": "B: the same, with what was acquired from the training requirements",
+    "requirements": 4,
+    "solved": 4,
+    "verified": 4,
+    "plan_expansions": 10,
+    "primitive_applications": 10,
+    "condition_checks": 202,
+    "library_queries": 1200,
+    "exact_certifications": 0,
+    "acquired_certificates_reused": 0,
+    "seconds": 0.26745520000258693,
+    "requirements_that_consulted_an_acquired_operation": 4,
+    "requirements_whose_answer_contains_an_acquired_operation": 4,
+    "acquisition_seconds_to_be_added": 0.6887975999998162
+   },
+   "rows": [
+    {
+     "requirement": "evaluation 1: near end and middle, moved",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 3,
+     "acquired_certificates_consulted_during_search": 32,
+     "acquired_operations_in_the_answer": [
+      281
+     ],
+     "seconds": 0.04335020000144141,
+     "costs": {
+      "plan_expansions": 3,
+      "transfer_certification_requests": 30,
+      "polynomial_checks": 58,
+      "library_queries": 360,
+      "library_exact_certifications": 0,
+      "library_certification_seconds": 3.7900012102909386e-05,
+      "max_queue": 47,
+      "guaranteed_plans_executed": 3,
+      "applications": 3,
+      "predicate_prover_calls": 12,
+      "guard_checks": 2,
+      "execution_seconds": 0.013150900005712174,
+      "guaranteed_stop_None": 3,
+      "guaranteed_applications_used": 3,
+      "search_seconds": 0.028040700002748054
+     }
+    },
+    {
+     "requirement": "evaluation 2: near end and middle, moved again",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 3,
+     "acquired_certificates_consulted_during_search": 32,
+     "acquired_operations_in_the_answer": [
+      281
+     ],
+     "seconds": 0.04887410000083037,
+     "costs": {
+      "plan_expansions": 3,
+      "transfer_certification_requests": 30,
+      "polynomial_checks": 58,
+      "library_queries": 360,
+      "library_exact_certifications": 0,
+      "library_certification_seconds": 4.449998232303187e-05,
+      "max_queue": 47,
+      "guaranteed_plans_executed": 3,
+      "applications": 3,
+      "predicate_prover_calls": 12,
+      "guard_checks": 2,
+      "execution_seconds": 0.016630100006295834,
+      "guaranteed_stop_None": 3,
+      "guaranteed_applications_used": 3,
+      "search_seconds": 0.032216999992670026
+     }
+    },
+    {
+     "requirement": "evaluation 3: a different screen and placement line",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 3,
+     "acquired_certificates_consulted_during_search": 32,
+     "acquired_operations_in_the_answer": [
+      281
+     ],
+     "seconds": 0.045511899996199645,
+     "costs": {
+      "plan_expansions": 3,
+      "transfer_certification_requests": 30,
+      "polynomial_checks": 58,
+      "library_queries": 360,
+      "library_exact_certifications": 0,
+      "library_certification_seconds": 3.7899990275036544e-05,
+      "max_queue": 47,
+      "guaranteed_plans_executed": 3,
+      "applications": 3,
+      "predicate_prover_calls": 12,
+      "guard_checks": 2,
+      "execution_seconds": 0.014803300007770304,
+      "guaranteed_stop_None": 3,
+      "guaranteed_applications_used": 3,
+      "search_seconds": 0.03068159999384079
+     }
+    },
+    {
+     "requirement": "the occluder is known and the light is wanted",
+     "solved": true,
+     "verified": true,
+     "primitive_steps": 1,
+     "acquired_certificates_consulted_during_search": 16,
+     "acquired_operations_in_the_answer": [
+      281
+     ],
+     "seconds": 0.020000099997560028,
+     "costs": {
+      "plan_expansions": 1,
+      "transfer_certification_requests": 10,
+      "polynomial_checks": 28,
+      "library_queries": 120,
+      "library_exact_certifications": 0,
+      "library_certification_seconds": 2.2300017008092254e-05,
+      "max_queue": 23,
+      "guaranteed_plans_executed": 1,
+      "applications": 1,
+      "predicate_prover_calls": 5,
+      "guard_checks": 1,
+      "execution_seconds": 0.006122200000390876,
+      "guaranteed_stop_None": 1,
+      "guaranteed_applications_used": 1,
+      "search_seconds": 0.013342800004465971
+     }
+    }
+   ]
+  }
+ },
+ "total_seconds": 492.29908079999586
+}

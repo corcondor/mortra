@@ -159,3 +159,34 @@ def test_the_measured_coverage_follows_the_number_of_dots():
     dark = ink.coverage(ink.select(points, lambda xy: 0.7), spacing/2, window, samples=120)
     assert dark["black_coverage"] > pale["black_coverage"]
     assert pale["black_coverage"] == pytest.approx(0.2*0.7853981, abs=0.02)
+
+
+# ---------------------------------------------------------------------------
+# An occluder that crosses the window
+# ---------------------------------------------------------------------------
+
+CROSSING_A = (Fraction(1), Fraction(-10))
+CROSSING_B = (Fraction(1), Fraction(10))
+CROSSING_WINDOW = (Fraction(1, 2), Fraction(-1), Fraction(3, 2), Fraction(1))
+
+
+def test_an_occluder_crossing_the_window_gives_the_rectangle_behind_it():
+    """The boundary rays leave the window entirely; the corners come from the crossing."""
+    outline = ink.shadow_polygon(LIGHT, (CROSSING_A, CROSSING_B), CROSSING_WINDOW)
+    assert set(outline) == {(Fraction(1), Fraction(-1)), (Fraction(3, 2), Fraction(-1)),
+                            (Fraction(3, 2), Fraction(1)), (Fraction(1), Fraction(1))}
+    assert ink.polygon_area(outline) == Fraction(1)
+
+
+def test_the_outline_is_the_closure_and_the_membership_is_not():
+    """A point of the occluder is on the outline and is not in the shadow."""
+    on_the_occluder = (Fraction(1), Fraction(0))
+    assert not ink.occluded(on_the_occluder, LIGHT, CROSSING_A, CROSSING_B)[0]
+    assert ink.occluded((Fraction(11, 10), Fraction(0)), LIGHT, CROSSING_A, CROSSING_B)[0]
+    assert not ink.occluded((Fraction(9, 10), Fraction(0)), LIGHT, CROSSING_A, CROSSING_B)[0]
+    outline = ink.shadow_polygon(LIGHT, (CROSSING_A, CROSSING_B), CROSSING_WINDOW)
+    assert any(vertex[0] == Fraction(1) for vertex in outline)
+
+
+def test_the_earlier_configuration_is_unchanged():
+    assert ink.polygon_area(ink.shadow_polygon(LIGHT, (A, B), WINDOW)) == Fraction(12)

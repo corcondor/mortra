@@ -438,13 +438,19 @@ def window_edges(window):
 
 
 def shadow_polygon(light, occluder, window):
-    """The corners of the shadow inside the window, each one a constructed point.
+    """The corners of the CLOSURE of the shadow inside the window, each one constructed.
 
-    A boundary of the shadow is a ray from the light through an end of the
-    occluder; where that ray leaves the window is `intersection_ll` of the ray
-    with a side, and the corners of the window that are themselves in shadow
-    complete the outline. Nothing about this particular shadow is written down:
-    the same routine runs for any light, segment and window.
+    Three kinds of corner, and the same routine finds all of them for any light,
+    segment and window: where a boundary ray through an end of the occluder
+    leaves the window; the corners of the window that are themselves in shadow;
+    and, when the occluder crosses the window, where it crosses it and where its
+    ends stand inside.
+
+    This is the closure, and that is a different set from the shadow. A point of
+    the occluder is not in the shadow — nothing lies strictly between it and the
+    light — but it is a limit of points that are, so it belongs to the outline
+    that gets drawn. The membership used to place ink is `occluded`, which
+    excludes it; this routine is for the outline and its area.
     """
     a, b = occluder
     edges, corners = window_edges(window)
@@ -472,6 +478,18 @@ def shadow_polygon(light, occluder, window):
     for end in (a, b):
         if x0 <= end[0] <= x1 and y0 <= end[1] <= y1:
             found.append(end)
+    # an occluder that crosses the window shades it from where it crosses: those
+    # crossings are corners of the closure although no point of them is in the
+    # shadow itself
+    coordinates["__a"], coordinates["__b"] = a, b
+    for number, (p, q) in enumerate(edges):
+        coordinates["__p"], coordinates["__q"] = p, q
+        meeting, _ = rdsl.execute_primitive("intersection_ll", ["__a", "__b", "__p", "__q"],
+                                            coordinates)
+        if meeting is None:
+            continue
+        if on_closed_segment(meeting, p, q) and on_closed_segment(meeting, a, b):
+            found.append(meeting)
     unique = sorted(set(found))
     if len(unique) < 3:
         return []
