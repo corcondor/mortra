@@ -35,6 +35,9 @@ class AcquiredLibrary:
         self.costs = Counter(dict(base.costs)) if base is not None else Counter()
         self.certificates = {}
         self.acquired = {}
+        # the definitions behind the acquired programs, kept so that a later
+        # acquisition can be built out of them rather than beside them
+        self.definitions = {}
         self.enumerated_count = len(self.programs)
 
     # -- the solver's interface --------------------------------------------
@@ -84,6 +87,9 @@ class AcquiredLibrary:
 
     def state(self):
         return {"enumerated": self.enumerated_count, "acquired": len(self.acquired),
+                "definitions": len(self.definitions),
+                "generations": sorted({entry["source"].get("generation", 1)
+                                       for entry in self.acquired.values()}),
                 "patterns": len(self.membership),
                 "digest": digest([self.programs,
                                   sorted([[k[0], list(k[1]), sorted(v)] for k, v in self.membership.items()])]),

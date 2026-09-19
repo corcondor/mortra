@@ -30,6 +30,7 @@ import random
 import sympy as sp
 
 from math_os_prototype import geometry_relational_cohort as cohort
+from math_os_prototype import geometry_acquired_library as acqlib
 from math_os_prototype import geometry_relational_dsl as rdsl
 from math_os_prototype.representation_progress import digest
 
@@ -509,3 +510,147 @@ def render(task, *, language="japanese"):
                 f"次をすべて満たす点 u を作図せよ：" + "、かつ".join(conditions) + "。")
     return (f"Given {points}, construct a point u such that "
             + ", and ".join(conditions) + ".")
+
+
+# ---------------------------------------------------------------------------
+# Posing with what has been learned
+# ---------------------------------------------------------------------------
+
+def execute_program(program, arguments, coordinates, stats=None):
+    """Run a stored program's steps at concrete coordinates, as one operation.
+
+    The library keeps an acquired operation as a program over slots; this runs it
+    the way the solver would, refusing the whole operation when any step of it is
+    inapplicable.
+    """
+    local = dict(zip(program["params"], arguments, strict=True))
+    values = dict(coordinates)
+    for index, step in enumerate(program["steps"]):
+        names = [local[a] for a in step["args"]]
+        xy, reason = rdsl.execute_primitive(step["prim"], names, values, stats)
+        if xy is None:
+            return None, reason
+        name = f"__op{index}_{len(values)}"
+        values[name] = xy
+        local[step["out"]] = name
+    return values[local[program["result"]]], None
+
+
+def operation_step(rng, operations, available, coordinates, stats=None, attempts=12,
+                   required=None):
+    """One step of a construction that is an acquired operation rather than a primitive."""
+    for _ in range(attempts):
+        entry = rng.choice(operations)
+        arity = len(entry["program"]["params"])
+        if len(available) < arity:
+            continue
+        arguments = rng.sample(available, arity)
+        if required is not None and required not in arguments:
+            continue
+        xy, _ = execute_program(entry["program"], arguments, coordinates, stats)
+        if xy is None or any(xy == value for value in coordinates.values()):
+            continue
+        return xy, {"prim": "op:"+acqlib._program_key(entry["program"])[:12],
+                    "acquired": entry["index"],
+                    "primitive_steps": len(entry["program"]["steps"]),
+                    "args": list(arguments)}
+    return None, None
+
+
+def build_construction_with_operations(rng, points, depth, operations, *, attempts=80,
+                                       operation_chance=0.5, stats=None):
+    """A construction whose steps may be acquired operations as well as primitives.
+
+    This is the edge the loop was missing: what the system learned goes back into
+    what it poses. The claim it supports is about depth, not vocabulary — an
+    acquired operation is stored as its primitive expansion, so such a task is
+    still expressible in the seven primitives; what changes is that the sampler
+    reaches constructions of a length it would otherwise almost never draw. The
+    construction is hidden from the solver exactly as before.
+    """
+    coordinates = {name: (sp.Rational(x), sp.Rational(y)) for name, (x, y) in points.items()}
+    steps, available = [], list(points)
+    for index in range(depth):
+        # each step after the first must consume the point the previous one made,
+        # or the "depth" of the construction would be two independent steps
+        required = steps[-1]["out"] if steps else None
+        for _ in range(attempts):
+            if operations and rng.random() < operation_chance:
+                xy, record = operation_step(rng, operations, available, coordinates, stats,
+                                            required=required)
+                if xy is None:
+                    continue
+            else:
+                family = rng.choice(FAMILIES)
+                parameters = rdsl.primitive_contracts()[family]["params"]
+                if len(available) < len(parameters):
+                    continue
+                arguments = rng.sample(available, len(parameters))
+                if required is not None and required not in arguments:
+                    continue
+                if rdsl.binding_returns_input(family, arguments):
+                    continue
+                xy, _ = rdsl.execute_primitive(family, arguments, coordinates)
+                if xy is None or any(xy == value for value in coordinates.values()):
+                    continue
+                record = {"prim": family, "args": list(arguments)}
+            name = f"h{index}"
+            coordinates[name] = xy
+            available.append(name)
+            steps.append(dict(record, out=name))
+            break
+        else:
+            return None, None
+    return steps, coordinates
+
+
+def pose_from_experience(rng, operations, *, depth=2, goal_count=3, samples=24, stats=None,
+                         input_points=5, minimum_distinct_points=4, operation_chance=0.5):
+    """A task whose construction used what was learned, published like any other."""
+    stats = stats if stats is not None else Counter()
+    points = sample_points(rng, input_points)
+    steps, coordinates = build_construction_with_operations(
+        rng, points, depth, operations, operation_chance=operation_chance, stats=stats)
+    if steps is None:
+        stats["construction_failed"] += 1
+        return None
+    if operations and not any("acquired" in step for step in steps):
+        stats["no_acquired_operation_used"] += 1
+        return None
+    goals = choose_goals(rng, coordinates, steps[-1]["out"], points, goal_count=goal_count,
+                         samples=samples, stats=stats,
+                         minimum_distinct_points=minimum_distinct_points)
+    if goals is None:
+        return None
+    stats["posed_from_experience"] += 1
+    return {"task": {"points": points, "goals": goals["goals"]},
+            "hidden": {"steps": steps, "solution": goals["solution"], "depth": len(steps),
+                       "primitive_depth": sum(s.get("primitive_steps", 1) for s in steps),
+                       "families": [s["prim"] for s in steps],
+                       "acquired_operations_used": [s["acquired"] for s in steps if "acquired" in s],
+                       "candidate_count": goals["candidates"]},
+            "signature": structure_signature(steps, [(g["predicate"], tuple(g["points"]))
+                                                     for g in goals["goals"]])}
+
+
+def pose_batch_from_experience(seed, count, operations, *, depth=2, goal_count=3, attempts=3000,
+                               samples=24, input_points=5, minimum_distinct_points=4,
+                               operation_chance=0.5):
+    """A batch of tasks posed with the acquired operations, distinct in structure."""
+    rng = random.Random(seed)
+    stats, posed, seen = Counter(), [], set()
+    for _ in range(attempts):
+        if len(posed) == count:
+            break
+        record = pose_from_experience(rng, operations, depth=depth, goal_count=goal_count,
+                                      samples=samples, stats=stats, input_points=input_points,
+                                      minimum_distinct_points=minimum_distinct_points,
+                                      operation_chance=operation_chance)
+        if record is None:
+            continue
+        if record["signature"] in seen:
+            stats["duplicate_structure"] += 1
+            continue
+        seen.add(record["signature"])
+        posed.append(record)
+    return {"seed": seed, "tasks": posed, "rejections": dict(stats)}

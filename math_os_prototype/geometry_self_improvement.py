@@ -142,13 +142,15 @@ def learn_stage(entries, *, library, policy, applications=40, table=None):
         if row["solved"]:
             record["solution_families"] = [step["prim"] for step in _families(row["solution"])]
             began = time.perf_counter()
-            result = acq.acquire(row["solution"], task, table=table)
+            result = acq.acquire(row["solution"], task, table=table,
+                                 definitions=getattr(library, "definitions", None))
             if result["acquired"]:
                 registration = acq.register(library, result, source={
                     "signature": entry["signature"], "difficulty": entry.get("difficulty"),
                     "goals": [[g["predicate"], list(g["points"])] for g in task["goals"]]})
                 record["acquisition"] = {"acquired": True, **registration,
-                                         "body": result["body"], "declared": result["declared"]}
+                                         "body": result["body"], "declared": result["declared"],
+                                         "instance_only": result.get("instance_only")}
                 if registration.get("registered"):
                     acquisitions.append(record["acquisition"])
                 else:
