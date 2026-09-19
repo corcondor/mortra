@@ -10,12 +10,31 @@ construction's declared ``output_points`` rather than from problem names.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Mapping, TYPE_CHECKING
 
-from newclid.jgex.clause import JGEXClause, JGEXConstruction
-from newclid.jgex.definition import JGEXDefinition
-from newclid.jgex.formulation import JGEXFormulation
-from newclid.predicate_types import PredicateArgument
+if TYPE_CHECKING:                   # for the annotations only; see `_jgex_schemas`
+    from newclid.jgex.clause import JGEXClause, JGEXConstruction
+    from newclid.jgex.definition import JGEXDefinition
+    from newclid.jgex.formulation import JGEXFormulation
+    from newclid.predicate_types import PredicateArgument
+
+
+def _jgex_schemas():
+    """Newclid's JGEX schemas, imported where a JGEX text is actually read.
+
+    Everything else in this module works on the normalised forms and does not
+    touch Newclid, so importing it must not require Newclid to be installed.
+    """
+    from newclid.jgex.clause import JGEXClause, JGEXConstruction
+    from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
+    from newclid.jgex.definition import JGEXDefinition
+    from newclid.jgex.formulation import JGEXFormulation
+    from newclid.predicate_types import PredicateArgument
+    return {"JGEXClause": JGEXClause, "JGEXConstruction": JGEXConstruction,
+            "ALL_JGEX_CONSTRUCTIONS": ALL_JGEX_CONSTRUCTIONS,
+            "JGEXDefinition": JGEXDefinition, "JGEXFormulation": JGEXFormulation,
+            "PredicateArgument": PredicateArgument}
+
 
 
 @dataclass(frozen=True)
@@ -113,7 +132,7 @@ def normalize_legacy_construction(
         }
     )
     normalized_args = tuple(values_by_variable[str(variable)] for variable in definition_args)
-    normalized = JGEXConstruction.from_name_and_args(
+    normalized = _jgex_schemas()["JGEXConstruction"].from_name_and_args(
         construction.name, normalized_args
     )
     if normalized == construction:
@@ -136,7 +155,8 @@ def normalize_legacy_clause(
         constructions.append(normalized)
         report += item_report
     return (
-        JGEXClause(points=clause.points, constructions=tuple(constructions)),
+        _jgex_schemas()["JGEXClause"](points=clause.points,
+                                      constructions=tuple(constructions)),
         report,
     )
 
@@ -159,7 +179,7 @@ def normalize_legacy_formulation(
         auxiliary.append(normalized)
         report += item_report
     return (
-        JGEXFormulation(
+        _jgex_schemas()["JGEXFormulation"](
             name=formulation.name,
             setup_clauses=tuple(setup),
             auxiliary_clauses=tuple(auxiliary),

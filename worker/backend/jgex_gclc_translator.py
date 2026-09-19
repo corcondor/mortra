@@ -8,14 +8,24 @@ treat the constructed points symbolically.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import hashlib
 import random
 import re
 from dataclasses import dataclass
 
-from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
-from newclid.jgex.definition import JGEXDefinition
-from newclid.jgex.formulation import JGEXFormulation
+if TYPE_CHECKING:                   # for the annotations only; see `_jgex_schemas`
+    from newclid.jgex.formulation import JGEXFormulation
+
+
+def _jgex_schemas():
+    """Newclid's JGEX schemas, imported where a JGEX text is actually read."""
+    from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
+    from newclid.jgex.definition import JGEXDefinition
+    from newclid.jgex.formulation import JGEXFormulation
+    return ALL_JGEX_CONSTRUCTIONS, JGEXDefinition, JGEXFormulation
+
 
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
 
@@ -934,9 +944,10 @@ def translate_jgex_to_gclc(
     enable_structural_lemmas: bool = True,
     goal_local: bool = False,
 ) -> GCLCTranslation:
-    definitions = JGEXDefinition.to_dict(list(ALL_JGEX_CONSTRUCTIONS))
+    constructions, definition_type, formulation_type = _jgex_schemas()
+    definitions = definition_type.to_dict(list(constructions))
     formulation, report = normalize_legacy_formulation(
-        JGEXFormulation.from_text(text), definitions
+        formulation_type.from_text(text), definitions
     )
     if report.unresolved_constructions:
         raise ValueError("JGEX normalization left unresolved constructions")

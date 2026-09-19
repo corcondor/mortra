@@ -12,7 +12,7 @@ from collections import Counter
 from dataclasses import dataclass, replace
 from functools import lru_cache
 import time
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 
 import sympy as sp
 
@@ -21,9 +21,23 @@ try:
 except ImportError:  # pragma: no cover - SymPy remains the portable fallback.
     fmpq = None
     fmpq_mpoly_ctx = None
-from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
-from newclid.jgex.definition import JGEXDefinition
-from newclid.jgex.formulation import JGEXFormulation
+if TYPE_CHECKING:                   # for the annotations only; see `_jgex_schemas`
+    from newclid.jgex.formulation import JGEXFormulation
+
+
+def _jgex_schemas():
+    """Newclid's JGEX construction schemas, imported where a JGEX text is read.
+
+    Only the functions that parse JGEX problem text need them. The exact
+    elaborators below — the polynomial meaning this module gives the predicates,
+    and the certification that is built on it — do not touch Newclid at all, so
+    importing this module must not require it to be installed.
+    """
+    from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
+    from newclid.jgex.definition import JGEXDefinition
+    from newclid.jgex.formulation import JGEXFormulation
+    return ALL_JGEX_CONSTRUCTIONS, JGEXDefinition, JGEXFormulation
+
 
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
 from worker.backend.jgex_gclc_translator import (
@@ -1560,7 +1574,8 @@ class _JGEXElaborator:
         from itertools import combinations
 
         construction = clause.constructions[0]
-        definition = JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS).get(construction.name)
+        constructions, definition_type, _ = _jgex_schemas()
+        definition = definition_type.to_dict(constructions).get(construction.name)
         if definition is None:
             raise ValueError(f"unknown construction definition: {construction.name}")
         actual = tuple(map(str, construction.args))
@@ -3882,7 +3897,7 @@ def inspect_jgex_semantic_branch_matches(
 ) -> tuple[JGEXSemanticBranchMatch, ...]:
     """List source-conditioned branch theorems without consulting the goal."""
 
-    formulation = JGEXFormulation.from_text(text)
+    formulation = _jgex_schemas()[2].from_text(text)
     semantic_context = parse_geometry_semantic_context(natural_language)
     matches: list[JGEXSemanticBranchMatch] = []
     for (
@@ -4068,10 +4083,11 @@ def _prepare_exact_system(
             progress_callback({"stage": stage, **metrics})
 
     emit("definition_index_started")
-    definitions = JGEXDefinition.to_dict(list(ALL_JGEX_CONSTRUCTIONS))
+    constructions, definition_type, formulation_type = _jgex_schemas()
+    definitions = definition_type.to_dict(list(constructions))
     emit("definition_index_completed", definition_count=len(definitions))
     emit("parse_started")
-    formulation = JGEXFormulation.from_text(text)
+    formulation = formulation_type.from_text(text)
     semantic_context = parse_geometry_semantic_context(natural_language)
     emit(
         "parse_completed",

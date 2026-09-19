@@ -160,3 +160,66 @@ def test_a_macro_carries_no_guarantee_and_says_so():
 
 def test_the_same_body_always_gets_the_same_macro_name():
     assert dp.macro_from(SUBDIVISION)["name"] == dp.macro_from(dict(SUBDIVISION))["name"]
+
+
+# ---------------------------------------------------------------------------
+# The geometric core does not need Newclid
+# ---------------------------------------------------------------------------
+
+def test_no_module_of_the_geometry_path_imports_newclid_at_import_time():
+    """A top-level newclid import anywhere in the chain makes the core need it to load."""
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    offenders = []
+    for name in ("math_os_prototype/geometry_drawing_program.py",
+                 "math_os_prototype/geometry_ink.py",
+                 "math_os_prototype/geometry_shadow_design.py",
+                 "math_os_prototype/geometry_relational_dsl.py",
+                 "math_os_prototype/geometry_semantic_dsl.py",
+                 "math_os_prototype/geometry_contracts.py",
+                 "math_os_prototype/geometry_relational_library.py",
+                 "worker/backend/jgex_exact_constraint_bridge.py",
+                 "worker/backend/jgex_legacy_normalizer.py",
+                 "worker/backend/jgex_gclc_translator.py"):
+        text = (root/name).read_text(encoding="utf-8")
+        if re.search(r"^(from|import) newclid", text, flags=re.M):
+            offenders.append(name)
+    assert not offenders, f"these import newclid at module level: {offenders}"
+
+
+def test_the_whole_path_runs_with_newclid_made_unimportable():
+    """Blocked in a separate process, so the check cannot be hidden by an earlier import."""
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    program = (
+        "import builtins, sys\n"
+        "real = builtins.__import__\n"
+        "def guard(name, *a, **k):\n"
+        "    if name == 'newclid' or name.startswith('newclid.'):\n"
+        "        raise ImportError('blocked: '+name)\n"
+        "    return real(name, *a, **k)\n"
+        "builtins.__import__ = guard\n"
+        f"sys.path.insert(0, {str(root)!r})\n"
+        "from fractions import Fraction as F\n"
+        "from math_os_prototype import geometry_drawing_program as dp\n"
+        "from math_os_prototype import geometry_ink as ink\n"
+        "a, b, c = (F(0), F(0)), (F(4), F(6)), (F(8), F(0))\n"
+        "def q(t):\n"
+        "    return tuple((1-t)**2*a[i]+2*t*(1-t)*b[i]+t**2*c[i] for i in (0, 1))\n"
+        "targets = [q(F(k, 8)) for k in (1, 2, 3, 4, 5, 6, 7)]\n"
+        "r = dp.synthesise_rule(targets, {'p0': a, 'p1': b, 'p2': c}, levels=2,\n"
+        "                       node_budget=4000, depth=3)\n"
+        "assert r['solved'], r.get('reason')\n"
+        "assert dp.check(r['program'], {'p0': a, 'p1': b, 'p2': c}, 3,\n"
+        "                {'must_contain': targets})['passed']\n"
+        "assert ink.occluded((F(3), F(0)), (F(0), F(0)), (F(1), F(-1)), (F(1), F(1)))[0]\n"
+        "print('ok')\n")
+    finished = subprocess.run([sys.executable, "-c", program], capture_output=True, text=True,
+                              cwd=root, timeout=600)
+    assert finished.returncode == 0, finished.stderr[-2000:]
+    assert "ok" in finished.stdout
