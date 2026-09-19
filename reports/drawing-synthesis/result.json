@@ -1,0 +1,1100 @@
+{
+ "environment": {
+  "sha": "5cecbc1d04399bcc73f1c6744ba5137a40adaf96",
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "geometric_core": {
+  "primitives": [
+   "circle",
+   "foot",
+   "intersection_ll",
+   "midpoint",
+   "mirror",
+   "orthocenter",
+   "reflect"
+  ],
+  "predicates": {
+   "coll": 3,
+   "cong": 4,
+   "cyclic": 4,
+   "diff": 2,
+   "eqangle": 8,
+   "midp": 3,
+   "ncoll": 3,
+   "npara": 4,
+   "para": 4,
+   "perp": 4
+  },
+  "digest": "cc2f814c26bce79b88de568768829b52815653ea02189331a18d97ff364333d7"
+ },
+ "execution_language": {
+  "added": [
+   "let x = op(args)",
+   "emit x",
+   "call rule(args) at one lower depth",
+   "keep x where an existing relation holds"
+  ],
+  "not_added": "no predicate, no primitive, no theorem; recursion is bounded by a depth the caller gives and every call lowers, so nothing here is a claim about unbounded repetition",
+  "counted": "let, call and keep each count in the cost of a search that uses them"
+ },
+ "search": {
+  "point_level": "a bounded bottom-up enumeration over the operators, cheapest arity first, with a node budget",
+  "why_not_the_existing_search": "the point-level hole is an equality \u2014 a construction whose output is this point \u2014 and an equality goal matches no primitive's guarantee, so the contract-directed search offers no candidate at all; measured below",
+  "structural": "the recursion arguments are chosen by trying the tuples the body's own names allow and keeping those that produce the targets still missing",
+  "levels": 2,
+  "node_budget": 3500
+ },
+ "A": [
+  {
+   "requirement": "three points of a curve",
+   "solved": true,
+   "seconds": 0.39770080000016605,
+   "counter": {
+    "nodes": 54,
+    "primitive_applications": 446,
+    "duplicate_values": 23,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "hits": 1,
+    "bodies_tried": 1,
+    "call_candidates": 59,
+    "calls": 196,
+    "statements": 392,
+    "call_combinations": 5
+   },
+   "operators_available": 7,
+   "acquired_operators_available": 0,
+   "macros_available": 0,
+   "program": {
+    "name": "r",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "body": [
+     {
+      "let": "v1",
+      "op": "midpoint",
+      "args": [
+       "p0",
+       "p2"
+      ]
+     },
+     {
+      "let": "v2",
+      "op": "midpoint",
+      "args": [
+       "p1",
+       "v1"
+      ]
+     }
+    ],
+    "emit": [
+     "v2"
+    ],
+    "calls": [
+     {
+      "rule": "r",
+      "args": [
+       "p1",
+       "p0",
+       "v2"
+      ]
+     },
+     {
+      "rule": "r",
+      "args": [
+       "p1",
+       "p2",
+       "v2"
+      ]
+     }
+    ]
+   },
+   "covered_by": {
+    "body": 0,
+    "calls": {
+     "('p1', 'p0', 'v2')": [
+      1
+     ],
+     "('p1', 'p2', 'v2')": [
+      2
+     ]
+    },
+    "verified_by": "running the combination at the requirement's depth"
+   },
+   "uses_acquired_operations": [],
+   "uses_macros": [],
+   "check": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the emitted set contains ['4', '3']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['2', '9/4']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['6', '9/4']",
+      "passed": true
+     }
+    ],
+    "points": 7,
+    "distinct_points": 7,
+    "counter": {
+     "calls": 7,
+     "statements": 14,
+     "primitive_applications": 14
+    }
+   }
+  },
+  {
+   "requirement": "seven points of a curve",
+   "solved": true,
+   "seconds": 0.4778526000009151,
+   "counter": {
+    "nodes": 89,
+    "primitive_applications": 1733,
+    "duplicate_values": 35,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "hits": 2,
+    "bodies_tried": 2,
+    "call_candidates": 178,
+    "calls": 625,
+    "statements": 1644,
+    "call_combinations": 21
+   },
+   "operators_available": 7,
+   "acquired_operators_available": 0,
+   "macros_available": 0,
+   "program": {
+    "name": "r",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "body": [
+     {
+      "let": "v1",
+      "op": "midpoint",
+      "args": [
+       "p0",
+       "p1"
+      ]
+     },
+     {
+      "let": "v2",
+      "op": "midpoint",
+      "args": [
+       "p1",
+       "p2"
+      ]
+     },
+     {
+      "let": "v3",
+      "op": "midpoint",
+      "args": [
+       "v1",
+       "v2"
+      ]
+     }
+    ],
+    "emit": [
+     "v3"
+    ],
+    "calls": [
+     {
+      "rule": "r",
+      "args": [
+       "p0",
+       "v1",
+       "v3"
+      ]
+     },
+     {
+      "rule": "r",
+      "args": [
+       "p2",
+       "v2",
+       "v3"
+      ]
+     }
+    ]
+   },
+   "covered_by": {
+    "body": 0,
+    "calls": {
+     "('p0', 'v1', 'v3')": [
+      1,
+      3
+     ],
+     "('p2', 'v2', 'v3')": [
+      2,
+      5
+     ]
+    },
+    "verified_by": "running the combination at the requirement's depth"
+   },
+   "uses_acquired_operations": [],
+   "uses_macros": [],
+   "check": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the emitted set contains ['4', '3']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['2', '9/4']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['6', '9/4']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['1', '21/16']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['3', '45/16']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['5', '45/16']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['7', '21/16']",
+      "passed": true
+     }
+    ],
+    "points": 7,
+    "distinct_points": 7,
+    "counter": {
+     "calls": 7,
+     "statements": 21,
+     "primitive_applications": 21
+    }
+   }
+  },
+  {
+   "requirement": "a curve on a different triangle",
+   "solved": true,
+   "seconds": 0.3717229999965639,
+   "counter": {
+    "nodes": 71,
+    "primitive_applications": 1715,
+    "duplicate_values": 39,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "hits": 2,
+    "bodies_tried": 2,
+    "call_candidates": 178,
+    "calls": 625,
+    "statements": 1644,
+    "call_combinations": 21
+   },
+   "operators_available": 7,
+   "acquired_operators_available": 0,
+   "macros_available": 0,
+   "program": {
+    "name": "r",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "body": [
+     {
+      "let": "v1",
+      "op": "midpoint",
+      "args": [
+       "p0",
+       "p1"
+      ]
+     },
+     {
+      "let": "v2",
+      "op": "midpoint",
+      "args": [
+       "p1",
+       "p2"
+      ]
+     },
+     {
+      "let": "v3",
+      "op": "midpoint",
+      "args": [
+       "v1",
+       "v2"
+      ]
+     }
+    ],
+    "emit": [
+     "v3"
+    ],
+    "calls": [
+     {
+      "rule": "r",
+      "args": [
+       "p0",
+       "v1",
+       "v3"
+      ]
+     },
+     {
+      "rule": "r",
+      "args": [
+       "p2",
+       "v2",
+       "v3"
+      ]
+     }
+    ]
+   },
+   "covered_by": {
+    "body": 3,
+    "calls": {
+     "('p0', 'v1', 'v3')": [
+      0,
+      1
+     ],
+     "('p2', 'v2', 'v3')": [
+      4,
+      5
+     ]
+    },
+    "verified_by": "running the combination at the requirement's depth"
+   },
+   "uses_acquired_operations": [],
+   "uses_macros": [],
+   "check": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the emitted set contains ['15/8', '1/8']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['7/2', '1/2']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['39/8', '9/8']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['6', '2']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['55/8', '25/8']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['15/2', '9/2']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['63/8', '49/8']",
+      "passed": true
+     }
+    ],
+    "points": 7,
+    "distinct_points": 7,
+    "counter": {
+     "calls": 7,
+     "statements": 21,
+     "primitive_applications": 21
+    }
+   }
+  }
+ ],
+ "chosen_program": {
+  "requirement": "seven points of a curve",
+  "program": {
+   "name": "r",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    },
+    {
+     "let": "v2",
+     "op": "midpoint",
+     "args": [
+      "p1",
+      "p2"
+     ]
+    },
+    {
+     "let": "v3",
+     "op": "midpoint",
+     "args": [
+      "v1",
+      "v2"
+     ]
+    }
+   ],
+   "emit": [
+    "v3"
+   ],
+   "calls": [
+    {
+     "rule": "r",
+     "args": [
+      "p0",
+      "v1",
+      "v3"
+     ]
+    },
+    {
+     "rule": "r",
+     "args": [
+      "p2",
+      "v2",
+      "v3"
+     ]
+    }
+   ]
+  }
+ },
+ "images": [
+  {
+   "image": "depth-2",
+   "dots": 3,
+   "svg": "reports\\drawing-synthesis\\depth-2.svg",
+   "png": "reports\\drawing-synthesis\\depth-2.png",
+   "svg_check": {
+    "distinct_radii": [
+     "7.5000"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "radius": 0.0625,
+   "intervention": "the same program at depth 2",
+   "primitive_applications": 9
+  },
+  {
+   "image": "depth-3",
+   "dots": 7,
+   "svg": "reports\\drawing-synthesis\\depth-3.svg",
+   "png": "reports\\drawing-synthesis\\depth-3.png",
+   "svg_check": {
+    "distinct_radii": [
+     "7.5000"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "radius": 0.0625,
+   "intervention": "the same program at depth 3",
+   "primitive_applications": 21
+  },
+  {
+   "image": "depth-5",
+   "dots": 31,
+   "svg": "reports\\drawing-synthesis\\depth-5.svg",
+   "png": "reports\\drawing-synthesis\\depth-5.png",
+   "svg_check": {
+    "distinct_radii": [
+     "7.5000"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "radius": 0.0625,
+   "intervention": "the same program at depth 5",
+   "primitive_applications": 93
+  },
+  {
+   "image": "inputs-moved",
+   "dots": 31,
+   "svg": "reports\\drawing-synthesis\\inputs-moved.svg",
+   "png": "reports\\drawing-synthesis\\inputs-moved.png",
+   "svg_check": {
+    "distinct_radii": [
+     "7.5000"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "radius": 0.0625,
+   "intervention": "the same program, the input points moved",
+   "primitive_applications": 93
+  },
+  {
+   "image": "resolution-doubled",
+   "dots": 31,
+   "svg": "reports\\drawing-synthesis\\resolution-doubled.svg",
+   "png": "reports\\drawing-synthesis\\resolution-doubled.png",
+   "svg_check": {
+    "distinct_radii": [
+     "15.0000"
+    ],
+    "distinct_fills": [
+     "#000000"
+    ],
+    "non_circle_elements": [],
+    "one_radius": true,
+    "all_black": true,
+    "no_other_marks": true
+   },
+   "radius": 0.0625,
+   "intervention": "the same points at twice the resolution, the same radius in paper units"
+  }
+ ],
+ "interventions": [
+  {
+   "intervention": "depth",
+   "checked": "the number of emitted points follows the recursion and the program is unchanged",
+   "points_by_depth": {
+    "1": 1,
+    "2": 3,
+    "3": 7,
+    "4": 15,
+    "5": 31,
+    "6": 63
+   }
+  },
+  {
+   "intervention": "inputs moved",
+   "checked": "the program still runs and still emits the same number of points",
+   "points": 31,
+   "same_count_as_before": true
+  }
+ ],
+ "acquisition": {
+  "records": [
+   {
+    "from": "three points of a curve",
+    "registered": false,
+    "reason": "nothing it guarantees certified"
+   },
+   {
+    "from": "seven points of a curve",
+    "registered": false,
+    "reason": "nothing it guarantees certified"
+   }
+  ],
+  "seconds": 2.3776384000011603,
+  "library": {
+   "enumerated": 281,
+   "acquired": 0,
+   "definitions": 0,
+   "generations": [],
+   "patterns": 211,
+   "digest": "c92b442e8ab3127b73a34beb12d813c85bfe9024c0243763fb17fac265d01191",
+   "acquired_operations": []
+  }
+ },
+ "macros": {
+  "kept": [
+   {
+    "name": "macro:c5e9803a9998",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "steps": [
+     {
+      "out": "v1",
+      "prim": "midpoint",
+      "args": [
+       "p0",
+       "p2"
+      ]
+     },
+     {
+      "out": "v2",
+      "prim": "midpoint",
+      "args": [
+       "p1",
+       "v1"
+      ]
+     }
+    ],
+    "result": "v2",
+    "primitive_steps": 2,
+    "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration"
+   },
+   {
+    "name": "macro:2752458dbddc",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "steps": [
+     {
+      "out": "v1",
+      "prim": "midpoint",
+      "args": [
+       "p0",
+       "p1"
+      ]
+     },
+     {
+      "out": "v2",
+      "prim": "midpoint",
+      "args": [
+       "p1",
+       "p2"
+      ]
+     },
+     {
+      "out": "v3",
+      "prim": "midpoint",
+      "args": [
+       "v1",
+       "v2"
+      ]
+     }
+    ],
+    "result": "v3",
+    "primitive_steps": 3,
+    "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration"
+   }
+  ],
+  "digest": "2925a71b88c342cc090238db21b2e6e983945aed51cccf9cdb50a139655a952c",
+  "what_they_are_not": "not certified operations; they carry no guarantee and are not offered to the relational retrieval"
+ },
+ "B": [
+  {
+   "requirement": "three points of a curve",
+   "solved": true,
+   "seconds": 0.09805659999983618,
+   "counter": {
+    "nodes": 25,
+    "primitive_applications": 291,
+    "duplicate_values": 12,
+    "predicate_prover_calls": 12,
+    "guard_checks": 12,
+    "macro_calls": 89,
+    "hits": 1,
+    "bodies_tried": 1,
+    "call_candidates": 23,
+    "calls": 88,
+    "statements": 88,
+    "call_combinations": 5
+   },
+   "operators_available": 9,
+   "acquired_operators_available": 0,
+   "macros_available": 2,
+   "program": {
+    "name": "r",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "body": [
+     {
+      "let": "v1",
+      "op": "macro:2752458dbddc",
+      "args": [
+       "p0",
+       "p1",
+       "p2"
+      ]
+     }
+    ],
+    "emit": [
+     "v1"
+    ],
+    "calls": [
+     {
+      "rule": "r",
+      "args": [
+       "p1",
+       "p0",
+       "v1"
+      ]
+     },
+     {
+      "rule": "r",
+      "args": [
+       "p1",
+       "p2",
+       "v1"
+      ]
+     }
+    ]
+   },
+   "covered_by": {
+    "body": 0,
+    "calls": {
+     "('p1', 'p0', 'v1')": [
+      1
+     ],
+     "('p1', 'p2', 'v1')": [
+      2
+     ]
+    },
+    "verified_by": "running the combination at the requirement's depth"
+   },
+   "uses_acquired_operations": [],
+   "uses_macros": [
+    "macro:2752458dbddc"
+   ],
+   "check": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the emitted set contains ['4', '3']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['2', '9/4']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['6', '9/4']",
+      "passed": true
+     }
+    ],
+    "points": 7,
+    "distinct_points": 7,
+    "counter": {
+     "calls": 7,
+     "statements": 7,
+     "macro_calls": 7,
+     "primitive_applications": 21
+    }
+   }
+  },
+  {
+   "requirement": "seven points of a curve",
+   "solved": true,
+   "seconds": 0.3586178999976255,
+   "counter": {
+    "nodes": 110,
+    "primitive_applications": 3002,
+    "duplicate_values": 47,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "macro_calls": 504,
+    "hits": 6,
+    "bodies_tried": 6,
+    "call_candidates": 270,
+    "calls": 1117,
+    "statements": 2136,
+    "call_combinations": 61
+   },
+   "operators_available": 9,
+   "acquired_operators_available": 0,
+   "macros_available": 2,
+   "program": {
+    "name": "r",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "body": [
+     {
+      "let": "v1",
+      "op": "midpoint",
+      "args": [
+       "p0",
+       "p1"
+      ]
+     },
+     {
+      "let": "v2",
+      "op": "midpoint",
+      "args": [
+       "p1",
+       "p2"
+      ]
+     },
+     {
+      "let": "v3",
+      "op": "midpoint",
+      "args": [
+       "v1",
+       "v2"
+      ]
+     }
+    ],
+    "emit": [
+     "v3"
+    ],
+    "calls": [
+     {
+      "rule": "r",
+      "args": [
+       "p0",
+       "v1",
+       "v3"
+      ]
+     },
+     {
+      "rule": "r",
+      "args": [
+       "p2",
+       "v2",
+       "v3"
+      ]
+     }
+    ]
+   },
+   "covered_by": {
+    "body": 0,
+    "calls": {
+     "('p0', 'v1', 'v3')": [
+      1,
+      3
+     ],
+     "('p2', 'v2', 'v3')": [
+      2,
+      5
+     ]
+    },
+    "verified_by": "running the combination at the requirement's depth"
+   },
+   "uses_acquired_operations": [],
+   "uses_macros": [],
+   "check": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the emitted set contains ['4', '3']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['2', '9/4']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['6', '9/4']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['1', '21/16']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['3', '45/16']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['5', '45/16']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['7', '21/16']",
+      "passed": true
+     }
+    ],
+    "points": 7,
+    "distinct_points": 7,
+    "counter": {
+     "calls": 7,
+     "statements": 21,
+     "primitive_applications": 21
+    }
+   }
+  },
+  {
+   "requirement": "a curve on a different triangle",
+   "solved": true,
+   "seconds": 0.3064230000018142,
+   "counter": {
+    "nodes": 92,
+    "primitive_applications": 2984,
+    "duplicate_values": 51,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "macro_calls": 504,
+    "hits": 6,
+    "bodies_tried": 6,
+    "call_candidates": 270,
+    "calls": 1117,
+    "statements": 2136,
+    "call_combinations": 61
+   },
+   "operators_available": 9,
+   "acquired_operators_available": 0,
+   "macros_available": 2,
+   "program": {
+    "name": "r",
+    "params": [
+     "p0",
+     "p1",
+     "p2"
+    ],
+    "body": [
+     {
+      "let": "v1",
+      "op": "midpoint",
+      "args": [
+       "p0",
+       "p1"
+      ]
+     },
+     {
+      "let": "v2",
+      "op": "midpoint",
+      "args": [
+       "p1",
+       "p2"
+      ]
+     },
+     {
+      "let": "v3",
+      "op": "midpoint",
+      "args": [
+       "v1",
+       "v2"
+      ]
+     }
+    ],
+    "emit": [
+     "v3"
+    ],
+    "calls": [
+     {
+      "rule": "r",
+      "args": [
+       "p0",
+       "v1",
+       "v3"
+      ]
+     },
+     {
+      "rule": "r",
+      "args": [
+       "p2",
+       "v2",
+       "v3"
+      ]
+     }
+    ]
+   },
+   "covered_by": {
+    "body": 3,
+    "calls": {
+     "('p0', 'v1', 'v3')": [
+      0,
+      1
+     ],
+     "('p2', 'v2', 'v3')": [
+      4,
+      5
+     ]
+    },
+    "verified_by": "running the combination at the requirement's depth"
+   },
+   "uses_acquired_operations": [],
+   "uses_macros": [],
+   "check": {
+    "passed": true,
+    "checks": [
+     {
+      "check": "the emitted set contains ['15/8', '1/8']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['7/2', '1/2']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['39/8', '9/8']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['6', '2']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['55/8', '25/8']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['15/2', '9/2']",
+      "passed": true
+     },
+     {
+      "check": "the emitted set contains ['63/8', '49/8']",
+      "passed": true
+     }
+    ],
+    "points": 7,
+    "distinct_points": 7,
+    "counter": {
+     "calls": 7,
+     "statements": 21,
+     "primitive_applications": 21
+    }
+   }
+  }
+ ],
+ "comparison": {
+  "A": {
+   "condition": "A: enumerated core only",
+   "solved": 3,
+   "requirements": 3,
+   "nodes": 214,
+   "primitive_applications": 3894,
+   "call_candidates": 415,
+   "bodies_tried": 5,
+   "seconds": 1.247276399997645,
+   "requirements_using_an_acquired_operation": 0,
+   "requirements_using_a_macro": 0
+  },
+  "B": {
+   "condition": "B: with the acquired operations",
+   "solved": 3,
+   "requirements": 3,
+   "nodes": 227,
+   "primitive_applications": 6277,
+   "call_candidates": 563,
+   "bodies_tried": 13,
+   "seconds": 0.7630974999992759,
+   "requirements_using_an_acquired_operation": 0,
+   "requirements_using_a_macro": 1
+  },
+  "acquisition_seconds_charged_to_B": 2.3776384000011603,
+  "protocol": "the requirements and the budget were fixed before either condition ran; nothing was acquired from the unseen requirement"
+ },
+ "total_seconds": 54.804350300000806
+}
