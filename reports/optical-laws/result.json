@@ -1,0 +1,168 @@
+{
+ "fragment": {
+  "primitives": [
+   "circle",
+   "foot",
+   "intersection_ll",
+   "midpoint",
+   "mirror",
+   "orthocenter",
+   "reflect"
+  ],
+  "predicates": {
+   "coll": 3,
+   "cong": 4,
+   "cyclic": 4,
+   "diff": 2,
+   "eqangle": 8,
+   "midp": 3,
+   "ncoll": 3,
+   "npara": 4,
+   "para": 4,
+   "perp": 4
+  }
+ },
+ "method": "each law is an atom over constructed points; `certify_entry` decides whether its polynomial is identically zero over the rational function field of the free inputs, which is the same procedure the library uses for its own operations",
+ "results": [
+  {
+   "law": "law of reflection",
+   "statement": "the angle the incoming ray makes with the mirror equals the angle the outgoing ray makes",
+   "atom": "eqangle('i', 'p', 'm1', 'm2', 'm1', 'm2', 'p', 'j')",
+   "construction": [
+    "foot(q,m1,m2) -> p",
+    "reflect(i,m1,m2) -> j"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 2.881336399999782
+   },
+   "seconds": 2.8813702999996167
+  },
+  {
+   "law": "mirror image, perpendicularity",
+   "statement": "the segment joining a point to its image is perpendicular to the mirror",
+   "atom": "perp('j', 'i', 'm1', 'm2')",
+   "construction": [
+    "foot(q,m1,m2) -> p",
+    "reflect(i,m1,m2) -> j"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 0.06044660000043223
+   },
+   "seconds": 0.06048299999929441
+  },
+  {
+   "law": "mirror image, equal distance",
+   "statement": "a point and its image are the same distance from any point of the mirror",
+   "atom": "cong('j', 'm1', 'i', 'm1')",
+   "construction": [
+    "foot(q,m1,m2) -> p",
+    "reflect(i,m1,m2) -> j"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 0.08574269999917306
+   },
+   "seconds": 0.08578839999972843
+  },
+  {
+   "law": "mirror image, equal path",
+   "statement": "the two legs of the reflected path are the legs of the straight path to the image",
+   "atom": "cong('p', 'i', 'p', 'j')",
+   "construction": [
+    "foot(q,m1,m2) -> p",
+    "reflect(i,m1,m2) -> j"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 0.10378289999971457
+   },
+   "seconds": 0.10382469999967725
+  },
+  {
+   "law": "parabola, focus and directrix",
+   "statement": "a point of the parabola is as far from the focus as from the directrix",
+   "atom": "cong('x', 'f', 'x', 't')",
+   "construction": [
+    "foot(q,d1,d2) -> t",
+    "midpoint(f,t) -> md",
+    "circle(f,t,q) -> c",
+    "intersection_ll(q,t,md,c) -> x"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 20.870053099999495
+   },
+   "seconds": 20.870174499999848
+  },
+  {
+   "law": "parabola, focal reflection",
+   "statement": "the tangent makes equal angles with the axis-parallel ray and with the ray to the focus",
+   "atom": "eqangle('x', 't', 'x', 'md', 'x', 'md', 'x', 'f')",
+   "construction": [
+    "foot(q,d1,d2) -> t",
+    "midpoint(f,t) -> md",
+    "circle(f,t,q) -> c",
+    "intersection_ll(q,t,md,c) -> x"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "undecided: the expression passed the certifier's size bound",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_budget_exceeded": 1
+   },
+   "seconds": 80.55830150000111
+  },
+  {
+   "law": "ellipse, focal reflection",
+   "statement": "the tangent makes equal angles with the rays to the two foci",
+   "atom": "eqangle('f1', 'x', 'x', 'md', 'x', 'md', 'x', 'f2')",
+   "construction": [
+    "midpoint(p,f2) -> md",
+    "circle(p,f2,z) -> c",
+    "intersection_ll(f1,p,md,c) -> x"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 25.341327599999204
+   },
+   "seconds": 25.341393499998958
+  },
+  {
+   "law": "ellipse, equal legs",
+   "statement": "the reflected leg has the length of the leg to the mirrored focus",
+   "atom": "cong('x', 'p', 'x', 'f2')",
+   "construction": [
+    "midpoint(p,f2) -> md",
+    "circle(p,f2,z) -> c",
+    "intersection_ll(f1,p,md,c) -> x"
+   ],
+   "holds_at_the_drawn_configuration": true,
+   "verdict": "certified for every configuration",
+   "certifier_counters": {
+    "exact_certifications": 1,
+    "certification_seconds": 0.2261075999995228
+   },
+   "seconds": 0.22616500000003725
+  }
+ ],
+ "not_expressible": [
+  "Snell's law as a law: there is no ratio predicate, no constant may appear in an atom, and the relation grammar has no implication, so a refractive index cannot be written and a law cannot be assumed as a hypothesis",
+  "the two-focus property as a constant sum: cong compares two squared distances and there is no sum of lengths",
+  "the thin-lens equation: no predicate compares ratios or reciprocals of lengths",
+  "which side, which direction, which medium: all ten predicates are equalities or non-vanishing conditions, and certify_entry decides only whether a polynomial is zero, so an inequality is not merely unwritten but undecidable by this kernel"
+ ]
+}
