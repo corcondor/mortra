@@ -36,9 +36,9 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 2.881336399999782
+    "certification_seconds": 1.247875600000043
    },
-   "seconds": 2.8813702999996167
+   "seconds": 1.2479084000005969
   },
   {
    "law": "mirror image, perpendicularity",
@@ -52,9 +52,9 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 0.06044660000043223
+    "certification_seconds": 0.059433099999296246
    },
-   "seconds": 0.06048299999929441
+   "seconds": 0.05947050000031595
   },
   {
    "law": "mirror image, equal distance",
@@ -68,9 +68,9 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 0.08574269999917306
+    "certification_seconds": 0.07751040000039211
    },
-   "seconds": 0.08578839999972843
+   "seconds": 0.07753529999899911
   },
   {
    "law": "mirror image, equal path",
@@ -84,9 +84,9 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 0.10378289999971457
+    "certification_seconds": 0.10270529999979772
    },
-   "seconds": 0.10382469999967725
+   "seconds": 0.10274920000119891
   },
   {
    "law": "parabola, focus and directrix",
@@ -102,9 +102,9 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 20.870053099999495
+    "certification_seconds": 13.522131199999421
    },
-   "seconds": 20.870174499999848
+   "seconds": 13.522244100000535
   },
   {
    "law": "parabola, focal reflection",
@@ -122,7 +122,7 @@
     "exact_certifications": 1,
     "certification_budget_exceeded": 1
    },
-   "seconds": 80.55830150000111
+   "seconds": 61.72135309999976
   },
   {
    "law": "ellipse, focal reflection",
@@ -137,9 +137,9 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 25.341327599999204
+    "certification_seconds": 18.239977799999906
    },
-   "seconds": 25.341393499998958
+   "seconds": 18.240056199998435
   },
   {
    "law": "ellipse, equal legs",
@@ -154,13 +154,15 @@
    "verdict": "certified for every configuration",
    "certifier_counters": {
     "exact_certifications": 1,
-    "certification_seconds": 0.2261075999995228
+    "certification_seconds": 0.21958559999984573
    },
-   "seconds": 0.22616500000003725
+   "seconds": 0.21963640000103624
   }
  ],
+ "what_the_reflection_certificate_does_and_does_not_say": "the certified atom is a construction identity: J is reflect(I, M1, M2), so the equal-angle statement holds for every point P of the mirror line, and foot(Q, M1, M2) merely supplies one such P. It is the law of reflection in its directed-angle form, mod pi. Nothing in the fragment singles out the physical outgoing ray, because no predicate distinguishes a ray from its line or one side from the other",
+ "undecided_is_not_a_budget_that_can_simply_be_raised": "the parabola's focal reflection is refused at the certifier's 20000-term bound after about eighty seconds. Raising the bound to 10^7 removes the refusal but the computation did not return in twelve minutes, so there is no evidence that a larger bound decides it. It vanishes at every rational configuration tried",
  "not_expressible": [
-  "Snell's law as a law: there is no ratio predicate, no constant may appear in an atom, and the relation grammar has no implication, so a refractive index cannot be written and a law cannot be assumed as a hypothesis",
+  "Snell's law as a law: there is no ratio predicate, no constant may appear in an atom, and the relation grammar has no implication, so a refractive index cannot be written and a law cannot be assumed as a hypothesis. Registering an eqratio predicate \u2014 the polynomial for it already exists in the bridge \u2014 would make a rational index ratio writable, but only with points built by integer mirror-chains to stand in for the numbers, and it would still leave the law unassumable",
   "the two-focus property as a constant sum: cong compares two squared distances and there is no sum of lengths",
   "the thin-lens equation: no predicate compares ratios or reciprocals of lengths",
   "which side, which direction, which medium: all ten predicates are equalities or non-vanishing conditions, and certify_entry decides only whether a polynomial is zero, so an inequality is not merely unwritten but undecidable by this kernel"

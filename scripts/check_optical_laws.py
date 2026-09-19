@@ -149,10 +149,24 @@ def main():
                   "polynomial is identically zero over the rational function field of the free inputs, "
                   "which is the same procedure the library uses for its own operations",
         "results": results,
+        "what_the_reflection_certificate_does_and_does_not_say": (
+            "the certified atom is a construction identity: J is reflect(I, M1, M2), so the equal-angle "
+            "statement holds for every point P of the mirror line, and foot(Q, M1, M2) merely supplies "
+            "one such P. It is the law of reflection in its directed-angle form, mod pi. Nothing in the "
+            "fragment singles out the physical outgoing ray, because no predicate distinguishes a ray "
+            "from its line or one side from the other"),
+        "undecided_is_not_a_budget_that_can_simply_be_raised": (
+            "the parabola's focal reflection is refused at the certifier's 20000-term bound after about "
+            "eighty seconds. Raising the bound to 10^7 removes the refusal but the computation did not "
+            "return in twelve minutes, so there is no evidence that a larger bound decides it. It "
+            "vanishes at every rational configuration tried"),
         "not_expressible": [
             "Snell's law as a law: there is no ratio predicate, no constant may appear in an atom, and "
             "the relation grammar has no implication, so a refractive index cannot be written and a law "
-            "cannot be assumed as a hypothesis",
+            "cannot be assumed as a hypothesis. Registering an eqratio predicate — the polynomial for it "
+            "already exists in the bridge — would make a rational index ratio writable, but only with "
+            "points built by integer mirror-chains to stand in for the numbers, and it would still leave "
+            "the law unassumable",
             "the two-focus property as a constant sum: cong compares two squared distances and there is "
             "no sum of lengths",
             "the thin-lens equation: no predicate compares ratios or reciprocals of lengths",
