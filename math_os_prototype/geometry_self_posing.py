@@ -516,6 +516,14 @@ def render(task, *, language="japanese"):
 # Posing with what has been learned
 # ---------------------------------------------------------------------------
 
+HEIGHT_BOUND = 10**7
+
+
+def height(xy):
+    """How large the rational coordinates of a point are, as numerator or denominator."""
+    return max(max(abs(v.p), abs(v.q)) for v in (sp.Rational(c) for c in xy))
+
+
 def execute_program(program, arguments, coordinates, stats=None):
     """Run a stored program's steps at concrete coordinates, as one operation.
 
@@ -580,6 +588,15 @@ def build_construction_with_operations(rng, points, depth, operations, *, attemp
                                             required=required)
                 if xy is None:
                     continue
+                # composing operations that are themselves compositions drives the
+                # coordinates to rationals whose height grows with every step; past
+                # this bound the relation enumeration and the candidate factoring
+                # stop being affordable, and the construction is abandoned rather
+                # than the process
+                if height(xy) > HEIGHT_BOUND:
+                    if stats is not None:
+                        stats["coordinates_over_height_bound"] += 1
+                    continue
             else:
                 family = rng.choice(FAMILIES)
                 parameters = rdsl.primitive_contracts()[family]["params"]
@@ -592,6 +609,10 @@ def build_construction_with_operations(rng, points, depth, operations, *, attemp
                     continue
                 xy, _ = rdsl.execute_primitive(family, arguments, coordinates)
                 if xy is None or any(xy == value for value in coordinates.values()):
+                    continue
+                if height(xy) > HEIGHT_BOUND:
+                    if stats is not None:
+                        stats["coordinates_over_height_bound"] += 1
                     continue
                 record = {"prim": family, "args": list(arguments)}
             name = f"h{index}"
@@ -616,6 +637,9 @@ def pose_from_experience(rng, operations, *, depth=2, goal_count=3, samples=24, 
         return None
     if operations and not any("acquired" in step for step in steps):
         stats["no_acquired_operation_used"] += 1
+        return None
+    if height(coordinates[steps[-1]["out"]]) > HEIGHT_BOUND:
+        stats["answer_over_height_bound"] += 1
         return None
     goals = choose_goals(rng, coordinates, steps[-1]["out"], points, goal_count=goal_count,
                          samples=samples, stats=stats,
