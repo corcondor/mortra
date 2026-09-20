@@ -285,7 +285,7 @@
       "guaranteed_applications_used": 0,
       "partial_plans_executed": 52,
       "applications": 193,
-      "execution_seconds": 0.007996900007128716,
+      "execution_seconds": 0.005660500009980751,
       "predicate_prover_calls": 112,
       "identity_bindings_excluded": 2,
       "guard_checks": 1,
@@ -293,7 +293,7 @@
       "duplicate_outputs": 6,
       "partial_stop_application_budget": 1,
       "partial_applications_used": 16,
-      "search_seconds": 1.889492700000119,
+      "search_seconds": 1.8480631999991601,
       "fallback_applications": 354
     }
   },
@@ -492,7 +492,7 @@
         }
       ],
       "replay": {
-        "seconds": 0.0008173000023816712,
+        "seconds": 0.0009088000006158836,
         "primitive_operations": 5,
         "method": "primitive reexecution, not contract witness",
         "passed": true,
@@ -519,7 +519,7 @@
       "max_queue": 863,
       "guaranteed_plans_executed": 50,
       "applications": 7,
-      "execution_seconds": 0.029539299994212342,
+      "execution_seconds": 0.04632710000441875,
       "predicate_prover_calls": 17,
       "distinctness_failures": 108,
       "identity_bindings_excluded": 4,
@@ -527,7 +527,7 @@
       "refused_applications": 1,
       "guaranteed_stop_None": 1,
       "guaranteed_applications_used": 7,
-      "search_seconds": 1.7458099000032234
+      "search_seconds": 2.329675299999508
     }
   },
   "G3": {
@@ -764,61 +764,130 @@
     "condition_a": [
       {
         "task_id": "unseen_1",
+        "name": "G1 Variant (Translation)",
         "solved": true,
-        "expansions": 0,
-        "applications": 1,
-        "time_sec": 0.0014180999969539698
+        "expansions": 2044,
+        "applications": 193,
+        "via": "fallback",
+        "time_sec": 4.677420999996684
       },
       {
         "task_id": "unseen_2",
-        "solved": false,
-        "expansions": 0,
-        "applications": 6,
-        "time_sec": 0.6691460000001825
+        "name": "G1 Variant (Scale & Shear)",
+        "solved": true,
+        "expansions": 2044,
+        "applications": 193,
+        "via": "fallback",
+        "time_sec": 4.388504100003047
       },
       {
         "task_id": "unseen_3",
-        "solved": false,
-        "expansions": 0,
-        "applications": 0,
-        "time_sec": 0.0002982000005431473
+        "name": "G2 Variant (Translation)",
+        "solved": true,
+        "expansions": 104,
+        "applications": 2,
+        "via": null,
+        "time_sec": 0.1742697000008775
       },
       {
         "task_id": "unseen_4",
+        "name": "G2 Variant (Coordinate Scale)",
         "solved": true,
-        "expansions": 0,
-        "applications": 1,
-        "time_sec": 0.014283099997555837
+        "expansions": 45,
+        "applications": 6,
+        "via": null,
+        "time_sec": 0.0992630000000645
       }
     ],
     "condition_b": [
       {
         "task_id": "unseen_1",
+        "name": "G1 Variant (Translation)",
         "solved": true,
-        "expansions": 0,
-        "applications": 1,
-        "time_sec": 0.05670069999905536
+        "expansions": 185,
+        "applications": 4,
+        "via": null,
+        "time_sec": 2.487795200002438
       },
       {
         "task_id": "unseen_2",
-        "solved": false,
-        "expansions": 0,
-        "applications": 30,
-        "time_sec": 0.24253809999936493
+        "name": "G1 Variant (Scale & Shear)",
+        "solved": true,
+        "expansions": 185,
+        "applications": 4,
+        "via": null,
+        "time_sec": 0.5937023000005865
       },
       {
         "task_id": "unseen_3",
-        "solved": false,
-        "expansions": 0,
-        "applications": 30,
-        "time_sec": 0.7963589999999385
+        "name": "G2 Variant (Translation)",
+        "solved": true,
+        "expansions": 104,
+        "applications": 2,
+        "via": null,
+        "time_sec": 0.1503484999993816
       },
       {
         "task_id": "unseen_4",
+        "name": "G2 Variant (Coordinate Scale)",
         "solved": true,
-        "expansions": 0,
-        "applications": 1,
-        "time_sec": 0.05234810000183643
+        "expansions": 45,
+        "applications": 6,
+        "via": null,
+        "time_sec": 0.07631580000088434
+      }
+    ],
+    "acquired_operations": [
+      {
+        "index": 0,
+        "steps": 3,
+        "patterns": [
+          [
+            "para",
+            [
+              "p0",
+              "p2",
+              "p1",
+              "v"
+            ]
+          ]
+        ],
+        "source": {
+          "task": "G1",
+          "generation": 1,
+          "parents": [],
+          "calls": []
+        }
+      },
+      {
+        "index": 1,
+        "steps": 5,
+        "patterns": [
+          [
+            "cong",
+            [
+              "p0",
+              "v",
+              "p1",
+              "v"
+            ]
+          ],
+          [
+            "cong",
+            [
+              "p2",
+              "v",
+              "p3",
+              "v"
+            ]
+          ]
+        ],
+        "source": {
+          "task": "G2",
+          "generation": 1,
+          "parents": [],
+          "calls": []
+        }
       }
     ]
   }

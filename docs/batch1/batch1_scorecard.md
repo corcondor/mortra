@@ -5,7 +5,7 @@
 
 | 課題ID | 課題内容 | 判定 | 得点 | 期待値 (evaluator_notes.md) | 実績値 | 備考 |
 |---|---|---|---|---|---|---|
-| D1 | D1 | **PASS** | 10/10 | `6 configurations (ROMAN/NARROW x radii 1/4, 3/8, 1/2), intermediate stages saved, topological changes tracked` | `6 configurations evaluated, failure card generated, thinning/overlap breakdown stages identified` | Intermediate stages (bitmap, sensor, binary, skeleton, recover) and topological metrics recorded. |
+| D1 | D1 | **PASS** | 10/10 | `6 configurations (ROMAN/NARROW x radii 1/4, 3/8, 1/2), intermediate stages saved, topological changes tracked` | `6配置すべてで最終認識はMを維持（認識は耐えた）しつつ、ROMAN半径1/2でのスコア8/31低下や穴数0→4増加など内部トポロジー崩壊開始を観測` | Intermediate stages (bitmap, sensor, binary, skeleton, recover) and topological metrics recorded. |
 | G1 | G1 | **PASS** | 10/10 | `U=(3, 2)` | `U=[3.0, 2.0]` | Relational synthesis successfully composed parallel and congruent conditions. |
 | G2 | G2 | **PASS** | 10/10 | `U=(4, 2)` | `U=[4.0, 2.0]` | Relational synthesis successfully composed two perpendicular bisectors. |
 | G3 | G3 | **PASS** | 10/10 | `Roots: x=-2 (intersection), x=1 (contact/tangent); Area: 27/4 = 6.75` | `Roots: [{'root': '-2', 'multiplicity': 1, 'derivative': '9', 'classification': 'intersection'}, {'root': '1', 'multiplicity': 2, 'derivative': '0', 'classification': 'contact'}]; Area: 27/4` | Exact symbolic factorization, derivative evaluation at roots, and definite integral executed. |

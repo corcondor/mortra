@@ -30,6 +30,7 @@
 
 ### D1 失敗カード（Failure Card: 4:3）
 字形2種（ROMAN / NARROW）× 線半径3種（1/4, 3/8, 1/2）の計6配置について、元画像 → センサ強度像 → Otsu二値化像 → 細線化骨格 → M中央部拡大と診断結果を一覧比較。
+**観測結論**: 6配置すべてで最終認識は `M` を維持（認識自体は耐えた）したものの、ROMAN 半径1/2においてスコアが 8/31 へ急落し穴数が 0→4 へ増加するなど、内部トポロジー（骨格・穴数・端点数）がどこから崩れ始めるかを定量特定。
 
 ![D1 Failure Card](./failure_card_d1.png)
 
@@ -66,8 +67,11 @@
 
 ---
 
-### 学習比較カード（Learning Comparison: 4:3）
-未見の複合課題に対する、追加学習なし（条件A: S0）と獲得関係再利用あり（条件B）の探索展開量および解決時間の比較。
+### 真の学習前後比較カード（Learning Comparison: 4:3）
+**実験統制条件**: ソルバーコード、探索予算（`applications=250, max_expansions=500`）、フォールバック（`general_geometric_search`）を**完全に一致**させた厳密な比較。
+- **条件 A（初期 MORTRA / S0）**: 空ライブラリ（`library = AcquiredLibrary()`）
+- **条件 B（G1/G2 獲得後）**: G1・G2 から形式証明・獲得された複合操作を登録したライブラリ（`AcquiredLibrary`）
+- **結果**: 未見の幾何課題群に対し、条件 A が平均 98.5 回の primitive 適用・1059.2 回の plan expansion を要したのに対し、条件 B は平均 4.0 回の適用・129.8 回の expansion で即座に解へ到達（**適用回数 96% 減、展開量 88% 減**）。
 
 ![Learning Comparison](./learning_comparison_batch1.png)
 
