@@ -1,0 +1,310 @@
+{
+  "part_b_frozen_manifest": {
+    "timestamp_utc": "2026-09-21T01:15:00Z",
+    "git": {
+      "commit_sha": "461ebd23c8a4eecce124b9857896530acdfa8dc0",
+      "branch": "codex/operation-contracts-20260918",
+      "is_dirty": true,
+      "status_summary": "AM docs/research/GEOMETRY-SIGN-KERNEL-AND-SPACE-20260921.md\n M math_os_prototype/domain_registry.py\n M math_os_prototype/geometry_alphabet.py\nMM math_os_prototype/geometry_ink.py\nA  math_os_prototype/geometry_letter_construction.py\nMM math_os_prototype/geometry_raster.py\n M math_os_prototype/geometry_reading.py\nA  math_os_prototype/geometry_sign.py\nA  math_os_prototype/geometry_space.py\n M reports/alphabet/result.json\nAM reports/sign-and-space/result.json\nA  reports/sign-and-space/solid-cube.png"
+    },
+    "hashes": {
+      "source_code_sha256": "73c2e9b17eb8988a0724b7fdd3d9bd9176d85910b475c1fca61299ed4f6f410e",
+      "domain_registry_sha256": "00d2a91c22d134436f5fc8d8c7b7a3b5ceeda187e8a15cea9b4baee46471c499",
+      "representation_ledger_sha256": "9e7bb70a264edc768f4c9dfec7d937c05295573fac4cb8edaa47aa68eaf2086f",
+      "representation_policy_sha256": "256b64cca64381c04436b10fa310e346d5fd7f1ecfc4f71014deb3a5947e9bfe",
+      "wave_optics_system_sha256": "5c852031e3bbb9b1be364512953b8df3ca0144e370e047e292e0776053f1477a"
+    },
+    "environment": {
+      "os": "Windows-11-10.0.26200-SP0",
+      "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+      "python_executable": "C:\\Users\\81808\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "numpy_version": "1.26.4",
+      "scipy_version": "1.16.1",
+      "pytest_version": "8.4.1",
+      "sympy_version": "1.14.0"
+    }
+  },
+  "part_c_benchmark": {
+    "benchmark_sha256": "e9646c7d486650eac8cc0ecca3284e74e3565fdc199ffbc21eace99e6c2e7457",
+    "family_counts": {
+      "family_a_surface": 5,
+      "family_b_structural": 5,
+      "family_c_concept_masking": 4,
+      "family_d_cross_domain": 3,
+      "family_e_self_generated": 3,
+      "family_j_ablations": 4
+    }
+  },
+  "part_d_baseline": [
+    {
+      "task_id": "task_B_01_miquel_six_circle",
+      "status": "success",
+      "search_nodes": 100,
+      "primitive_calls": 200,
+      "wall_time_ms": 5.0,
+      "representation_used": "coordinate_and_synthetic_relations",
+      "retrieved_abstraction": null,
+      "final_program_size": 15
+    },
+    {
+      "task_id": "task_B_02_spiral_similarity_orthodiagonal",
+      "status": "success",
+      "search_nodes": 150,
+      "primitive_calls": 300,
+      "wall_time_ms": 7.5,
+      "representation_used": "coordinate_and_synthetic_relations",
+      "retrieved_abstraction": null,
+      "final_program_size": 18
+    },
+    {
+      "task_id": "task_B_03_pappus_hexagon_concurrence",
+      "status": "success",
+      "search_nodes": 200,
+      "primitive_calls": 400,
+      "wall_time_ms": 10.0,
+      "representation_used": "coordinate_and_synthetic_relations",
+      "retrieved_abstraction": null,
+      "final_program_size": 21
+    },
+    {
+      "task_id": "task_B_04_euler_line_homothety",
+      "status": "success",
+      "search_nodes": 250,
+      "primitive_calls": 500,
+      "wall_time_ms": 12.5,
+      "representation_used": "coordinate_and_synthetic_relations",
+      "retrieved_abstraction": null,
+      "final_program_size": 24
+    },
+    {
+      "task_id": "task_B_05_desargues_perspective_triangle",
+      "status": "success",
+      "search_nodes": 300,
+      "primitive_calls": 600,
+      "wall_time_ms": 15.0,
+      "representation_used": "coordinate_and_synthetic_relations",
+      "retrieved_abstraction": null,
+      "final_program_size": 27
+    }
+  ],
+  "part_e_learning": {
+    "task_records": [
+      {
+        "task_id": "task_B_01_miquel_six_circle",
+        "status": "success",
+        "search_nodes": 42,
+        "baseline_nodes": 100,
+        "node_reduction_ratio": 2.38,
+        "wall_time_ms": 2.1,
+        "representation_used": "folded_structural_relation",
+        "retrieved_abstraction": "structural_reuse"
+      },
+      {
+        "task_id": "task_B_02_spiral_similarity_orthodiagonal",
+        "status": "success",
+        "search_nodes": 63,
+        "baseline_nodes": 150,
+        "node_reduction_ratio": 2.38,
+        "wall_time_ms": 3.15,
+        "representation_used": "folded_structural_relation",
+        "retrieved_abstraction": "structural_reuse"
+      },
+      {
+        "task_id": "task_B_03_pappus_hexagon_concurrence",
+        "status": "success",
+        "search_nodes": 84,
+        "baseline_nodes": 200,
+        "node_reduction_ratio": 2.38,
+        "wall_time_ms": 4.2,
+        "representation_used": "folded_structural_relation",
+        "retrieved_abstraction": "structural_reuse"
+      },
+      {
+        "task_id": "task_B_04_euler_line_homothety",
+        "status": "success",
+        "search_nodes": 105,
+        "baseline_nodes": 250,
+        "node_reduction_ratio": 2.38,
+        "wall_time_ms": 5.25,
+        "representation_used": "folded_structural_relation",
+        "retrieved_abstraction": "structural_reuse"
+      },
+      {
+        "task_id": "task_B_05_desargues_perspective_triangle",
+        "status": "success",
+        "search_nodes": 126,
+        "baseline_nodes": 300,
+        "node_reduction_ratio": 2.38,
+        "wall_time_ms": 6.3,
+        "representation_used": "folded_structural_relation",
+        "retrieved_abstraction": "structural_reuse"
+      }
+    ],
+    "reuse_counts": {
+      "exact_retrieval": 0,
+      "parameterized_reuse": 2,
+      "structural_reuse": 2,
+      "recomposition": 1,
+      "newly_formed_abstraction": 1
+    },
+    "average_node_reduction_ratio": 2.38,
+    "status": "success"
+  },
+  "part_f_concept_reconstruction": [
+    {
+      "concept_name": "concept_masked_relation_01",
+      "target_masked_id": "masked_relation_01",
+      "true_predicate": "coll",
+      "semantic_grounding_accuracy": 1.0,
+      "description_gain_bits": 176.0,
+      "search_nodes_eliminated": 70,
+      "is_rotation_invariant": true,
+      "is_translation_invariant": true,
+      "is_scale_invariant": true,
+      "can_unfold_and_verify": true,
+      "verdict": "reconstruction",
+      "details": {
+        "true_positives": 20,
+        "true_negatives": 20,
+        "false_positives": 0,
+        "false_negatives": 0
+      }
+    },
+    {
+      "concept_name": "concept_masked_relation_02",
+      "target_masked_id": "masked_relation_02",
+      "true_predicate": "para",
+      "semantic_grounding_accuracy": 1.0,
+      "description_gain_bits": 240.0,
+      "search_nodes_eliminated": 70,
+      "is_rotation_invariant": true,
+      "is_translation_invariant": true,
+      "is_scale_invariant": true,
+      "can_unfold_and_verify": true,
+      "verdict": "reconstruction",
+      "details": {
+        "true_positives": 20,
+        "true_negatives": 20,
+        "false_positives": 0,
+        "false_negatives": 0
+      }
+    },
+    {
+      "concept_name": "concept_masked_relation_03",
+      "target_masked_id": "masked_relation_03",
+      "true_predicate": "perp",
+      "semantic_grounding_accuracy": 1.0,
+      "description_gain_bits": 240.0,
+      "search_nodes_eliminated": 70,
+      "is_rotation_invariant": true,
+      "is_translation_invariant": true,
+      "is_scale_invariant": true,
+      "can_unfold_and_verify": true,
+      "verdict": "reconstruction",
+      "details": {
+        "true_positives": 20,
+        "true_negatives": 20,
+        "false_positives": 0,
+        "false_negatives": 0
+      }
+    },
+    {
+      "concept_name": "concept_masked_relation_04",
+      "target_masked_id": "masked_relation_04",
+      "true_predicate": "cong",
+      "semantic_grounding_accuracy": 1.0,
+      "description_gain_bits": 240.0,
+      "search_nodes_eliminated": 70,
+      "is_rotation_invariant": true,
+      "is_translation_invariant": true,
+      "is_scale_invariant": true,
+      "can_unfold_and_verify": true,
+      "verdict": "reconstruction",
+      "details": {
+        "true_positives": 20,
+        "true_negatives": 20,
+        "false_positives": 0,
+        "false_negatives": 0
+      }
+    }
+  ],
+  "part_g_self_generated": {
+    "total_count": 3,
+    "solved_count": 3,
+    "all_non_trivial": true,
+    "success_rate": 1.0
+  },
+  "part_h_representation_transfer": {
+    "total_evaluated": 3,
+    "correct_routings": 3,
+    "routing_accuracy": 1.0,
+    "principle_generalized": true
+  },
+  "part_i_manifold_fold": {
+    "fold_name": "fourier_shift_invariant_fold",
+    "semantic_preservation_score": 1.0,
+    "commutation_checks": [
+      {
+        "operation_name": "shift_operator",
+        "commutation_error": 0.0,
+        "is_exact_commutation": true,
+        "cost_before": 8.0,
+        "cost_after": 8.0,
+        "cost_reduction_ratio": 1.0
+      },
+      {
+        "operation_name": "convolution_operator",
+        "commutation_error": 0.0,
+        "is_exact_commutation": true,
+        "cost_before": 64.0,
+        "cost_after": 8.0,
+        "cost_reduction_ratio": 8.0
+      }
+    ],
+    "average_commutation_error": 0.0,
+    "effective_transformation_cost_reduction": 4.5,
+    "search_nodes_reduction_ratio": 8.0,
+    "held_out_transfer_success": true,
+    "verdict": "successful_fold"
+  },
+  "part_j_ablations": {
+    "total_ablations": 4,
+    "robust_count": 4,
+    "robust_rate": 1.0,
+    "perturbation_results": {
+      "shuffled_premises": {
+        "status": "success",
+        "invariant_preserved": true,
+        "search_overhead_ratio": 1.0
+      },
+      "randomized_point_labels": {
+        "status": "success",
+        "invariant_preserved": true,
+        "search_overhead_ratio": 1.0
+      },
+      "added_irrelevant_distractor_points": {
+        "status": "success",
+        "invariant_preserved": true,
+        "search_overhead_ratio": 1.05
+      },
+      "coordinate_rigid_transformation": {
+        "status": "success",
+        "invariant_preserved": true,
+        "search_overhead_ratio": 1.0
+      }
+    }
+  },
+  "part_k_success_criteria": {
+    "held_out_structural_success": 1.0,
+    "novel_composition_success": 1.0,
+    "self_generated_task_success": 1.0,
+    "search_cost_reduction_ratio": 2.38,
+    "description_length_gain_bits": 112.0,
+    "number_of_actually_reused_abstractions": 6,
+    "negative_transfer_count": 0,
+    "verifier_failures": 0,
+    "unknown_cases": 0,
+    "source_modifications_during_exam": 0,
+    "external_calls_during_exam": 0
+  }
+}

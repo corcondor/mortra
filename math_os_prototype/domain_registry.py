@@ -254,6 +254,20 @@ DOMAIN_SPECS: tuple[DomainSpec, ...] = (
         retrieval_queries=("Lean Mathlib theorem proof formalization",),
         ir_schema="FormalProofIR(assumptions, conclusion, theorem_stub)",
     ),
+    DomainSpec(
+        name="wave_optics",
+        label_ja="波動光学・3次元画像工学",
+        keywords=(
+            "fresnel", "diffraction", "hologram", "slm", "transfer function",
+            "green function", "impulse response", "light field", "lenticular",
+            "integral imaging", "回折", "ホログラム", "伝達関数", "インパルス応答", "ライトフィールド", "波動光学"
+        ),
+        tools=("NumPy", "SciPy", "WaveOpticsSystem"),
+        methods=("angular_spectrum", "fresnel_convolution", "phase_retrieval_adjoint", "citl_system_id", "light_field_ray_phase_space"),
+        verification=("sampling_certificate_check", "energy_conservation", "adjoint_inner_product_test"),
+        retrieval_queries=("wave optics fresnel diffraction angular spectrum holography light field",),
+        ir_schema="WaveOpticsIR(field, operators, target_plane, representation)",
+    ),
 )
 
 
