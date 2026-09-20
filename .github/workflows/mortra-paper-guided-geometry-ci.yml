@@ -94,6 +94,8 @@ on:
       - "math_os_prototype/geometry_recognition_policy.py"
       - "tests/test_geometry_instruction_and_optics.py"
       - "scripts/demo_geometric_reading_and_solving.py"
+      - "scripts/restore_or_init_checkpoint.py"
+      - "configs/geometric_reading_tasks.json"
       - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
   pull_request:
     paths:
@@ -168,6 +170,8 @@ on:
       - "math_os_prototype/geometry_recognition_policy.py"
       - "tests/test_geometry_instruction_and_optics.py"
       - "scripts/demo_geometric_reading_and_solving.py"
+      - "scripts/restore_or_init_checkpoint.py"
+      - "configs/geometric_reading_tasks.json"
       - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
   workflow_dispatch:
     inputs:
@@ -191,6 +195,17 @@ on:
           - configs/theory-geometry-autonomous-solve-1024-20260916.json
           - configs/theory-geometry-relational-dsl-20260917.json
           - configs/algebraic-structures-20260917.json
+      execution_mode:
+        description: "Execution mode: 'initial' for clean baseline, 'continuous' for checkpoint restore"
+        type: choice
+        default: initial
+        options:
+          - initial
+          - continuous
+      checkpoint_path:
+        description: "Path to checkpoint directory or archive (required when execution_mode is continuous)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -241,11 +256,20 @@ jobs:
         run: |
           mkdir -p reports/wave-optics
           python math_os_prototype/benchmark_wave_optics.py --output reports/wave-optics 2>&1 | tee reports/wave-optics.log
+      - name: Restore or initialize MORTRA learning checkpoint
+        shell: bash
+        run: |
+          python scripts/restore_or_init_checkpoint.py \
+            --mode "${{ inputs.execution_mode || 'initial' }}" \
+            --checkpoint "${{ inputs.checkpoint_path || '' }}"
       - name: Execute end-to-end geometric reading, solving, and wave optics demo
         shell: bash
         run: |
-          mkdir -p reports/geometric-reading-demo reports/recognition-policy reports/wave-optics-roundtrip
-          python scripts/demo_geometric_reading_and_solving.py 2>&1 | tee reports/geometric-reading-demo.log
+          mkdir -p reports/geometric-reading-demo reports/recognition-policy reports/acquired-library reports/wave-optics-roundtrip
+          python scripts/demo_geometric_reading_and_solving.py \
+            --mode "${{ inputs.execution_mode || 'initial' }}" \
+            --checkpoint "${{ inputs.checkpoint_path || '' }}" \
+            2>&1 | tee reports/geometric-reading-demo.log
       - name: Frozen normal-entry geometry comparison
         if: ${{ !contains(env.EXPERIMENT_CONFIG, 'theory-geometry-autonomous-solve') && !contains(env.EXPERIMENT_CONFIG, 'relational-dsl') && !contains(env.EXPERIMENT_CONFIG, 'algebraic-structures') }}
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
@@ -292,6 +316,8 @@ jobs:
             reports/geometric-reading-demo/
             reports/geometric-reading-demo.log
             reports/recognition-policy/
+            reports/acquired-library/
+            reports/checkpoint_manifest.json
             reports/wave-optics-roundtrip/
   exact-kernel:
     runs-on: ubuntu-latest

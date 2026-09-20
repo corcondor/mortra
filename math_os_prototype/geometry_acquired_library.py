@@ -99,6 +99,41 @@ class AcquiredLibrary:
                      "source": entry["source"]}
                     for index, entry in sorted(self.acquired.items())]}
 
+    def to_dict(self):
+        """Serialize acquired library state and programs for checkpoint storage."""
+        return {
+            "enumerated": self.enumerated_count,
+            "acquired": len(self.acquired),
+            "definitions": self.definitions,
+            "acquired_operations": [
+                {
+                    "index": index,
+                    "program": self.programs[index],
+                    "certificates": [
+                        [list(p), cert] for p, cert in entry["certificates"].items()
+                    ],
+                    "source": entry["source"],
+                    "steps": entry["steps"],
+                }
+                for index, entry in sorted(self.acquired.items())
+            ],
+        }
+
+    @classmethod
+    def from_dict(cls, data, base=None):
+        """Deserialize acquired library state from checkpoint data."""
+        lib = cls(base=base)
+        if not data:
+            return lib
+        lib.definitions = dict(data.get("definitions", {}))
+        for op in data.get("acquired_operations", []):
+            program = op["program"]
+            certs = {}
+            for p, cert in op.get("certificates", []):
+                certs[(p[0], tuple(p[1]))] = cert
+            lib.register(program, certs, source=op.get("source", {}))
+        return lib
+
 
 def _program_key(program):
     names = {p: p for p in program["params"]}

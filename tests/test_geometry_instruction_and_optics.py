@@ -193,3 +193,63 @@ def test_wave_optics_geometric_roundtrip():
     lib = reading.library_from(built_letters)
     read_res = reading.read(reconstructed_bitmap, lib)
     assert read_res["letter"] == "P"
+
+
+def test_checkpoint_and_acquired_library_persistence(tmp_path):
+    """Verify AcquiredLibrary serialization and checkpoint restore semantics."""
+    from math_os_prototype import geometry_acquired_library as acqlib
+    import subprocess
+
+    # 1. AcquiredLibrary to_dict and from_dict roundtrip
+    lib = acqlib.AcquiredLibrary()
+    prog = {
+        "params": ["p0", "p1"],
+        "steps": [{"out": "s0", "prim": "midpoint", "args": ["p0", "p1"]}],
+        "result": "s0",
+    }
+    lib.register(prog, {("midp", ("v", "p0", "p1")): {"test": True}}, source={"task": "t1"})
+    state_dict = lib.to_dict()
+
+    lib_restored = acqlib.AcquiredLibrary.from_dict(state_dict)
+    assert len(lib_restored.acquired) == 1
+    assert lib_restored.holds(prog)
+
+    # 2. Checkpoint restoration script in initial mode
+    res_init = subprocess.run(
+        [sys.executable, str(repo_root / "scripts" / "restore_or_init_checkpoint.py"), "--mode", "initial"],
+        capture_output=True,
+        text=True,
+    )
+    assert res_init.returncode == 0
+    assert (repo_root / "reports" / "checkpoint_manifest.json").exists()
+
+    # 3. Checkpoint restoration script in continuous mode with existing dir
+    res_cont = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root / "scripts" / "restore_or_init_checkpoint.py"),
+            "--mode",
+            "continuous",
+            "--checkpoint",
+            "reports",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert res_cont.returncode == 0
+
+    # 4. Checkpoint restoration script in continuous mode with missing checkpoint must fail (code 1)
+    res_fail = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root / "scripts" / "restore_or_init_checkpoint.py"),
+            "--mode",
+            "continuous",
+            "--checkpoint",
+            str(tmp_path / "non_existent"),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert res_fail.returncode == 1
+    assert "Cannot silently fall back to initial state" in res_fail.stderr

@@ -1,0 +1,128 @@
+{
+  "tasks": [
+    {
+      "task_id": "task_01_perp_baseline",
+      "description": "Baseline PERP command on axis-aligned coordinates (regression baseline)",
+      "word": "PERP",
+      "font": "ROMAN",
+      "scale": 8,
+      "radius_fraction": [3, 8],
+      "external_points": {
+        "a": [0, 0],
+        "b": [4, 0],
+        "c": [1, 3]
+      },
+      "optical": {
+        "wavelength_m": 532e-9,
+        "dx_m": 10e-6,
+        "dy_m": 10e-6,
+        "z_factor": 0.5,
+        "iterations": 20
+      },
+      "is_negative_control": false
+    },
+    {
+      "task_id": "task_02_midp_baseline",
+      "description": "Baseline MIDP command on axis-aligned coordinates (regression baseline)",
+      "word": "MIDP",
+      "font": "ROMAN",
+      "scale": 8,
+      "radius_fraction": [3, 8],
+      "external_points": {
+        "a": [0, 0],
+        "b": [4, 0],
+        "c": [1, 3]
+      },
+      "optical": {
+        "wavelength_m": 532e-9,
+        "dx_m": 10e-6,
+        "dy_m": 10e-6,
+        "z_factor": 0.5,
+        "iterations": 20
+      },
+      "is_negative_control": false
+    },
+    {
+      "task_id": "task_03_xyz_negative_control",
+      "description": "Unsupported XYZ command, verifying rejection before solver (negative control)",
+      "word": "XYZ",
+      "font": "ROMAN",
+      "scale": 8,
+      "radius_fraction": [3, 8],
+      "external_points": {
+        "a": [0, 0],
+        "b": [4, 0],
+        "c": [1, 3]
+      },
+      "optical": {
+        "wavelength_m": 532e-9,
+        "dx_m": 10e-6,
+        "dy_m": 10e-6,
+        "z_factor": 0.5,
+        "iterations": 20
+      },
+      "is_negative_control": true
+    },
+    {
+      "task_id": "task_04_perp_skewed_narrow",
+      "description": "PERP command with NARROW deformed font, thin stroke, skewed points, and He-Ne red laser",
+      "word": "PERP",
+      "font": "NARROW",
+      "scale": 8,
+      "radius_fraction": [2, 8],
+      "external_points": {
+        "a": [-2, -1],
+        "b": [2, 3],
+        "c": [0, 4]
+      },
+      "optical": {
+        "wavelength_m": 632.8e-9,
+        "dx_m": 12e-6,
+        "dy_m": 12e-6,
+        "z_factor": 0.4,
+        "iterations": 25
+      },
+      "is_negative_control": false
+    },
+    {
+      "task_id": "task_05_midp_thick_offset",
+      "description": "MIDP command with thick stroke radius, offset coordinates, and Argon blue laser",
+      "word": "MIDP",
+      "font": "ROMAN",
+      "scale": 10,
+      "radius_fraction": [4, 8],
+      "external_points": {
+        "a": [1, 2],
+        "b": [5, 6]
+      },
+      "optical": {
+        "wavelength_m": 488e-9,
+        "dx_m": 8e-6,
+        "dy_m": 8e-6,
+        "z_factor": 0.6,
+        "iterations": 20
+      },
+      "is_negative_control": false
+    },
+    {
+      "task_id": "task_06_coll_composite",
+      "description": "COLL command testing collinearity and distance reflection",
+      "word": "COLL",
+      "font": "ROMAN",
+      "scale": 8,
+      "radius_fraction": [3, 8],
+      "external_points": {
+        "a": [0, 0],
+        "b": [3, 0]
+      },
+      "optical": {
+        "wavelength_m": 532e-9,
+        "dx_m": 10e-6,
+        "dy_m": 10e-6,
+        "z_factor": 0.5,
+        "iterations": 20
+      },
+      "is_negative_control": false
+    }
+  ]
+}
