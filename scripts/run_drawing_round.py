@@ -7,9 +7,13 @@ search is `geometry_drawing_program.synthesise_for`, the drawing is
 `geometry_ink`, and what one round leaves for the next is
 `geometry_drawing_experience`.
 
-The directive is Japanese prose and the formal requirement beside it was written
-by a person. That is recorded with every task: nothing here reads natural
-language.
+Both the directive and the formal requirement beside it were written by the
+development agent that built this experiment. The user wrote neither. The
+directive is decoration over a requirement that was written first: nothing reads
+it, nothing is derived from it, and it is kept only so that a reader can see in
+prose what the requirement says. That is recorded with every task, in those
+words, because an earlier version of this file called the requirement
+"human-written", which was false.
 
     python scripts/run_drawing_round.py --output reports/drawing-round
 """
@@ -52,21 +56,21 @@ def tasks():
     line = {"p0": (F(0), F(0)), "p1": (F(8), F(0)), "p2": (F(2), F(5))}
     disk = {"p0": (F(4), F(4)), "p1": (F(8), F(4)), "p2": (F(0), F(0))}
     made = [
-        {"name": "curve-seven",
+        {"name": "curve-seven", "figure_depth": 6,
          "directive": "三点を与える。その三点が定める二次曲線の、八等分点を描け。",
          "assumptions": "入力は三点。曲線は二次で、八等分は媒介変数 t = k/8 の意味。",
          "inputs": triangle, "depth": 3,
          "requirement": {"must_contain": [quadratic(F(k, 8), *triangle.values())
                                           for k in (1, 2, 3, 4, 5, 6, 7)], "depth": 3},
          "scoring": {"must_contain": "all", "max_points": 15, "max_extra": 8}},
-        {"name": "curve-three",
+        {"name": "curve-three", "figure_depth": 6,
          "directive": "同じ三点で、中央と四分の一と四分の三の点だけを要求する。",
          "assumptions": "弱い仕様。これを満たす構成は複数ある。",
          "inputs": triangle, "depth": 3,
          "requirement": {"must_contain": [quadratic(F(k, 4), *triangle.values())
                                           for k in (1, 2, 3)], "depth": 3},
          "scoring": {"must_contain": "all", "max_points": 15, "max_extra": 12}},
-        {"name": "lattice-row",
+        {"name": "lattice-row", "figure_depth": 7,
          "directive": "単位胞の四隅を与える。その胞を横に繰り返し、一直線上に相異なる格子点を六つ以上描け。",
          "assumptions": "入力は正方形の四隅。繰り返しは一方向、有限回。与えた点は答えに数えない。",
          "inputs": cell, "depth": 4,
@@ -75,7 +79,7 @@ def tasks():
                          "distinct_count": 6, "exclude_inputs": True, "depth": 4},
          "scoring": {"must_contain": "all", "max_points": 30, "min_distinct": 6,
                      "no_input_points": True, "all_satisfy": "every point"}},
-        {"name": "lattice-two-directions",
+        {"name": "lattice-two-directions", "figure_depth": 7,
          "directive": "同じ胞を縦と横の二方向に繰り返し、格子の一部として相異なる点を八つ以上描け。",
          "assumptions": "二方向。各方向の繰り返しは有限回。与えた点は答えに数えない。",
          "inputs": cell, "depth": 4,
@@ -84,7 +88,7 @@ def tasks():
                          "distinct_count": 8, "exclude_inputs": True, "depth": 4},
          "scoring": {"must_contain": "all", "max_points": 40, "min_distinct": 8,
                      "no_input_points": True}},
-        {"name": "orbit-quarter-turn",
+        {"name": "orbit-quarter-turn", "figure_depth": 6,
          "directive": "正方形とその外の一点を与える。正方形の中心まわりに四回対称な軌道を描け。",
          "assumptions": "四回対称は、与えられた正方形の中心と辺が決める。",
          "inputs": dict(cell, q=(F(4), F(1))), "depth": 3,
@@ -92,13 +96,13 @@ def tasks():
                          "distinct_count": 4, "exclude_inputs": True, "depth": 3},
          "scoring": {"must_contain": "all", "max_points": 20, "min_distinct": 4,
                      "no_input_points": True}},
-        {"name": "midpoint-chain",
+        {"name": "midpoint-chain", "figure_depth": 8,
          "directive": "二点を与える。両者の間を半分ずつ詰めていく点列を描け。",
          "assumptions": "入力は二点。点列は有限で、深さで決まる。",
          "inputs": {"p0": (F(0), F(0)), "p1": (F(16), F(0))}, "depth": 5,
          "requirement": {"must_contain": [(F(8), F(0)), (F(4), F(0)), (F(2), F(0))], "depth": 5},
          "scoring": {"must_contain": "all", "max_points": 40, "max_extra": 37}},
-        {"name": "all-on-a-line",
+        {"name": "all-on-a-line", "figure_depth": 6,
          "directive": "三点を与える。最初の二点が決める直線の上に、与えた点とは別の点を五つ以上描け。",
          "assumptions": "関係だけの仕様。どの点を描くかは指定しない。与えた点をそのまま出すのは答えにしない。",
          "inputs": line, "depth": 3,
@@ -106,7 +110,7 @@ def tasks():
                          "distinct_count": 5, "exclude_inputs": True, "depth": 3},
          "scoring": {"all_satisfy": "every point", "max_points": 30, "min_distinct": 5,
                      "no_input_points": True}},
-        {"name": "inside-a-disk",
+        {"name": "inside-a-disk", "figure_depth": 6,
          "directive": "中心と半径を決める二点、そして外の一点を与える。その円盤の中に、与えた点とは別の点を五つ以上置け。",
          "assumptions": "円盤は中心 p0、半径 |p0 p1|。領域だけの仕様。与えた点をそのまま出すのは答えにしない。",
          "inputs": disk, "depth": 3,
@@ -114,7 +118,7 @@ def tasks():
                          "distinct_count": 5, "exclude_inputs": True, "depth": 3},
          "scoring": {"all_inside": "every point", "max_points": 30, "min_distinct": 5,
                      "no_input_points": True}},
-        {"name": "curve-inside-a-disk",
+        {"name": "curve-inside-a-disk", "figure_depth": 6,
          "directive": "曲線の点を描き、そのすべてを指定の円盤の中に収めよ。",
          "assumptions": "曲線の三点と円盤の二点を同時に与える。二種類の条件の組み合わせ。",
          "inputs": {"p0": (F(2), F(2)), "p1": (F(4), F(6)), "p2": (F(6), F(2)),
@@ -124,7 +128,7 @@ def tasks():
                          "distinct_count": 3, "exclude_inputs": True, "depth": 3},
          "scoring": {"must_contain": "all", "all_inside": "every point", "max_points": 20,
                      "min_distinct": 3, "no_input_points": True}},
-        {"name": "count-eight",
+        {"name": "count-eight", "figure_depth": 6,
          "directive": "三点を与える。ちょうど七つの点を描け。",
          "assumptions": "個数だけの仕様に、直線上という関係を添える。",
          "inputs": line, "depth": 3,
@@ -174,17 +178,38 @@ def score(task, program, verification, points):
 # Drawing, including the states on the way
 # ---------------------------------------------------------------------------
 
-PAPER = (F(-4), F(-4), F(12), F(8))
-RADIUS = F(1, 12)
+PAPER = (F(-6), F(-6), F(14), F(9))
+RADIUS = F(1, 16)
 
 
-def draw(name, points, output, *, pixels_per_unit=80):
+def ring(centre, radius):
+    """A given point marked by a ring of the same dots, so it reads as given.
+
+    The convention is unchanged — every mark is a black disk of the one radius —
+    and a ring is just eight more of them, at rational offsets, so the figure
+    stays exact.
+    """
+    x, y = dp.exact(centre)
+    offsets = [(1, 0), (-1, 0), (0, 1), (0, -1),
+               (F(7, 10), F(7, 10)), (F(-7, 10), F(7, 10)),
+               (F(7, 10), F(-7, 10)), (F(-7, 10), F(-7, 10))]
+    return [(x+radius*dx, y+radius*dy) for dx, dy in offsets]
+
+
+def draw(name, points, output, *, given=None, pixels_per_unit=70):
+    """The constructed points, and the given points ringed so the two are told apart."""
     marks = [((0, index), dp.exact(point)) for index, point in enumerate(points)]
+    if given:
+        for number, value in enumerate(given.values()):
+            for index, mark in enumerate(ring(value, F(1, 4))):
+                marks.append(((1, number*100+index), mark))
     svg = ink.write_svg(output/f"{name}.svg", marks, RADIUS, PAPER,
                         pixels_per_unit=pixels_per_unit)
     png = ink.write_png(output/f"{name}.png", marks, RADIUS, PAPER,
                         pixels_per_unit=pixels_per_unit)
-    return {"image": name, "dots": len(marks), "svg": svg["path"], "png": png["path"],
+    return {"image": name, "dots": len(marks), "constructed": len(points),
+            "given_points_ringed": len(given or ()),
+            "svg": svg["path"], "png": png["path"],
             "svg_check": ink.check_svg_is_one_radius_black_circles(output/f"{name}.svg")}
 
 
@@ -218,8 +243,10 @@ def attempt(task, *, record, update, output, levels, node_budget, draw_images=Tr
     row = {"task": task["name"], "directive": task["directive"],
            "assumptions": task["assumptions"],
            "formal_requirement": task["requirement"],
-           "formal_requirement_written_by": "a person, beside the directive; no natural language "
-                                            "was read by the system",
+           "formal_requirement_written_by": "the development agent that built this experiment, "
+                                            "not the user and not derived from the directive; the "
+                                            "directive is prose written over the requirement, and "
+                                            "nothing reads it",
            "inputs": {k: [str(v) for v in value] for k, value in task["inputs"].items()},
            "scoring_fixed_in_advance": task["scoring"],
            "solved": result["solved"], "seconds": seconds,
@@ -248,11 +275,19 @@ def attempt(task, *, record, update, output, levels, node_budget, draw_images=Tr
                                   if c["rule"].startswith("rule:")}),
                states=states(program, task["inputs"], depth, table, all_rules))
     if draw_images:
-        images = [draw(f"{task['name']}-final", points, output)]
+        # the figure is drawn at the depth the task names for its figure, which is
+        # not the depth the requirement is checked at: a requirement is met by the
+        # smallest witness, and a witness of five points is not a picture
+        figure_depth = task.get("figure_depth", depth)
+        figure, _ = dp.run(program, task["inputs"], figure_depth, table=table, rules=all_rules)
+        row["figure_depth"] = figure_depth
+        row["figure_points"] = len(figure)
+        images = [draw(f"{task['name']}-figure", figure, output, given=task["inputs"])]
         for state in row["states"][:-1]:
             partial, _ = dp.run(program, task["inputs"], state["depth"], table=table,
                                 rules=all_rules)
-            images.append(draw(f"{task['name']}-depth{state['depth']}", partial, output))
+            images.append(draw(f"{task['name']}-depth{state['depth']}", partial, output,
+                               given=task["inputs"]))
         row["images"] = images
     experience.note_use(record, macros=row["used_macros"], rules=row["used_rules"])
     experience.remember(record, task=task["name"], program=program,
@@ -283,8 +318,10 @@ def main():
         "geometric_core": {k: sorted(v) if isinstance(v, dict) else v
                            for k, v in dp.geometric_core().items()},
         "protocol": {
-            "directive": "Japanese prose, written by a person",
-            "formal_requirement": "written by a person beside it; nothing reads natural language",
+            "directive": "Japanese prose written by the development agent, for a reader",
+            "formal_requirement": "written by the development agent, first; the directive is prose "
+                                  "over it. Nothing reads natural language, and no step here turns "
+                                  "prose into a requirement",
             "search": "geometry_drawing_program.synthesise_for, one search for every task",
             "no_solver_per_picture": "the tasks differ in inputs, shared variables, what repeats "
                                      "and which conditions must hold, not in code",
