@@ -443,6 +443,28 @@ def check(program, inputs, depth, requirement, *, table=None, library=None, rule
         offenders = [point for point in emitted if point in given]
         checks.append({"check": "no emitted point is one of the given points",
                        "passed": not offenders, "produced": len(offenders)})
+    for condition in requirement.get("closed_under", ()):
+        missing = []
+        for value in sorted(emitted):
+            moved = apply_map(condition, value, inputs, table)
+            if moved is not None and moved not in emitted:
+                missing.append(moved)
+        checks.append({"check": f"the emitted set is closed under {condition['name']}",
+                       "passed": not missing, "produced": len(missing),
+                       "decided": "by checking every emitted point, at the depth it was run at; "
+                                  "this says nothing about other depths",
+                       "first_missing": [str(v) for v in missing[0]] if missing else None})
+    for condition in requirement.get("orbit_of", ()):
+        orbit = generate_orbit(condition, inputs, table, bound=condition.get("bound", 64))
+        checks.append({"check": f"the emitted set is the orbit of {condition['seed']} under "
+                                f"{[m['name'] for m in condition['maps']]}",
+                       "passed": orbit == emitted,
+                       "orbit_size": len(orbit),
+                       "missing_from_the_drawing": len(orbit-emitted),
+                       "drawn_but_not_in_the_orbit": len(emitted-orbit),
+                       "decided": "by generating the orbit to its bound and comparing the two "
+                                  "sets; an orbit that did not close inside the bound is "
+                                  "reported rather than assumed"})
     for condition in requirement.get("all_satisfy", ()):
         predicate, arguments = condition["predicate"], condition["points"]
         holds = []
@@ -491,6 +513,42 @@ def macro_digest(macros):
 # ---------------------------------------------------------------------------
 # Searching for a program that meets a requirement, not only a list of points
 # ---------------------------------------------------------------------------
+
+def apply_map(condition, value, inputs, table):
+    """One named construction, applied to one point. Returns None when it refuses."""
+    coordinates = {name: exact(given) for name, given in inputs.items()}
+    coordinates[condition["hole"]] = exact(value)
+    for statement in condition["body"]:
+        xy, _ = apply_operator(statement["op"], statement["args"], coordinates, table, Counter())
+        if xy is None:
+            return None
+        coordinates[statement["let"]] = exact(xy)
+    return coordinates[condition["result"]]
+
+
+def generate_orbit(condition, inputs, table, *, bound=64):
+    """The orbit of a seed under a finite list of maps, generated to a bound.
+
+    Closing inside the bound is not assumed: a set that is still growing when the
+    bound is reached comes back as it stands, and `check` reports the difference
+    rather than calling it a failure of the drawing.
+    """
+    seed = exact(inputs[condition["seed"]]) if condition["seed"] in inputs \
+        else exact(condition["seed"])
+    orbit, frontier = {seed}, [seed]
+    while frontier and len(orbit) < bound:
+        value = frontier.pop()
+        for mapping in condition["maps"]:
+            moved = apply_map(mapping, value, inputs, table)
+            if moved is not None and moved not in orbit:
+                orbit.add(moved)
+                frontier.append(moved)
+    if condition.get("exclude_seed"):
+        orbit.discard(seed)
+    for name in condition.get("exclude", ()):
+        orbit.discard(exact(inputs[name]))
+    return orbit
+
 
 def per_point_conditions(requirement, inputs):
     """The part of a requirement that a single point can be judged against.
