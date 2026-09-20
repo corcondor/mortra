@@ -90,6 +90,10 @@ on:
       - "math_os_prototype/wave_optics_system.py"
       - "math_os_prototype/benchmark_wave_optics.py"
       - "tests/test_wave_optics_system.py"
+      - "math_os_prototype/geometry_instruction_parser.py"
+      - "math_os_prototype/geometry_recognition_policy.py"
+      - "tests/test_geometry_instruction_and_optics.py"
+      - "scripts/demo_geometric_reading_and_solving.py"
       - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
   pull_request:
     paths:
@@ -160,6 +164,10 @@ on:
       - "math_os_prototype/wave_optics_system.py"
       - "math_os_prototype/benchmark_wave_optics.py"
       - "tests/test_wave_optics_system.py"
+      - "math_os_prototype/geometry_instruction_parser.py"
+      - "math_os_prototype/geometry_recognition_policy.py"
+      - "tests/test_geometry_instruction_and_optics.py"
+      - "scripts/demo_geometric_reading_and_solving.py"
       - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
   workflow_dispatch:
     inputs:
@@ -214,7 +222,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p reports
-          python -m pytest -q tests/test_vendored_newclid.py tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py tests/test_geometry_relational_dsl.py tests/test_geometry_relational_edit.py tests/test_algebraic_structures.py tests/test_operation_integration.py tests/test_structure_discovery.py tests/test_geometry_self_improvement.py tests/test_geometry_backsubstitution.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py tests/test_geometry_sign_and_space.py tests/test_wave_optics_system.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
+          python -m pytest -q tests/test_vendored_newclid.py tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py tests/test_geometry_relational_dsl.py tests/test_geometry_relational_edit.py tests/test_algebraic_structures.py tests/test_operation_integration.py tests/test_structure_discovery.py tests/test_geometry_self_improvement.py tests/test_geometry_backsubstitution.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py tests/test_geometry_sign_and_space.py tests/test_wave_optics_system.py tests/test_geometry_instruction_and_optics.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
       - name: Verify unchanged upstream parsing and state tests
         shell: bash
         run: |
@@ -233,6 +241,11 @@ jobs:
         run: |
           mkdir -p reports/wave-optics
           python math_os_prototype/benchmark_wave_optics.py --output reports/wave-optics 2>&1 | tee reports/wave-optics.log
+      - name: Execute end-to-end geometric reading, solving, and wave optics demo
+        shell: bash
+        run: |
+          mkdir -p reports/geometric-reading-demo reports/recognition-policy reports/wave-optics-roundtrip
+          python scripts/demo_geometric_reading_and_solving.py 2>&1 | tee reports/geometric-reading-demo.log
       - name: Frozen normal-entry geometry comparison
         if: ${{ !contains(env.EXPERIMENT_CONFIG, 'theory-geometry-autonomous-solve') && !contains(env.EXPERIMENT_CONFIG, 'relational-dsl') && !contains(env.EXPERIMENT_CONFIG, 'algebraic-structures') }}
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
@@ -276,6 +289,10 @@ jobs:
             reports/sign-and-space.log
             reports/wave-optics/
             reports/wave-optics.log
+            reports/geometric-reading-demo/
+            reports/geometric-reading-demo.log
+            reports/recognition-policy/
+            reports/wave-optics-roundtrip/
   exact-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 15
