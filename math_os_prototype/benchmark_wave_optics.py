@@ -213,5 +213,17 @@ def run_benchmark() -> dict:
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Wave optics benchmark")
+    parser.add_argument("--output", type=str, default=None, help="Output directory for benchmark JSON")
+    args = parser.parse_args()
+
     res = run_benchmark()
-    print(json.dumps(res, indent=2))
+    if args.output:
+        out_dir = Path(args.output)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_file = out_dir / "benchmark_wave_optics.json"
+        out_file.write_text(json.dumps(res, indent=2), encoding="utf-8")
+        print(f"Results written to {out_file}")
+    else:
+        print(json.dumps(res, indent=2))
