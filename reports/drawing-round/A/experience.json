@@ -1,0 +1,815 @@
+{
+ "version": 1,
+ "macros": [
+  {
+   "name": "macro:2752458dbddc",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    },
+    {
+     "out": "v2",
+     "prim": "midpoint",
+     "args": [
+      "p1",
+      "p2"
+     ]
+    },
+    {
+     "out": "v3",
+     "prim": "midpoint",
+     "args": [
+      "v1",
+      "v2"
+     ]
+    }
+   ],
+   "result": "v3",
+   "primitive_steps": 3,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "curve-seven",
+   "uses": 0
+  },
+  {
+   "name": "macro:c5e9803a9998",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "midpoint",
+     "args": [
+      "p0",
+      "p2"
+     ]
+    },
+    {
+     "out": "v2",
+     "prim": "midpoint",
+     "args": [
+      "p1",
+      "v1"
+     ]
+    }
+   ],
+   "result": "v2",
+   "primitive_steps": 2,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "curve-three",
+   "uses": 0
+  },
+  {
+   "name": "macro:bf3c931900de",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "mirror",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    }
+   ],
+   "result": "v1",
+   "primitive_steps": 1,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "lattice-row",
+   "uses": 0
+  },
+  {
+   "name": "macro:1c02ace7497f",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "mirror",
+     "args": [
+      "p0",
+      "p2"
+     ]
+    }
+   ],
+   "result": "v1",
+   "primitive_steps": 1,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "lattice-two-directions",
+   "uses": 0
+  },
+  {
+   "name": "macro:c1460681036a",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3",
+    "q"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "mirror",
+     "args": [
+      "p1",
+      "p0"
+     ]
+    },
+    {
+     "out": "v2",
+     "prim": "mirror",
+     "args": [
+      "p2",
+      "p3"
+     ]
+    },
+    {
+     "out": "v3",
+     "prim": "midpoint",
+     "args": [
+      "v1",
+      "v2"
+     ]
+    }
+   ],
+   "result": "v3",
+   "primitive_steps": 3,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "orbit-quarter-turn",
+   "uses": 0
+  },
+  {
+   "name": "macro:c9d7c756d5fb",
+   "params": [
+    "p0",
+    "p1"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    }
+   ],
+   "result": "v1",
+   "primitive_steps": 1,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "midpoint-chain",
+   "uses": 0
+  },
+  {
+   "name": "macro:53bcc7fb5e5a",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3",
+    "p4"
+   ],
+   "steps": [
+    {
+     "out": "v1",
+     "prim": "midpoint",
+     "args": [
+      "p1",
+      "p3"
+     ]
+    },
+    {
+     "out": "v2",
+     "prim": "midpoint",
+     "args": [
+      "p0",
+      "v1"
+     ]
+    }
+   ],
+   "result": "v2",
+   "primitive_steps": 2,
+   "guarantees": null,
+   "note": "a search abstraction, not a certified operation: it shortens the enumeration and states nothing about every configuration",
+   "from": "curve-inside-a-disk",
+   "uses": 0
+  }
+ ],
+ "rules": [
+  {
+   "key": "fd85072f4ebf145945b2b45e42b7c732d11e964a673ec83313c646b21cb8af71",
+   "name": "rule:fd85072f4ebf",
+   "from": "curve-seven",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    },
+    {
+     "let": "v2",
+     "op": "midpoint",
+     "args": [
+      "p1",
+      "p2"
+     ]
+    },
+    {
+     "let": "v3",
+     "op": "midpoint",
+     "args": [
+      "v1",
+      "v2"
+     ]
+    }
+   ],
+   "emit": [
+    "v3"
+   ],
+   "calls": [
+    {
+     "rule": "rule:fd85072f4ebf",
+     "args": [
+      "p0",
+      "v1",
+      "v3"
+     ]
+    },
+    {
+     "rule": "rule:fd85072f4ebf",
+     "args": [
+      "p2",
+      "v2",
+      "v3"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "abad74094a1e715dfb2a6160fb94c4ee58340c4521744748c4d75146e9b6433b",
+   "name": "rule:abad74094a1e",
+   "from": "curve-three",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "p2"
+     ]
+    },
+    {
+     "let": "v2",
+     "op": "midpoint",
+     "args": [
+      "p1",
+      "v1"
+     ]
+    }
+   ],
+   "emit": [
+    "v2"
+   ],
+   "calls": [
+    {
+     "rule": "rule:abad74094a1e",
+     "args": [
+      "p1",
+      "p0",
+      "v2"
+     ]
+    },
+    {
+     "rule": "rule:abad74094a1e",
+     "args": [
+      "p1",
+      "p2",
+      "v2"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "2583dbf006c76a111298245d3c01ae1b244d665c3d16bc925232c61777d3224b",
+   "name": "rule:2583dbf006c7",
+   "from": "lattice-row",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "mirror",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    }
+   ],
+   "emit": [
+    "v1"
+   ],
+   "calls": [
+    {
+     "rule": "rule:2583dbf006c7",
+     "args": [
+      "p1",
+      "v1",
+      "p0",
+      "p2"
+     ]
+    },
+    {
+     "rule": "rule:2583dbf006c7",
+     "args": [
+      "p0",
+      "v1",
+      "p1",
+      "p2"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "fde68089f8326ba9ed59d314d6fc0014e7ece3dcc7c9459ec816bae6589f34da",
+   "name": "rule:fde68089f832",
+   "from": "lattice-two-directions",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "mirror",
+     "args": [
+      "p0",
+      "p2"
+     ]
+    }
+   ],
+   "emit": [
+    "v1"
+   ],
+   "calls": [
+    {
+     "rule": "rule:fde68089f832",
+     "args": [
+      "p0",
+      "p2",
+      "p3",
+      "p1"
+     ]
+    },
+    {
+     "rule": "rule:fde68089f832",
+     "args": [
+      "p1",
+      "p3",
+      "p2",
+      "p0"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "e3ea494999bf303cf2af0fff922b88386393bf20b4b9b02a1e2e0090fd95d9dd",
+   "name": "rule:e3ea494999bf",
+   "from": "orbit-quarter-turn",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3",
+    "q"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "mirror",
+     "args": [
+      "p1",
+      "p0"
+     ]
+    },
+    {
+     "let": "v2",
+     "op": "mirror",
+     "args": [
+      "p2",
+      "p3"
+     ]
+    },
+    {
+     "let": "v3",
+     "op": "midpoint",
+     "args": [
+      "v1",
+      "v2"
+     ]
+    }
+   ],
+   "emit": [
+    "v3"
+   ],
+   "calls": [
+    {
+     "rule": "rule:e3ea494999bf",
+     "args": [
+      "p0",
+      "p2",
+      "v1",
+      "p1",
+      "p3"
+     ]
+    },
+    {
+     "rule": "rule:e3ea494999bf",
+     "args": [
+      "p0",
+      "p2",
+      "v1",
+      "q",
+      "v2"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "6969d435173d9b0d51c30adf2cef976616c26a3347f4fcc2d8b9b97de9b82707",
+   "name": "rule:6969d435173d",
+   "from": "midpoint-chain",
+   "params": [
+    "p0",
+    "p1"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    }
+   ],
+   "emit": [
+    "v1"
+   ],
+   "calls": [
+    {
+     "rule": "rule:6969d435173d",
+     "args": [
+      "p0",
+      "v1"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "34b53c18e8f6ab948c906b1d2e30cce46d96bd7ca34c69bf681c8b0bc5db680b",
+   "name": "rule:34b53c18e8f6",
+   "from": "all-on-a-line",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    }
+   ],
+   "emit": [
+    "v1"
+   ],
+   "calls": [
+    {
+     "rule": "rule:34b53c18e8f6",
+     "args": [
+      "p0",
+      "v1",
+      "p1"
+     ]
+    },
+    {
+     "rule": "rule:34b53c18e8f6",
+     "args": [
+      "p1",
+      "v1",
+      "p0"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "d84732aa95feb72abbdb87edef7c68edda59fcae36ebd16afd5d0a0f0b70795f",
+   "name": "rule:d84732aa95fe",
+   "from": "inside-a-disk",
+   "params": [
+    "p0",
+    "p1",
+    "p2"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "p1"
+     ]
+    }
+   ],
+   "emit": [
+    "v1"
+   ],
+   "calls": [
+    {
+     "rule": "rule:d84732aa95fe",
+     "args": [
+      "p0",
+      "p2",
+      "p1"
+     ]
+    },
+    {
+     "rule": "rule:d84732aa95fe",
+     "args": [
+      "p0",
+      "v1",
+      "p1"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  },
+  {
+   "key": "4aa0d2243890ae3bdaa08c8cafc36871027eda539f0199bf844f7a4f8b1bf6ad",
+   "name": "rule:4aa0d2243890",
+   "from": "curve-inside-a-disk",
+   "params": [
+    "p0",
+    "p1",
+    "p2",
+    "p3",
+    "p4"
+   ],
+   "body": [
+    {
+     "let": "v1",
+     "op": "midpoint",
+     "args": [
+      "p1",
+      "p3"
+     ]
+    },
+    {
+     "let": "v2",
+     "op": "midpoint",
+     "args": [
+      "p0",
+      "v1"
+     ]
+    }
+   ],
+   "emit": [
+    "v2"
+   ],
+   "calls": [
+    {
+     "rule": "rule:4aa0d2243890",
+     "args": [
+      "p0",
+      "p2",
+      "p4",
+      "p3",
+      "p1"
+     ]
+    }
+   ],
+   "recursive": true,
+   "uses": 0
+  }
+ ],
+ "operator_uses": {
+  "midpoint": 12,
+  "mirror": 4
+ },
+ "solved": [
+  {
+   "task": "curve-seven",
+   "program": "fd85072f4ebf145945b2b45e42b7c732d11e964a673ec83313c646b21cb8af71",
+   "costs": {
+    "nodes": 89,
+    "primitive_applications": 89,
+    "duplicate_values": 35,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "hits": 2,
+    "bodies_tried": 2,
+    "programs_checked": 226,
+    "call_candidates": 178,
+    "call_combinations": 46
+   }
+  },
+  {
+   "task": "curve-three",
+   "program": "abad74094a1e715dfb2a6160fb94c4ee58340c4521744748c4d75146e9b6433b",
+   "costs": {
+    "nodes": 54,
+    "primitive_applications": 54,
+    "duplicate_values": 23,
+    "predicate_prover_calls": 24,
+    "guard_checks": 24,
+    "hits": 1,
+    "bodies_tried": 1,
+    "programs_checked": 61,
+    "call_candidates": 59,
+    "call_combinations": 1
+   }
+  },
+  {
+   "task": "lattice-row",
+   "program": "2583dbf006c76a111298245d3c01ae1b244d665c3d16bc925232c61777d3224b",
+   "costs": {
+    "nodes": 13,
+    "primitive_applications": 13,
+    "duplicate_values": 7,
+    "hits": 1,
+    "bodies_tried": 1,
+    "programs_checked": 126,
+    "call_candidates": 119,
+    "call_combinations": 6
+   }
+  },
+  {
+   "task": "lattice-two-directions",
+   "program": "fde68089f8326ba9ed59d314d6fc0014e7ece3dcc7c9459ec816bae6589f34da",
+   "costs": {
+    "nodes": 14,
+    "primitive_applications": 14,
+    "duplicate_values": 7,
+    "hits": 2,
+    "bodies_tried": 2,
+    "programs_checked": 289,
+    "call_candidates": 238,
+    "call_combinations": 49
+   }
+  },
+  {
+   "task": "orbit-quarter-turn",
+   "program": "e3ea494999bf303cf2af0fff922b88386393bf20b4b9b02a1e2e0090fd95d9dd",
+   "costs": {
+    "nodes": 1808,
+    "primitive_applications": 1808,
+    "duplicate_values": 848,
+    "hits": 18,
+    "bodies_tried": 18,
+    "programs_checked": 7987,
+    "call_candidates": 7200,
+    "recursion_budget_reached": 18,
+    "call_combinations": 769,
+    "predicate_prover_calls": 600,
+    "guard_checks": 344,
+    "programs_refused": 879
+   }
+  },
+  {
+   "task": "midpoint-chain",
+   "program": "6969d435173d9b0d51c30adf2cef976616c26a3347f4fcc2d8b9b97de9b82707",
+   "costs": {
+    "nodes": 1,
+    "primitive_applications": 1,
+    "hits": 1,
+    "bodies_tried": 1,
+    "programs_checked": 2,
+    "call_candidates": 1
+   }
+  },
+  {
+   "task": "all-on-a-line",
+   "program": "34b53c18e8f6ab948c906b1d2e30cce46d96bd7ca34c69bf681c8b0bc5db680b",
+   "costs": {
+    "nodes": 1,
+    "primitive_applications": 1,
+    "hits": 1,
+    "bodies_tried": 1,
+    "programs_checked": 37,
+    "call_candidates": 23,
+    "call_combinations": 13
+   }
+  },
+  {
+   "task": "inside-a-disk",
+   "program": "d84732aa95feb72abbdb87edef7c68edda59fcae36ebd16afd5d0a0f0b70795f",
+   "costs": {
+    "nodes": 1,
+    "primitive_applications": 1,
+    "hits": 1,
+    "bodies_tried": 1,
+    "programs_checked": 35,
+    "call_candidates": 23,
+    "call_combinations": 11
+   }
+  },
+  {
+   "task": "curve-inside-a-disk",
+   "program": "4aa0d2243890ae3bdaa08c8cafc36871027eda539f0199bf844f7a4f8b1bf6ad",
+   "costs": {
+    "nodes": 406,
+    "primitive_applications": 406,
+    "duplicate_values": 316,
+    "predicate_prover_calls": 600,
+    "guard_checks": 344,
+    "hits": 7,
+    "bodies_tried": 7,
+    "programs_checked": 2764,
+    "call_candidates": 2487,
+    "programs_refused": 240,
+    "recursion_budget_reached": 6,
+    "call_combinations": 270
+   }
+  },
+  {
+   "task": "count-eight",
+   "program": "34b53c18e8f6ab948c906b1d2e30cce46d96bd7ca34c69bf681c8b0bc5db680b",
+   "costs": {
+    "nodes": 1,
+    "primitive_applications": 1,
+    "hits": 1,
+    "bodies_tried": 1,
+    "programs_checked": 37,
+    "call_candidates": 23,
+    "call_combinations": 13
+   }
+  }
+ ],
+ "refused": []
+}

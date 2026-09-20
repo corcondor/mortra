@@ -217,7 +217,7 @@ def _run(program, inputs, depth, table, counter, rules, emitted, node_budget):
 # ---------------------------------------------------------------------------
 
 def candidate_bodies(targets, inputs, *, table=None, library=None, levels=2, node_budget=6000,
-                     counter=None):
+                     counter=None, accept=None, order=None):
     """Which construction over the given points lands on one of the wanted points.
 
     A plain bottom-up enumeration: everything reachable in one step from the
@@ -232,19 +232,29 @@ def candidate_bodies(targets, inputs, *, table=None, library=None, levels=2, nod
     """
     table = table if table is not None else operators(library)
     counter = counter if counter is not None else Counter()
+    order = order or {}
+    # `accept` is what makes a constructed point worth reporting. With wanted
+    # points it is "this is one of them"; with a requirement that names no points
+    # it is the requirement's own per-point conditions. Without either there is
+    # nothing to drive a bottom-up enumeration, and the caller must say so.
     wanted = {exact(point): index for index, point in enumerate(targets)}
+    if accept is None:
+        def accept(point):
+            return wanted.get(point)
     coordinates = {name: exact(value) for name, value in inputs.items()}
     terms = {name: {"op": "var", "name": name} for name in inputs}
     for name, point in list(coordinates.items()):
-        if point in wanted:
+        index = accept(point)
+        if index is not None:
             counter["hits"] += 1
-            yield {"term": terms[name], "target": wanted[point], "level": 0}
+            yield {"term": terms[name], "target": index, "level": 0}
     frontier = list(coordinates)
     for level in range(1, levels+1):
         names = list(coordinates)
         fresh = []
         for arity in sorted({entry["arity"] for entry in table.values()}):
-            for operator, entry in sorted(table.items()):
+            for operator, entry in sorted(table.items(),
+                                          key=lambda item: (-order.get(item[0], 0), item[0])):
                 if entry["arity"] != arity:
                     continue
                 for arguments in permutations(names, arity):
@@ -259,12 +269,13 @@ def candidate_bodies(targets, inputs, *, table=None, library=None, levels=2, nod
                         continue
                     xy = exact(xy)
                     term = {"op": operator, "args": [terms[a] for a in arguments]}
-                    if xy in wanted:
+                    index = accept(xy)
+                    if index is not None:
                         # a wanted point is worth every construction that reaches it, not
                         # only the first: the shortest one need not be the one a recursion
                         # can be built on, and discarding the others by value would hide it
                         counter["hits"] += 1
-                        yield {"term": term, "target": wanted[xy], "level": level}
+                        yield {"term": term, "target": index, "level": level}
                     if xy in coordinates.values():
                         counter["duplicate_values"] += 1
                         continue
@@ -408,10 +419,10 @@ def _close_recursion(candidate, targets, inputs, parameters, name, table, counte
 # Checking a program against what was asked
 # ---------------------------------------------------------------------------
 
-def check(program, inputs, depth, requirement, *, table=None, library=None):
+def check(program, inputs, depth, requirement, *, table=None, library=None, rules=None):
     """Run it and decide every published condition exactly."""
     table = table if table is not None else operators(library)
-    points, counter = run(program, inputs, depth, table=table)
+    points, counter = run(program, inputs, depth, table=table, rules=rules)
     emitted = {exact(point) for point in points}
     checks = []
     for target in requirement.get("must_contain", ()):
@@ -422,6 +433,16 @@ def check(program, inputs, depth, requirement, *, table=None, library=None):
         checks.append({"check": f"the emitted set has {requirement['count']} points",
                        "passed": len(points) == requirement["count"],
                        "produced": len(points)})
+    if "distinct_count" in requirement:
+        # a program that emits the same point again is not drawing more
+        checks.append({"check": f"the emitted set has {requirement['distinct_count']} distinct "
+                                f"points", "passed": len(emitted) >= requirement["distinct_count"],
+                       "produced": len(emitted)})
+    if requirement.get("exclude_inputs"):
+        given = {exact(value) for value in inputs.values()}
+        offenders = [point for point in emitted if point in given]
+        checks.append({"check": "no emitted point is one of the given points",
+                       "passed": not offenders, "produced": len(offenders)})
     for condition in requirement.get("all_satisfy", ()):
         predicate, arguments = condition["predicate"], condition["points"]
         holds = []
@@ -438,7 +459,9 @@ def check(program, inputs, depth, requirement, *, table=None, library=None):
         checks.append({"check": f"every emitted point lies in the disk about {condition['centre']} "
                                 f"through {condition['through']}",
                        "passed": all(inside), "failures": inside.count(False)})
-    return {"passed": all(c["passed"] for c in checks), "checks": checks,
+    passed = sum(1 for c in checks if c["passed"])
+    return {"passed": bool(checks) and passed == len(checks), "checks": checks,
+            "progress": passed, "of": len(checks),
             "points": len(points), "distinct_points": len(emitted), "counter": dict(counter)}
 
 
@@ -463,3 +486,155 @@ def macro_from(program, *, prefix="macro"):
 def macro_digest(macros):
     return digest([[m["name"], m["params"], [[s["prim"], s["args"]] for s in m["steps"]],
                     m["result"]] for m in macros])
+
+
+# ---------------------------------------------------------------------------
+# Searching for a program that meets a requirement, not only a list of points
+# ---------------------------------------------------------------------------
+
+def per_point_conditions(requirement, inputs):
+    """The part of a requirement that a single point can be judged against.
+
+    `must_contain` names points, and then a candidate is worth pursuing when it
+    is one of them. A requirement that names no point still says something about
+    every point it emits — that it satisfies a relation, or lies in a region —
+    and that is what drives the enumeration instead.
+    """
+    conditions = []
+    for condition in requirement.get("all_satisfy", ()):
+        predicate, arguments = condition["predicate"], tuple(condition["points"])
+
+        def holds(point, predicate=predicate, arguments=arguments):
+            coordinates = {name: exact(value) for name, value in inputs.items()}
+            coordinates["z"] = exact(point)
+            return rdsl.atom_holds(predicate, arguments, coordinates)
+        conditions.append(holds)
+    for condition in requirement.get("all_inside", ()):
+        centre = exact(inputs[condition["centre"]])
+        through = exact(inputs[condition["through"]])
+
+        def inside(point, centre=centre, through=through):
+            return ink.in_closed_disk(exact(point), centre, through)
+        conditions.append(inside)
+    if requirement.get("exclude_inputs"):
+        given = {exact(value) for value in inputs.values()}
+
+        def constructed(point, given=given):
+            return exact(point) not in given
+        conditions.append(constructed)
+    return conditions
+
+
+def synthesise_for(requirement, inputs, *, table=None, library=None, rules=None, name="r",
+                   levels=2, node_budget=6000, calls=2, counter=None, order=None,
+                   recursion_budget=400):
+    """A program that meets the requirement, searched for by the requirement itself.
+
+    The body comes from the bottom-up enumeration, filtered by what a single
+    point can be judged against; the recursion is closed by trying the argument
+    tuples the body's names allow, and by calling a rule an earlier search left
+    behind when one is offered. A candidate is accepted only when `check` passes
+    every condition the requirement states.
+    """
+    table = table if table is not None else operators(library)
+    counter = counter if counter is not None else Counter()
+    parameters = list(inputs)
+    depth = requirement.get("depth", 3)
+    targets = list(requirement.get("must_contain", ()))
+    conditions = per_point_conditions(requirement, inputs)
+    if targets:
+        wanted = {exact(point): index for index, point in enumerate(targets)}
+
+        def accept(point):
+            return wanted.get(point)
+    elif conditions:
+        def accept(point):
+            return 0 if all(holds(point) for holds in conditions) else None
+    else:
+        return {"solved": False, "stopped_at": "the requirement",
+                "reason": "it names no point and states nothing a single point can be judged "
+                          "against, so there is nothing to drive the enumeration",
+                "counter": dict(counter)}
+    attempts = []
+    for candidate in candidate_bodies(targets, inputs, table=table, levels=levels,
+                                      node_budget=node_budget, counter=counter,
+                                      accept=accept, order=order):
+        counter["bodies_tried"] += 1
+        outcome = _close_for(candidate, requirement, inputs, parameters, name, table, rules,
+                             counter, calls, depth, recursion_budget)
+        if outcome["solved"]:
+            outcome["counter"] = dict(counter)
+            outcome["nodes_to_success"] = counter["nodes"]
+            outcome["bodies_tried"] = counter["bodies_tried"]
+            return outcome
+        attempts.append({"level": candidate["level"], "reason": outcome.get("reason")})
+    if not attempts:
+        return {"solved": False, "stopped_at": "the body", "counter": dict(counter),
+                "reason": "no construction over the operators produced a point the requirement "
+                          "would accept, within the levels and the node budget allowed"}
+    return {"solved": False, "stopped_at": "the recursion", "counter": dict(counter),
+            "reason": "no candidate body closed into a program that met the requirement",
+            "attempts": attempts[:8]}
+
+
+def _close_for(candidate, requirement, inputs, parameters, name, table, rules, counter, calls,
+               depth, recursion_budget):
+    """Close a body into a program and decide it against the whole requirement."""
+    body, result = term_to_body(candidate["term"])
+    program = {"name": name, "params": parameters, "body": body, "emit": [result], "calls": []}
+    scope = validate(program, table)
+    available = {name: program}
+    for rule_name, rule in (rules or {}).items():
+        available[rule_name] = rule
+
+    def decide(trial):
+        counter["programs_checked"] += 1
+        try:
+            outcome = check(trial, inputs, depth, requirement, table=table,
+                            rules=dict(available, **{name: trial}))
+        except ProgramRefused as refusal:
+            counter["programs_refused"] += 1
+            return {"passed": False, "refused": str(refusal)}
+        return outcome
+
+    verdict = decide(program)
+    if verdict["passed"]:
+        return {"solved": True, "program": program, "verification": verdict,
+                "closed_by": "no recursion was needed"}
+    candidates = []
+    for arguments in permutations(scope, len(parameters)):
+        if list(arguments) == parameters:
+            continue
+        candidates.append({"rule": name, "args": list(arguments)})
+    for rule_name, rule in (rules or {}).items():
+        for arguments in permutations(scope, len(rule["params"])):
+            candidates.append({"rule": rule_name, "args": list(arguments)})
+    useful = []
+    tried = 0
+    for call in candidates:
+        # the budget is per body. Shared across bodies, a round with more
+        # candidate bodies spends it on the early ones and starves the one that
+        # would have closed — which is what adding operators did.
+        if tried >= recursion_budget:
+            counter["recursion_budget_reached"] += 1
+            break
+        tried += 1
+        counter["call_candidates"] += 1
+        trial = dict(program, calls=[call])
+        verdict = decide(trial)
+        if verdict["passed"]:
+            return {"solved": True, "program": trial, "verification": verdict,
+                    "closed_by": f"one call to {call['rule']}"}
+        if verdict.get("progress", 0) > 0 or verdict.get("checks"):
+            useful.append((call, verdict))
+    ranked = sorted(useful, key=lambda item: -sum(1 for c in item[1]["checks"] if c["passed"]))
+    for size in range(2, calls+1):
+        for combination in combinations([call for call, _ in ranked[:10]], size):
+            counter["call_combinations"] += 1
+            trial = dict(program, calls=[dict(call) for call in combination])
+            verdict = decide(trial)
+            if verdict["passed"]:
+                return {"solved": True, "program": trial, "verification": verdict,
+                        "closed_by": f"{size} calls to "
+                                     f"{sorted({call['rule'] for call in combination})}"}
+    return {"solved": False, "reason": "no combination of calls met the requirement"}
