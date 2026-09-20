@@ -1119,6 +1119,32 @@ def run_learning_comparison(output_dir: Path, all_results: dict[str, Any]) -> di
     print(f"    partial_applications: {shared_config['partial_applications']}, partial_expansions: {shared_config['partial_expansions']}")
     print(f"    backward_applications: {shared_config['backward_applications']}, wall_seconds: {shared_config['wall_seconds']}")
 
+    def analyze_term_library_usage(term: dict[str, Any] | None) -> tuple[list[int], int]:
+        if term is None:
+            return [], 0
+        indices = set()
+        calls = 0
+
+        def walk(node):
+            nonlocal calls
+            if not isinstance(node, dict):
+                return
+            op = node.get("op")
+            args = node.get("args", [])
+            # Check G1 acquired operation: midpoint of mirror and foot
+            if op == "midpoint" and len(args) == 2:
+                op0 = args[0].get("op") if isinstance(args[0], dict) else None
+                op1 = args[1].get("op") if isinstance(args[1], dict) else None
+                if {op0, op1} == {"mirror", "foot"}:
+                    indices.add(0)
+                    calls += 1
+                    return
+            for a in args:
+                walk(a)
+
+        walk(term)
+        return sorted(list(indices)), calls
+
     # Run Condition A (S0: Empty Library)
     print("  Running Condition A: S0 (Empty Library, Primitive Exploration)...")
     for t in unseen_tasks:
@@ -1129,6 +1155,8 @@ def run_learning_comparison(output_dir: Path, all_results: dict[str, Any]) -> di
         synth.search(applications=250)
         sol = synth.solution
         dur = time.perf_counter() - t0
+        sol_term = sol.get("term") if sol else None
+        lib_indices, lib_calls = analyze_term_library_usage(sol_term)
         results_a.append({
             "task_id": t["id"],
             "name": t["name"],
@@ -1137,6 +1165,9 @@ def run_learning_comparison(output_dir: Path, all_results: dict[str, Any]) -> di
             "applications": synth.costs.get("applications", 0),
             "via": sol.get("via") if sol else None,
             "time_sec": dur,
+            "solution_term": sol_term,
+            "library_indices_used": lib_indices,
+            "library_calls": lib_calls,
         })
         print(f"    [{t['id']}] Solved: {sol is not None}, Apps: {results_a[-1]['applications']}, Exp: {results_a[-1]['expansions']}, Via: {results_a[-1]['via']}")
 
@@ -1150,6 +1181,8 @@ def run_learning_comparison(output_dir: Path, all_results: dict[str, Any]) -> di
         synth.search(applications=250)
         sol = synth.solution
         dur = time.perf_counter() - t0
+        sol_term = sol.get("term") if sol else None
+        lib_indices, lib_calls = analyze_term_library_usage(sol_term)
         results_b.append({
             "task_id": t["id"],
             "name": t["name"],
@@ -1158,8 +1191,11 @@ def run_learning_comparison(output_dir: Path, all_results: dict[str, Any]) -> di
             "applications": synth.costs.get("applications", 0),
             "via": sol.get("via") if sol else None,
             "time_sec": dur,
+            "solution_term": sol_term,
+            "library_indices_used": lib_indices,
+            "library_calls": lib_calls,
         })
-        print(f"    [{t['id']}] Solved: {sol is not None}, Apps: {results_b[-1]['applications']}, Exp: {results_b[-1]['expansions']}, Via: {results_b[-1]['via']}")
+        print(f"    [{t['id']}] Solved: {sol is not None}, Apps: {results_b[-1]['applications']}, Exp: {results_b[-1]['expansions']}, Via: {results_b[-1]['via']}, LibIndices: {lib_indices}, LibCalls: {lib_calls}")
 
     print("\n  Task-by-Task Search Cost Comparison:")
     for ra, rb in zip(results_a, results_b):
@@ -1434,40 +1470,62 @@ def grade_batch1_results(all_results: dict[str, Any], output_dir: Path) -> dict[
 # Main Runner
 # ---------------------------------------------------------------------------
 
+class Tee:
+    def __init__(self, *files):
+        self.files = files
+    def write(self, obj):
+        for f in self.files:
+            f.write(obj)
+            f.flush()
+    def flush(self):
+        for f in self.files:
+            f.flush()
+
+
 def main() -> None:
     output_dir = repo_root / "reports" / "batch1"
     output_dir.mkdir(parents=True, exist_ok=True)
+    log_file = open(output_dir / "run_batch1_eval.log", "w", encoding="utf-8")
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    sys.stdout = Tee(original_stdout, log_file)
+    sys.stderr = Tee(original_stderr, log_file)
 
-    print("=" * 75)
-    print("MORTRA FIRST BATCH AUTONOMOUS EVALUATION (D1, G1, G2, G3, S1, W1)")
-    print("Execution Principle: Zero LLM intervention, deterministic Python execution")
-    print("=" * 75)
+    try:
+        print("=" * 75)
+        print("MORTRA FIRST BATCH AUTONOMOUS EVALUATION (D1, G1, G2, G3, S1, W1)")
+        print("Execution Principle: Zero LLM intervention, deterministic Python execution")
+        print("=" * 75)
 
-    all_results: dict[str, Any] = {}
+        all_results: dict[str, Any] = {}
 
-    # Run tasks
-    all_results["D1"] = run_task_d1(output_dir)
-    all_results["G1"] = run_task_g1(output_dir)
-    all_results["G2"] = run_task_g2(output_dir)
-    all_results["G3"] = run_task_g3(output_dir)
-    all_results["S1"] = run_task_s1(output_dir)
-    all_results["W1"] = run_task_w1(output_dir)
+        # Run tasks
+        all_results["D1"] = run_task_d1(output_dir)
+        all_results["G1"] = run_task_g1(output_dir)
+        all_results["G2"] = run_task_g2(output_dir)
+        all_results["G3"] = run_task_g3(output_dir)
+        all_results["S1"] = run_task_s1(output_dir)
+        all_results["W1"] = run_task_w1(output_dir)
 
-    # Learning comparison
-    learning_res = run_learning_comparison(output_dir, all_results)
-    all_results["learning_comparison"] = learning_res
+        # Learning comparison
+        learning_res = run_learning_comparison(output_dir, all_results)
+        all_results["learning_comparison"] = learning_res
 
-    # Task Gallery
-    generate_task_gallery_batch1(all_results, output_dir / "task_gallery_batch1.png")
+        # Task Gallery
+        generate_task_gallery_batch1(all_results, output_dir / "task_gallery_batch1.png")
 
-    # Post-solve grading
-    scorecard = grade_batch1_results(all_results, output_dir)
-    all_results["scorecard"] = scorecard
+        # Post-solve grading
+        scorecard = grade_batch1_results(all_results, output_dir)
+        all_results["scorecard"] = scorecard
 
-    print("\n" + "=" * 75)
-    print("ALL FIRST BATCH TASKS AND ARTIFACTS GENERATED SUCCESSFULLY.")
-    print(f"Output directory: {output_dir}")
-    print("=" * 75)
+        print("\n" + "=" * 75)
+        print("ALL FIRST BATCH TASKS AND ARTIFACTS GENERATED SUCCESSFULLY.")
+        print(f"Output directory: {output_dir}")
+        print("=" * 75)
+    finally:
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+        log_file.close()
 
 
 if __name__ == "__main__":

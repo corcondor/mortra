@@ -1,14 +1,10 @@
-C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\scripts\run_batch1_eval.py:741: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
-  plt.tight_layout()
-C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\scripts\run_batch1_eval.py:1005: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
-  plt.tight_layout()
 ===========================================================================
 MORTRA FIRST BATCH AUTONOMOUS EVALUATION (D1, G1, G2, G3, S1, W1)
 Execution Principle: Zero LLM intervention, deterministic Python execution
 ===========================================================================
 
 ======================================================================
-TASK D1: M�͂ǂ̒i�K�ŉ�邩 (Where does 'M' break?)
+TASK D1: Mはどの段階で壊れるか (Where does 'M' break?)
 ======================================================================
   [ROMAN_r1_4] Orig: M (1) | Opt: M (1) | Stage: None (Correct)
   [ROMAN_r3_8] Orig: M (1) | Opt: M (1) | Stage: None (Correct)
@@ -19,7 +15,7 @@ TASK D1: M�͂ǂ̒i�K�ŉ�邩 (Where does 'M' break?)
   -> Generated failure card: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\failure_card_d1.png
 
 ======================================================================
-TASK G1: �قȂ�疢�m�_�\� (Parallel & Congruent)
+TASK G1: 異なる二条件から未知点を構成する (Parallel & Congruent)
 ======================================================================
   G1 Search Status: fallback
   Expansions: 0, Applications: 193
@@ -28,7 +24,7 @@ TASK G1: �قȂ�疢�m�_�\� (Parallel & Congruent)
   -> Generated G1 plot: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\task_g1_construction.png
 
 ======================================================================
-TASK G2: �m�_�̋�𖞂� (Two Congruences)
+TASK G2: 同じ未知点が二つの距離条件を満たす (Two Congruences)
 ======================================================================
   G2 Search Status: None
   Expansions: 0, Applications: 7
@@ -37,7 +33,7 @@ TASK G2: �m�_�̋�𖞂� (Two Congruences)
   -> Generated G2 plot: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\task_g2_construction.png
 
 ======================================================================
-TASK G3: �O�Ȑ�̌�ƐڐG�ʂ� (Cubic Curve Analysis)
+TASK G3: 三次曲線の交差と接触を区別する (Cubic Curve Analysis)
 ======================================================================
   Curve equation: y = x**3 - 3*x + 2
   First derivative: y' = 3*x**2 - 3
@@ -48,10 +44,12 @@ TASK G3: �O�Ȑ�̌�ƐڐG�ʂ� (Cubic Curve Analysis)
   Bounded interval between roots: [-2, 1]
   Definite integral of P(x) over [-2, 1]: integral = 27/4, area = 27/4
   Roots verified: True | Area verified: True (27/4)
+C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\scripts\run_batch1_eval.py:741: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()
   -> Generated G3 plot: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\task_g3_cubic_analysis.png
 
 ======================================================================
-TASK S1: �̂̓�}�􉽂�琶� (Perspective Projection)
+TASK S1: 立方体の透視図を幾何から生成する (Perspective Projection)
 ======================================================================
   Original Cube Projection:
     Near face (z=4) -> [(Fraction(-1, 4), Fraction(-1, 4)), (Fraction(1, 4), Fraction(-1, 4)), (Fraction(1, 4), Fraction(1, 4)), (Fraction(-1, 4), Fraction(1, 4))]
@@ -63,7 +61,7 @@ TASK S1: �̂̓�}�􉽂�琶� (Perspective Projection)
   -> Generated S1 plot: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\task_s1_perspective_projection.png
 
 ======================================================================
-TASK W1: �J�̈ʑ�E�݃R�q�[�X�ɂ�ܑ�ω� (Fraunhofer Diffraction)
+TASK W1: 開口の位相・相互コヒーレンスによる回折像変化 (Fraunhofer Diffraction)
 ======================================================================
   Slit Width a = 40.0 um, Separation d = 200.0 um
   Wavelength lambda = 532.0 nm
@@ -72,18 +70,45 @@ TASK W1: �J�̈ʑ�E�݃R�q�[�X�ɂ�ܑ�ω� (Fraunhofer Diffrac
   (b) Phase pi:     Center Intensity = 0.0000 (Dark), Power = 0.0240
   (c) Incoherent:   Center Intensity = 2.00 (Envelope), Power = 0.0240
   Verified: Period=True, Bright=True, Dark=True, Incoherent=True
+C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\scripts\run_batch1_eval.py:1005: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()
   -> Generated W1 plot: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\task_w1_diffraction_coherence.png
 
 ======================================================================
-LEARNING COMPARISON: �w�K�O�̒T�ʁE�r
+LEARNING COMPARISON: 真の学習前後比較 (S0 空ライブラリ vs G1/G2 獲得ライブラリ)
 ======================================================================
-  Condition A (No transfer): Solved 2/4, Avg Expansions: 0.0
-  Condition B (With transfer): Solved 2/4, Avg Expansions: 0.0
-  -> Generated learning comparison card: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\learning_comparison_batch1.png
+  Acquired & Registered from G1: {'registered': True, 'index': 0, 'steps': 3, 'generation': 1, 'parents': [], 'calls': [], 'patterns': [['para', ['p0', 'p2', 'p1', 'v']]]}
+  Acquired & Registered from G2: {'registered': True, 'index': 1, 'steps': 5, 'generation': 1, 'parents': [], 'calls': [], 'patterns': [['cong', ['p0', 'v', 'p1', 'v']], ['cong', ['p2', 'v', 'p3', 'v']]]}
+  Active Search Budget Configuration:
+    guaranteed_applications: 100, guaranteed_expansions: 2500
+    partial_applications: 30, partial_expansions: 1000
+    backward_applications: 300, wall_seconds: 600
+  Running Condition A: S0 (Empty Library, Primitive Exploration)...
+    [unseen_1] Solved: True, Apps: 207, Exp: 2545, Via: fallback
+    [unseen_2] Solved: True, Apps: 207, Exp: 2545, Via: fallback
+    [unseen_3] Solved: True, Apps: 2, Exp: 104, Via: None
+    [unseen_4] Solved: True, Apps: 6, Exp: 45, Via: None
+    [unseen_5] Solved: True, Apps: 191, Exp: 3500, Via: fallback
+  Running Condition B: Acquired Library (G1/G2 Composite Operations)...
+    [unseen_1] Solved: True, Apps: 4, Exp: 185, Via: None, LibIndices: [0], LibCalls: 1
+    [unseen_2] Solved: True, Apps: 4, Exp: 185, Via: None, LibIndices: [0], LibCalls: 1
+    [unseen_3] Solved: True, Apps: 2, Exp: 104, Via: None, LibIndices: [], LibCalls: 0
+    [unseen_4] Solved: True, Apps: 6, Exp: 45, Via: None, LibIndices: [], LibCalls: 0
+    [unseen_5] Solved: True, Apps: 7, Exp: 256, Via: None, LibIndices: [0], LibCalls: 2
+
+  Task-by-Task Search Cost Comparison:
+    - unseen_1 (G1 Variant (Translation)): Apps 207 -> 4 | Exp 2545 -> 185 [大幅改善]
+    - unseen_2 (G1 Variant (Scale & Shear)): Apps 207 -> 4 | Exp 2545 -> 185 [大幅改善]
+    - unseen_3 (G2 Variant (Translation)): Apps 2 -> 2 | Exp 104 -> 104 [変化なし]
+    - unseen_4 (G2 Variant (Coordinate Scale)): Apps 6 -> 6 | Exp 45 -> 45 [変化なし]
+    - unseen_5 (Recomposition (Parallelogram 4th Vertex)): Apps 191 -> 7 | Exp 3500 -> 256 [大幅改善]
+
+  Conclusion: G1型の未見変形および再合成課題では大幅改善、G2型では今回の追加学習による探索量改善は確認されなかった。
+  -> Generated true learning comparison card: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\learning_comparison_batch1.png
   -> Generated task gallery: C:\Users\81808\.openclaw\workspace\mortra-existence-sparse-20260917\reports\batch1\task_gallery_batch1.png
 
 ======================================================================
-POST-SOLVE GRADING (evaluator_notes.md �Ɋ�Â�̓_)
+POST-SOLVE GRADING (evaluator_notes.md に基づく事後採点)
 ======================================================================
 
 SCORECARD: 60 / 60 (100.0%)

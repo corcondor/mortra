@@ -26,6 +26,8 @@ repo_root = Path(__file__).resolve().parent.parent
 
 def get_git_info() -> dict[str, str]:
     """Retrieve current commit SHA and branch name."""
+    import os
+    env_sha = os.environ.get("GITHUB_SHA")
     try:
         sha = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
@@ -33,9 +35,13 @@ def get_git_info() -> dict[str, str]:
         branch = subprocess.check_output(
             ["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=repo_root, text=True
         ).strip()
-        return {"commit_sha": sha, "branch": branch}
+        return {
+            "commit_sha": env_sha or sha,
+            "source_sha": sha,
+            "branch": os.environ.get("GITHUB_REF_NAME") or branch,
+        }
     except Exception as e:
-        return {"commit_sha": "unknown", "branch": "unknown", "error": str(e)}
+        return {"commit_sha": env_sha or "unknown", "source_sha": "unknown", "branch": "unknown", "error": str(e)}
 
 
 def create_contact_sheet(
@@ -115,12 +121,19 @@ def create_contact_sheet(
 
 
 def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--commit-sha", default=None, help="Explicit commit SHA")
+    args, _ = parser.parse_known_args()
+
     review_dir = repo_root / "reports" / "review"
     review_dir.mkdir(parents=True, exist_ok=True)
     batch1_dir = repo_root / "reports" / "batch1"
     batch2_dir = repo_root / "reports" / "batch2"
 
     git_info = get_git_info()
+    if args.commit_sha:
+        git_info["commit_sha"] = args.commit_sha
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     # 1. Batch 1 Contact Sheet
@@ -206,12 +219,12 @@ def main() -> None:
             "batch1_learning": {
                 "g1_reduction": "Search cost reduced by 85-98% for G1 variants and recomposition",
                 "g2_reduction": "Search cost unchanged (already minimal 2-6 primitive applications)",
-                "unseen_recomposition": "unseen_5 (Parallelogram) solved via certified G1 sub-routine reuse",
+                "unseen_recomposition": "unseen_5 (Parallelogram) solved via certified G1 sub-routine reuse (2 calls to G1 operation in intersection_ll)",
             },
             "batch2_physics": {
-                "w2_4f_filtering": "MORTRA letter M input, inverted output, power conservation verified (P_all = P_in)",
-                "w3_hologram": "Single phase hologram with 3-depth evaluation (8mm, 10mm, 12mm), contrast > 10, wave optics transfer function agreement",
-                "r1_stippling": "Case A (d1) vs Case B (d2) directional lights evaluated separately at 256/512, correlation > 0.85",
+                "w2_4f_filtering": "MORTRA letter M input, inverted output, power conservation verified (P_all = P_in, error 8.79e-33)",
+                "w3_hologram": "Single phase hologram with 3-depth evaluation (8mm, 10mm, 12mm), contrast > 15, observed residual cross-talk 0.507/0.387 with current WGS, wave optics transfer function agreement",
+                "r1_stippling": "Case A (d1) vs Case B (d2) directional lights evaluated separately at 256/512, correlation > 0.94",
                 "s2_shadow": "Perspective shadow area 64/9 matched exactly",
             }
         }

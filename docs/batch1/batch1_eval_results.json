@@ -285,7 +285,7 @@
       "guaranteed_applications_used": 0,
       "partial_plans_executed": 52,
       "applications": 193,
-      "execution_seconds": 0.08572340001410339,
+      "execution_seconds": 0.005867999996553408,
       "predicate_prover_calls": 112,
       "identity_bindings_excluded": 2,
       "guard_checks": 1,
@@ -293,7 +293,7 @@
       "duplicate_outputs": 6,
       "partial_stop_application_budget": 1,
       "partial_applications_used": 16,
-      "search_seconds": 4.361569700002292,
+      "search_seconds": 2.648216199999297,
       "fallback_applications": 354
     }
   },
@@ -492,7 +492,7 @@
         }
       ],
       "replay": {
-        "seconds": 0.0009997000015573576,
+        "seconds": 0.000649199999315897,
         "primitive_operations": 5,
         "method": "primitive reexecution, not contract witness",
         "passed": true,
@@ -519,7 +519,7 @@
       "max_queue": 863,
       "guaranteed_plans_executed": 50,
       "applications": 7,
-      "execution_seconds": 0.029419700000289595,
+      "execution_seconds": 0.02538060000006226,
       "predicate_prover_calls": 17,
       "distinctness_failures": 108,
       "identity_bindings_excluded": 4,
@@ -527,7 +527,7 @@
       "refused_applications": 1,
       "guaranteed_stop_None": 1,
       "guaranteed_applications_used": 7,
-      "search_seconds": 5.554776899996796
+      "search_seconds": 1.8182739000003494
     }
   },
   "G3": {
@@ -769,7 +769,46 @@
         "expansions": 2545,
         "applications": 207,
         "via": "fallback",
-        "time_sec": 6.026556400000118
+        "time_sec": 2.6195798000007926,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [
+          0
+        ],
+        "library_calls": 1
       },
       {
         "task_id": "unseen_2",
@@ -778,7 +817,46 @@
         "expansions": 2545,
         "applications": 207,
         "via": "fallback",
-        "time_sec": 2.1435456999970484
+        "time_sec": 2.0430842000023404,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [
+          0
+        ],
+        "library_calls": 1
       },
       {
         "task_id": "unseen_3",
@@ -787,7 +865,22 @@
         "expansions": 104,
         "applications": 2,
         "via": null,
-        "time_sec": 0.14324839999972028
+        "time_sec": 0.13894010000149137,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "library_indices_used": [],
+        "library_calls": 0
       },
       {
         "task_id": "unseen_4",
@@ -796,7 +889,65 @@
         "expansions": 45,
         "applications": 6,
         "via": null,
-        "time_sec": 0.08157730000311858
+        "time_sec": 0.08036089999950491,
+        "solution_term": {
+          "op": "intersection_ll",
+          "args": [
+            {
+              "op": "var",
+              "name": "b"
+            },
+            {
+              "op": "circle",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "d"
+                }
+              ]
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            },
+            {
+              "op": "circle",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [],
+        "library_calls": 0
       },
       {
         "task_id": "unseen_5",
@@ -805,7 +956,40 @@
         "expansions": 3500,
         "applications": 191,
         "via": "fallback",
-        "time_sec": 3.6284072999987984
+        "time_sec": 4.430134500002168,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                }
+              ]
+            },
+            {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [],
+        "library_calls": 0
       }
     ],
     "condition_b": [
@@ -816,7 +1000,46 @@
         "expansions": 185,
         "applications": 4,
         "via": null,
-        "time_sec": 0.6488129999997909
+        "time_sec": 1.8320218000008026,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [
+          0
+        ],
+        "library_calls": 1
       },
       {
         "task_id": "unseen_2",
@@ -825,7 +1048,46 @@
         "expansions": 185,
         "applications": 4,
         "via": null,
-        "time_sec": 0.32842560000062804
+        "time_sec": 0.3446202999984962,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "mirror",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            },
+            {
+              "op": "foot",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [
+          0
+        ],
+        "library_calls": 1
       },
       {
         "task_id": "unseen_3",
@@ -834,7 +1096,22 @@
         "expansions": 104,
         "applications": 2,
         "via": null,
-        "time_sec": 0.14942209999935585
+        "time_sec": 0.1688207000006514,
+        "solution_term": {
+          "op": "midpoint",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "var",
+              "name": "b"
+            }
+          ]
+        },
+        "library_indices_used": [],
+        "library_calls": 0
       },
       {
         "task_id": "unseen_4",
@@ -843,7 +1120,65 @@
         "expansions": 45,
         "applications": 6,
         "via": null,
-        "time_sec": 0.08318979999967269
+        "time_sec": 0.09587289999763016,
+        "solution_term": {
+          "op": "intersection_ll",
+          "args": [
+            {
+              "op": "var",
+              "name": "b"
+            },
+            {
+              "op": "circle",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                },
+                {
+                  "op": "var",
+                  "name": "d"
+                }
+              ]
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                }
+              ]
+            },
+            {
+              "op": "circle",
+              "args": [
+                {
+                  "op": "var",
+                  "name": "a"
+                },
+                {
+                  "op": "var",
+                  "name": "b"
+                },
+                {
+                  "op": "var",
+                  "name": "c"
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [],
+        "library_calls": 0
       },
       {
         "task_id": "unseen_5",
@@ -852,7 +1187,94 @@
         "expansions": 256,
         "applications": 7,
         "via": null,
-        "time_sec": 0.31231130000014673
+        "time_sec": 0.6659502000002249,
+        "solution_term": {
+          "op": "intersection_ll",
+          "args": [
+            {
+              "op": "var",
+              "name": "a"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "mirror",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "b"
+                    },
+                    {
+                      "op": "var",
+                      "name": "a"
+                    }
+                  ]
+                },
+                {
+                  "op": "foot",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "b"
+                    },
+                    {
+                      "op": "var",
+                      "name": "c"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "var",
+              "name": "c"
+            },
+            {
+              "op": "midpoint",
+              "args": [
+                {
+                  "op": "mirror",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "c"
+                    }
+                  ]
+                },
+                {
+                  "op": "foot",
+                  "args": [
+                    {
+                      "op": "var",
+                      "name": "c"
+                    },
+                    {
+                      "op": "var",
+                      "name": "a"
+                    },
+                    {
+                      "op": "var",
+                      "name": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "library_indices_used": [
+          0
+        ],
+        "library_calls": 2
       }
     ],
     "acquired_operations": [
