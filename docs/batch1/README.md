@@ -30,7 +30,6 @@
 
 ### D1 失敗カード（Failure Card: 4:3）
 字形2種（ROMAN / NARROW）× 線半径3種（1/4, 3/8, 1/2）の計6配置について、元画像 → センサ強度像 → Otsu二値化像 → 細線化骨格 → M中央部拡大と診断結果を一覧比較。
-**観測結論**: 6配置すべてで最終認識は `M` を維持（認識自体は耐えた）したものの、ROMAN 半径1/2においてスコアが 8/31 へ急落し穴数が 0→4 へ増加するなど、内部トポロジー（骨格・穴数・端点数）がどこから崩れ始めるかを定量特定。
 
 ![D1 Failure Card](./failure_card_d1.png)
 
@@ -67,11 +66,22 @@
 
 ---
 
-### 真の学習前後比較カード（Learning Comparison: 4:3）
-**実験統制条件**: ソルバーコード、探索予算（`applications=250, max_expansions=500`）、フォールバック（`general_geometric_search`）を**完全に一致**させた厳密な比較。
-- **条件 A（初期 MORTRA / S0）**: 空ライブラリ（`library = AcquiredLibrary()`）
-- **条件 B（G1/G2 獲得後）**: G1・G2 から形式証明・獲得された複合操作を登録したライブラリ（`AcquiredLibrary`）
-- **結果**: 未見の幾何課題群に対し、条件 A が平均 98.5 回の primitive 適用・1059.2 回の plan expansion を要したのに対し、条件 B は平均 4.0 回の適用・129.8 回の expansion で即座に解へ到達（**適用回数 96% 減、展開量 88% 減**）。
+### 学習比較カード（Learning Comparison: 4:3）
+未見の複合課題に対する、追加学習なし（条件A: S0 空ライブラリ）と獲得関係再利用あり（条件B: G1/G2獲得ライブラリ）の探索展開量および解決ステップの完全同一バジェット下でのタスク別比較。
+
+- **探索バジェット（A/B完全同一）**:
+  - `guaranteed_applications: 100`, `guaranteed_expansions: 2500`
+  - `partial_applications: 30`, `partial_expansions: 1000`
+  - `backward_applications: 300`, `wall_seconds: 600`
+- **獲得コントラクトの一般保証**:
+  - G1獲得操作: 入力の代数体 $\mathbb{Q}(\text{inputs})$ 上で一般に `para(c, u, a, b)` を保証（インスタンス固有の $UA=UB$ は保持されず）。
+  - G2獲得操作: 入力の代数体 $\mathbb{Q}(\text{inputs})$ 上で一般に `cong(u, a, u, b) ∧ cong(u, c, u, d)` を保証。
+- **課題別探索コスト比較**:
+  - **`unseen_1` (G1 平行移動変形)**: Apps 207 → 4 | Exp 2545 → 185 (**大幅改善**)
+  - **`unseen_2` (G1 拡大・剪断変形)**: Apps 207 → 4 | Exp 2545 → 185 (**大幅改善**)
+  - **`unseen_3` (G2 平行移動変形)**: Apps 2 → 2 | Exp 104 → 104 (**変化なし**: 既知プリミティブ2手で解けるため)
+  - **`unseen_4` (G2 座標スケーリング)**: Apps 6 → 6 | Exp 45 → 45 (**変化なし**: 既知プリミティブ6手で解けるため)
+  - **`unseen_5` (再合成: 平行四辺形第4頂点構成)**: Apps 191 → 7 | Exp 3500 → 256 (**大幅改善: 96%削減**、G1の証明済 `para` 操作を `intersection_ll` 内部サブルーチンとして自律再利用)
 
 ![Learning Comparison](./learning_comparison_batch1.png)
 
@@ -82,4 +92,5 @@
 - **`batch1_eval_results.json`**: 各課題の生データ、座標、トポロジー値、探索コスト、物理パラメータの全JSON
 - **`batch1_scorecard.md`**: 採点結果Markdown
 - **`run_batch1_eval.log`**: 評価スクリプト実行時の全コンソールログ
-- **`../../batch1_review.zip`**: 上記画像およびデータ一式を格納したZIPアーカイブ
+- **`../review/batch1_contact_sheet.png`**: Batch 1 全成果物の一覧コンタクトシート
+

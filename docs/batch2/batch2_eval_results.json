@@ -90,8 +90,13 @@
     "focal_length_mm": 100.0,
     "cutoff_freq_mm_inv": 8.0,
     "theoretical_cutoff_radius_mm": 0.42560000000000003,
-    "energy_ratio_low": 0.7932914537003023,
-    "energy_ratio_high": 0.20670854629969768,
+    "all_pass_reconstruction_error": 8.792733008981235e-33,
+    "power_ratio": 1.0000000000000002,
+    "low_pass_power_ratio": 0.6817103321794287,
+    "high_pass_power_ratio": 0.31828966782057116,
+    "energy_ratio_low": 0.6817103321794287,
+    "energy_ratio_high": 0.31828966782057116,
+    "fourier_mask_coordinates_count": 3,
     "is_correct": true
   },
   "W3": {
@@ -100,18 +105,68 @@
     "pixel_pitch_um": 8.0,
     "z1_mm": 8.0,
     "z2_mm": 12.0,
+    "z_mid_mm": 10.0,
     "iterations": 25,
     "ring_signal_z1": 10.744171050894659,
     "ring_signal_z2": 5.447489162553957,
     "tri_signal_z2": 11.173876603191333,
     "tri_signal_z1": 4.325506220667313,
+    "ring_leakage_z1": 0.6186875411681357,
+    "ring_leakage_z2": 0.8259592304626251,
+    "tri_leakage_z2": 0.5798670846768313,
+    "tri_leakage_z1": 0.8626723442885053,
+    "contrast_z1": 17.36606984295939,
+    "contrast_z2": 19.269720421221535,
+    "ring_rmse_z1": 0.5705999100355066,
+    "tri_rmse_z2": 0.7728466904867857,
+    "cross_talk_ring_at_z2": 0.5070180972314611,
+    "cross_talk_tri_at_z1": 0.3871088230410491,
+    "consistency": {
+      "status": "PASS",
+      "max_intensity_difference": 8.629555594328582e-12,
+      "consistency_error": 8.629555594328582e-12
+    },
     "is_correct": true
   },
   "R1": {
     "task_id": "R1",
-    "sphere_pixels": 15736,
-    "floor_pixels": 81288,
-    "num_dots": 14000,
+    "case_a": {
+      "direction": [
+        -0.31799936400190804,
+        -0.423999152002544,
+        0.847998304005088
+      ],
+      "sphere_pixels_512": 25832,
+      "floor_pixels_512": 133169,
+      "sphere_pixels_256": 6408,
+      "floor_pixels_256": 33317,
+      "num_dots": 16000,
+      "coverage_eval": {
+        "mae": 0.07210660114367928,
+        "rmse": 0.09335706240541385,
+        "correlation": 0.9656179317266729,
+        "mean_coverage": 0.17203083203454272
+      }
+    },
+    "case_b": {
+      "direction": [
+        0.31799936400190804,
+        -0.423999152002544,
+        0.847998304005088
+      ],
+      "sphere_pixels_512": 25832,
+      "floor_pixels_512": 133169,
+      "sphere_pixels_256": 6408,
+      "floor_pixels_256": 33317,
+      "num_dots": 16000,
+      "coverage_eval": {
+        "mae": 0.057370684071981135,
+        "rmse": 0.07399193728315312,
+        "correlation": 0.947659820092065,
+        "mean_coverage": 0.1365659565406128
+      }
+    },
+    "reference_dual_point_num_dots": 14000,
     "is_correct": true
   }
 }

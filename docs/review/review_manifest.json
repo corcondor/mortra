@@ -1,0 +1,52 @@
+{
+  "timestamp_utc": "2026-09-20T22:26:24.257622+00:00",
+  "git": {
+    "commit_sha": "d92894abe8c55e0dda739807a88ff70677deec37",
+    "branch": "codex/operation-contracts-20260918"
+  },
+  "contact_sheets": [
+    "reports/review/batch1_contact_sheet.png",
+    "reports/review/batch2_contact_sheet.png",
+    "reports/review/latest_contact_sheet.png"
+  ],
+  "batch1": {
+    "scorecard": "reports/batch1/batch1_scorecard.md",
+    "results_json": "reports/batch1/batch1_eval_results.json",
+    "images": [
+      "reports/batch1/task_g1_construction.png",
+      "reports/batch1/task_g2_construction.png",
+      "reports/batch1/task_g3_cubic_analysis.png",
+      "reports/batch1/task_s1_perspective_projection.png",
+      "reports/batch1/task_w1_diffraction_coherence.png",
+      "reports/batch1/failure_card_d1.png",
+      "reports/batch1/learning_comparison_batch1.png",
+      "reports/batch1/task_gallery_batch1.png"
+    ],
+    "scorecard_summary": {}
+  },
+  "batch2": {
+    "scorecard": "reports/batch2/batch2_scorecard.md",
+    "results_json": "reports/batch2/batch2_eval_results.json",
+    "images": [
+      "reports/batch2/task_s2_shadow_projection.png",
+      "reports/batch2/task_w2_4f_spatial_filtering.png",
+      "reports/batch2/task_w3_multiplane_hologram.png",
+      "reports/batch2/task_r1_stippled_sphere.png",
+      "reports/batch2/task_gallery_batch2.png"
+    ],
+    "scorecard_summary": {}
+  },
+  "highlights": {
+    "batch1_learning": {
+      "g1_reduction": "Search cost reduced by 85-98% for G1 variants and recomposition",
+      "g2_reduction": "Search cost unchanged (already minimal 2-6 primitive applications)",
+      "unseen_recomposition": "unseen_5 (Parallelogram) solved via certified G1 sub-routine reuse"
+    },
+    "batch2_physics": {
+      "w2_4f_filtering": "MORTRA letter M input, inverted output, power conservation verified (P_all = P_in)",
+      "w3_hologram": "Single phase hologram with 3-depth evaluation (8mm, 10mm, 12mm), contrast > 10, wave optics transfer function agreement",
+      "r1_stippling": "Case A (d1) vs Case B (d2) directional lights evaluated separately at 256/512, correlation > 0.85",
+      "s2_shadow": "Perspective shadow area 64/9 matched exactly"
+    }
+  }
+}

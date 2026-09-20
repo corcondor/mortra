@@ -280,6 +280,11 @@ jobs:
         run: |
           mkdir -p reports/batch2
           python scripts/run_batch2_eval.py 2>&1 | tee reports/batch2/run_batch2_eval.log
+      - name: Generate review contact sheets and manifest
+        shell: bash
+        run: |
+          mkdir -p reports/review
+          python scripts/generate_review_artifacts.py 2>&1 | tee reports/review/generate_review_artifacts.log
       - name: Frozen normal-entry geometry comparison
         if: ${{ !contains(env.EXPERIMENT_CONFIG, 'theory-geometry-autonomous-solve') && !contains(env.EXPERIMENT_CONFIG, 'relational-dsl') && !contains(env.EXPERIMENT_CONFIG, 'algebraic-structures') }}
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
@@ -331,6 +336,7 @@ jobs:
             reports/wave-optics-roundtrip/
             reports/batch1/
             reports/batch2/
+            reports/review/
   exact-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 15
