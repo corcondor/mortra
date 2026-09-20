@@ -1,0 +1,3324 @@
+{
+  "environment": {
+    "sha": "ed9d6cf0760f3f545e4d632dbc76018cd1528262",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "what_this_is": {
+    "input": "a bitmap: a grid of black and white cells, and nothing else",
+    "output": "a letter of the alphabet",
+    "references": "twenty-six descriptions built from the ROMAN stroke definitions. No reference is built from any image, and none is built from NARROW",
+    "not_used": [
+      "no neural network and no learned parameter of any kind",
+      "no OpenCV: worker/backend/geometry_diagram_grounder.py has a cv2.matchTemplate label reader built on a bundled Hershey font, and it is not imported here",
+      "no tesseract: math_os_prototype/x_math_analyzer.py calls pytesseract, and it is not imported here",
+      "no font file, and no image of a glyph as a template"
+    ]
+  },
+  "the_alphabet": {
+    "shape": "straight strokes only, because a circular arc is not rational and the fragment is exact over QQ. B, O and S are polygons",
+    "box": "six units tall, left edge at x = 0, integer grid points",
+    "styles": {
+      "ROMAN": "the references are built from these definitions",
+      "NARROW": "the same twenty-six letters with different proportions: bars at different heights, bowls recut, widths changed. No reference is ever built from these"
+    }
+  },
+  "readers": {
+    "relations": "the reader of this work: the multiset of relations of the fragment that hold of the recovered strokes, each decided by atom_holds",
+    "relations_without_the_frame": "the same, with every relation against the normalising box removed",
+    "structure_only": "holes, corners, strokes and degrees -- the counted part alone",
+    "coordinates": "the control: the same recovery, the same snap, then the recovered corners and strokes compared as coordinates. No predicate decided"
+  },
+  "conditions": [
+    {
+      "condition": "roman-48-round",
+      "style": "ROMAN",
+      "height": 48,
+      "stroke_radius_px": "3/2",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 23,
+        "structure_only": 16,
+        "coordinates": 24
+      },
+      "exact_description_match": 25,
+      "seconds": 3.5
+    },
+    {
+      "condition": "roman-72-round",
+      "style": "ROMAN",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 23,
+        "structure_only": 16,
+        "coordinates": 25
+      },
+      "exact_description_match": 25,
+      "seconds": 4.5
+    },
+    {
+      "condition": "roman-96-bold",
+      "style": "ROMAN",
+      "height": 96,
+      "stroke_radius_px": "4",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 23,
+        "structure_only": 16,
+        "coordinates": 26
+      },
+      "exact_description_match": 25,
+      "seconds": 6.2
+    },
+    {
+      "condition": "roman-36-hairline",
+      "style": "ROMAN",
+      "height": 36,
+      "stroke_radius_px": "1",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 23,
+        "structure_only": 16,
+        "coordinates": 26
+      },
+      "exact_description_match": 25,
+      "seconds": 3.1
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "style": "ROMAN",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "square",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 23,
+        "structure_only": 16,
+        "coordinates": 26
+      },
+      "exact_description_match": 25,
+      "seconds": 12.6
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "style": "ROMAN",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "round",
+      "one_edge_cell_in": 16,
+      "letters": 26,
+      "correct": {
+        "relations": 25,
+        "relations_without_the_frame": 22,
+        "structure_only": 15,
+        "coordinates": 24
+      },
+      "exact_description_match": 3,
+      "seconds": 10.2
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "style": "ROMAN",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "round",
+      "one_edge_cell_in": 8,
+      "letters": 26,
+      "correct": {
+        "relations": 25,
+        "relations_without_the_frame": 21,
+        "structure_only": 14,
+        "coordinates": 24
+      },
+      "exact_description_match": 1,
+      "seconds": 14.0
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "style": "ROMAN",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "round",
+      "one_edge_cell_in": 4,
+      "letters": 26,
+      "correct": {
+        "relations": 22,
+        "relations_without_the_frame": 20,
+        "structure_only": 10,
+        "coordinates": 23
+      },
+      "exact_description_match": 0,
+      "seconds": 5.7
+    },
+    {
+      "condition": "narrow-48-round",
+      "style": "NARROW",
+      "height": 48,
+      "stroke_radius_px": "3/2",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 22,
+        "structure_only": 15,
+        "coordinates": 4
+      },
+      "exact_description_match": 8,
+      "seconds": 3.4
+    },
+    {
+      "condition": "narrow-72-round",
+      "style": "NARROW",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 22,
+        "structure_only": 15,
+        "coordinates": 4
+      },
+      "exact_description_match": 8,
+      "seconds": 4.3
+    },
+    {
+      "condition": "narrow-96-bold",
+      "style": "NARROW",
+      "height": 96,
+      "stroke_radius_px": "4",
+      "pen": "round",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 22,
+        "structure_only": 14,
+        "coordinates": 3
+      },
+      "exact_description_match": 8,
+      "seconds": 5.5
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "style": "NARROW",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "square",
+      "one_edge_cell_in": null,
+      "letters": 26,
+      "correct": {
+        "relations": 26,
+        "relations_without_the_frame": 22,
+        "structure_only": 14,
+        "coordinates": 3
+      },
+      "exact_description_match": 8,
+      "seconds": 8.1
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "style": "NARROW",
+      "height": 72,
+      "stroke_radius_px": "5/2",
+      "pen": "round",
+      "one_edge_cell_in": 8,
+      "letters": 26,
+      "correct": {
+        "relations": 19,
+        "relations_without_the_frame": 14,
+        "structure_only": 10,
+        "coordinates": 0
+      },
+      "exact_description_match": 0,
+      "seconds": 6.0
+    }
+  ],
+  "totals": {
+    "relations": "325/338",
+    "relations_without_the_frame": "280/338",
+    "structure_only": "187/338",
+    "coordinates": "212/338"
+  },
+  "by_style": {
+    "ROMAN": {
+      "relations": "202/208",
+      "relations_without_the_frame": "178/208",
+      "structure_only": "119/208",
+      "coordinates": "198/208"
+    },
+    "NARROW": {
+      "relations": "123/130",
+      "relations_without_the_frame": "102/130",
+      "structure_only": "68/130",
+      "coordinates": "14/130"
+    }
+  },
+  "exact_description_match": {
+    "counts": {
+      "roman-48-round": 25,
+      "roman-72-round": 25,
+      "roman-96-bold": 25,
+      "roman-36-hairline": 25,
+      "roman-72-square-pen": 25,
+      "roman-72-ragged-1-in-16": 3,
+      "roman-72-ragged-1-in-8": 1,
+      "narrow-48-round": 8,
+      "narrow-72-round": 8,
+      "narrow-96-bold": 8,
+      "narrow-72-square-pen": 8
+    },
+    "of": 169,
+    "means": "how often the recovered description equalled the reference outright. Every other decision was made by taking the nearest description, which is a nearest-neighbour rule over exactly-decided facts, not a proof"
+  },
+  "prediction_histogram": {
+    "relations": {
+      "O": 17,
+      "Y": 16,
+      "C": 14,
+      "D": 14,
+      "J": 14,
+      "N": 14,
+      "A": 13,
+      "E": 13,
+      "F": 13,
+      "H": 13,
+      "I": 13,
+      "K": 13,
+      "L": 13,
+      "M": 13,
+      "P": 13,
+      "T": 13,
+      "U": 13,
+      "X": 13,
+      "Z": 13,
+      "B": 12,
+      "G": 12,
+      "R": 12,
+      "V": 12,
+      "S": 11,
+      "W": 11,
+      "Q": 10
+    },
+    "relations_without_the_frame": {
+      "N": 27,
+      "H": 26,
+      "C": 20,
+      "D": 19,
+      "U": 18,
+      "J": 15,
+      "P": 15,
+      "Y": 15,
+      "F": 14,
+      "A": 13,
+      "E": 13,
+      "K": 13,
+      "L": 13,
+      "T": 13,
+      "X": 13,
+      "B": 12,
+      "G": 12,
+      "R": 12,
+      "V": 11,
+      "W": 11,
+      "O": 10,
+      "Q": 10,
+      "M": 8,
+      "S": 5
+    },
+    "structure_only": {
+      "M": 36,
+      "N": 27,
+      "T": 27,
+      "H": 26,
+      "K": 26,
+      "A": 25,
+      "D": 25,
+      "L": 24,
+      "E": 21,
+      "C": 19,
+      "F": 19,
+      "G": 12,
+      "R": 12,
+      "B": 11,
+      "Q": 11,
+      "S": 9,
+      "P": 8
+    },
+    "coordinates": {
+      "J": 33,
+      "B": 32,
+      "W": 30,
+      "N": 19,
+      "P": 18,
+      "I": 17,
+      "L": 16,
+      "A": 13,
+      "D": 13,
+      "G": 12,
+      "T": 11,
+      "F": 10,
+      "O": 10,
+      "H": 9,
+      "X": 9,
+      "C": 8,
+      "E": 8,
+      "K": 8,
+      "R": 8,
+      "S": 8,
+      "U": 8,
+      "V": 8,
+      "Y": 8,
+      "Z": 8,
+      "Q": 7,
+      "M": 7
+    }
+  },
+  "letters_this_repository_did_not_draw": {
+    "what": "A to Z rasterised from real font files at 96px and read with the same twenty-six descriptions, which were built from straight-stroke definitions and from nothing else",
+    "out_of_scope": "these typefaces have curves; the alphabet does not. The number is reported because the letters are not this repository's",
+    "how_the_font_is_used": "Pillow reads the font and draws the letter. The reader is given the cells and never the outline",
+    "results": [
+      {
+        "typeface": "Arial",
+        "read": "21/26",
+        "answers": "........KNC......PG......."
+      },
+      {
+        "typeface": "Consolas",
+        "read": "18/26",
+        "answers": "..U......WX..UG.G....NJ..."
+      },
+      {
+        "typeface": "Calibri",
+        "read": "18/26",
+        "answers": "..U.....KVH.C.SMO........."
+      },
+      {
+        "typeface": "Times New Roman",
+        "read": "3/26",
+        "answers": "ZISIII.I..IIIIDIRIGIJJTIIC"
+      }
+    ]
+  },
+  "collisions_without_the_frame": {
+    "pairs": [
+      "H and I",
+      "N and Z"
+    ],
+    "why": "coll, para, perp and cong are invariant under every similarity, rotations included, so a description built only from relations among a glyph's own strokes cannot tell a letter from a turned copy of it"
+  },
+  "failures": [
+    {
+      "condition": "roman-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "1",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "coordinates",
+      "letter": "M",
+      "read_as": "X",
+      "score": "1/2",
+      "runner_up": "N"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "coordinates",
+      "letter": "N",
+      "read_as": "L",
+      "score": "1/2",
+      "runner_up": "M"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "C",
+      "score": "16/21",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1",
+      "runner_up": "E"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-48-round",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "1",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "coordinates",
+      "letter": "N",
+      "read_as": "L",
+      "score": "1/2",
+      "runner_up": "M"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "C",
+      "score": "16/21",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1",
+      "runner_up": "E"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-round",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "1",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "C",
+      "score": "16/21",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1",
+      "runner_up": "E"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-96-bold",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "1",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "C",
+      "score": "16/21",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1",
+      "runner_up": "E"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-36-hairline",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "1",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "C",
+      "score": "16/21",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1",
+      "runner_up": "E"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-square-pen",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "16/17",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "3/5",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "3/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "coordinates",
+      "letter": "L",
+      "read_as": "N",
+      "score": "1/2",
+      "runner_up": "L"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "coordinates",
+      "letter": "N",
+      "read_as": "L",
+      "score": "1/2",
+      "runner_up": "M"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "3/5",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "Q",
+      "read_as": "R",
+      "score": "1/3",
+      "runner_up": "B"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "C",
+      "score": "16/21",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1",
+      "runner_up": "E"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "3/5",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "3/5",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "relations",
+      "letter": "W",
+      "read_as": "V",
+      "score": "4/27",
+      "runner_up": "W"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "relations_without_the_frame",
+      "letter": "W",
+      "read_as": "J",
+      "score": "1/3",
+      "runner_up": "T"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "S",
+      "score": "1/3",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "3/5",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "6/7",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-16",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "3/5",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "B",
+      "read_as": "Q",
+      "score": "1/3",
+      "runner_up": "B"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "C",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "C"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "16/17",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "3/5",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "3/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "L",
+      "read_as": "N",
+      "score": "1/2",
+      "runner_up": "L"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "3/5",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "9/13",
+      "runner_up": "Q"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "9/13",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "Q",
+      "read_as": "B",
+      "score": "1/7",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "9/17",
+      "runner_up": "Q"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "P",
+      "score": "1/3",
+      "runner_up": "S"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "3/5",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "3/5",
+      "runner_up": "V"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "W",
+      "read_as": "J",
+      "score": "11/29",
+      "runner_up": "R"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "S",
+      "score": "1/3",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "3/5",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "3/5",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "6/7",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "3/5",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "A",
+      "read_as": "D",
+      "score": "1/3",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "B",
+      "read_as": "R",
+      "score": "1/7",
+      "runner_up": "S"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "coordinates",
+      "letter": "B",
+      "read_as": "H",
+      "score": "3/10",
+      "runner_up": "B"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "C",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "B"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "G",
+      "read_as": "R",
+      "score": "1/7",
+      "runner_up": "A"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "16/17",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "3/5",
+      "runner_up": "I"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "E",
+      "score": "3/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "coordinates",
+      "letter": "L",
+      "read_as": "N",
+      "score": "1/2",
+      "runner_up": "L"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "3/5",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "29/31",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations_without_the_frame",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "29/31",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "Q",
+      "read_as": "D",
+      "score": "3/5",
+      "runner_up": "O"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "1/2",
+      "runner_up": "C"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations",
+      "letter": "S",
+      "read_as": "J",
+      "score": "5/31",
+      "runner_up": "W"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "W",
+      "score": "1/3",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1/7",
+      "runner_up": "D"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "T",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "F"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "3/5",
+      "runner_up": "U"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations",
+      "letter": "V",
+      "read_as": "Y",
+      "score": "1/3",
+      "runner_up": "T"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations_without_the_frame",
+      "letter": "V",
+      "read_as": "Y",
+      "score": "11/13",
+      "runner_up": "T"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "T",
+      "score": "3/5",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations",
+      "letter": "W",
+      "read_as": "Y",
+      "score": "3/41",
+      "runner_up": "W"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations_without_the_frame",
+      "letter": "W",
+      "read_as": "F",
+      "score": "3/8",
+      "runner_up": "A"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "Q",
+      "score": "1/7",
+      "runner_up": "R"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "3/5",
+      "runner_up": "X"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "3/5",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "6/7",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "roman-72-ragged-1-in-4",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "3/5",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "A",
+      "read_as": "P",
+      "score": "1/10",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "B",
+      "read_as": "D",
+      "score": "6/23",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "C",
+      "read_as": "J",
+      "score": "3/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "D",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "N"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "E",
+      "read_as": "B",
+      "score": "3/11",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "F",
+      "read_as": "P",
+      "score": "4/17",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "G",
+      "read_as": "J",
+      "score": "5/21",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "H",
+      "read_as": "B",
+      "score": "1/6",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "29/33",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "I",
+      "read_as": "W",
+      "score": "3/17",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "F",
+      "score": "1",
+      "runner_up": "K"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "K",
+      "read_as": "B",
+      "score": "2/11",
+      "runner_up": "L"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "M",
+      "read_as": "U",
+      "score": "16/17",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "M",
+      "read_as": "L",
+      "score": "3/11",
+      "runner_up": "N"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "O",
+      "read_as": "D",
+      "score": "7/9",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "O",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "P",
+      "read_as": "A",
+      "score": "3/5",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "P",
+      "read_as": "I",
+      "score": "4/17",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "W",
+      "score": "2/25",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "R",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "R",
+      "read_as": "I",
+      "score": "4/21",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "S",
+      "read_as": "G",
+      "score": "3/25",
+      "runner_up": "Q"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "T",
+      "read_as": "B",
+      "score": "1/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "U",
+      "read_as": "J",
+      "score": "3/17",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "V",
+      "read_as": "W",
+      "score": "3/11",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "X",
+      "read_as": "A",
+      "score": "5/14",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "Y",
+      "read_as": "W",
+      "score": "1/7",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-48-round",
+      "reader": "coordinates",
+      "letter": "Z",
+      "read_as": "B",
+      "score": "1/3",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "A",
+      "read_as": "P",
+      "score": "1/10",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "B",
+      "read_as": "D",
+      "score": "6/23",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "C",
+      "read_as": "J",
+      "score": "3/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "D",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "N"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "E",
+      "read_as": "B",
+      "score": "3/11",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "F",
+      "read_as": "P",
+      "score": "4/17",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "G",
+      "read_as": "J",
+      "score": "5/21",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "H",
+      "read_as": "B",
+      "score": "1/6",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "29/33",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "I",
+      "read_as": "W",
+      "score": "3/17",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "F",
+      "score": "1",
+      "runner_up": "K"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "K",
+      "read_as": "B",
+      "score": "2/11",
+      "runner_up": "L"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "M",
+      "read_as": "U",
+      "score": "16/17",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "M",
+      "read_as": "N",
+      "score": "3/13",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "O",
+      "read_as": "D",
+      "score": "7/9",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "O",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "P",
+      "read_as": "A",
+      "score": "3/5",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "P",
+      "read_as": "I",
+      "score": "4/17",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "W",
+      "score": "2/25",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "R",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "R",
+      "read_as": "I",
+      "score": "4/21",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "S",
+      "read_as": "G",
+      "score": "3/25",
+      "runner_up": "Q"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "T",
+      "read_as": "B",
+      "score": "1/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "U",
+      "read_as": "J",
+      "score": "3/17",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "V",
+      "read_as": "W",
+      "score": "3/11",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "X",
+      "read_as": "A",
+      "score": "5/14",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "Y",
+      "read_as": "W",
+      "score": "1/7",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-round",
+      "reader": "coordinates",
+      "letter": "Z",
+      "read_as": "B",
+      "score": "1/3",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "A",
+      "read_as": "P",
+      "score": "1/10",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "B",
+      "read_as": "D",
+      "score": "6/23",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "C",
+      "read_as": "J",
+      "score": "3/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "D",
+      "read_as": "A",
+      "score": "3/5",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "D",
+      "read_as": "N",
+      "score": "3/14",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "E",
+      "read_as": "B",
+      "score": "3/11",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "F",
+      "read_as": "P",
+      "score": "4/17",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "G",
+      "read_as": "J",
+      "score": "5/21",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "H",
+      "read_as": "B",
+      "score": "1/6",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "29/33",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "I",
+      "read_as": "W",
+      "score": "3/17",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "F",
+      "score": "1",
+      "runner_up": "K"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "K",
+      "read_as": "B",
+      "score": "2/11",
+      "runner_up": "L"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "M",
+      "read_as": "U",
+      "score": "16/17",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "M",
+      "read_as": "N",
+      "score": "3/13",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "O",
+      "read_as": "D",
+      "score": "7/9",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "O",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "P",
+      "read_as": "A",
+      "score": "3/5",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "P",
+      "read_as": "I",
+      "score": "4/17",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "W",
+      "score": "2/25",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "R",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "R",
+      "read_as": "I",
+      "score": "4/21",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "S",
+      "read_as": "G",
+      "score": "3/25",
+      "runner_up": "Q"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "T",
+      "read_as": "B",
+      "score": "1/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "U",
+      "read_as": "J",
+      "score": "3/17",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "V",
+      "read_as": "W",
+      "score": "3/11",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "W",
+      "read_as": "F",
+      "score": "1/8",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "X",
+      "read_as": "A",
+      "score": "5/14",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "Y",
+      "read_as": "W",
+      "score": "1/7",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-96-bold",
+      "reader": "coordinates",
+      "letter": "Z",
+      "read_as": "B",
+      "score": "1/3",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "A",
+      "read_as": "P",
+      "score": "1/10",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "B",
+      "read_as": "D",
+      "score": "6/23",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "C",
+      "read_as": "J",
+      "score": "5/17",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "D",
+      "read_as": "A",
+      "score": "3/5",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "D",
+      "read_as": "N",
+      "score": "3/14",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "E",
+      "read_as": "B",
+      "score": "3/11",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "F",
+      "read_as": "P",
+      "score": "4/17",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "G",
+      "read_as": "J",
+      "score": "5/21",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "H",
+      "read_as": "B",
+      "score": "1/6",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "29/33",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "1",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "I",
+      "read_as": "W",
+      "score": "3/17",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "F",
+      "score": "1",
+      "runner_up": "K"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "J",
+      "read_as": "T",
+      "score": "3/13",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "K",
+      "read_as": "B",
+      "score": "2/11",
+      "runner_up": "L"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "M",
+      "read_as": "U",
+      "score": "16/17",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "M",
+      "read_as": "N",
+      "score": "3/13",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "O",
+      "read_as": "D",
+      "score": "7/9",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "1",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "O",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "P",
+      "read_as": "A",
+      "score": "3/5",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "P",
+      "read_as": "I",
+      "score": "4/17",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "W",
+      "score": "2/25",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "R",
+      "read_as": "A",
+      "score": "1/7",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "R",
+      "read_as": "I",
+      "score": "4/21",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "S",
+      "read_as": "G",
+      "score": "3/25",
+      "runner_up": "Q"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "T",
+      "read_as": "B",
+      "score": "1/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "U",
+      "read_as": "J",
+      "score": "3/17",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "L",
+      "score": "1",
+      "runner_up": "V"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "V",
+      "read_as": "W",
+      "score": "3/11",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "1",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "1",
+      "runner_up": "X"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "X",
+      "read_as": "A",
+      "score": "5/14",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "1",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "Y",
+      "read_as": "W",
+      "score": "1/7",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "1",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-square-pen",
+      "reader": "coordinates",
+      "letter": "Z",
+      "read_as": "B",
+      "score": "1/3",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "A",
+      "read_as": "P",
+      "score": "1/10",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "B",
+      "read_as": "D",
+      "score": "14/39",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "B",
+      "read_as": "D",
+      "score": "19/34",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "B",
+      "read_as": "G",
+      "score": "1/7",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "B",
+      "read_as": "D",
+      "score": "5/21",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "C",
+      "read_as": "J",
+      "score": "3/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "D",
+      "read_as": "C",
+      "score": "1/3",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "D",
+      "read_as": "F",
+      "score": "1/7",
+      "runner_up": "K"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "D",
+      "read_as": "N",
+      "score": "1/4",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "E",
+      "read_as": "B",
+      "score": "5/23",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "F",
+      "read_as": "P",
+      "score": "4/17",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "G",
+      "read_as": "C",
+      "score": "3/7",
+      "runner_up": "G"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "G",
+      "read_as": "S",
+      "score": "21/31",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "G",
+      "read_as": "S",
+      "score": "3/5",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "G",
+      "read_as": "J",
+      "score": "5/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "H",
+      "read_as": "B",
+      "score": "1/6",
+      "runner_up": "P"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "I",
+      "read_as": "H",
+      "score": "14/17",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "I",
+      "read_as": "H",
+      "score": "3/5",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "I",
+      "read_as": "W",
+      "score": "3/17",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "J",
+      "read_as": "F",
+      "score": "1",
+      "runner_up": "K"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "J",
+      "read_as": "T",
+      "score": "3/13",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "K",
+      "read_as": "B",
+      "score": "2/11",
+      "runner_up": "L"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "L",
+      "read_as": "N",
+      "score": "1/3",
+      "runner_up": "M"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "M",
+      "read_as": "U",
+      "score": "5/6",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "M",
+      "read_as": "L",
+      "score": "3/11",
+      "runner_up": "N"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "N",
+      "read_as": "L",
+      "score": "1/3",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "O",
+      "read_as": "D",
+      "score": "5/7",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "O",
+      "read_as": "D",
+      "score": "3/5",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "O",
+      "read_as": "J",
+      "score": "4/19",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "P",
+      "read_as": "N",
+      "score": "6/19",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "P",
+      "read_as": "N",
+      "score": "2/3",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "P",
+      "read_as": "N",
+      "score": "3/5",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "P",
+      "read_as": "L",
+      "score": "1/3",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "Q",
+      "read_as": "O",
+      "score": "13/60",
+      "runner_up": "G"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "Q",
+      "read_as": "P",
+      "score": "11/25",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "Q",
+      "read_as": "R",
+      "score": "1/3",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "Q",
+      "read_as": "W",
+      "score": "2/23",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "R",
+      "read_as": "P",
+      "score": "2/17",
+      "runner_up": "S"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "R",
+      "read_as": "P",
+      "score": "6/13",
+      "runner_up": "R"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "R",
+      "read_as": "S",
+      "score": "1/3",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "R",
+      "read_as": "I",
+      "score": "1/5",
+      "runner_up": "D"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "S",
+      "read_as": "O",
+      "score": "3/13",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "S",
+      "read_as": "D",
+      "score": "14/31",
+      "runner_up": "C"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "S",
+      "read_as": "C",
+      "score": "1/3",
+      "runner_up": "E"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "S",
+      "read_as": "Q",
+      "score": "4/25",
+      "runner_up": "O"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "T",
+      "read_as": "B",
+      "score": "1/5",
+      "runner_up": "J"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "U",
+      "read_as": "M",
+      "score": "3/5",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "U",
+      "read_as": "J",
+      "score": "3/17",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations",
+      "letter": "V",
+      "read_as": "Y",
+      "score": "1/3",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "V",
+      "read_as": "Y",
+      "score": "11/13",
+      "runner_up": "T"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "V",
+      "read_as": "T",
+      "score": "3/5",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "V",
+      "read_as": "T",
+      "score": "1/6",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "W",
+      "read_as": "M",
+      "score": "3/5",
+      "runner_up": "U"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "W",
+      "read_as": "F",
+      "score": "1/8",
+      "runner_up": "W"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "X",
+      "read_as": "K",
+      "score": "3/5",
+      "runner_up": "X"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "X",
+      "read_as": "A",
+      "score": "5/14",
+      "runner_up": "I"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "Y",
+      "read_as": "T",
+      "score": "3/5",
+      "runner_up": "Y"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "Y",
+      "read_as": "W",
+      "score": "1/7",
+      "runner_up": "B"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "relations_without_the_frame",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "6/7",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "structure_only",
+      "letter": "Z",
+      "read_as": "N",
+      "score": "3/5",
+      "runner_up": "Z"
+    },
+    {
+      "condition": "narrow-72-ragged-1-in-8",
+      "reader": "coordinates",
+      "letter": "Z",
+      "read_as": "B",
+      "score": "1/3",
+      "runner_up": "P"
+    }
+  ],
+  "pictures": [
+    "alphabet-as-shown.png",
+    "alphabet-as-recovered.png",
+    "alphabet-narrow-as-shown.png"
+  ],
+  "stages": {
+    "file": "stages-R.png",
+    "letter": "R",
+    "glyph": {
+      "vertices": 8,
+      "edges": 8,
+      "holes": 1,
+      "degrees": [
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3
+      ],
+      "points": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "3"
+        ],
+        [
+          "0",
+          "6"
+        ],
+        [
+          "3",
+          "6"
+        ],
+        [
+          "4",
+          "5"
+        ],
+        [
+          "3",
+          "3"
+        ],
+        [
+          "1",
+          "3"
+        ],
+        [
+          "4",
+          "0"
+        ]
+      ],
+      "strokes": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    },
+    "constructions": {
+      "free_end_carried_out": 2,
+      "junction_by_intersection": 2,
+      "corner_by_intersection": 4,
+      "corner_dissolved_as_collinear": 0
+    }
+  },
+  "not_claimed": [
+    "MORTRA does not find the ink. Binarisation, connected components, hole counting, Zhang-Suen thinning, spur pruning and the polyline cut are integer image processing, and they are what decides where the strokes are",
+    "the bounding box, the normalisation and the snap to the lattice are ordering and rounding, which the equality fragment cannot express. All of the tolerance to measurement noise lives in the snap",
+    "geometry_ink.on_closed_segment, used when the reference arrangement decides whether a crossing lies on both strokes, is a Python inequality on exact rationals, not a certified atom",
+    "the match is nearest-description, which is a one-nearest-neighbour rule. What is true is that there are no learned parameters and no training data",
+    "coll, para, perp and cong are invariant under every similarity, so relations among a glyph's own strokes cannot distinguish a letter from a rotated copy. The frame supplies orientation, and the ablation reports what that is worth",
+    "the alphabet is straight-stroke. A typeface with real curves is out of scope for this round, and nothing here was tested on one",
+    "the images are rendered by this repository, except the typeface section. Two pen shapes, a ragged edge, a second set of proportions and four real fonts widen that, but no scan and no photograph was read",
+    "the typeface numbers are not an OCR benchmark. They are letters drawn by someone else, read by descriptions of a straight-stroke alphabet, and they are reported because they are the only letters here this repository did not draw"
+  ],
+  "total_seconds": 158.3
+}
