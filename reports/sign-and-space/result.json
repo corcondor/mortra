@@ -1,0 +1,654 @@
+{
+  "environment": {
+    "sha": "461ebd23c8a4eecce124b9857896530acdfa8dc0",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "the_sign_kernel": {
+    "theorem": "a rational a is non-negative exactly when it is a sum of four rational squares -- Lagrange applied to pq after writing a = pq/q^2, which is to say the Pythagoras number of QQ is 4, and 4 is sharp because 7 is a sum of four and not of three",
+    "the_count_is_a_dimension": "the least number of squares is the least d for which sqrt(a) is a distance between two points of QQ^d: one is a rational number, two a rational plane distance, three a rational space distance and not a plane one (sqrt 3, the cube's diagonal), four no distance between rational points of space at all",
+    "values": [
+      {
+        "value": "0",
+        "squares": 0,
+        "identity": " = 0",
+        "certified": true,
+        "least_dimension_holding_sqrt": 0,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "1",
+        "squares": 1,
+        "identity": "(1)^2 = 1",
+        "certified": true,
+        "least_dimension_holding_sqrt": 1,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "2",
+        "squares": 2,
+        "identity": "(1)^2 + (1)^2 = 2",
+        "certified": true,
+        "least_dimension_holding_sqrt": 2,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "3",
+        "squares": 3,
+        "identity": "(1)^2 + (1)^2 + (1)^2 = 3",
+        "certified": true,
+        "least_dimension_holding_sqrt": 3,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "4",
+        "squares": 1,
+        "identity": "(2)^2 = 4",
+        "certified": true,
+        "least_dimension_holding_sqrt": 1,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "5",
+        "squares": 2,
+        "identity": "(2)^2 + (1)^2 = 5",
+        "certified": true,
+        "least_dimension_holding_sqrt": 2,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "6",
+        "squares": 3,
+        "identity": "(2)^2 + (1)^2 + (1)^2 = 6",
+        "certified": true,
+        "least_dimension_holding_sqrt": 3,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "7",
+        "squares": 4,
+        "identity": "(1)^2 + (2)^2 + (1)^2 + (1)^2 = 7",
+        "certified": true,
+        "least_dimension_holding_sqrt": 4,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "1/2",
+        "squares": 2,
+        "identity": "(1/2)^2 + (1/2)^2 = 1/2",
+        "certified": true,
+        "least_dimension_holding_sqrt": 2,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "2/3",
+        "squares": 3,
+        "identity": "(2/3)^2 + (1/3)^2 + (1/3)^2 = 2/3",
+        "certified": true,
+        "least_dimension_holding_sqrt": 3,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "7/9",
+        "squares": 4,
+        "identity": "(1/9)^2 + (7/9)^2 + (1/3)^2 + (2/9)^2 = 7/9",
+        "certified": true,
+        "least_dimension_holding_sqrt": 4,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "23/5",
+        "squares": 3,
+        "identity": "(9/5)^2 + (1)^2 + (3/5)^2 = 23/5",
+        "certified": true,
+        "least_dimension_holding_sqrt": 3,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "169/4",
+        "squares": 1,
+        "identity": "(13/2)^2 = 169/4",
+        "certified": true,
+        "least_dimension_holding_sqrt": 1,
+        "two_square_criterion_agrees": true
+      },
+      {
+        "value": "1000003",
+        "squares": 3,
+        "identity": "(997)^2 + (63)^2 + (45)^2 = 1000003",
+        "certified": true,
+        "least_dimension_holding_sqrt": 3,
+        "two_square_criterion_agrees": true
+      }
+    ],
+    "a_negative_value": {
+      "holds": false,
+      "certified": false
+    },
+    "outside_QQ_it_is_refused": "sqrt(3) is not rational: the sign kernel is a theorem about QQ, and in a real quadratic field a positive element need not be a sum of squares at all (4*sqrt(3) in QQ(sqrt 3) is the standard example)",
+    "why_it_is_refused": "in QQ(sqrt 3) a sum of squares must be positive under both real embeddings, and 4 sqrt(3) is not, so a true ordering fact there has no certificate of this kind at all"
+  },
+  "the_relations": {
+    "soundness_of_the_existential": {
+      "identity": "|U - V|^2 = 4 (|OA|^2 - |OP|^2), given midp(P,U,V) and the two congs",
+      "certified": true,
+      "means": "the remainder is a quarter of a square whenever the witness exists, so a witness implies membership; the converse is what can fail over QQ"
+    },
+    "in_the_closed_disk": [
+      {
+        "case": "inside, ratio 3",
+        "holds": true,
+        "certified": true,
+        "field": "QQ(sqrt(3))",
+        "U": [
+          "1",
+          "sqrt(3)"
+        ],
+        "V": [
+          "1",
+          "-sqrt(3)"
+        ],
+        "atoms": {
+          "midp('__p', '__u', '__v')": true,
+          "cong('__o', '__u', '__o', '__a')": true,
+          "cong('__o', '__v', '__o', '__a')": true
+        }
+      },
+      {
+        "case": "on the circle",
+        "holds": true,
+        "certified": true,
+        "field": "QQ",
+        "U": [
+          "3",
+          "4"
+        ],
+        "V": [
+          "3",
+          "4"
+        ],
+        "atoms": {
+          "midp('__p', '__u', '__v')": true,
+          "cong('__o', '__u', '__o', '__a')": true,
+          "cong('__o', '__v', '__o', '__a')": true
+        }
+      },
+      {
+        "case": "inside, ratio 1",
+        "holds": true,
+        "certified": true,
+        "field": "QQ",
+        "U": [
+          "0",
+          "2"
+        ],
+        "V": [
+          "2",
+          "0"
+        ],
+        "atoms": {
+          "midp('__p', '__u', '__v')": true,
+          "cong('__o', '__u', '__o', '__a')": true,
+          "cong('__o', '__v', '__o', '__a')": true
+        }
+      },
+      {
+        "case": "outside",
+        "holds": false,
+        "certified": false,
+        "field": null,
+        "U": null,
+        "V": null,
+        "atoms": null
+      }
+    ],
+    "an_inked_cell": {
+      "near": {
+        "holds": true,
+        "certified": true,
+        "Q": [
+          "5/2",
+          "0"
+        ],
+        "how": "the foot of P on the line AB, by the fragment's `foot`"
+      },
+      "far": {
+        "holds": false,
+        "Q": [
+          "5/2",
+          "0"
+        ]
+      },
+      "relation": "exists Q X: on_closed_segment(Q,A,B) and |PX| = r and Q in the closed disk about P through X"
+    },
+    "the_foot_is_nearest": {
+      "certified": true,
+      "identity": "|PQ|^2 - |PF|^2 = |AB|^2 (t - t0)^2",
+      "squares": [
+        [
+          "ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2",
+          "(ax**2*t - ax**2 - 2*ax*bx*t + ax*bx + ax*px + ay**2*t - ay**2 - 2*ay*by*t + ay*by + ay*py + bx**2*t - bx*px + by**2*t - by*py)/(ax**2 - 2*ax*bx + ay**2 - 2*ay*by + bx**2 + by**2)"
+        ]
+      ],
+      "means": "the foot is the nearest point of the line to P, for every P and every line, and the reason is one square rather than an appeal to calculus"
+    },
+    "in_shadow": {
+      "occluded": {
+        "holds": true,
+        "P": [
+          "2",
+          "0"
+        ]
+      },
+      "lit": {
+        "holds": false,
+        "P": [
+          "2",
+          "2"
+        ]
+      },
+      "relation": "exists P: on_closed_segment(P,A,B) and P strictly between L and X"
+    }
+  },
+  "the_universal_layer": {
+    "cases": [
+      {
+        "statement": "Cauchy-Schwarz in the plane",
+        "certified": true,
+        "identity": "(1)*(-a*d + b*c)^2",
+        "seconds": 0.26
+      },
+      {
+        "statement": "Lagrange's identity in space",
+        "certified": true,
+        "identity": "(1)*(-b*f + c*e)^2 + (1)*(-a*f + c*d)^2 + (1)*(-a*e + b*d)^2",
+        "seconds": 1.36
+      },
+      {
+        "statement": "|PQ|^2 + |QR|^2 >= |PR|^2 / 2",
+        "certified": true,
+        "identity": "(1/2)*(-b + d)^2 + (1/2)*(-a + c)^2",
+        "seconds": 0.13
+      },
+      {
+        "statement": "a^2 + b^2 >= ab",
+        "certified": true,
+        "identity": "(1)*(-(a - 2*b)/2)^2 + (3/4)*(a)^2",
+        "seconds": 0.02
+      }
+    ],
+    "means": "a sum of squares with non-negative weights is non-negative wherever it is evaluated, so these hold at every configuration and not merely at the ones tried. Finding the decomposition is a search; checking it is one expansion and one equality"
+  },
+  "the_letters_from_three_points": {
+    "seeds": {
+      "o": [
+        "0",
+        "0"
+      ],
+      "ex": [
+        "1",
+        "0"
+      ],
+      "ey": [
+        "0",
+        "1"
+      ]
+    },
+    "steps": 82,
+    "points_built": 85,
+    "every_roman_coordinate_is_constructed": true,
+    "every_narrow_coordinate_is_constructed": true,
+    "A_by_name": [
+      [
+        "o",
+        "p2_6",
+        "x4"
+      ],
+      [
+        "p1_3",
+        "p3_3"
+      ]
+    ],
+    "first_steps": [
+      {
+        "let": "x2",
+        "op": "mirror",
+        "args": [
+          "o",
+          "ex"
+        ]
+      },
+      {
+        "let": "x3",
+        "op": "mirror",
+        "args": [
+          "ex",
+          "x2"
+        ]
+      },
+      {
+        "let": "x4",
+        "op": "mirror",
+        "args": [
+          "x2",
+          "x3"
+        ]
+      },
+      {
+        "let": "x5",
+        "op": "mirror",
+        "args": [
+          "x3",
+          "x4"
+        ]
+      },
+      {
+        "let": "x6",
+        "op": "mirror",
+        "args": [
+          "x4",
+          "x5"
+        ]
+      },
+      {
+        "let": "y2",
+        "op": "mirror",
+        "args": [
+          "o",
+          "ey"
+        ]
+      }
+    ],
+    "from_two_points": {
+      "left_the_line": false,
+      "points_built": 5,
+      "constructions_tried": 400,
+      "off_the_line": [],
+      "why": "the reflection in the line fixes both given points and commutes with every primitive, so it fixes everything built from them"
+    },
+    "seconds": 2.2,
+    "means": "every corner of every letter is the output of `mirror` or `midpoint` applied to o, ex and ey, and the program that makes them replays from those three alone"
+  },
+  "space": {
+    "solids": [
+      {
+        "solid": "tetrahedron",
+        "vertices": 4,
+        "rational": true,
+        "field": "QQ",
+        "edges": 6,
+        "every_edge_congruent": true,
+        "edge_squared_length": "8",
+        "convex": true,
+        "faces": 4,
+        "a_face_certificate": {
+          "holds": true,
+          "certified": true,
+          "value": "16",
+          "squares": [
+            "4"
+          ],
+          "how_many": 1,
+          "identity": "(4)^2 = 16",
+          "is_a_planar_length": true,
+          "least_dimension_holding_the_length": 1,
+          "means": "a sum of at most two rational squares is |v|^2 for a rational vector of the plane, so its square root is a distance between two rational points; three or four squares means the length is not one this fragment can hold",
+          "nonzero": true
+        }
+      },
+      {
+        "solid": "cube",
+        "vertices": 8,
+        "rational": true,
+        "field": "QQ",
+        "edges": 12,
+        "every_edge_congruent": true,
+        "edge_squared_length": "4",
+        "convex": true,
+        "faces": 6,
+        "a_face_certificate": {
+          "holds": true,
+          "certified": true,
+          "value": "8",
+          "squares": [
+            "2",
+            "2"
+          ],
+          "how_many": 2,
+          "identity": "(2)^2 + (2)^2 = 8",
+          "is_a_planar_length": true,
+          "least_dimension_holding_the_length": 2,
+          "means": "a sum of at most two rational squares is |v|^2 for a rational vector of the plane, so its square root is a distance between two rational points; three or four squares means the length is not one this fragment can hold",
+          "nonzero": true
+        }
+      },
+      {
+        "solid": "octahedron",
+        "vertices": 6,
+        "rational": true,
+        "field": "QQ",
+        "edges": 12,
+        "every_edge_congruent": true,
+        "edge_squared_length": "2",
+        "convex": true,
+        "faces": 8,
+        "a_face_certificate": {
+          "holds": true,
+          "certified": true,
+          "value": "2",
+          "squares": [
+            "1",
+            "1"
+          ],
+          "how_many": 2,
+          "identity": "(1)^2 + (1)^2 = 2",
+          "is_a_planar_length": true,
+          "least_dimension_holding_the_length": 2,
+          "means": "a sum of at most two rational squares is |v|^2 for a rational vector of the plane, so its square root is a distance between two rational points; three or four squares means the length is not one this fragment can hold",
+          "nonzero": true
+        }
+      },
+      {
+        "solid": "icosahedron",
+        "vertices": 12,
+        "rational": false,
+        "field": "QQ(sqrt(5))",
+        "edges": 30,
+        "every_edge_congruent": true,
+        "edge_squared_length": "4"
+      }
+    ],
+    "why_two_of_them_leave_QQ": {
+      "trace_of_a_turn_through_t": "1 + 2 cos t",
+      "traces_of_a_fifth_turn": [
+        "1/2 + sqrt(5)/2",
+        "1/2 - sqrt(5)/2"
+      ],
+      "any_of_them_rational": false,
+      "they_generate": "QQ(sqrt(5))",
+      "nivens_theorem": "a rational rotation has rational trace, so 2 cos t is rational, so the finite orders in SO(3,QQ) are 1, 2, 3, 4, 6 -- never 5",
+      "conclusion": "no regular icosahedron and no regular dodecahedron has all vertices in any field missing sqrt 5, at any edge length or orientation"
+    },
+    "the_pentagon_says_the_same": {
+      "golden_ratio_satisfies": "x^2 = x + 1",
+      "roots": [
+        "1/2 - sqrt(5)/2",
+        "1/2 + sqrt(5)/2"
+      ],
+      "any_rational_root": false,
+      "icosahedron_vertices_rational": false,
+      "field_of_the_standard_coordinates": "QQ(sqrt(5))",
+      "conclusion": "the ratio of a regular pentagon's diagonal to its side is a root of x^2 = x + 1, which has none in QQ; a pentagon with rational vertices would make that ratio rational, so there is none, and neither the icosahedron nor the dodecahedron has rational vertices"
+    },
+    "the_triangle_the_plane_cannot_have": {
+      "vertices": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ]
+      ],
+      "squared_edge": "2",
+      "all_edges_congruent": true,
+      "rational": true,
+      "in_the_plane": "impossible: a triangle with rational vertices has rational area by the shoelace sum, and an equilateral triangle of squared side s has area sqrt(3) s / 4",
+      "why_space_is_different": "sqrt 3 is a sum of three rational squares and not of two, and the sign kernel reads that as: it is a distance between rational points of space and not of the plane. The plane had to adjoin it; space already had it"
+    },
+    "from_three_points": {
+      "escaped": false,
+      "points_built": 260,
+      "constructions_tried": 300,
+      "off_the_plane": [],
+      "why": "every primitive commutes with the reflection in the plane of the seeds, and that reflection fixes the seeds, so it fixes everything built from them. Three points do not make a fragment three-dimensional"
+    },
+    "which_faces_an_eye_sees": {
+      "eye": [
+        "10",
+        "3",
+        "1"
+      ],
+      "visible": 2,
+      "of": 6,
+      "relation": "sign( -det(b-a,c-a,E-a) * det(b-a,c-a,I-a) ) > 0 for an interior I"
+    },
+    "inside_a_tetrahedron": {
+      "a_point_inside": true,
+      "certified": true,
+      "a_point_outside": false,
+      "relation": "for each corner X, the product of its opposite determinant with the whole one is non-negative -- four sums of squares and no division"
+    }
+  },
+  "pictures": [
+    {
+      "file": "solid-tetrahedron.png",
+      "edges_drawn": 6,
+      "exact": true,
+      "note": "drawn from exact vertices"
+    },
+    {
+      "file": "solid-cube.png",
+      "edges_drawn": 12,
+      "exact": true,
+      "note": "drawn from exact vertices"
+    },
+    {
+      "file": "solid-octahedron.png",
+      "edges_drawn": 12,
+      "exact": true,
+      "note": "drawn from exact vertices"
+    },
+    {
+      "file": "solid-icosahedron.png",
+      "edges_drawn": 30,
+      "exact": false,
+      "note": "the vertices lie in QQ(sqrt 5); the pixel positions are rounded from them, and that rounding is the only inexact step"
+    }
+  ],
+  "what_it_costs": {
+    "one_decision_seconds": 3.186e-06,
+    "the_search_is_order_root_n": [
+      {
+        "value": "10^2+3",
+        "squares": 4,
+        "seconds": 0.0001
+      },
+      {
+        "value": "10^3+3",
+        "squares": 3,
+        "seconds": 0.0
+      },
+      {
+        "value": "10^4+3",
+        "squares": 3,
+        "seconds": 0.0
+      },
+      {
+        "value": "10^5+3",
+        "squares": 3,
+        "seconds": 0.0001
+      },
+      {
+        "value": "10^6+3",
+        "squares": 3,
+        "seconds": 0.0001
+      },
+      {
+        "value": "10^7+3",
+        "squares": 3,
+        "seconds": 0.0002
+      },
+      {
+        "value": "10^8+3",
+        "squares": 3,
+        "seconds": 0.0006
+      },
+      {
+        "value": "10^9+3",
+        "squares": 3,
+        "seconds": 0.0021
+      },
+      {
+        "value": "10^10+3",
+        "squares": 3,
+        "seconds": 0.0086
+      }
+    ],
+    "what_that_means": "finding the squares costs about the square root of the numerator times the denominator, so the kernel refuses past a stated limit rather than grinding. The sign is decided either way; only the witness is withheld",
+    "one_certificate_seconds": 9.1e-05,
+    "certificate_over_decision": 29,
+    "one_disk_witness_seconds": 0.0309,
+    "one_inked_cell_certificate_seconds": 0.0853,
+    "why_the_loops_use_the_decision": "a certificate for every cell of a 72px alphabet would be four orders of magnitude more work than drawing it. The certificate is what the claim rests on; the comparison is what the loop runs",
+    "reading": [
+      {
+        "glyph_height_px": 36,
+        "stroke_radius_px": "1",
+        "inked_cells_for_the_alphabet": 4943,
+        "drawing_seconds_for_26": 1.19,
+        "reading_seconds_for_26": 5.36,
+        "seconds_per_letter": 0.206,
+        "cells_read_per_second": 922,
+        "read_correctly": "26/26"
+      },
+      {
+        "glyph_height_px": 72,
+        "stroke_radius_px": "5/2",
+        "inked_cells_for_the_alphabet": 24172,
+        "drawing_seconds_for_26": 4.1,
+        "reading_seconds_for_26": 6.28,
+        "seconds_per_letter": 0.242,
+        "cells_read_per_second": 3848,
+        "read_correctly": "26/26"
+      },
+      {
+        "glyph_height_px": 144,
+        "stroke_radius_px": "5",
+        "inked_cells_for_the_alphabet": 97108,
+        "drawing_seconds_for_26": 17.58,
+        "reading_seconds_for_26": 12.22,
+        "seconds_per_letter": 0.47,
+        "cells_read_per_second": 7946,
+        "read_correctly": "26/26"
+      }
+    ]
+  },
+  "not_claimed": [
+    "the comparison is not gone. `sign` is a comparison, the search that finds the four squares is full of comparisons, and every per-pixel loop in this repository still runs the comparison. What the kernel supplies is a witness that turns the answer into an equation, and checking that witness uses no order at all",
+    "Lagrange's theorem makes a certificate exist for every true instance, so the existence of one proves nothing about the instance. What it buys is that the fact can be stated in the fragment's language and checked in it",
+    "the universal layer certifies non-negativity and never refutes it: a failure to find a sum of squares is a failure of the search, not a proof that the polynomial goes negative",
+    "the three-dimensional fragment is new code and shares no certifier with the plane one. Its predicates are written here rather than derived from the plane's",
+    "the solids are checked, not classified: this run certifies that three of them have rational vertices and that the standard coordinates of the fourth do not. The impossibility for the icosahedron and the dodecahedron is argued from the regular pentagon and is not machine-checked here",
+    "the letters are built by the fragment from three points. Which twenty-six shapes to build was still a human choice"
+  ],
+  "total_seconds": 88.5
+}

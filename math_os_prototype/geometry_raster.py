@@ -23,10 +23,13 @@ nothing is claimed.
 The rendering direction is different, and worth saying plainly: the black set of
 a drawn stroke is
     { X : there is a point Q of the segment with |X - Q| <= r },
-which is a relation the equality fragment writes -- `on_closed_segment` and
-`in_closed_disk` of `geometry_ink` are exactly that, composed of `coll`, `cong`
-and `midp` with existential witnesses. So the drawing side is a region the
-fragment describes; the raster is only the grid it is sampled on.
+and that "<=" is an order, which the equality fragment does not have. What
+`geometry_sign` shows is that the order fact can be handed a witness -- the
+point Q is the fragment's own `foot`, and "within r" becomes membership of a
+disk whose two circle points are constructed -- so every inked cell of every
+letter here has a certificate in QQ. The comparison is still what the loop
+below runs, because a per-pixel certificate would cost a thousand times more;
+the certificate is what the claim rests on, not what the renderer executes.
 """
 from __future__ import annotations
 
@@ -420,9 +423,10 @@ def _deduplicate(nodes, edges):
 
 
 def centre_of(cluster):
-    """The mean cell of a node's pixels, as a pair of floats. Measurement only."""
+    """The mean cell of a node's pixels, exactly. A float here would decide a branch."""
     total = len(cluster)
-    return (sum(c[0] for c in cluster)/total, sum(c[1] for c in cluster)/total)
+    return (Fraction(sum(c[0] for c in cluster), total),
+            Fraction(sum(c[1] for c in cluster), total))
 
 
 def prune(nodes, edges, minimum_length):
@@ -453,8 +457,11 @@ def prune(nodes, edges, minimum_length):
             loose = [n for n, d in ends if d == 1]
             branch = [n for n, d in ends if d >= 3]
             first, second = centre_of(nodes[a]), centre_of(nodes[b])
-            apart = ((first[0]-second[0])**2+(first[1]-second[1])**2)**0.5
-            if loose and branch and max(apart, len(chain)-1) < minimum_length:
+            apart = (first[0]-second[0])**2+(first[1]-second[1])**2
+            # compared as squares, because a square root would be a float and this
+            # comparison decides whether a branch of the skeleton survives
+            if loose and branch and apart < Fraction(minimum_length)**2 \
+                    and len(chain)-1 < minimum_length:
                 victim = index
                 break
         if victim is None:

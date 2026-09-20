@@ -127,6 +127,22 @@ def draw(strokes, *, height=36, radius=Fraction(3, 2), margin=None, at=None, pen
 # The reader under test, and the reader it is compared against
 # ---------------------------------------------------------------------------
 
+def constructed(style="ROMAN"):
+    """The same letters with every corner named by the construction that made it.
+
+    The tables above are coordinates, which is fine as data and poor as a claim.
+    `geometry_letter_construction` starts from three points -- (0,0), (1,0) and
+    (0,1) -- and produces every lattice point of the box as the output of
+    `mirror` or `midpoint`, in eighty-two steps that replay from those three
+    alone. This returns that construction together with the letters rewritten
+    over its names, and the test suite checks that replaying it reproduces the
+    tables exactly.
+    """
+    from math_os_prototype import geometry_letter_construction
+
+    return geometry_letter_construction.constructed(ROMAN if style == "ROMAN" else NARROW)
+
+
 def library(definitions=None, **options):
     """The description of every letter, built from the definitions alone."""
     return reading.library_from(definitions or ROMAN, **options)

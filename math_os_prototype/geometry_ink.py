@@ -27,7 +27,8 @@ from __future__ import annotations
 
 from collections import Counter
 from fractions import Fraction
-from math import atan2, pi
+from functools import cmp_to_key
+from math import pi
 from pathlib import Path
 
 from math_os_prototype import geometry_relational_dsl as rdsl
@@ -173,24 +174,40 @@ def _squared_distance(p, q):
 
 
 def in_closed_disk(point, centre, through):
-    """`exists U V: midp(P,U,V) and cong(O,U,O,A) and cong(O,V,O,A)`, decided.
+    """The decision, which is a comparison of exact rationals and nothing more.
 
-    The relation is the one the fragment can write: P is the midpoint of two
-    points of the circle about O through A. Writing U = P + v and V = P - v, the
-    two `cong` atoms say |P-O|^2 + |v|^2 = |OA|^2, and such a v exists exactly
-    when |P-O| <= |OA|. The decision below is that inequality, evaluated exactly
-    on rationals; it is the reduced form of the relation, not a new predicate,
-    and it assumes only that the witnesses U, V may be real rather than rational.
+    The relation being decided is `exists U V: midp(P,U,V) and cong(O,U,O,A) and
+    cong(O,V,O,A)`: P is the midpoint of two points of the circle about O through
+    A. Writing U = P + v and V = P - v, the two `cong` atoms force v to be
+    perpendicular to P - O with |v|^2 = |OA|^2 - |P-O|^2, and such a v exists over
+    the reals exactly when |P-O| <= |OA|. That is the comparison below.
+
+    It is a comparison, and this docstring used to claim more. The witnesses are
+    built, and the three atoms actually decided, by
+    `geometry_sign.witness_in_closed_disk`, which also reports the field the
+    witness needed: often QQ, and often a quadratic extension, because the
+    perpendicular offset is rational only when |OA|^2 - |P-O|^2 over |P-O|^2 is a
+    square. This function is what the per-pixel loops call; that one is what a
+    certificate comes from.
     """
     return _squared_distance(point, centre) <= _squared_distance(centre, through)
 
 
+def certified_in_closed_disk(point, centre, through):
+    """The same relation with its witnesses built and its atoms decided."""
+    from math_os_prototype import geometry_sign
+
+    return geometry_sign.witness_in_closed_disk(point, centre, through)
+
+
 def on_closed_segment(point, a, b):
-    """`coll(A,P,B) and P in the disk on AB as diameter`, decided.
+    """`coll(A,P,B)` and the disk on AB as diameter: the decision, comparison and all.
 
     Collinearity alone admits the whole line; intersecting it with the disk whose
     centre is midpoint(A,B) and whose radius is |AB|/2 cuts it down to the
-    segment. Both parts are relations the fragment already writes.
+    segment. The first part is an atom of the fragment and is decided as one; the
+    second is the comparison above, and `geometry_sign.certify_on_closed_segment`
+    is where it acquires a witness.
     """
     cross = (b[0]-a[0])*(point[1]-a[1])-(b[1]-a[1])*(point[0]-a[0])
     if cross != 0:
@@ -232,6 +249,13 @@ def occluded(x, light, occluder_a, occluder_b, coordinates=None, stats=None):
     stats["primitive_applications"] += 1
     stats["intersection_ll"] += 1
     if meeting is None:
+        # two lines that do not meet are parallel OR the same line, and the second
+        # case is not "no occlusion": the occluder lies along the ray, and whether
+        # it blocks it is an interval question decided below. `intersection_ll`
+        # refuses both alike, so they have to be told apart here
+        if _collinear(light, x, occluder_a) and _collinear(light, x, occluder_b):
+            stats["the_occluder_lies_along_the_ray"] += 1
+            return _along_the_ray(light, x, occluder_a, occluder_b)
         stats["parallel_or_degenerate"] += 1
         return False, reason
     if not on_closed_segment(meeting, occluder_a, occluder_b):
@@ -247,6 +271,34 @@ def occluded(x, light, occluder_a, occluder_b, coordinates=None, stats=None):
 # ---------------------------------------------------------------------------
 # Choosing which lattice sites take ink
 # ---------------------------------------------------------------------------
+
+def _collinear(a, b, c):
+    return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]) == 0
+
+
+def _along_the_ray(light, x, a, b):
+    """The occluder lies on the ray's own line: does its span meet the open ray?
+
+    Everything is collinear, so each point has a parameter along L -> X, and the
+    question is whether the interval of the occluder meets the open interval
+    (0, 1). That is four comparisons of exact rationals and no construction at
+    all, which is why `intersection_ll` cannot answer it: there is no single
+    meeting point to construct.
+    """
+    dx, dy = Fraction(x[0])-Fraction(light[0]), Fraction(x[1])-Fraction(light[1])
+    span = dx*dx+dy*dy
+    if span == 0:
+        return False, "the evaluation point is the light"
+
+    def parameter(point):
+        return ((Fraction(point[0])-Fraction(light[0]))*dx
+                + (Fraction(point[1])-Fraction(light[1]))*dy)/span
+    low, high = sorted((parameter(a), parameter(b)))
+    lower, upper = max(low, Fraction(0)), min(high, Fraction(1))
+    if lower < upper or (lower == upper and 0 < lower < 1):
+        return True, None
+    return False, "the occluder lies along the ray but its span misses the open segment"
+
 
 def bayer(order):
     """An ordered-dither threshold matrix: deterministic, no randomness anywhere."""
@@ -493,9 +545,39 @@ def shadow_polygon(light, occluder, window):
     unique = sorted(set(found))
     if len(unique) < 3:
         return []
-    cx = sum(p[0] for p in unique)/len(unique)
-    cy = sum(p[1] for p in unique)/len(unique)
-    return sorted(unique, key=lambda p: atan2(float(p[1]-cy), float(p[0]-cx)))
+    cx = Fraction(sum(Fraction(p[0]) for p in unique), len(unique))
+    cy = Fraction(sum(Fraction(p[1]) for p in unique), len(unique))
+    return _around(unique, (cx, cy))
+
+
+def _around(points, centre):
+    """Sort points by angle about a centre, by signs alone and never by atan2.
+
+    The corners here are exact rationals produced by `intersection_ll`, and the
+    area that follows is a shoelace sum, which is order-dependent. Sorting them
+    by the angle of a float would let the rounding choose the order of two
+    nearly equal angles, and with it the outline and the area. A half-plane test
+    and the sign of a cross product decide the same order exactly.
+    """
+    def half(p):
+        dy = Fraction(p[1])-centre[1]
+        dx = Fraction(p[0])-centre[0]
+        return 0 if (dy > 0 or (dy == 0 and dx >= 0)) else 1
+
+    def turn(p, q):
+        return ((Fraction(p[0])-centre[0])*(Fraction(q[1])-centre[1])
+                - (Fraction(p[1])-centre[1])*(Fraction(q[0])-centre[0]))
+
+    def compare(p, q):
+        if half(p) != half(q):
+            return -1 if half(p) < half(q) else 1
+        cross = turn(p, q)
+        if cross != 0:
+            return -1 if cross > 0 else 1
+        near = ((Fraction(p[0])-centre[0])**2+(Fraction(p[1])-centre[1])**2
+                - (Fraction(q[0])-centre[0])**2-(Fraction(q[1])-centre[1])**2)
+        return (near > 0)-(near < 0)
+    return sorted(points, key=cmp_to_key(compare))
 
 
 def polygon_area(vertices):

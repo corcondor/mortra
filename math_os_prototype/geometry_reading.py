@@ -204,15 +204,15 @@ def recover(bitmap, *, grid=1, tolerance_divisor=12):
     """
     gauge = measure(bitmap)
     body, skeleton, radius = gauge["body"], gauge["skeleton"], gauge["radius"]
-    junction = max(1, round(float(radius)))
+    junction = max(1, round(radius))            # the exact value, not a double
     nodes, edges = raster.skeleton_graph(skeleton, junction_radius=junction)
-    nodes, edges = raster.prune(nodes, edges, max(2, round(float(3*radius/2))))
+    nodes, edges = raster.prune(nodes, edges, max(2, round(3*radius/2)))
     nodes, edges = raster.dissolve(nodes, edges)
     if not edges:
         raise ValueError("the ink has no stroke")
     x0, y0, x1, y1 = gauge["box"]
     tolerance = max(Fraction(1), (y1-y0)/tolerance_divisor)
-    margin = max(1, round(float(radius)))
+    margin = max(1, round(radius))
 
     # every straight part of every chain, as a line and the node it starts from
     parts = []
