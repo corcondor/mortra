@@ -1,0 +1,825 @@
+{
+  "D1": {
+    "task_id": "D1",
+    "configurations": [
+      {
+        "config": "ROMAN_r1_4",
+        "font": "ROMAN",
+        "radius_fraction": "1/4",
+        "radius_px": 2.0,
+        "orig_letter": "M",
+        "orig_score": "1",
+        "opt_letter": "M",
+        "opt_score": "1",
+        "orig_topology": {
+          "endpoints": 4,
+          "junctions": 54,
+          "total_pixels": 142,
+          "holes": 0,
+          "components": 1
+        },
+        "opt_topology": {
+          "endpoints": 4,
+          "junctions": 54,
+          "total_pixels": 143,
+          "holes": 0,
+          "components": 2
+        },
+        "breakdown_stage": "None (Correct)"
+      },
+      {
+        "config": "ROMAN_r3_8",
+        "font": "ROMAN",
+        "radius_fraction": "3/8",
+        "radius_px": 3.0,
+        "orig_letter": "M",
+        "orig_score": "1",
+        "opt_letter": "M",
+        "opt_score": "1",
+        "orig_topology": {
+          "endpoints": 4,
+          "junctions": 11,
+          "total_pixels": 128,
+          "holes": 0,
+          "components": 1
+        },
+        "opt_topology": {
+          "endpoints": 4,
+          "junctions": 28,
+          "total_pixels": 145,
+          "holes": 2,
+          "components": 1
+        },
+        "breakdown_stage": "None (Correct)"
+      },
+      {
+        "config": "ROMAN_r1_2",
+        "font": "ROMAN",
+        "radius_fraction": "1/2",
+        "radius_px": 4.0,
+        "orig_letter": "M",
+        "orig_score": "1",
+        "opt_letter": "M",
+        "opt_score": "8/31",
+        "orig_topology": {
+          "endpoints": 4,
+          "junctions": 15,
+          "total_pixels": 122,
+          "holes": 0,
+          "components": 1
+        },
+        "opt_topology": {
+          "endpoints": 4,
+          "junctions": 51,
+          "total_pixels": 149,
+          "holes": 4,
+          "components": 1
+        },
+        "breakdown_stage": "None (Correct)"
+      },
+      {
+        "config": "NARROW_r1_4",
+        "font": "NARROW",
+        "radius_fraction": "1/4",
+        "radius_px": 2.0,
+        "orig_letter": "M",
+        "orig_score": "1",
+        "opt_letter": "M",
+        "opt_score": "1",
+        "orig_topology": {
+          "endpoints": 4,
+          "junctions": 93,
+          "total_pixels": 183,
+          "holes": 0,
+          "components": 1
+        },
+        "opt_topology": {
+          "endpoints": 4,
+          "junctions": 94,
+          "total_pixels": 186,
+          "holes": 1,
+          "components": 1
+        },
+        "breakdown_stage": "None (Correct)"
+      },
+      {
+        "config": "NARROW_r3_8",
+        "font": "NARROW",
+        "radius_fraction": "3/8",
+        "radius_px": 3.0,
+        "orig_letter": "M",
+        "orig_score": "1",
+        "opt_letter": "M",
+        "opt_score": "1",
+        "orig_topology": {
+          "endpoints": 4,
+          "junctions": 14,
+          "total_pixels": 157,
+          "holes": 0,
+          "components": 1
+        },
+        "opt_topology": {
+          "endpoints": 3,
+          "junctions": 29,
+          "total_pixels": 168,
+          "holes": 2,
+          "components": 1
+        },
+        "breakdown_stage": "None (Correct)"
+      },
+      {
+        "config": "NARROW_r1_2",
+        "font": "NARROW",
+        "radius_fraction": "1/2",
+        "radius_px": 4.0,
+        "orig_letter": "M",
+        "orig_score": "1",
+        "opt_letter": "M",
+        "opt_score": "1",
+        "orig_topology": {
+          "endpoints": 4,
+          "junctions": 70,
+          "total_pixels": 166,
+          "holes": 0,
+          "components": 1
+        },
+        "opt_topology": {
+          "endpoints": 4,
+          "junctions": 87,
+          "total_pixels": 176,
+          "holes": 2,
+          "components": 1
+        },
+        "breakdown_stage": "None (Correct)"
+      }
+    ]
+  },
+  "G1": {
+    "task_id": "G1",
+    "task_spec": {
+      "points": {
+        "a": [
+          0,
+          0
+        ],
+        "b": [
+          6,
+          0
+        ],
+        "c": [
+          2,
+          2
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "para",
+          "points": [
+            "c",
+            "u",
+            "a",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        }
+      ]
+    },
+    "solution": {
+      "point": "n106",
+      "term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "mirror",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "primitive_expansion": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "mirror",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          {
+            "op": "foot",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "via": "fallback",
+      "applications_at_solution": 193
+    },
+    "computed_u": [
+      3.0,
+      2.0
+    ],
+    "expected_u": [
+      3.0,
+      2.0
+    ],
+    "is_correct": true,
+    "search_costs": {
+      "plan_expansions": 2044,
+      "transfer_certification_requests": 9105,
+      "polynomial_checks": 4654,
+      "max_queue": 8453,
+      "guaranteed_stop_plan_expansion_budget": 1,
+      "guaranteed_applications_used": 0,
+      "partial_plans_executed": 52,
+      "applications": 193,
+      "execution_seconds": 0.007996900007128716,
+      "predicate_prover_calls": 112,
+      "identity_bindings_excluded": 2,
+      "guard_checks": 1,
+      "distinctness_failures": 12,
+      "duplicate_outputs": 6,
+      "partial_stop_application_budget": 1,
+      "partial_applications_used": 16,
+      "search_seconds": 1.889492700000119,
+      "fallback_applications": 354
+    }
+  },
+  "G2": {
+    "task_id": "G2",
+    "task_spec": {
+      "points": {
+        "a": [
+          0,
+          0
+        ],
+        "b": [
+          8,
+          0
+        ],
+        "c": [
+          1,
+          1
+        ],
+        "d": [
+          5,
+          5
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "a",
+            "u",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "points": [
+            "u",
+            "c",
+            "u",
+            "d"
+          ]
+        }
+      ]
+    },
+    "solution": {
+      "point": "n9",
+      "term": {
+        "op": "intersection_ll",
+        "args": [
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          {
+            "op": "circle",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "d"
+              }
+            ]
+          },
+          {
+            "op": "circle",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "d"
+              }
+            ]
+          }
+        ]
+      },
+      "primitive_expansion": {
+        "op": "intersection_ll",
+        "args": [
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              }
+            ]
+          },
+          {
+            "op": "circle",
+            "args": [
+              {
+                "op": "var",
+                "name": "a"
+              },
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          },
+          {
+            "op": "midpoint",
+            "args": [
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "d"
+              }
+            ]
+          },
+          {
+            "op": "circle",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              },
+              {
+                "op": "var",
+                "name": "d"
+              }
+            ]
+          }
+        ]
+      },
+      "goals": [
+        {
+          "predicate": "cong",
+          "arguments": [
+            "n9",
+            "a",
+            "n9",
+            "b"
+          ]
+        },
+        {
+          "predicate": "cong",
+          "arguments": [
+            "n9",
+            "c",
+            "n9",
+            "d"
+          ]
+        }
+      ],
+      "replay": {
+        "seconds": 0.0008173000023816712,
+        "primitive_operations": 5,
+        "method": "primitive reexecution, not contract witness",
+        "passed": true,
+        "residuals": [
+          "0",
+          "0"
+        ]
+      },
+      "applications_at_solution": 7
+    },
+    "computed_u": [
+      4.0,
+      2.0
+    ],
+    "expected_u": [
+      4.0,
+      2.0
+    ],
+    "is_correct": true,
+    "search_costs": {
+      "plan_expansions": 135,
+      "transfer_certification_requests": 1065,
+      "polynomial_checks": 919,
+      "max_queue": 863,
+      "guaranteed_plans_executed": 50,
+      "applications": 7,
+      "execution_seconds": 0.029539299994212342,
+      "predicate_prover_calls": 17,
+      "distinctness_failures": 108,
+      "identity_bindings_excluded": 4,
+      "guard_checks": 4,
+      "refused_applications": 1,
+      "guaranteed_stop_None": 1,
+      "guaranteed_applications_used": 7,
+      "search_seconds": 1.7458099000032234
+    }
+  },
+  "G3": {
+    "task_id": "G3",
+    "curve": "y = x**3 - 3*x + 2",
+    "roots": [
+      {
+        "root": "-2",
+        "multiplicity": 1,
+        "derivative": "9",
+        "classification": "intersection"
+      },
+      {
+        "root": "1",
+        "multiplicity": 2,
+        "derivative": "0",
+        "classification": "contact"
+      }
+    ],
+    "bounded_interval": [
+      "-2",
+      "1"
+    ],
+    "bounded_area": "27/4",
+    "is_roots_correct": true,
+    "is_area_correct": true
+  },
+  "S1": {
+    "task_id": "S1",
+    "original_projection": [
+      {
+        "3d": [
+          "-1",
+          "-1",
+          "4"
+        ],
+        "2d": [
+          "-1/4",
+          "-1/4"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "-1",
+          "4"
+        ],
+        "2d": [
+          "1/4",
+          "-1/4"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "1",
+          "4"
+        ],
+        "2d": [
+          "1/4",
+          "1/4"
+        ]
+      },
+      {
+        "3d": [
+          "-1",
+          "1",
+          "4"
+        ],
+        "2d": [
+          "-1/4",
+          "1/4"
+        ]
+      },
+      {
+        "3d": [
+          "-1",
+          "-1",
+          "6"
+        ],
+        "2d": [
+          "-1/6",
+          "-1/6"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "-1",
+          "6"
+        ],
+        "2d": [
+          "1/6",
+          "-1/6"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "1",
+          "6"
+        ],
+        "2d": [
+          "1/6",
+          "1/6"
+        ]
+      },
+      {
+        "3d": [
+          "-1",
+          "1",
+          "6"
+        ],
+        "2d": [
+          "-1/6",
+          "1/6"
+        ]
+      }
+    ],
+    "translated_projection": [
+      {
+        "3d": [
+          "-1",
+          "-1",
+          "6"
+        ],
+        "2d": [
+          "-1/6",
+          "-1/6"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "-1",
+          "6"
+        ],
+        "2d": [
+          "1/6",
+          "-1/6"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "1",
+          "6"
+        ],
+        "2d": [
+          "1/6",
+          "1/6"
+        ]
+      },
+      {
+        "3d": [
+          "-1",
+          "1",
+          "6"
+        ],
+        "2d": [
+          "-1/6",
+          "1/6"
+        ]
+      },
+      {
+        "3d": [
+          "-1",
+          "-1",
+          "8"
+        ],
+        "2d": [
+          "-1/8",
+          "-1/8"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "-1",
+          "8"
+        ],
+        "2d": [
+          "1/8",
+          "-1/8"
+        ]
+      },
+      {
+        "3d": [
+          "1",
+          "1",
+          "8"
+        ],
+        "2d": [
+          "1/8",
+          "1/8"
+        ]
+      },
+      {
+        "3d": [
+          "-1",
+          "1",
+          "8"
+        ],
+        "2d": [
+          "-1/8",
+          "1/8"
+        ]
+      }
+    ],
+    "is_orig_correct": true,
+    "is_trans_correct": true
+  },
+  "W1": {
+    "task_id": "W1",
+    "theoretical_fringe_period_rad": 0.00266,
+    "in_phase": {
+      "center_intensity": 4.0,
+      "total_power": 0.024008334864203274
+    },
+    "out_of_phase_pi": {
+      "center_intensity": 0.0,
+      "total_power": 0.02398551820858636
+    },
+    "mutually_incoherent": {
+      "center_intensity": 2.0,
+      "total_power": 0.023996926536394816
+    },
+    "is_period_correct": true,
+    "is_bright_correct": true,
+    "is_dark_correct": true,
+    "is_incoherent_correct": true
+  },
+  "learning_comparison": {
+    "condition_a": [
+      {
+        "task_id": "unseen_1",
+        "solved": true,
+        "expansions": 0,
+        "applications": 1,
+        "time_sec": 0.0014180999969539698
+      },
+      {
+        "task_id": "unseen_2",
+        "solved": false,
+        "expansions": 0,
+        "applications": 6,
+        "time_sec": 0.6691460000001825
+      },
+      {
+        "task_id": "unseen_3",
+        "solved": false,
+        "expansions": 0,
+        "applications": 0,
+        "time_sec": 0.0002982000005431473
+      },
+      {
+        "task_id": "unseen_4",
+        "solved": true,
+        "expansions": 0,
+        "applications": 1,
+        "time_sec": 0.014283099997555837
+      }
+    ],
+    "condition_b": [
+      {
+        "task_id": "unseen_1",
+        "solved": true,
+        "expansions": 0,
+        "applications": 1,
+        "time_sec": 0.05670069999905536
+      },
+      {
+        "task_id": "unseen_2",
+        "solved": false,
+        "expansions": 0,
+        "applications": 30,
+        "time_sec": 0.24253809999936493
+      },
+      {
+        "task_id": "unseen_3",
+        "solved": false,
+        "expansions": 0,
+        "applications": 30,
+        "time_sec": 0.7963589999999385
+      },
+      {
+        "task_id": "unseen_4",
+        "solved": true,
+        "expansions": 0,
+        "applications": 1,
+        "time_sec": 0.05234810000183643
+      }
+    ]
+  }
+}
