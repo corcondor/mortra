@@ -282,9 +282,12 @@ jobs:
           python scripts/run_batch2_eval.py 2>&1 | tee reports/batch2/run_batch2_eval.log
       - name: Generate review contact sheets and manifest
         shell: bash
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
           mkdir -p reports/review
-          python scripts/generate_review_artifacts.py 2>&1 | tee reports/review/generate_review_artifacts.log
+          python scripts/generate_review_artifacts.py --commit-sha "${{ github.sha }}" 2>&1 | tee reports/review/generate_review_artifacts.log
       - name: Frozen normal-entry geometry comparison
         if: ${{ !contains(env.EXPERIMENT_CONFIG, 'theory-geometry-autonomous-solve') && !contains(env.EXPERIMENT_CONFIG, 'relational-dsl') && !contains(env.EXPERIMENT_CONFIG, 'algebraic-structures') }}
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal

@@ -24,10 +24,10 @@ from PIL import Image
 repo_root = Path(__file__).resolve().parent.parent
 
 
-def get_git_info() -> dict[str, str]:
+def get_git_info(explicit_sha: str | None = None) -> dict[str, str]:
     """Retrieve current commit SHA and branch name."""
     import os
-    env_sha = os.environ.get("GITHUB_SHA")
+    env_sha = explicit_sha or os.environ.get("GITHUB_SHA")
     try:
         sha = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
@@ -35,13 +35,15 @@ def get_git_info() -> dict[str, str]:
         branch = subprocess.check_output(
             ["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=repo_root, text=True
         ).strip()
+        effective_sha = env_sha or sha
         return {
-            "commit_sha": env_sha or sha,
-            "source_sha": sha,
+            "commit_sha": effective_sha,
+            "source_sha": effective_sha,
             "branch": os.environ.get("GITHUB_REF_NAME") or branch,
         }
     except Exception as e:
-        return {"commit_sha": env_sha or "unknown", "source_sha": "unknown", "branch": "unknown", "error": str(e)}
+        effective_sha = env_sha or "unknown"
+        return {"commit_sha": effective_sha, "source_sha": effective_sha, "branch": "unknown", "error": str(e)}
 
 
 def create_contact_sheet(
@@ -131,9 +133,7 @@ def main() -> None:
     batch1_dir = repo_root / "reports" / "batch1"
     batch2_dir = repo_root / "reports" / "batch2"
 
-    git_info = get_git_info()
-    if args.commit_sha:
-        git_info["commit_sha"] = args.commit_sha
+    git_info = get_git_info(explicit_sha=args.commit_sha)
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     # 1. Batch 1 Contact Sheet
