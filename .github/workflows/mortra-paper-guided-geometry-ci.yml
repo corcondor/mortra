@@ -270,6 +270,11 @@ jobs:
             --mode "${{ inputs.execution_mode || 'initial' }}" \
             --checkpoint "${{ inputs.checkpoint_path || '' }}" \
             2>&1 | tee reports/geometric-reading-demo.log
+      - name: Execute first batch tasks (D1, G1, G2, G3, S1, W1) and autonomous grading
+        shell: bash
+        run: |
+          mkdir -p reports/batch1
+          python scripts/run_batch1_eval.py 2>&1 | tee reports/batch1/run_batch1_eval.log
       - name: Frozen normal-entry geometry comparison
         if: ${{ !contains(env.EXPERIMENT_CONFIG, 'theory-geometry-autonomous-solve') && !contains(env.EXPERIMENT_CONFIG, 'relational-dsl') && !contains(env.EXPERIMENT_CONFIG, 'algebraic-structures') }}
         run: python scripts/run_theory_formation.py --config "$EXPERIMENT_CONFIG" --output reports/semantic-feedback-normal
@@ -319,6 +324,7 @@ jobs:
             reports/acquired-library/
             reports/checkpoint_manifest.json
             reports/wave-optics-roundtrip/
+            reports/batch1/
   exact-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 15
