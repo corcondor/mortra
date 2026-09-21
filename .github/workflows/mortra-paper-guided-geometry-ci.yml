@@ -237,7 +237,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p reports
-          python -m pytest -q tests/test_vendored_newclid.py tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py tests/test_geometry_relational_dsl.py tests/test_geometry_relational_edit.py tests/test_algebraic_structures.py tests/test_operation_integration.py tests/test_structure_discovery.py tests/test_geometry_self_improvement.py tests/test_geometry_backsubstitution.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py tests/test_geometry_sign_and_space.py tests/test_wave_optics_system.py tests/test_geometry_instruction_and_optics.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
+          python -m pytest -q tests/test_vendored_newclid.py tests/test_geometry_source_scope.py tests/test_geometry_affine_definition.py tests/test_geometry_closure_contract.py tests/test_geometry_symbolic_dsl.py tests/test_geometry_complete_enumeration.py tests/test_geometry_selection.py math_os_prototype/test_runtime_typed_planner.py tests/test_geometry_semantic_feedback.py tests/test_geometry_contracts.py tests/test_geometry_contraction.py tests/test_theory_geometry.py tests/test_geometry_relational_dsl.py tests/test_geometry_relational_edit.py tests/test_algebraic_structures.py tests/test_operation_integration.py tests/test_structure_discovery.py tests/test_geometry_self_improvement.py tests/test_geometry_backsubstitution.py scripts/test_library_compression.py worker/backend/test_typed_geometry_stalk.py tests/test_geometry_sign_and_space.py tests/test_wave_optics_system.py tests/test_geometry_instruction_and_optics.py tests/test_operator_fold_engine.py --junitxml=reports/semantic-feedback-tests.xml | tee reports/semantic-feedback-tests.log
       - name: Verify unchanged upstream parsing and state tests
         shell: bash
         run: |
@@ -280,6 +280,11 @@ jobs:
         run: |
           mkdir -p reports/batch2
           python scripts/run_batch2_eval.py 2>&1 | tee reports/batch2/run_batch2_eval.log
+      - name: Execute paraxial optical operator fold evaluation and cross-domain reuse
+        shell: bash
+        run: |
+          mkdir -p reports/paraxial-fold
+          python scripts/run_paraxial_fold_eval.py 2>&1 | tee reports/paraxial-fold/run_paraxial_fold_eval.log
       - name: Generate review contact sheets and manifest
         shell: bash
         env:
@@ -339,6 +344,7 @@ jobs:
             reports/wave-optics-roundtrip/
             reports/batch1/
             reports/batch2/
+            reports/paraxial-fold/
             reports/review/
   exact-kernel:
     runs-on: ubuntu-latest

@@ -1,0 +1,244 @@
+{
+  "timestamp_utc": "2026-09-21T00:18:31.997730+00:00",
+  "training": [
+    {
+      "train_name": "train_relay_3",
+      "elements": 3,
+      "sequential_apps": 3,
+      "folded_apps": 1,
+      "acquired_matrix": [
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          -20.0,
+          -1.0
+        ]
+      ],
+      "residual": 6.938893903907228e-18
+    },
+    {
+      "train_name": "train_expander_5",
+      "elements": 5,
+      "sequential_apps": 5,
+      "folded_apps": 1,
+      "acquired_matrix": [
+        [
+          -1.5833333333333333,
+          -0.056666666666666664
+        ],
+        [
+          8.333333333333336,
+          -0.33333333333333337
+        ]
+      ],
+      "residual": 6.938893903907228e-18
+    }
+  ],
+  "unseen_evaluation": [
+    {
+      "train_name": "unseen_multi_relay_10",
+      "num_elements": 10,
+      "geometric_ray": {
+        "condition_a": {
+          "applications": 10,
+          "expansions": 10,
+          "expression_size": 10,
+          "output": {
+            "x": 0.0029544444444444514,
+            "theta": -0.08503333333333338
+          },
+          "proof_trace": [
+            "step_ray(P1, ray_0) -> ray_1",
+            "step_ray(L1, ray_1) -> ray_2",
+            "step_ray(P2, ray_2) -> ray_3",
+            "step_ray(L2, ray_3) -> ray_4",
+            "step_ray(P3, ray_4) -> ray_5",
+            "step_ray(L3, ray_5) -> ray_6",
+            "step_ray(P4, ray_6) -> ray_7",
+            "step_ray(L4, ray_7) -> ray_8",
+            "step_ray(P5, ray_8) -> ray_9",
+            "step_ray(L5, ray_9) -> ray_10"
+          ]
+        },
+        "condition_b": {
+          "applications": 2,
+          "expansions": 1,
+          "expression_size": 1,
+          "output": {
+            "x": 0.0029544444444444475,
+            "theta": -0.08503333333333336
+          },
+          "proof_trace": [
+            "fold(unseen_multi_relay_10) -> compact [0.5556, 0.08833, -16.67, -0.85]",
+            "apply_compact_ray(compact, ray_0) -> ray_final"
+          ],
+          "fold_used": true,
+          "acquired_representation": "Matrix([[ 0.555556, 0.0883333 ], [ -16.6667, -0.85 ]]), det=1",
+          "residual": 1.3877787807814457e-17
+        },
+        "reduction_ratio_apps": 5.0,
+        "reduction_ratio_size": 10.0
+      },
+      "wave_optics": {
+        "condition_a": {
+          "applications": 10,
+          "expansions": 10,
+          "expression_size": 10,
+          "output": {
+            "q_real": -0.04064778295685434,
+            "q_imag": 0.02151308712800286,
+            "waist_um": 129.0299005555937
+          },
+          "proof_trace": [
+            "step_beam(P1, beam_0) -> beam_1",
+            "step_beam(L1, beam_1) -> beam_2",
+            "step_beam(P2, beam_2) -> beam_3",
+            "step_beam(L2, beam_3) -> beam_4",
+            "step_beam(P3, beam_4) -> beam_5",
+            "step_beam(L3, beam_5) -> beam_6",
+            "step_beam(P4, beam_6) -> beam_7",
+            "step_beam(L4, beam_7) -> beam_8",
+            "step_beam(P5, beam_8) -> beam_9",
+            "step_beam(L5, beam_9) -> beam_10"
+          ]
+        },
+        "condition_b": {
+          "applications": 1,
+          "expansions": 1,
+          "expression_size": 1,
+          "output": {
+            "q_real": -0.04064778295685433,
+            "q_imag": 0.02151308712800285,
+            "waist_um": 129.02990055559368
+          },
+          "proof_trace": [
+            "apply_compact_beam(compact, beam_0) -> beam_final [reused from geometric fold]"
+          ],
+          "fold_used": true,
+          "acquired_representation": "Matrix([[ 0.555556, 0.0883333 ], [ -16.6667, -0.85 ]]), det=1",
+          "residual": 9.813077866773595e-18
+        },
+        "reduction_ratio_apps": 10.0,
+        "reduction_ratio_size": 10.0
+      },
+      "cross_domain_reuse": {
+        "identical_operator_reused": true,
+        "verified": true
+      }
+    },
+    {
+      "train_name": "unseen_periodic_cavity_17",
+      "num_elements": 17,
+      "geometric_ray": {
+        "condition_a": {
+          "applications": 17,
+          "expansions": 17,
+          "expression_size": 17,
+          "output": {
+            "x": 0.006103994140624998,
+            "theta": 0.03427905273437497
+          },
+          "proof_trace": [
+            "step_ray(P_in, ray_0) -> ray_1",
+            "step_ray(L_1A, ray_1) -> ray_2",
+            "step_ray(P_1, ray_2) -> ray_3",
+            "step_ray(L_1B, ray_3) -> ray_4",
+            "step_ray(L_2A, ray_4) -> ray_5",
+            "step_ray(P_2, ray_5) -> ray_6",
+            "step_ray(L_2B, ray_6) -> ray_7",
+            "step_ray(L_3A, ray_7) -> ray_8",
+            "step_ray(P_3, ray_8) -> ray_9",
+            "step_ray(L_3B, ray_9) -> ray_10",
+            "step_ray(L_4A, ray_10) -> ray_11",
+            "step_ray(P_4, ray_11) -> ray_12",
+            "step_ray(L_4B, ray_12) -> ray_13",
+            "step_ray(L_5A, ray_13) -> ray_14",
+            "step_ray(P_5, ray_14) -> ray_15",
+            "step_ray(L_5B, ray_15) -> ray_16",
+            "step_ray(P_out, ray_16) -> ray_17"
+          ]
+        },
+        "condition_b": {
+          "applications": 2,
+          "expansions": 1,
+          "expression_size": 1,
+          "output": {
+            "x": 0.006103994140625,
+            "theta": 0.034279052734375
+          },
+          "proof_trace": [
+            "fold(unseen_periodic_cavity_17) -> compact [1.194, 0.06677, 6.378, 1.194]",
+            "apply_compact_ray(compact, ray_0) -> ray_final"
+          ],
+          "fold_used": true,
+          "acquired_representation": "Matrix([[ 1.19409, 0.0667676 ], [ 6.37817, 1.19409 ]]), det=1",
+          "residual": 3.469446951953614e-17
+        },
+        "reduction_ratio_apps": 8.5,
+        "reduction_ratio_size": 17.0
+      },
+      "wave_optics": {
+        "condition_a": {
+          "applications": 17,
+          "expansions": 17,
+          "expression_size": 17,
+          "output": {
+            "q_real": 0.10724909270099553,
+            "q_imag": 0.06407025515804003,
+            "waist_um": 203.10352140175198
+          },
+          "proof_trace": [
+            "step_beam(P_in, beam_0) -> beam_1",
+            "step_beam(L_1A, beam_1) -> beam_2",
+            "step_beam(P_1, beam_2) -> beam_3",
+            "step_beam(L_1B, beam_3) -> beam_4",
+            "step_beam(L_2A, beam_4) -> beam_5",
+            "step_beam(P_2, beam_5) -> beam_6",
+            "step_beam(L_2B, beam_6) -> beam_7",
+            "step_beam(L_3A, beam_7) -> beam_8",
+            "step_beam(P_3, beam_8) -> beam_9",
+            "step_beam(L_3B, beam_9) -> beam_10",
+            "step_beam(L_4A, beam_10) -> beam_11",
+            "step_beam(P_4, beam_11) -> beam_12",
+            "step_beam(L_4B, beam_12) -> beam_13",
+            "step_beam(L_5A, beam_13) -> beam_14",
+            "step_beam(P_5, beam_14) -> beam_15",
+            "step_beam(L_5B, beam_15) -> beam_16",
+            "step_beam(P_out, beam_16) -> beam_17"
+          ]
+        },
+        "condition_b": {
+          "applications": 1,
+          "expansions": 1,
+          "expression_size": 1,
+          "output": {
+            "q_real": 0.10724909270099556,
+            "q_imag": 0.06407025515804,
+            "waist_um": 203.10352140175206
+          },
+          "proof_trace": [
+            "apply_compact_beam(compact, beam_0) -> beam_final [reused from geometric fold]"
+          ],
+          "fold_used": true,
+          "acquired_representation": "Matrix([[ 1.19409, 0.0667676 ], [ 6.37817, 1.19409 ]]), det=1",
+          "residual": 3.925231146709438e-17
+        },
+        "reduction_ratio_apps": 17.0,
+        "reduction_ratio_size": 17.0
+      },
+      "cross_domain_reuse": {
+        "identical_operator_reused": true,
+        "verified": true
+      }
+    }
+  ],
+  "key_findings": {
+    "A_answer_correctness": "All residuals < 1e-12 compared to exact sequential ground truth",
+    "B_search_reduction": "Applications reduced from N to 1 (or 2 including fold creation), expression size reduced by N:1",
+    "C_compact_representation_acquired": "Acquired single SL(2, R) symplectic matrix operator with det(M)=1",
+    "D_cross_domain_reuse": "Exact same compact operator acquired in geometric optics reused in wave optics (Gaussian q Möbius transform)",
+    "E_unseen_long_train_generalization": "Successfully generalized to unseen 10-element and 17-element optical systems"
+  }
+}
