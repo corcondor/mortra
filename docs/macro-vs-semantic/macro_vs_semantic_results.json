@@ -1,0 +1,236 @@
+{
+  "timestamp_utc": "2026-09-21T00:34:12.109951+00:00",
+  "experiment": "Macro Replay vs Semantic Generalization under Foot Ablation",
+  "git": {
+    "commit_sha": "1f925ba1b54d406362d97686e96f1373a38c2027",
+    "library_digest": "58e1aa2e244b8e6ea11a25dca42b61ccc028d894e7dc05aa4019a8495cdc6dc2",
+    "source_hashes": {
+      "math_os_prototype\\geometry_relational_search.py": "23deaec7c368dedac26e1ede5c6ba7f3e67a90861f1a50581a372725d66c2894",
+      "math_os_prototype\\geometry_relational_dsl.py": "7d6f2c7a2a4c63d2fe3eff219bbbae0d30d6c761d8a6d800bcde8a332058b65a",
+      "math_os_prototype\\geometry_acquisition.py": "37ddd23f9c96ba4313c6791efe9bc31366e9326ee6346629b00555af8bfadeb4",
+      "math_os_prototype\\geometry_acquired_library.py": "41e72ca79e270a1c6d7fdac3495dcf6d9848c882c7e35cb0501256ce6d202cf0"
+    },
+    "task_hashes": {
+      "unseen_p1_single_para": "a06471324c698189a551fafa84b6cbd3fc69dfddcd644497138a0d0d596e05e7",
+      "unseen_p2_parallelogram_4th_vertex": "759097f3dcb8b3ee4b8a24a0e5711ebfeb051ab6ad58a8855e13873f8597f99a"
+    }
+  },
+  "g1_training_operation": {
+    "task_id": "G1",
+    "certified_guarantees": {
+      "para(p0,p2,p1,v)": {
+        "method": "rational function field QQ(inputs): kernel witnesses substituted into the lowered pattern polynomial",
+        "guards_nonzero_as_rational_functions": true,
+        "nonvacuity": {
+          "sample": 0,
+          "inputs": {
+            "p0": [
+              "-9",
+              "-32"
+            ],
+            "p1": [
+              "79",
+              "-10"
+            ],
+            "p2": [
+              "-52",
+              "89"
+            ]
+          },
+          "method": "exact execution at digest-derived rational inputs"
+        },
+        "concludes": "pattern polynomial vanishes wherever every step executes; prerequisites not concluded"
+      }
+    },
+    "primitive_implementation": "midpoint(mirror(a, c), foot(c, a, b))",
+    "normalized_ast": "midpoint(mirror(VAR,VAR),foot(VAR,VAR,VAR))",
+    "constituent_primitives": [
+      "mirror",
+      "foot",
+      "midpoint"
+    ]
+  },
+  "mechanical_ablation_proof": {
+    "disabled_primitive": "foot",
+    "original_g1_unexecutable": true,
+    "rejection_message": "Ablated primitive 'foot' encountered in term AST"
+  },
+  "condition_a_results": [
+    {
+      "task_id": "unseen_p1_single_para",
+      "name": "Task P1: Single Para + Congruence (Unseen Translation)",
+      "solved": false,
+      "solution_found": false,
+      "verified": false,
+      "solution_term": null,
+      "normalized_ast": null,
+      "foot_count": 0,
+      "primitive_sequence": [],
+      "applications": 250,
+      "expansions": 2541,
+      "time_sec": 2.2030744000003324,
+      "via": null,
+      "output_coords": null
+    },
+    {
+      "task_id": "unseen_p2_parallelogram_4th_vertex",
+      "name": "Task P2: Parallelogram 4th Vertex (CD // AB and AD // BC)",
+      "solved": true,
+      "solution_found": true,
+      "verified": true,
+      "solution_term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "mirror",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              }
+            ]
+          },
+          {
+            "op": "mirror",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          }
+        ]
+      },
+      "normalized_ast": "midpoint(mirror(VAR,VAR),mirror(VAR,VAR))",
+      "foot_count": 0,
+      "primitive_sequence": [
+        "mirror",
+        "mirror",
+        "midpoint"
+      ],
+      "applications": 161,
+      "expansions": 3500,
+      "time_sec": 2.788502299998072,
+      "via": "fallback",
+      "output_coords": [
+        -4.0,
+        3.0
+      ]
+    }
+  ],
+  "condition_b_results": [
+    {
+      "task_id": "unseen_p1_single_para",
+      "name": "Task P1: Single Para + Congruence (Unseen Translation)",
+      "solved": false,
+      "solution_found": false,
+      "verified": false,
+      "solution_term": null,
+      "normalized_ast": null,
+      "foot_count": 0,
+      "primitive_sequence": [],
+      "applications": 250,
+      "expansions": 2541,
+      "time_sec": 1.8999533999958658,
+      "via": null,
+      "output_coords": null
+    },
+    {
+      "task_id": "unseen_p2_parallelogram_4th_vertex",
+      "name": "Task P2: Parallelogram 4th Vertex (CD // AB and AD // BC)",
+      "solved": true,
+      "solution_found": true,
+      "verified": true,
+      "solution_term": {
+        "op": "midpoint",
+        "args": [
+          {
+            "op": "mirror",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "a"
+              }
+            ]
+          },
+          {
+            "op": "mirror",
+            "args": [
+              {
+                "op": "var",
+                "name": "b"
+              },
+              {
+                "op": "var",
+                "name": "c"
+              }
+            ]
+          }
+        ]
+      },
+      "normalized_ast": "midpoint(mirror(VAR,VAR),mirror(VAR,VAR))",
+      "foot_count": 0,
+      "primitive_sequence": [
+        "mirror",
+        "mirror",
+        "midpoint"
+      ],
+      "applications": 161,
+      "expansions": 3500,
+      "time_sec": 3.012357700004941,
+      "via": "fallback",
+      "output_coords": [
+        -4.0,
+        3.0
+      ]
+    }
+  ],
+  "structural_comparisons": [
+    {
+      "task_id": "unseen_p1_single_para",
+      "status": "UNSOLVED",
+      "finding": "Condition B failed to find a solution when foot was disabled."
+    },
+    {
+      "task_id": "unseen_p2_parallelogram_4th_vertex",
+      "status": "SOLVED",
+      "no_foot_used": true,
+      "training_g1_ast": "midpoint(mirror(VAR,VAR),foot(VAR,VAR,VAR))",
+      "condition_b_ast": "midpoint(mirror(VAR,VAR),mirror(VAR,VAR))",
+      "identical_to_training_ast": false,
+      "primitive_sequence": [
+        "mirror",
+        "mirror",
+        "midpoint"
+      ],
+      "exact_verifier_passed": true,
+      "conclusion": "Discovered new solution AST without foot"
+    }
+  ],
+  "leakage_audit": {
+    "all_passed": true,
+    "checks": {
+      "1_no_expected_answer_passed_to_solver": true,
+      "2_no_task_id_branching_in_solver": true,
+      "3_no_task_specific_solver_added": true,
+      "4_no_parallel_specific_shortcut_added_after_ablation": true,
+      "5_no_training_solution_hardcoded_under_alias": true,
+      "6_no_ground_truth_witness_in_fallback": true,
+      "7_no_solution_leakage_from_evaluator_to_search": true,
+      "8_no_foot_alias_or_wrapper_bypassing_ablation": true,
+      "9_source_code_frozen_during_run": true
+    }
+  }
+}

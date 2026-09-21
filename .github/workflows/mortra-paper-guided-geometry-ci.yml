@@ -285,6 +285,11 @@ jobs:
         run: |
           mkdir -p reports/paraxial-fold
           python scripts/run_paraxial_fold_eval.py 2>&1 | tee reports/paraxial-fold/run_paraxial_fold_eval.log
+      - name: Execute macro vs semantic generalization audit (foot disabled)
+        shell: bash
+        run: |
+          mkdir -p reports/macro-vs-semantic
+          python scripts/test_macro_vs_semantic_generalization.py 2>&1 | tee reports/macro-vs-semantic/run_macro_vs_semantic.log
       - name: Generate review contact sheets and manifest
         shell: bash
         env:
@@ -345,6 +350,7 @@ jobs:
             reports/batch1/
             reports/batch2/
             reports/paraxial-fold/
+            reports/macro-vs-semantic/
             reports/review/
   exact-kernel:
     runs-on: ubuntu-latest
