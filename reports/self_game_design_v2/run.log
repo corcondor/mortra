@@ -1,0 +1,184 @@
+MORTRA AUTONOMOUS SELF-GAME-DESIGN V2: FRESH FULL RUN
+{
+  "experiment_id": "self-game-design-v2-20260923",
+  "version": 2,
+  "repository": "corcondor/mortra",
+  "commit_sha": "4ab73eda40daf15d00dc0f00bd33e46ce5499e16",
+  "source_sha256": "f2d9997e8c76ff7578577e5e6c67f6d823f50998d4eb0524185ba3474d94875f",
+  "generated_at": "2026-09-23T02:49:36.068494+00:00",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "dependencies": {
+    "numpy": "1.26.4",
+    "matplotlib": "3.10.5"
+  },
+  "command": [
+    "C:\\Users\\81808\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "scripts/evaluate_autonomous_game_design_loop.py",
+    "--output",
+    "reports/self_game_design_v2"
+  ],
+  "config": {
+    "generation_seed": 101,
+    "mutation_seed": 42,
+    "random_player_seed": 999,
+    "creation_seeds": [
+      201,
+      302,
+      403,
+      504,
+      605
+    ],
+    "exploration_steps": 2500,
+    "trials": 50,
+    "max_play_steps": 100,
+    "design_iterations": 20,
+    "creation_iterations": 10,
+    "q": 0.9,
+    "wall_density": 0.18
+  },
+  "replay_selection": "Trial 0, selected before outcomes; states include all game variables",
+  "limitations": [
+    "Fixed 12x12 rules and hand-written critique/mutation/acceptance policies",
+    "Fresh structural learner per evaluation; no cross-world persistent memory",
+    "Trials share one deterministic layout and learned graph; not independent worlds"
+  ]
+}
+--------------------------------------------------------------------------------
+1. GENERATING INITIAL GAME G0
+--------------------------------------------------------------------------------
+  G0 Created: Start=(4, 9), Goal=(1, 9), Walls=62
+  Mechanics in G0: Key=(5, 10), Door=(1, 4), Switch=(6, 9), Gate=(6, 5), Teleport=((9, 4) <-> (2, 3)), Hazards=1
+
+--------------------------------------------------------------------------------
+2. RUNNING CONDITION B: MORTRA SELF-DESIGNER (Targeted by Self-Critique)
+--------------------------------------------------------------------------------
+  Iter  0 | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | States: 536
+  Iter  1 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | Edit: Move wall from (7, 3) to (5, 5)
+  Iter  2 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | Edit: Remove wall at (3, 9) to open alter
+  Iter  3 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | Edit: Move wall from (7, 5) to (2, 7)
+  Iter  4 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  36.0% | Gap: +0.64 | Traj:  1 | Edit: Move wall from (4, 3) to (2, 8)
+  Iter  5 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (8, 8) to open alter
+  Iter  6 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Add wall at (10, 9)
+  Iter  7 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (5, 5) to open alter
+  Iter  8 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (1, 7) to open alter
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Move wall from (9, 5) to (4, 1)
+  Iter 10 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Move wall from (6, 7) to (3, 10)
+  Iter 11 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (4, 7) to open alter
+  Iter 12 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (7, 10) to open alte
+  Iter 13 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Move wall from (3, 5) to (5, 9)
+  Iter 14 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (1, 7) to open alter
+  Iter 15 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Move wall from (3, 8) to (2, 6)
+  Iter 16 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Move wall from (3, 5) to (10, 10)
+  Iter 17 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (7, 10) to open alte
+  Iter 18 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (2, 7) to open alter
+  Iter 19 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Add wall at (5, 2)
+  Iter 20 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  30.0% | Gap: +0.70 | Traj:  1 | Edit: Remove wall at (3, 8) to open alter
+
+--------------------------------------------------------------------------------
+3. RUNNING CONDITION A: RANDOM MUTATION CONTROL (Uniform Mutation, No Critique)
+--------------------------------------------------------------------------------
+  Iter  0 | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | States: 536
+  Iter  1 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | Edit: Random add hazard at (1, 5)
+  Iter  2 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  32.0% | Gap: +0.68 | Traj:  1 | Edit: Random remove wall at (8, 8)
+  Iter  3 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random move goal to (3, 3)
+  Iter  4 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random add hazard at (10, 8)
+  Iter  5 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random add hazard at (8, 9)
+  Iter  6 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random add wall at (1, 5)
+  Iter  7 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random add hazard at (4, 10)
+  Iter  8 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random move goal to (10, 4)
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random remove block
+  Iter 10 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random add wall at (4, 6)
+  Iter 11 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random remove teleporter
+  Iter 12 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random remove key-door pair
+  Iter 13 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random move goal to (9, 6)
+  Iter 14 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random remove block
+  Iter 15 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   6.0% | Gap: +0.94 | Traj:  1 | Edit: Random remove wall at (4, 3)
+  Iter 16 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random move start to (8, 9)
+  Iter 17 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random remove hazard at (9, 2)
+  Iter 18 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random move start to (4, 8)
+  Iter 19 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random remove hazard at (9, 2)
+  Iter 20 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   4.0% | Gap: +0.96 | Traj:  1 | Edit: Random add hazard at (7, 9)
+
+--------------------------------------------------------------------------------
+4. CREATION TEST: Evaluating 5 Independent Seeds from Scratch
+--------------------------------------------------------------------------------
+
+  [Seed 201 (Game 1)]
+  Iter  0 | Critique: TOO_EASY         | Succ: 100.0% | Rand:  60.0% | Gap: +0.40 | Traj:  1 | States: 322
+  Iter  1 | ACCEPTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  58.0% | Gap: +0.42 | Traj:  1 | Edit: Add wall at (2, 8) between start an
+  Iter  2 | ACCEPTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  60.0% | Gap: +0.40 | Traj:  1 | Edit: Add hazard at (8, 1)
+  Iter  3 | REJECTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  60.0% | Gap: +0.40 | Traj:  1 | Edit: Add wall at (1, 8) between start an
+  Iter  4 | REJECTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  60.0% | Gap: +0.40 | Traj:  1 | Edit: Add hazard at (6, 5)
+  Iter  5 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  34.0% | Gap: +0.66 | Traj:  1 | Edit: Move goal farther to (9, 1)
+  Iter  6 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  34.0% | Gap: +0.66 | Traj:  1 | Edit: Add wall at (8, 6)
+  Iter  7 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  34.0% | Gap: +0.66 | Traj:  1 | Edit: Add wall at (9, 2)
+  Iter  8 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  34.0% | Gap: +0.66 | Traj:  1 | Edit: Remove wall at (7, 2) to open alter
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  34.0% | Gap: +0.66 | Traj:  1 | Edit: Move wall from (10, 2) to (4, 3)
+  Iter 10 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  34.0% | Gap: +0.66 | Traj:  1 | Edit: Add wall at (1, 3)
+  --> Seed 201 Summary: Gap +0.40 -> +0.66 | Diversity 1 -> 1 | Mechanics: KeyDoor, SwitchGate, Teleporter, Hazard(2), MovableBlock
+
+  [Seed 302 (Game 2)]
+  Iter  0 | Critique: LOOP_TRAP        | Succ:  20.0% | Rand:   0.0% | Gap: +0.20 | Traj:  1 | States: 346
+  Iter  1 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove trap hazard at (4, 7)
+  Iter  2 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Add wall at (1, 6)
+  Iter  3 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Move wall from (10, 10) to (7, 8)
+  Iter  4 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Add wall at (2, 7)
+  Iter  5 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Add wall at (1, 4)
+  Iter  6 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Move wall from (7, 1) to (9, 9)
+  Iter  7 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (7, 5) to open alter
+  Iter  8 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (7, 9) to open alter
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Add wall at (9, 2)
+  Iter 10 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Add wall at (8, 7)
+  --> Seed 302 Summary: Gap +0.20 -> +0.92 | Diversity 1 -> 1 | Mechanics: KeyDoor, SwitchGate, Teleporter, MovableBlock
+
+  [Seed 403 (Game 3)]
+  Iter  0 | Critique: TOO_EASY         | Succ: 100.0% | Rand:  48.0% | Gap: +0.52 | Traj:  1 | States: 187
+  Iter  1 | REJECTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  48.0% | Gap: +0.52 | Traj:  1 | Edit: Add wall at (1, 6)
+  Iter  2 | REJECTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  48.0% | Gap: +0.52 | Traj:  1 | Edit: Add wall at (9, 4)
+  Iter  3 | REJECTED | Critique: TOO_EASY         | Succ: 100.0% | Rand:  48.0% | Gap: +0.52 | Traj:  1 | Edit: Add wall at (10, 9)
+  Iter  4 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   2.0% | Gap: +0.98 | Traj:  1 | Edit: Move goal farther to (1, 1)
+  Iter  5 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   0.0% | Gap: +1.00 | Traj:  1 | Edit: Add wall at (7, 6)
+  Iter  6 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   0.0% | Gap: +1.00 | Traj:  1 | Edit: Move wall from (10, 6) to (5, 5)
+  Iter  7 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   0.0% | Gap: +1.00 | Traj:  1 | Edit: Remove wall at (9, 9) to open alter
+  Iter  8 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   0.0% | Gap: +1.00 | Traj:  1 | Edit: Remove wall at (8, 1) to open alter
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   0.0% | Gap: +1.00 | Traj:  1 | Edit: Remove wall at (4, 5) to open alter
+  Iter 10 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   0.0% | Gap: +1.00 | Traj:  1 | Edit: Add wall at (8, 7)
+  --> Seed 403 Summary: Gap +0.52 -> +1.00 | Diversity 1 -> 1 | Mechanics: KeyDoor, SwitchGate, Teleporter, Hazard(1), MovableBlock
+
+  [Seed 504 (Game 4)]
+  Iter  0 | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  18.0% | Gap: +0.82 | Traj:  1 | States: 327
+  Iter  1 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  18.0% | Gap: +0.82 | Traj:  1 | Edit: Add wall at (7, 7)
+  Iter  2 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  16.0% | Gap: +0.84 | Traj:  1 | Edit: Remove wall at (1, 2) to open alter
+  Iter  3 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  16.0% | Gap: +0.84 | Traj:  1 | Edit: Remove wall at (7, 10) to open alte
+  Iter  4 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Remove wall at (8, 4) to open alter
+  Iter  5 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Add wall at (10, 10)
+  Iter  6 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Add wall at (3, 1)
+  Iter  7 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Add wall at (5, 4)
+  Iter  8 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Move wall from (7, 10) to (4, 4)
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Remove wall at (10, 7) to open alte
+  Iter 10 | ACCEPTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:  14.0% | Gap: +0.86 | Traj:  1 | Edit: Remove wall at (4, 9) to open alter
+  --> Seed 504 Summary: Gap +0.82 -> +0.86 | Diversity 1 -> 1 | Mechanics: KeyDoor, SwitchGate, Teleporter, Hazard(1), MovableBlock
+
+  [Seed 605 (Game 5)]
+  Iter  0 | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | States: 247
+  Iter  1 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (2, 3) to open alter
+  Iter  2 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Move wall from (8, 9) to (7, 6)
+  Iter  3 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (1, 10) to open alte
+  Iter  4 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Move wall from (2, 3) to (2, 8)
+  Iter  5 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (1, 10) to open alte
+  Iter  6 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (8, 9) to open alter
+  Iter  7 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Move wall from (7, 10) to (6, 5)
+  Iter  8 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Move wall from (1, 8) to (4, 10)
+  Iter  9 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Add wall at (4, 2)
+  Iter 10 | REJECTED | Critique: NO_CHOICE        | Succ: 100.0% | Rand:   8.0% | Gap: +0.92 | Traj:  1 | Edit: Remove wall at (8, 9) to open alter
+  --> Seed 605 Summary: Gap +0.92 -> +0.92 | Diversity 1 -> 1 | Mechanics: KeyDoor, SwitchGate, Teleporter, Hazard(1), MovableBlock
+
+  Distinct final mechanic configurations: 3 / 5 (Collapsed: False)
+
+--------------------------------------------------------------------------------
+5. Generating Visual Artifacts & Reports...
+--------------------------------------------------------------------------------
+
+All artifacts successfully saved to: C:\Users\81808\.openclaw\workspace\mortra-site-v2-20260923\reports\self_game_design_v2
+Closed-loop self-game-design experiment complete.
