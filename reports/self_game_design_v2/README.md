@@ -27,14 +27,19 @@ npm run build:web
 npm run dev:web
 ```
 
-`build:web` is the existing Vercel Next.js build with an additional experiment
-hash check and static asset synchronization. The broader `npm run build`
-retains its existing Python dependency-closure check. That check fails on this
-research baseline because `api/solve.py` imports four absent runtime modules:
+`build:web` delegates to `npm run build`, retaining the Python dependency-closure
+check and adding experiment hash verification and static asset synchronization.
+The initial research baseline failed this check because `api/solve.py` imported
+four absent runtime modules:
 `runtime_mobius_cycle_synthesis`, `runtime_rational_unit_sum_synthesis`,
 `runtime_trigonometric_triangle_synthesis`, and
-`runtime_triangle_radii_exponential_synthesis`. No research module was added,
-restored, or weakened for this website task. The Web demo does not call that API.
+`runtime_triangle_radii_exponential_synthesis`. Staged deployment also returned
+HTTP 500 for that API, while the previous production deployment returned 200.
+The four files were recovered byte-for-byte from the previous production source,
+not reimplemented. See `production_runtime_snapshot.json` for provenance and
+hashes. The API entrypoint also matches that production source byte-for-byte.
+This is runtime preservation, not a new research mechanism. The Web game demo
+does not call that API.
 
 ## Fresh results
 
