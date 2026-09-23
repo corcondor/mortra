@@ -5,8 +5,12 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "check:public-python": "node lib/release/check-public-python-closure.mjs",
-    "prebuild": "npm run check:public-python",
+    "prebuild": "npm run sync:game-run && npm run check:public-python",
+    "sync:game-run": "node scripts/sync-game-run.mjs",
+    "test:game-run": "node --test tests/microgame-parity.test.mjs",
     "build": "next build",
+    "build:web": "npm run sync:game-run && next build",
+    "dev:web": "next dev --hostname 127.0.0.1 --port 3037",
     "start": "next start -p 3002",
     "lint": "next lint",
     "test:discord": "node --test tests/discord-interactions.test.mjs",

@@ -297,3 +297,30 @@ const DICT: Record<Lang, Copy> = { en, ja }
 export function getCopy(lang: Lang): Copy {
   return DICT[lang]
 }
+
+export function getWorldCopy(lang: Lang) {
+  const ja = lang === 'ja'
+  return {
+    meta: {
+      title: 'MORTRA | Builds worlds. Learns them. Plays them. Changes them.',
+      description: 'MORTRA explores an environment through interaction, constructs its transition structure, acts toward a goal, evaluates the resulting play, and iteratively edits the world.',
+    },
+    tagline: 'Builds worlds. Learns them. Plays them. Changes them.',
+    play: ja ? 'この世界で、遊ぶ。' : 'Play this world.',
+    replay: ja ? 'MORTRAが辿った道。' : 'The path MORTRA took.',
+    compare: ja ? '変わった世界を、比べる。' : 'A world, before and after.',
+    timeline: ja ? '一つずつ、試して変える。' : 'Try. Evaluate. Change.',
+    how: ja ? 'MORTRAの仕組み。' : 'How MORTRA works.',
+    verified: ja ? '記録から、確かめる。' : 'Inspect the evidence.',
+    research: ja ? '研究を、たどる。' : 'Explore the research.',
+    initial: ja ? '初期' : 'Initial', final: ja ? '編集後' : 'Final',
+    reset: ja ? '最初に戻す' : 'Reset', interact: ja ? '操作' : 'Interact',
+    moves: ja ? '手' : 'moves', goal: ja ? 'ゴール到達' : 'Goal reached',
+    pending: ja ? '記録を読み込み中' : 'Loading experiment',
+    error: ja ? '実験記録を読み込めませんでした。' : 'The experiment could not be loaded.',
+    retry: ja ? '再読み込み' : 'Retry',
+    accepted: ja ? '採用' : 'Accepted', rejected: ja ? '不採用' : 'Rejected',
+    navPlay: ja ? '遊ぶ' : 'Play', navRecord: ja ? '実験記録' : 'Experiment', navResearch: ja ? '研究' : 'Research',
+    limits: ja ? '各50回は、同じ盤面と学習済み構造での試行です。50種類の未知ゲームに対する成績ではありません。編集規則と評価基準はあらかじめ実装されたものです。' : 'Each set of 50 trials shares one layout and learned structure. These are not results on 50 unseen games. Edit rules and evaluation criteria are predefined.',
+  }
+}

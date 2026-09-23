@@ -36,6 +36,20 @@ export function MortraResearchPage({ lang = 'en' }: { lang?: Lang }) {
       <div className={styles.backgroundVeil} aria-hidden="true" />
       <LabNotchNav lang={lang} active="research" />
 
+      <section className={styles.section} style={{ paddingTop: 140 }} aria-labelledby="audit-index">
+        <div className={styles.shell} style={{ maxWidth: 720 }}>
+          <p className={styles.sectionIndex}>AUDIT / EXPERIMENTAL</p>
+          <h1 id="audit-index" style={{ fontSize: 32, lineHeight: 1.5 }}>Research, with scope and history.</h1>
+          <p style={{ marginTop: 24, lineHeight: 1.9 }}>{ja ? '以下は研究記録です。過去の評価値を現在の製品性能として表示しません。公開トップページのゲーム評価は、二重計数を修正し再実行したv2の記録だけを使用します。' : 'These are research records, not current product benchmarks. The homepage uses only freshly rerun v2 game results with corrected success counting.'}</p>
+          {[
+            ['state-construction', 'State Construction', 'Predictive state, paraphrase, and POMDP memory claims remain under audit. No automatic-memory claim is promoted to the homepage.', 'reports'],
+            ['cross-domain', 'Cross-domain experiments', 'Mario results and cross-script 39.6 to 40.8 comparisons remain experimental, not a shared benchmark.', 'reports'],
+            ['path-field', 'Path-field / geometric-optics research', 'Fixed-field and geometric-optics work is retained as research. Scope and assumptions belong to each individual experiment.', 'scripts'],
+          ].map(([id, title, note, path]) => <article id={id} key={id} style={{ padding: '48px 0', borderBottom: '1px solid #34383b', scrollMarginTop: 90 }}><p className={styles.sectionIndex}>AUDIT / EXPERIMENTAL</p><h2 style={{ fontSize: 24 }}>{title}</h2><p style={{ margin: '20px 0', lineHeight: 1.8 }}>{note}</p><a href={`https://github.com/corcondor/mortra/tree/483d1592e5cd0d2b23d474cc79e217b121fd1fbe/${path}`}>Source snapshot <ArrowUpRight size={14} style={{ display: 'inline' }} /></a></article>)}
+          <p style={{ marginTop: 48 }}><Link href={`${home === '/' ? '' : home}/research/archive`}>Archived earlier work <ArrowRight size={16} style={{ display: 'inline' }} /></Link></p>
+        </div>
+      </section>
+
       <section className={styles.hero}>
         <div className={styles.shell}>
           <div className={styles.heroCopy}>

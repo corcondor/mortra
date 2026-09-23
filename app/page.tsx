@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { MortraProductPage } from '@/components/mortra/MortraProductPage'
-import { getCopy } from '@/lib/mortra/i18n'
+import { getWorldCopy } from '@/lib/mortra/i18n'
 
-const t = getCopy('en')
+const t = getWorldCopy('en')
 
 export const metadata: Metadata = {
   title: t.meta.title,

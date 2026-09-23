@@ -1,0 +1,41 @@
+{
+  "experiment_id": "self-game-design-v2-20260923",
+  "version": 2,
+  "repository": "corcondor/mortra",
+  "commit_sha": "4ab73eda40daf15d00dc0f00bd33e46ce5499e16",
+  "source_sha256": "f2d9997e8c76ff7578577e5e6c67f6d823f50998d4eb0524185ba3474d94875f",
+  "generated_at": "2026-09-23T02:49:36.068494+00:00",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "dependencies": {
+    "numpy": "1.26.4",
+    "matplotlib": "3.10.5"
+  },
+  "config": {
+    "generation_seed": 101,
+    "mutation_seed": 42,
+    "random_player_seed": 999,
+    "creation_seeds": [
+      201,
+      302,
+      403,
+      504,
+      605
+    ],
+    "exploration_steps": 2500,
+    "trials": 50,
+    "max_play_steps": 100,
+    "design_iterations": 20,
+    "creation_iterations": 10,
+    "q": 0.9,
+    "wall_density": 0.18
+  },
+  "replay_selection": "Trial 0, selected before outcomes; states include all game variables",
+  "limitations": [
+    "Fixed 12x12 rules and hand-written critique/mutation/acceptance policies",
+    "Fresh structural learner per evaluation; no cross-world persistent memory",
+    "Trials share one deterministic layout and learned graph; not independent worlds"
+  ],
+  "status": "complete",
+  "wall_seconds": 9.685772100001486
+}
