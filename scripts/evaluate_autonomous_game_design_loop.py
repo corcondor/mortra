@@ -22,7 +22,7 @@ Features:
 - 20 iterative design cycles
 - Strict Control: Random Mutation Designer vs MORTRA Self-Designer on identical G0
 - Creation Test across 5 independent seeds
-- Full deliverables: metrics.json, report.md, 4 publication figures, and playable_final_game.html
+- V2 deliverables: metrics, action/state replays, evolution history, and figures.
 """
 
 import os
@@ -31,6 +31,12 @@ import json
 import time
 import math
 import random
+import argparse
+import hashlib
+import platform
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
 from collections import deque
 import numpy as np
 import matplotlib
@@ -38,16 +44,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-# Ensure unbuffered output
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace', line_buffering=True)
-if hasattr(sys.stderr, 'reconfigure'):
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace', line_buffering=True)
-
 workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_DIR = os.path.join(workspace_root, "reports", "self_game_design")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-LOG_FILE = os.path.join(OUTPUT_DIR, "run.log")
+OUTPUT_DIR = os.path.join(workspace_root, "reports", "self_game_design_v2")
 
 class TeeLogger:
     def __init__(self, filename, stream):
@@ -59,15 +57,6 @@ class TeeLogger:
     def flush(self):
         self.terminal.flush()
         self.log.flush()
-
-sys.stdout = TeeLogger(LOG_FILE, sys.stdout)
-
-print("=" * 80)
-print("MORTRA AUTONOMOUS SELF-GAME-DESIGN CLOSED LOOP")
-print("=" * 80)
-print(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-print("Evaluating world creation, structural learning, self-critique, and autonomous editing...\n")
-
 
 # =========================================================================
 # 1. MICROGAME ENVIRONMENT (12 x 12 Grid, 11 Elements)
@@ -325,6 +314,32 @@ class StructuralLearner:
 # 3. SELF-PLAY & COMPREHENSIVE EVALUATION
 # =========================================================================
 
+def evaluate_random_player(game, trials=50, max_steps=100, seed=999):
+    """Count each trial once, including a goal reached on its last action."""
+    if trials < 1 or max_steps < 0:
+        raise ValueError("trials must be positive and max_steps nonnegative")
+    rng = random.Random(seed)
+    successes = 0
+    first_trial = None
+    for trial in range(trials):
+        state = game.get_initial_state()
+        states, actions = [state], []
+        for _ in range(max_steps):
+            if game.is_goal(state):
+                break
+            action = rng.randrange(NUM_ACTIONS)
+            state = game.step(state, action)
+            actions.append(action)
+            states.append(state)
+        reached = bool(game.is_goal(state))
+        successes += int(reached)
+        if trial == 0:
+            first_trial = {"trial": trial, "actions": actions, "states": states,
+                           "reached_goal": reached}
+    return {"successes": successes, "trials": trials, "seed": seed,
+            "success_rate": successes / trials, "replay": first_trial}
+
+
 def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=100):
     """
     Full closed-loop evaluation:
@@ -334,6 +349,8 @@ def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=
     4. 50 Random-Player trials
     5. Goal reuse on auxiliary objective
     """
+    if self_play_trials < 1 or max_play_steps < 0:
+        raise ValueError("self_play_trials must be positive and max_play_steps nonnegative")
     learner = StructuralLearner(num_actions=NUM_ACTIONS)
     curr_state = game.get_initial_state()
     curr_u = learner.get_or_add_id(curr_state)
@@ -370,10 +387,12 @@ def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=
     visited_cells_in_play = set()
 
     init_state = game.get_initial_state()
+    mortra_replay = None
 
     for trial in range(self_play_trials):
         st = init_state
         traj = [(st[0], st[1])]
+        recorded_states, recorded_actions = [st], []
         visited_in_trial = {st}
         visited_cells_in_play.add((st[0], st[1]))
         loop_steps_trial = 0
@@ -409,6 +428,8 @@ def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=
 
             action_counts[best_a] += 1
             next_st = game.step(st, best_a)
+            recorded_actions.append(best_a)
+            recorded_states.append(next_st)
             traj.append((next_st[0], next_st[1]))
             visited_cells_in_play.add((next_st[0], next_st[1]))
 
@@ -419,6 +440,9 @@ def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=
 
         if game.is_goal(st):
             reached = True
+        if trial == 0:
+            mortra_replay = {"trial": trial, "actions": recorded_actions,
+                             "states": recorded_states, "reached_goal": reached}
 
         total_loop_steps += loop_steps_trial
         if reached:
@@ -431,18 +455,8 @@ def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=
             dead_end_count += 1
 
     # 4. Random Player Baseline (50 trials)
-    random_successes = 0
-    rng_play = random.Random(999)
-    for _ in range(self_play_trials):
-        st = init_state
-        for _ in range(max_play_steps):
-            if game.is_goal(st):
-                random_successes += 1
-                break
-            a = rng_play.randrange(NUM_ACTIONS)
-            st = game.step(st, a)
-        if game.is_goal(st):
-            random_successes += 1
+    random_result = evaluate_random_player(game, self_play_trials, max_play_steps)
+    random_successes = random_result["successes"]
 
     # 5. Goal Reuse Performance (Auxiliary Goal: Key or Switch)
     reuse_successes = 0
@@ -488,6 +502,13 @@ def evaluate_game(game, explore_steps=2500, self_play_trials=50, max_play_steps=
     unexplored_count = len(all_floor) - len(visited_cells_in_play.intersection(set(all_floor)))
 
     return {
+        "trials": self_play_trials,
+        "successes": mortra_successes,
+        "random_successes": random_successes,
+        "explore_steps": explore_steps,
+        "max_play_steps": max_play_steps,
+        "mortra_replay": mortra_replay,
+        "random_replay": random_result["replay"],
         "success_rate": round(succ_rate, 4),
         "random_success_rate": round(rand_succ_rate, 4),
         "strategic_gap": round(succ_rate - rand_succ_rate, 4),
@@ -885,6 +906,7 @@ def run_self_design_loop(initial_game, num_iterations=20, is_control=False, seed
             "decision_reason": reason,
             "metrics": current_metrics,
             "candidate_metrics": cand_metrics,
+            "candidate_game": cand_game.to_dict(),
             "game": current_game.to_dict()
         })
 
@@ -897,649 +919,347 @@ def run_self_design_loop(initial_game, num_iterations=20, is_control=False, seed
 # 8. EXECUTION: EXPERIMENTAL CONDITION VS RANDOM CONTROL
 # =========================================================================
 
-if __name__ == '__main__':
+def run_experiment():
     print("-" * 80)
     print("1. GENERATING INITIAL GAME G0")
     print("-" * 80)
-G0 = MicroGame(seed=101)
-G0.generate_random(wall_density=0.18)
-print(f"  G0 Created: Start={G0.start_pos}, Goal={G0.goal_pos}, Walls={len(G0.walls)}")
-print(f"  Mechanics in G0: Key={G0.key_pos}, Door={G0.door_pos}, Switch={G0.switch_pos}, Gate={G0.gate_pos}, Teleport=({G0.teleport_a} <-> {G0.teleport_b}), Hazards={len(G0.hazards)}\n")
+    G0 = MicroGame(seed=101)
+    G0.generate_random(wall_density=0.18)
+    print(f"  G0 Created: Start={G0.start_pos}, Goal={G0.goal_pos}, Walls={len(G0.walls)}")
+    print(f"  Mechanics in G0: Key={G0.key_pos}, Door={G0.door_pos}, Switch={G0.switch_pos}, Gate={G0.gate_pos}, Teleport=({G0.teleport_a} <-> {G0.teleport_b}), Hazards={len(G0.hazards)}\n")
 
-print("-" * 80)
-print("2. RUNNING CONDITION B: MORTRA SELF-DESIGNER (Targeted by Self-Critique)")
-print("-" * 80)
-G_final_designer, history_designer, accepted_designer = run_self_design_loop(G0, num_iterations=20, is_control=False, seed=42)
+    print("-" * 80)
+    print("2. RUNNING CONDITION B: MORTRA SELF-DESIGNER (Targeted by Self-Critique)")
+    print("-" * 80)
+    G_final_designer, history_designer, accepted_designer = run_self_design_loop(G0, num_iterations=20, is_control=False, seed=42)
 
-print("\n" + "-" * 80)
-print("3. RUNNING CONDITION A: RANDOM MUTATION CONTROL (Uniform Mutation, No Critique)")
-print("-" * 80)
-G_final_control, history_control, accepted_control = run_self_design_loop(G0, num_iterations=20, is_control=True, seed=42)
+    print("\n" + "-" * 80)
+    print("3. RUNNING CONDITION A: RANDOM MUTATION CONTROL (Uniform Mutation, No Critique)")
+    print("-" * 80)
+    G_final_control, history_control, accepted_control = run_self_design_loop(G0, num_iterations=20, is_control=True, seed=42)
 
 
-# =========================================================================
-# 9. CREATION TEST: 5 INDEPENDENT SEEDS
-# =========================================================================
-print("\n" + "-" * 80)
-print("4. CREATION TEST: Evaluating 5 Independent Seeds from Scratch")
-print("-" * 80)
+    # =========================================================================
+    # 9. CREATION TEST: 5 INDEPENDENT SEEDS
+    # =========================================================================
+    print("\n" + "-" * 80)
+    print("4. CREATION TEST: Evaluating 5 Independent Seeds from Scratch")
+    print("-" * 80)
 
-creation_test_results = []
-creation_seeds = [201, 302, 403, 504, 605]
+    creation_test_results = []
+    creation_seeds = [201, 302, 403, 504, 605]
 
-for idx, s in enumerate(creation_seeds, start=1):
-    print(f"\n  [Seed {s} (Game {idx})]")
-    g_init = MicroGame(seed=s)
-    g_init.generate_random(wall_density=0.18)
-    g_fin, hist, acc = run_self_design_loop(g_init, num_iterations=10, is_control=False, seed=s)
-    
-    init_m = hist[0]["metrics"]
-    fin_m = hist[-1]["metrics"]
-    
-    unique_edits = set(h["mutation"] for h in hist if h["accepted"] and h["iteration"] > 0)
-    surviving_mechanics = []
-    if g_fin.door_pos: surviving_mechanics.append("KeyDoor")
-    if g_fin.gate_pos: surviving_mechanics.append("SwitchGate")
-    if g_fin.teleport_a: surviving_mechanics.append("Teleporter")
-    if g_fin.hazards: surviving_mechanics.append(f"Hazard({len(g_fin.hazards)})")
-    if g_fin.block_pos: surviving_mechanics.append("MovableBlock")
+    for idx, s in enumerate(creation_seeds, start=1):
+        print(f"\n  [Seed {s} (Game {idx})]")
+        g_init = MicroGame(seed=s)
+        g_init.generate_random(wall_density=0.18)
+        g_fin, hist, acc = run_self_design_loop(g_init, num_iterations=10, is_control=False, seed=s)
+        
+        init_m = hist[0]["metrics"]
+        fin_m = hist[-1]["metrics"]
+        
+        unique_edits = set(h["mutation"] for h in hist if h["accepted"] and h["iteration"] > 0)
+        surviving_mechanics = []
+        if g_fin.door_pos: surviving_mechanics.append("KeyDoor")
+        if g_fin.gate_pos: surviving_mechanics.append("SwitchGate")
+        if g_fin.teleport_a: surviving_mechanics.append("Teleporter")
+        if g_fin.hazards: surviving_mechanics.append(f"Hazard({len(g_fin.hazards)})")
+        if g_fin.block_pos: surviving_mechanics.append("MovableBlock")
 
-    res_entry = {
-        "game_id": idx,
-        "seed": s,
-        "start": g_fin.start_pos,
-        "goal": g_fin.goal_pos,
-        "accepted_edits": acc,
-        "unique_edits_count": len(unique_edits),
-        "initial_gap": init_m["strategic_gap"],
-        "final_gap": fin_m["strategic_gap"],
-        "initial_diversity": init_m["unique_successful_trajectories"],
-        "final_diversity": fin_m["unique_successful_trajectories"],
-        "surviving_mechanics": surviving_mechanics,
-        "collapsed": False
+        res_entry = {
+            "game_id": idx,
+            "seed": s,
+            "start": g_fin.start_pos,
+            "goal": g_fin.goal_pos,
+            "accepted_edits": acc,
+            "unique_edits_count": len(unique_edits),
+            "initial_gap": init_m["strategic_gap"],
+            "final_gap": fin_m["strategic_gap"],
+            "initial_diversity": init_m["unique_successful_trajectories"],
+            "final_diversity": fin_m["unique_successful_trajectories"],
+            "surviving_mechanics": surviving_mechanics,
+            "collapsed": False
+        }
+        creation_test_results.append(res_entry)
+        print(f"  --> Seed {s} Summary: Gap {init_m['strategic_gap']:+.2f} -> {fin_m['strategic_gap']:+.2f} | Diversity {init_m['unique_successful_trajectories']} -> {fin_m['unique_successful_trajectories']} | Mechanics: {', '.join(surviving_mechanics)}")
+
+
+    # Check if 5 games collapsed to identical form
+    layouts = [tuple(sorted(list(r["surviving_mechanics"]))) for r in creation_test_results]
+    distinct_layouts = len(set(layouts))
+    no_collapse = (distinct_layouts >= 3)
+    print(f"\n  Distinct final mechanic configurations: {distinct_layouts} / 5 (Collapsed: {not no_collapse})")
+
+
+    # =========================================================================
+    # 10. GENERATING PUBLICATION FIGURES & ARTIFACTS
+    # =========================================================================
+    print("\n" + "-" * 80)
+    print("5. Generating Visual Artifacts & Reports...")
+    print("-" * 80)
+
+    def render_game_map(ax, game, title, trajectories=None):
+        ax.set_xlim(-0.5, game.width - 0.5)
+        ax.set_ylim(-0.5, game.height - 0.5)
+        ax.set_aspect('equal')
+        ax.invert_yaxis()
+        ax.set_xticks(range(game.width))
+        ax.set_yticks(range(game.height))
+        ax.grid(color='#d0d0d0', linestyle='--', linewidth=0.5)
+
+        # Walls
+        for (wx, wy) in game.walls:
+            ax.add_patch(patches.Rectangle((wx - 0.5, wy - 0.5), 1, 1, facecolor='#2b2d42', edgecolor='#1a1a24'))
+
+        # Hazards
+        for (hx, hy) in game.hazards:
+            ax.add_patch(patches.Rectangle((hx - 0.5, hy - 0.5), 1, 1, facecolor='#ef233c', alpha=0.7, edgecolor='red'))
+            ax.text(hx, hy, "X", color='white', ha='center', va='center', fontweight='bold', fontsize=9)
+
+        # Teleporters
+        if game.teleport_a:
+            ax.add_patch(patches.Circle((game.teleport_a[0], game.teleport_a[1]), 0.4, facecolor='#8338ec', edgecolor='#5a189a'))
+            ax.text(game.teleport_a[0], game.teleport_a[1], "T1", color='white', ha='center', va='center', fontsize=8, fontweight='bold')
+        if game.teleport_b:
+            ax.add_patch(patches.Circle((game.teleport_b[0], game.teleport_b[1]), 0.4, facecolor='#8338ec', edgecolor='#5a189a'))
+            ax.text(game.teleport_b[0], game.teleport_b[1], "T2", color='white', ha='center', va='center', fontsize=8, fontweight='bold')
+
+        # Switch & Gate
+        if game.switch_pos:
+            ax.add_patch(patches.Rectangle((game.switch_pos[0] - 0.35, game.switch_pos[1] - 0.35), 0.7, 0.7, facecolor='#ffbe0b', edgecolor='#fb5607'))
+            ax.text(game.switch_pos[0], game.switch_pos[1], "SW", color='black', ha='center', va='center', fontsize=7, fontweight='bold')
+        if game.gate_pos:
+            ax.add_patch(patches.Rectangle((game.gate_pos[0] - 0.45, game.gate_pos[1] - 0.45), 0.9, 0.9, facecolor='#ff006e', edgecolor='#c1121f', hatch='//'))
+            ax.text(game.gate_pos[0], game.gate_pos[1], "GT", color='white', ha='center', va='center', fontsize=7, fontweight='bold')
+
+        # Key & Door
+        if game.key_pos:
+            ax.add_patch(patches.Circle((game.key_pos[0], game.key_pos[1]), 0.35, facecolor='#ffd166', edgecolor='#e76f51'))
+            ax.text(game.key_pos[0], game.key_pos[1], "K", color='black', ha='center', va='center', fontsize=8, fontweight='bold')
+        if game.door_pos:
+            ax.add_patch(patches.Rectangle((game.door_pos[0] - 0.45, game.door_pos[1] - 0.45), 0.9, 0.9, facecolor='#06d6a0', edgecolor='#073b4c'))
+            ax.text(game.door_pos[0], game.door_pos[1], "D", color='black', ha='center', va='center', fontsize=8, fontweight='bold')
+
+        # Block
+        if game.block_pos:
+            ax.add_patch(patches.Rectangle((game.block_pos[0] - 0.4, game.block_pos[1] - 0.4), 0.8, 0.8, facecolor='#adb5bd', edgecolor='#495057'))
+            ax.text(game.block_pos[0], game.block_pos[1], "B", color='black', ha='center', va='center', fontsize=8, fontweight='bold')
+
+        # Start & Goal
+        ax.add_patch(patches.Circle((game.start_pos[0], game.start_pos[1]), 0.45, facecolor='#3a86ff', edgecolor='#023e8a'))
+        ax.text(game.start_pos[0], game.start_pos[1], "S", color='white', ha='center', va='center', fontsize=9, fontweight='bold')
+        ax.add_patch(patches.Circle((game.goal_pos[0], game.goal_pos[1]), 0.45, facecolor='#38b000', edgecolor='#007200'))
+        ax.text(game.goal_pos[0], game.goal_pos[1], "G", color='white', ha='center', va='center', fontsize=9, fontweight='bold')
+
+        # Plot sample trajectories
+        if trajectories:
+            colors = ['#0077b6', '#0096c7', '#48cae4', '#90e0ef', '#023e8a']
+            for i, traj in enumerate(trajectories[:5]):
+                xs = [p[0] for p in traj]
+                ys = [p[1] for p in traj]
+                ax.plot(xs, ys, color=colors[i % len(colors)], linewidth=2.0, alpha=0.7, linestyle='-')
+
+        ax.set_title(title, fontsize=11, fontweight='bold', pad=8)
+
+    # 1. Figure: initial_vs_final.png
+    fig, axes = plt.subplots(1, 2, figsize=(14, 7))
+    init_m = history_designer[0]["metrics"]
+    fin_m = history_designer[-1]["metrics"]
+    render_game_map(axes[0], G0, f"Initial Game G0\nGap: {init_m['strategic_gap']:+.2f} | Traj: {init_m['unique_successful_trajectories']}", trajectories=init_m["sample_trajectories"])
+    render_game_map(axes[1], G_final_designer, f"MORTRA Self-Designed Game (Iter 20)\nGap: {fin_m['strategic_gap']:+.2f} | Traj: {fin_m['unique_successful_trajectories']} | Accepted Edits: {accepted_designer}", trajectories=fin_m["sample_trajectories"])
+    plt.tight_layout()
+    fig.savefig(os.path.join(OUTPUT_DIR, "initial_vs_final.png"), dpi=200)
+    plt.close(fig)
+
+    # 2. Figure: evolution_grid.png (4x5 showing all 20 iterations)
+    fig, axes = plt.subplots(4, 5, figsize=(20, 16))
+    axes = axes.flatten()
+    for it in range(1, 21):
+        step_info = history_designer[it]
+        step_game = MicroGame()
+        step_game.walls = set(tuple(p) for p in step_info["game"]["walls"])
+        step_game.hazards = set(tuple(p) for p in step_info["game"]["hazards"])
+        step_game.start_pos = tuple(step_info["game"]["start_pos"])
+        step_game.goal_pos = tuple(step_info["game"]["goal_pos"])
+        step_game.key_pos = tuple(step_info["game"]["key_pos"]) if step_info["game"]["key_pos"] else None
+        step_game.door_pos = tuple(step_info["game"]["door_pos"]) if step_info["game"]["door_pos"] else None
+        step_game.switch_pos = tuple(step_info["game"]["switch_pos"]) if step_info["game"]["switch_pos"] else None
+        step_game.gate_pos = tuple(step_info["game"]["gate_pos"]) if step_info["game"]["gate_pos"] else None
+        step_game.teleport_a = tuple(step_info["game"]["teleport_a"]) if step_info["game"]["teleport_a"] else None
+        step_game.teleport_b = tuple(step_info["game"]["teleport_b"]) if step_info["game"]["teleport_b"] else None
+        step_game.block_pos = tuple(step_info["game"]["block_pos"]) if step_info["game"]["block_pos"] else None
+
+        badge = "[ACC]" if step_info["accepted"] else "[REJ]"
+        render_game_map(axes[it - 1], step_game, f"It {it:2d} {badge}: {step_info['critique']}\nGap: {step_info['metrics']['strategic_gap']:+.2f}")
+    plt.tight_layout()
+    fig.savefig(os.path.join(OUTPUT_DIR, "evolution_grid.png"), dpi=180)
+    plt.close(fig)
+
+    # 3. Figure: trajectory_examples.png
+    fig, ax = plt.subplots(figsize=(8, 8))
+    render_game_map(ax, G_final_designer, f"MORTRA Multi-Path Trajectory Diversity (Final Game)\n{fin_m['unique_successful_trajectories']} Unique Successful Paths Discovered", trajectories=fin_m["sample_trajectories"])
+    plt.tight_layout()
+    fig.savefig(os.path.join(OUTPUT_DIR, "trajectory_examples.png"), dpi=200)
+    plt.close(fig)
+
+    # 4. Figure: control_comparison.png
+    iters = list(range(21))
+    gap_des = [h["metrics"]["strategic_gap"] for h in history_designer]
+    gap_ctrl = [h["metrics"]["strategic_gap"] for h in history_control]
+    div_des = [h["metrics"]["unique_successful_trajectories"] for h in history_designer]
+    div_ctrl = [h["metrics"]["unique_successful_trajectories"] for h in history_control]
+    loop_des = [h["metrics"]["repeated_loop_rate"] for h in history_designer]
+    loop_ctrl = [h["metrics"]["repeated_loop_rate"] for h in history_control]
+    cov_des = [h["metrics"]["state_coverage"] for h in history_designer]
+    cov_ctrl = [h["metrics"]["state_coverage"] for h in history_control]
+
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    # Plot 1: Strategic Gap
+    axes[0, 0].plot(iters, gap_des, 'o-', color='#2a9d8f', linewidth=2.5, label='MORTRA Self-Designer')
+    axes[0, 0].plot(iters, gap_ctrl, 's--', color='#e76f51', linewidth=2.0, label='Random Mutation Control')
+    axes[0, 0].set_title('Strategic Gap (MORTRA vs Random Player)', fontweight='bold')
+    axes[0, 0].set_xlabel('Iteration')
+    axes[0, 0].set_ylabel('Success Rate Gap')
+    axes[0, 0].grid(True, linestyle='--', alpha=0.6)
+    axes[0, 0].legend()
+
+    # Plot 2: Trajectory Diversity
+    axes[0, 1].plot(iters, div_des, 'o-', color='#3a86ff', linewidth=2.5, label='MORTRA Self-Designer')
+    axes[0, 1].plot(iters, div_ctrl, 's--', color='#f4a261', linewidth=2.0, label='Random Mutation Control')
+    axes[0, 1].set_title('Trajectory Diversity (Unique Success Paths)', fontweight='bold')
+    axes[0, 1].set_xlabel('Iteration')
+    axes[0, 1].set_ylabel('Unique Trajectories')
+    axes[0, 1].grid(True, linestyle='--', alpha=0.6)
+    axes[0, 1].legend()
+
+    # Plot 3: Repeated Loop Rate
+    axes[1, 0].plot(iters, loop_des, 'o-', color='#8338ec', linewidth=2.5, label='MORTRA Self-Designer')
+    axes[1, 0].plot(iters, loop_ctrl, 's--', color='#d62828', linewidth=2.0, label='Random Mutation Control')
+    axes[1, 0].set_title('Repeated Loop Rate (Cycle Traps)', fontweight='bold')
+    axes[1, 0].set_xlabel('Iteration')
+    axes[1, 0].set_ylabel('Loop Rate')
+    axes[1, 0].grid(True, linestyle='--', alpha=0.6)
+    axes[1, 0].legend()
+
+    # Plot 4: State Coverage
+    axes[1, 1].plot(iters, cov_des, 'o-', color='#06d6a0', linewidth=2.5, label='MORTRA Self-Designer')
+    axes[1, 1].plot(iters, cov_ctrl, 's--', color='#6c757d', linewidth=2.0, label='Random Mutation Control')
+    axes[1, 1].set_title('Discovered State Richness', fontweight='bold')
+    axes[1, 1].set_xlabel('Iteration')
+    axes[1, 1].set_ylabel('Unique States')
+    axes[1, 1].grid(True, linestyle='--', alpha=0.6)
+    axes[1, 1].legend()
+
+    plt.tight_layout()
+    fig.savefig(os.path.join(OUTPUT_DIR, "control_comparison.png"), dpi=200)
+    plt.close(fig)
+
+
+    # The creation-seed loop uses the same local names; export the main run.
+    init_m = history_designer[0]["metrics"]
+    fin_m = history_designer[-1]["metrics"]
+    # 12. SAVE JSON & MARKDOWN ARTIFACTS
+    with open(os.path.join(OUTPUT_DIR, "game_initial.json"), "w", encoding="utf-8") as f:
+        json.dump(G0.to_dict(), f, indent=2)
+
+    with open(os.path.join(OUTPUT_DIR, "game_final.json"), "w", encoding="utf-8") as f:
+        json.dump(G_final_designer.to_dict(), f, indent=2)
+
+    with open(os.path.join(OUTPUT_DIR, "evolution_history.json"), "w", encoding="utf-8") as f:
+        json.dump({
+            "designer_history": history_designer,
+            "control_history": history_control
+        }, f, indent=2)
+
+    with open(os.path.join(OUTPUT_DIR, "self_play_metrics.json"), "w", encoding="utf-8") as f:
+        json.dump({
+            "initial_metrics": init_m,
+            "final_designer_metrics": fin_m,
+            "final_control_metrics": history_control[-1]["metrics"],
+            "accepted_designer_count": accepted_designer,
+            "accepted_control_count": accepted_control,
+            "creation_test": creation_test_results
+        }, f, indent=2)
+
+    # Generate critique_history.md
+    critique_md = [
+        "# Autonomous Self-Game-Design Critique History\n",
+        "| Iteration | Self-Critique | Proposed Mutation | Decision | Success Rate | Random Player | Strategic Gap | Trajectory Diversity |",
+        "| :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |"
+    ]
+    for h in history_designer:
+        it = h["iteration"]
+        crit = h["critique"]
+        mut = h["mutation"]
+        dec = "ACCEPTED" if h["accepted"] else "REJECTED"
+        m = h["metrics"]
+        critique_md.append(f"| {it:2d} | `{crit}` | {mut} | **{dec}** | {m['success_rate']*100:.1f}% | {m['random_success_rate']*100:.1f}% | {m['strategic_gap']:+.2f} | {m['unique_successful_trajectories']} |")
+
+    with open(os.path.join(OUTPUT_DIR, "critique_history.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(critique_md) + "\n")
+
+    print(f"\nAll artifacts successfully saved to: {OUTPUT_DIR}")
+    print("Closed-loop self-game-design experiment complete.")
+
+
+def prepare_output(path):
+    target = Path(path).resolve()
+    legacy = Path(workspace_root, "reports", "self_game_design").resolve()
+    if target == legacy or legacy in target.parents:
+        raise ValueError("The legacy experiment is immutable; use a new output directory")
+    target.mkdir(parents=True, exist_ok=True)
+    if any(target.iterdir()):
+        raise ValueError(f"Refusing to overwrite existing artifacts: {target}")
+    return target
+
+
+def main():
+    global OUTPUT_DIR
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", default=OUTPUT_DIR)
+    args = parser.parse_args()
+    output = prepare_output(args.output)
+    OUTPUT_DIR = str(output)
+    sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=workspace_root, text=True).strip()
+    source = Path(__file__).resolve()
+    metadata = {
+        "experiment_id": "self-game-design-v2-20260923", "version": 2,
+        "repository": "corcondor/mortra", "commit_sha": sha,
+        "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "python": sys.version, "platform": platform.platform(),
+        "dependencies": {"numpy": np.__version__, "matplotlib": matplotlib.__version__},
+        "command": [sys.executable, *sys.argv],
+        "config": {"generation_seed": 101, "mutation_seed": 42, "random_player_seed": 999,
+                   "creation_seeds": [201, 302, 403, 504, 605], "exploration_steps": 2500,
+                   "trials": 50, "max_play_steps": 100, "design_iterations": 20,
+                   "creation_iterations": 10, "q": 0.90, "wall_density": 0.18},
+        "replay_selection": "Trial 0, selected before outcomes; states include all game variables",
+        "limitations": ["Fixed 12x12 rules and hand-written critique/mutation/acceptance policies",
+                        "Fresh structural learner per evaluation; no cross-world persistent memory",
+                        "Trials share one deterministic layout and learned graph; not independent worlds"]
     }
-    creation_test_results.append(res_entry)
-    print(f"  --> Seed {s} Summary: Gap {init_m['strategic_gap']:+.2f} -> {fin_m['strategic_gap']:+.2f} | Diversity {init_m['unique_successful_trajectories']} -> {fin_m['unique_successful_trajectories']} | Mechanics: {', '.join(surviving_mechanics)}")
-
-
-# Check if 5 games collapsed to identical form
-layouts = [tuple(sorted(list(r["surviving_mechanics"]))) for r in creation_test_results]
-distinct_layouts = len(set(layouts))
-no_collapse = (distinct_layouts >= 3)
-print(f"\n  Distinct final mechanic configurations: {distinct_layouts} / 5 (Collapsed: {not no_collapse})")
-
-
-# =========================================================================
-# 10. GENERATING PUBLICATION FIGURES & ARTIFACTS
-# =========================================================================
-print("\n" + "-" * 80)
-print("5. Generating Visual Artifacts & Reports...")
-print("-" * 80)
-
-def render_game_map(ax, game, title, trajectories=None):
-    ax.set_xlim(-0.5, game.width - 0.5)
-    ax.set_ylim(-0.5, game.height - 0.5)
-    ax.set_aspect('equal')
-    ax.invert_yaxis()
-    ax.set_xticks(range(game.width))
-    ax.set_yticks(range(game.height))
-    ax.grid(color='#d0d0d0', linestyle='--', linewidth=0.5)
-
-    # Walls
-    for (wx, wy) in game.walls:
-        ax.add_patch(patches.Rectangle((wx - 0.5, wy - 0.5), 1, 1, facecolor='#2b2d42', edgecolor='#1a1a24'))
-
-    # Hazards
-    for (hx, hy) in game.hazards:
-        ax.add_patch(patches.Rectangle((hx - 0.5, hy - 0.5), 1, 1, facecolor='#ef233c', alpha=0.7, edgecolor='red'))
-        ax.text(hx, hy, "X", color='white', ha='center', va='center', fontweight='bold', fontsize=9)
-
-    # Teleporters
-    if game.teleport_a:
-        ax.add_patch(patches.Circle((game.teleport_a[0], game.teleport_a[1]), 0.4, facecolor='#8338ec', edgecolor='#5a189a'))
-        ax.text(game.teleport_a[0], game.teleport_a[1], "T1", color='white', ha='center', va='center', fontsize=8, fontweight='bold')
-    if game.teleport_b:
-        ax.add_patch(patches.Circle((game.teleport_b[0], game.teleport_b[1]), 0.4, facecolor='#8338ec', edgecolor='#5a189a'))
-        ax.text(game.teleport_b[0], game.teleport_b[1], "T2", color='white', ha='center', va='center', fontsize=8, fontweight='bold')
-
-    # Switch & Gate
-    if game.switch_pos:
-        ax.add_patch(patches.Rectangle((game.switch_pos[0] - 0.35, game.switch_pos[1] - 0.35), 0.7, 0.7, facecolor='#ffbe0b', edgecolor='#fb5607'))
-        ax.text(game.switch_pos[0], game.switch_pos[1], "SW", color='black', ha='center', va='center', fontsize=7, fontweight='bold')
-    if game.gate_pos:
-        ax.add_patch(patches.Rectangle((game.gate_pos[0] - 0.45, game.gate_pos[1] - 0.45), 0.9, 0.9, facecolor='#ff006e', edgecolor='#c1121f', hatch='//'))
-        ax.text(game.gate_pos[0], game.gate_pos[1], "GT", color='white', ha='center', va='center', fontsize=7, fontweight='bold')
-
-    # Key & Door
-    if game.key_pos:
-        ax.add_patch(patches.Circle((game.key_pos[0], game.key_pos[1]), 0.35, facecolor='#ffd166', edgecolor='#e76f51'))
-        ax.text(game.key_pos[0], game.key_pos[1], "K", color='black', ha='center', va='center', fontsize=8, fontweight='bold')
-    if game.door_pos:
-        ax.add_patch(patches.Rectangle((game.door_pos[0] - 0.45, game.door_pos[1] - 0.45), 0.9, 0.9, facecolor='#06d6a0', edgecolor='#073b4c'))
-        ax.text(game.door_pos[0], game.door_pos[1], "D", color='black', ha='center', va='center', fontsize=8, fontweight='bold')
-
-    # Block
-    if game.block_pos:
-        ax.add_patch(patches.Rectangle((game.block_pos[0] - 0.4, game.block_pos[1] - 0.4), 0.8, 0.8, facecolor='#adb5bd', edgecolor='#495057'))
-        ax.text(game.block_pos[0], game.block_pos[1], "B", color='black', ha='center', va='center', fontsize=8, fontweight='bold')
-
-    # Start & Goal
-    ax.add_patch(patches.Circle((game.start_pos[0], game.start_pos[1]), 0.45, facecolor='#3a86ff', edgecolor='#023e8a'))
-    ax.text(game.start_pos[0], game.start_pos[1], "S", color='white', ha='center', va='center', fontsize=9, fontweight='bold')
-    ax.add_patch(patches.Circle((game.goal_pos[0], game.goal_pos[1]), 0.45, facecolor='#38b000', edgecolor='#007200'))
-    ax.text(game.goal_pos[0], game.goal_pos[1], "G", color='white', ha='center', va='center', fontsize=9, fontweight='bold')
-
-    # Plot sample trajectories
-    if trajectories:
-        colors = ['#0077b6', '#0096c7', '#48cae4', '#90e0ef', '#023e8a']
-        for i, traj in enumerate(trajectories[:5]):
-            xs = [p[0] for p in traj]
-            ys = [p[1] for p in traj]
-            ax.plot(xs, ys, color=colors[i % len(colors)], linewidth=2.0, alpha=0.7, linestyle='-')
-
-    ax.set_title(title, fontsize=11, fontweight='bold', pad=8)
-
-# 1. Figure: initial_vs_final.png
-fig, axes = plt.subplots(1, 2, figsize=(14, 7))
-init_m = history_designer[0]["metrics"]
-fin_m = history_designer[-1]["metrics"]
-render_game_map(axes[0], G0, f"Initial Game G0\nGap: {init_m['strategic_gap']:+.2f} | Traj: {init_m['unique_successful_trajectories']}", trajectories=init_m["sample_trajectories"])
-render_game_map(axes[1], G_final_designer, f"MORTRA Self-Designed Game (Iter 20)\nGap: {fin_m['strategic_gap']:+.2f} | Traj: {fin_m['unique_successful_trajectories']} | Accepted Edits: {accepted_designer}", trajectories=fin_m["sample_trajectories"])
-plt.tight_layout()
-fig.savefig(os.path.join(OUTPUT_DIR, "initial_vs_final.png"), dpi=200)
-plt.close(fig)
-
-# 2. Figure: evolution_grid.png (4x5 showing all 20 iterations)
-fig, axes = plt.subplots(4, 5, figsize=(20, 16))
-axes = axes.flatten()
-for it in range(1, 21):
-    step_info = history_designer[it]
-    step_game = MicroGame()
-    step_game.walls = set(tuple(p) for p in step_info["game"]["walls"])
-    step_game.hazards = set(tuple(p) for p in step_info["game"]["hazards"])
-    step_game.start_pos = tuple(step_info["game"]["start_pos"])
-    step_game.goal_pos = tuple(step_info["game"]["goal_pos"])
-    step_game.key_pos = tuple(step_info["game"]["key_pos"]) if step_info["game"]["key_pos"] else None
-    step_game.door_pos = tuple(step_info["game"]["door_pos"]) if step_info["game"]["door_pos"] else None
-    step_game.switch_pos = tuple(step_info["game"]["switch_pos"]) if step_info["game"]["switch_pos"] else None
-    step_game.gate_pos = tuple(step_info["game"]["gate_pos"]) if step_info["game"]["gate_pos"] else None
-    step_game.teleport_a = tuple(step_info["game"]["teleport_a"]) if step_info["game"]["teleport_a"] else None
-    step_game.teleport_b = tuple(step_info["game"]["teleport_b"]) if step_info["game"]["teleport_b"] else None
-    step_game.block_pos = tuple(step_info["game"]["block_pos"]) if step_info["game"]["block_pos"] else None
-
-    badge = "[ACC]" if step_info["accepted"] else "[REJ]"
-    render_game_map(axes[it - 1], step_game, f"It {it:2d} {badge}: {step_info['critique']}\nGap: {step_info['metrics']['strategic_gap']:+.2f}")
-plt.tight_layout()
-fig.savefig(os.path.join(OUTPUT_DIR, "evolution_grid.png"), dpi=180)
-plt.close(fig)
-
-# 3. Figure: trajectory_examples.png
-fig, ax = plt.subplots(figsize=(8, 8))
-render_game_map(ax, G_final_designer, f"MORTRA Multi-Path Trajectory Diversity (Final Game)\n{fin_m['unique_successful_trajectories']} Unique Successful Paths Discovered", trajectories=fin_m["sample_trajectories"])
-plt.tight_layout()
-fig.savefig(os.path.join(OUTPUT_DIR, "trajectory_examples.png"), dpi=200)
-plt.close(fig)
-
-# 4. Figure: control_comparison.png
-iters = list(range(21))
-gap_des = [h["metrics"]["strategic_gap"] for h in history_designer]
-gap_ctrl = [h["metrics"]["strategic_gap"] for h in history_control]
-div_des = [h["metrics"]["unique_successful_trajectories"] for h in history_designer]
-div_ctrl = [h["metrics"]["unique_successful_trajectories"] for h in history_control]
-loop_des = [h["metrics"]["repeated_loop_rate"] for h in history_designer]
-loop_ctrl = [h["metrics"]["repeated_loop_rate"] for h in history_control]
-cov_des = [h["metrics"]["state_coverage"] for h in history_designer]
-cov_ctrl = [h["metrics"]["state_coverage"] for h in history_control]
-
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-# Plot 1: Strategic Gap
-axes[0, 0].plot(iters, gap_des, 'o-', color='#2a9d8f', linewidth=2.5, label='MORTRA Self-Designer')
-axes[0, 0].plot(iters, gap_ctrl, 's--', color='#e76f51', linewidth=2.0, label='Random Mutation Control')
-axes[0, 0].set_title('Strategic Gap (MORTRA vs Random Player)', fontweight='bold')
-axes[0, 0].set_xlabel('Iteration')
-axes[0, 0].set_ylabel('Success Rate Gap')
-axes[0, 0].grid(True, linestyle='--', alpha=0.6)
-axes[0, 0].legend()
-
-# Plot 2: Trajectory Diversity
-axes[0, 1].plot(iters, div_des, 'o-', color='#3a86ff', linewidth=2.5, label='MORTRA Self-Designer')
-axes[0, 1].plot(iters, div_ctrl, 's--', color='#f4a261', linewidth=2.0, label='Random Mutation Control')
-axes[0, 1].set_title('Trajectory Diversity (Unique Success Paths)', fontweight='bold')
-axes[0, 1].set_xlabel('Iteration')
-axes[0, 1].set_ylabel('Unique Trajectories')
-axes[0, 1].grid(True, linestyle='--', alpha=0.6)
-axes[0, 1].legend()
-
-# Plot 3: Repeated Loop Rate
-axes[1, 0].plot(iters, loop_des, 'o-', color='#8338ec', linewidth=2.5, label='MORTRA Self-Designer')
-axes[1, 0].plot(iters, loop_ctrl, 's--', color='#d62828', linewidth=2.0, label='Random Mutation Control')
-axes[1, 0].set_title('Repeated Loop Rate (Cycle Traps)', fontweight='bold')
-axes[1, 0].set_xlabel('Iteration')
-axes[1, 0].set_ylabel('Loop Rate')
-axes[1, 0].grid(True, linestyle='--', alpha=0.6)
-axes[1, 0].legend()
-
-# Plot 4: State Coverage
-axes[1, 1].plot(iters, cov_des, 'o-', color='#06d6a0', linewidth=2.5, label='MORTRA Self-Designer')
-axes[1, 1].plot(iters, cov_ctrl, 's--', color='#6c757d', linewidth=2.0, label='Random Mutation Control')
-axes[1, 1].set_title('Discovered State Richness', fontweight='bold')
-axes[1, 1].set_xlabel('Iteration')
-axes[1, 1].set_ylabel('Unique States')
-axes[1, 1].grid(True, linestyle='--', alpha=0.6)
-axes[1, 1].legend()
-
-plt.tight_layout()
-fig.savefig(os.path.join(OUTPUT_DIR, "control_comparison.png"), dpi=200)
-plt.close(fig)
-
-
-# =========================================================================
-# 11. GENERATE PLAYABLE HTML5 GAME
-# =========================================================================
-
-final_game_dict = G_final_designer.to_dict()
-sample_traj_js = json.dumps(fin_m["sample_trajectories"])
-
-html_content = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>MORTRA Autonomous Self-Designed MicroGame</title>
-<style>
-  body {{
-    margin: 0;
-    padding: 20px;
-    background: #0f172a;
-    color: #e2e8f0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }}
-  h1 {{ margin: 0 0 10px 0; font-size: 24px; color: #38bdf8; }}
-  .subtitle {{ color: #94a3b8; font-size: 14px; margin-bottom: 15px; text-align: center; max-width: 600px; }}
-  .container {{
-    display: flex;
-    gap: 20px;
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-  }}
-  canvas {{
-    background: #090d16;
-    border: 2px solid #334155;
-    border-radius: 8px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-  }}
-  .panel {{
-    width: 280px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }}
-  .stat-card {{
-    background: #0f172a;
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 4px solid #38bdf8;
-  }}
-  .stat-title {{ font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }}
-  .stat-val {{ font-size: 18px; font-weight: bold; color: #f1f5f9; margin-top: 4px; }}
-  .btn {{
-    background: #0284c7;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-  }}
-  .btn:hover {{ background: #0369a1; }}
-  .legend {{
-    font-size: 12px;
-    color: #cbd5e1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-top: 10px;
-  }}
-  .legend-item {{ display: flex; align-items: center; gap: 6px; }}
-  .dot {{ width: 12px; height: 12px; border-radius: 3px; }}
-</style>
-</head>
-<body>
-<h1>MORTRA Autonomous Self-Designed MicroGame</h1>
-<div class="subtitle">
-  This complete 12x12 puzzle world was procedurally generated, self-explored, self-evaluated, and iteratively edited by MORTRA's contracting fixed-field core over 20 autonomous design cycles.
-</div>
-
-<div class="container">
-  <canvas id="gameCanvas" width="480" height="480"></canvas>
-  <div class="panel">
-    <div class="stat-card">
-      <div class="stat-title">Status</div>
-      <div class="stat-val" id="statusText">Playing</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-title">Player Steps</div>
-      <div class="stat-val" id="stepCounter">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-title">Inventory & Switches</div>
-      <div class="stat-val" id="invText" style="font-size: 14px;">Key: NO | Switch: OFF</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-title">MORTRA Design Metrics</div>
-      <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
-        Strategic Gap: +{fin_m['strategic_gap']:.2f}<br>
-        Success Rate: {fin_m['success_rate']*100:.1f}%<br>
-        Trajectory Diversity: {fin_m['unique_successful_trajectories']} unique paths<br>
-        Autonomous Edits: {accepted_designer} / 20
-      </div>
-    </div>
-    <button class="btn" id="resetBtn">Restart Level</button>
-    <button class="btn" id="toggleAiBtn" style="background: #475569;">Show MORTRA AI Path</button>
-
-    <div class="legend">
-      <div class="legend-item"><div class="dot" style="background: #3a86ff;"></div> Start</div>
-      <div class="legend-item"><div class="dot" style="background: #38b000;"></div> Goal</div>
-      <div class="legend-item"><div class="dot" style="background: #ffd166;"></div> Key</div>
-      <div class="legend-item"><div class="dot" style="background: #06d6a0;"></div> Door</div>
-      <div class="legend-item"><div class="dot" style="background: #ffbe0b;"></div> Switch</div>
-      <div class="legend-item"><div class="dot" style="background: #ff006e;"></div> Gate</div>
-      <div class="legend-item"><div class="dot" style="background: #8338ec;"></div> Teleporter</div>
-      <div class="legend-item"><div class="dot" style="background: #ef233c;"></div> Hazard</div>
-    </div>
-  </div>
-</div>
-
-<script>
-const gameData = {json.dumps(final_game_dict)};
-const sampleAiTraj = {sample_traj_js};
-
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const TILE_SIZE = 40;
-
-let state = {{
-  px: gameData.start_pos[0],
-  py: gameData.start_pos[1],
-  has_key: 0,
-  door_open: 0,
-  switch_on: 0,
-  gate_open: 0,
-  bx: gameData.block_pos ? gameData.block_pos[0] : -1,
-  by: gameData.block_pos ? gameData.block_pos[1] : -1,
-  steps: 0,
-  won: false
-}};
-
-let showAiPath = false;
-
-const wallsSet = new Set(gameData.walls.map(w => w[0] + ',' + w[1]));
-const hazardsSet = new Set(gameData.hazards.map(h => h[0] + ',' + h[1]));
-
-function resetGame() {{
-  state.px = gameData.start_pos[0];
-  state.py = gameData.start_pos[1];
-  state.has_key = 0;
-  state.door_open = 0;
-  state.switch_on = 0;
-  state.gate_open = 0;
-  state.bx = gameData.block_pos ? gameData.block_pos[0] : -1;
-  state.by = gameData.block_pos ? gameData.block_pos[1] : -1;
-  state.steps = 0;
-  state.won = false;
-  updateUI();
-  draw();
-}}
-
-function stepAction(dx, dy) {{
-  if (state.won) return;
-  const nx = state.px + dx;
-  const ny = state.py + dy;
-
-  if (nx < 0 || nx >= gameData.width || ny < 0 || ny >= gameData.height) return;
-  if (wallsSet.has(nx + ',' + ny)) return;
-
-  if (gameData.door_pos && nx === gameData.door_pos[0] && ny === gameData.door_pos[1] && !state.door_open) {{
-    if (state.has_key) {{
-      state.door_open = 1;
-    }} else {{
-      return; // Locked
-    }}
-  }}
-
-  if (gameData.gate_pos && nx === gameData.gate_pos[0] && ny === gameData.gate_pos[1] && !state.gate_open) {{
-    return; // Closed gate
-  }}
-
-  if (gameData.block_pos && nx === state.bx && ny === state.by) {{
-    const bbx = state.bx + dx;
-    const bby = state.by + dy;
-    if (bbx > 0 && bbx < gameData.width - 1 && bby > 0 && bby < gameData.height - 1 &&
-        !wallsSet.has(bbx + ',' + bby) && !hazardsSet.has(bbx + ',' + bby)) {{
-      state.bx = bbx;
-      state.by = bby;
-    }} else {{
-      return;
-    }}
-  }}
-
-  if (hazardsSet.has(nx + ',' + ny)) {{
-    state.px = gameData.start_pos[0];
-    state.py = gameData.start_pos[1];
-    state.steps++;
-    updateUI();
-    draw();
-    return;
-  }}
-
-  if (gameData.teleport_a && nx === gameData.teleport_a[0] && ny === gameData.teleport_a[1]) {{
-    state.px = gameData.teleport_b[0];
-    state.py = gameData.teleport_b[1];
-  }} else if (gameData.teleport_b && nx === gameData.teleport_b[0] && ny === gameData.teleport_b[1]) {{
-    state.px = gameData.teleport_a[0];
-    state.py = gameData.teleport_a[1];
-  }} else {{
-    state.px = nx;
-    state.py = ny;
-  }}
-
-  if (gameData.key_pos && state.px === gameData.key_pos[0] && state.py === gameData.key_pos[1]) {{
-    state.has_key = 1;
-  }}
-
-  if (gameData.switch_pos && state.px === gameData.switch_pos[0] && state.py === gameData.switch_pos[1]) {{
-    state.switch_on = 1 - state.switch_on;
-    state.gate_open = state.switch_on;
-  }}
-
-  state.steps++;
-  if (state.px === gameData.goal_pos[0] && state.py === gameData.goal_pos[1]) {{
-    state.won = true;
-  }}
-  updateUI();
-  draw();
-}}
-
-function updateUI() {{
-  document.getElementById('stepCounter').innerText = state.steps;
-  document.getElementById('statusText').innerText = state.won ? 'GOAL REACHED!' : 'Playing';
-  document.getElementById('statusText').style.color = state.won ? '#4ade80' : '#38bdf8';
-  document.getElementById('invText').innerText = `Key: ${{state.has_key ? 'YES' : 'NO'}} | Door: ${{state.door_open ? 'OPEN' : 'LOCKED'}} | Switch: ${{state.switch_on ? 'ON' : 'OFF'}}`;
-}}
-
-function draw() {{
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Floor grid
-  ctx.strokeStyle = '#1e293b';
-  ctx.lineWidth = 1;
-  for (let x = 0; x < gameData.width; x++) {{
-    for (let y = 0; y < gameData.height; y++) {{
-      ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-    }}
-  }}
-
-  // Walls
-  ctx.fillStyle = '#334155';
-  for (let w of gameData.walls) {{
-    ctx.fillRect(w[0] * TILE_SIZE, w[1] * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-  }}
-
-  // Hazards
-  ctx.fillStyle = '#ef4444';
-  for (let h of gameData.hazards) {{
-    ctx.fillRect(h[0] * TILE_SIZE + 4, h[1] * TILE_SIZE + 4, TILE_SIZE - 8, TILE_SIZE - 8);
-  }}
-
-  // Teleporters
-  if (gameData.teleport_a && gameData.teleport_b) {{
-    ctx.fillStyle = '#a855f7';
-    ctx.beginPath();
-    ctx.arc(gameData.teleport_a[0] * TILE_SIZE + 20, gameData.teleport_a[1] * TILE_SIZE + 20, 14, 0, Math.PI*2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(gameData.teleport_b[0] * TILE_SIZE + 20, gameData.teleport_b[1] * TILE_SIZE + 20, 14, 0, Math.PI*2);
-    ctx.fill();
-  }}
-
-  // Key
-  if (gameData.key_pos && !state.has_key) {{
-    ctx.fillStyle = '#facc15';
-    ctx.beginPath();
-    ctx.arc(gameData.key_pos[0] * TILE_SIZE + 20, gameData.key_pos[1] * TILE_SIZE + 20, 12, 0, Math.PI*2);
-    ctx.fill();
-  }}
-
-  // Door
-  if (gameData.door_pos) {{
-    ctx.fillStyle = state.door_open ? '#10b981' : '#f97316';
-    ctx.fillRect(gameData.door_pos[0] * TILE_SIZE + 6, gameData.door_pos[1] * TILE_SIZE + 6, TILE_SIZE - 12, TILE_SIZE - 12);
-  }}
-
-  // Switch & Gate
-  if (gameData.switch_pos) {{
-    ctx.fillStyle = state.switch_on ? '#22c55e' : '#eab308';
-    ctx.fillRect(gameData.switch_pos[0] * TILE_SIZE + 8, gameData.switch_pos[1] * TILE_SIZE + 8, TILE_SIZE - 16, TILE_SIZE - 16);
-  }}
-  if (gameData.gate_pos) {{
-    ctx.fillStyle = state.gate_open ? '#22c55e' : '#ec4899';
-    ctx.fillRect(gameData.gate_pos[0] * TILE_SIZE + 4, gameData.gate_pos[1] * TILE_SIZE + 4, TILE_SIZE - 8, TILE_SIZE - 8);
-  }}
-
-  // Movable Block
-  if (state.bx > 0) {{
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(state.bx * TILE_SIZE + 4, state.by * TILE_SIZE + 4, TILE_SIZE - 8, TILE_SIZE - 8);
-  }}
-
-  // Start & Goal
-  ctx.fillStyle = '#3b82f6';
-  ctx.beginPath();
-  ctx.arc(gameData.start_pos[0] * TILE_SIZE + 20, gameData.start_pos[1] * TILE_SIZE + 20, 14, 0, Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle = '#22c55e';
-  ctx.beginPath();
-  ctx.arc(gameData.goal_pos[0] * TILE_SIZE + 20, gameData.goal_pos[1] * TILE_SIZE + 20, 16, 0, Math.PI*2);
-  ctx.fill();
-
-  // AI Trajectories overlay if toggled
-  if (showAiPath && sampleAiTraj && sampleAiTraj.length > 0) {{
-    const colors = ['#38bdf8', '#818cf8', '#c084fc'];
-    for (let t = 0; t < Math.min(3, sampleAiTraj.length); t++) {{
-      const tr = sampleAiTraj[t];
-      ctx.strokeStyle = colors[t];
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(tr[0][0] * TILE_SIZE + 20, tr[0][1] * TILE_SIZE + 20);
-      for (let p = 1; p < tr.length; p++) {{
-        ctx.lineTo(tr[p][0] * TILE_SIZE + 20, tr[p][1] * TILE_SIZE + 20);
-      }}
-      ctx.stroke();
-    }}
-  }}
-
-  // Player
-  ctx.fillStyle = '#f43f5e';
-  ctx.beginPath();
-  ctx.arc(state.px * TILE_SIZE + 20, state.py * TILE_SIZE + 20, 13, 0, Math.PI*2);
-  ctx.fill();
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-}}
-
-window.addEventListener('keydown', e => {{
-  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') stepAction(0, -1);
-  else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') stepAction(0, 1);
-  else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') stepAction(-1, 0);
-  else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') stepAction(1, 0);
-  else if (e.key === ' ' || e.key === 'e' || e.key === 'E') {{
-    // Interact toggle
-    stepAction(0, 0);
-  }}
-}});
-
-document.getElementById('resetBtn').addEventListener('click', resetGame);
-document.getElementById('toggleAiBtn').addEventListener('click', () => {{
-  showAiPath = !showAiPath;
-  document.getElementById('toggleAiBtn').style.background = showAiPath ? '#0284c7' : '#475569';
-  draw();
-}});
-
-resetGame();
-</script>
-</body>
-</html>
-"""
-
-with open(os.path.join(OUTPUT_DIR, "playable_final_game.html"), "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-# 12. SAVE JSON & MARKDOWN ARTIFACTS
-with open(os.path.join(OUTPUT_DIR, "game_initial.json"), "w", encoding="utf-8") as f:
-    json.dump(G0.to_dict(), f, indent=2)
-
-with open(os.path.join(OUTPUT_DIR, "game_final.json"), "w", encoding="utf-8") as f:
-    json.dump(G_final_designer.to_dict(), f, indent=2)
-
-with open(os.path.join(OUTPUT_DIR, "evolution_history.json"), "w", encoding="utf-8") as f:
-    json.dump({
-        "designer_history": history_designer,
-        "control_history": history_control
-    }, f, indent=2)
-
-with open(os.path.join(OUTPUT_DIR, "self_play_metrics.json"), "w", encoding="utf-8") as f:
-    json.dump({
-        "initial_metrics": init_m,
-        "final_designer_metrics": fin_m,
-        "final_control_metrics": history_control[-1]["metrics"],
-        "accepted_designer_count": accepted_designer,
-        "accepted_control_count": accepted_control,
-        "creation_test": creation_test_results
-    }, f, indent=2)
-
-# Generate critique_history.md
-critique_md = [
-    "# Autonomous Self-Game-Design Critique History\n",
-    "| Iteration | Self-Critique | Proposed Mutation | Decision | Success Rate | Random Player | Strategic Gap | Trajectory Diversity |",
-    "| :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |"
-]
-for h in history_designer:
-    it = h["iteration"]
-    crit = h["critique"]
-    mut = h["mutation"]
-    dec = "ACCEPTED" if h["accepted"] else "REJECTED"
-    m = h["metrics"]
-    critique_md.append(f"| {it:2d} | `{crit}` | {mut} | **{dec}** | {m['success_rate']*100:.1f}% | {m['random_success_rate']*100:.1f}% | {m['strategic_gap']:+.2f} | {m['unique_successful_trajectories']} |")
-
-with open(os.path.join(OUTPUT_DIR, "critique_history.md"), "w", encoding="utf-8") as f:
-    f.write("\n".join(critique_md) + "\n")
-
-print(f"\nAll artifacts successfully saved to: {OUTPUT_DIR}")
-print("Closed-loop self-game-design experiment complete.")
+    (output / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+    terminal = sys.stdout
+    if hasattr(terminal, "reconfigure"):
+        terminal.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+    logger = TeeLogger(output / "run.log", terminal)
+    sys.stdout = logger
+    started = time.perf_counter()
+    try:
+        print("MORTRA AUTONOMOUS SELF-GAME-DESIGN V2: FRESH FULL RUN")
+        print(json.dumps(metadata, indent=2))
+        run_experiment()
+        metadata["status"] = "complete"
+    except BaseException:
+        metadata["status"] = "failed"
+        raise
+    finally:
+        metadata["wall_seconds"] = time.perf_counter() - started
+        (output / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+        sys.stdout = terminal
+        logger.log.close()
+
+
+if __name__ == "__main__":
+    main()
