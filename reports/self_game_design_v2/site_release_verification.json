@@ -1,0 +1,55 @@
+{
+  "repository": "corcondor/mortra",
+  "branch": "codex/self-game-design-v2-site-20260923",
+  "deployed_sha": "3f286369e10d05d1e09bf1fb1a354e899a01ef01",
+  "experiment_sha": "4ab73eda40daf15d00dc0f00bd33e46ce5499e16",
+  "experiment_id": "self-game-design-v2-20260923",
+  "deployment_id": "dpl_6Sqq6yAfnxYQWyGAk46j2kyXTLZW",
+  "deployment_url": "https://mortra-853epwpj5-imtceed-3946s-projects.vercel.app",
+  "deployment_state": "READY",
+  "production_promoted": true,
+  "assigned_domains": ["mortra.ai", "www.mortra.ai", "mortra-imtceed-3946s-projects.vercel.app"],
+  "domain_assignment_evidence": "Vercel CLI alias set returned success for each domain",
+  "public_dns_ready": false,
+  "public_nameservers": ["ns1.emailverification.info", "ns2.emailverification.info"],
+  "registrar_from_rdap": "Key-Systems GmbH",
+  "dns_expected_a": "76.76.21.21",
+  "domain_origin_check": {
+    "method": "curl --resolve mortra.ai:443:76.76.21.21 https://mortra.ai/ja; TLS verification enabled",
+    "status": 200,
+    "new_home_content_present": true,
+    "is_public_dns_test": false
+  },
+  "tests": {
+    "random_player_and_v2": {"passed": 22, "failed": 0},
+    "existing_public_math_api": {"passed": 152, "failed": 0},
+    "production_source_preservation": {"passed": 2, "failed": 0},
+    "browser_python_parity": {"passed": 6, "failed": 0, "transitions": 15000, "complete_replays": 4},
+    "browser_functional": "PASS; see web_verification.json",
+    "public_math_api_remote": "GET 200; POST derivative 200 with exact expected answer",
+    "local_build": "PASS: npm run build:web delegates to npm run build",
+    "public_dependency_closure": "PASS: 68 local modules",
+    "remote_build": "PASS: Next.js build and Python function bundle"
+  },
+  "preservation": {
+    "old_experiment_files_changed": false,
+    "research_history_retained": true,
+    "missing_runtime_sources_recovered_from_prior_production": 4,
+    "new_research_algorithms": 0
+  },
+  "failed_attempts": [
+    {
+      "deployment_id": "dpl_HdBEsVABqjZcPTYP82iUkk7p7KVZ",
+      "website_checks": "PASS",
+      "math_api": "HTTP 500: four runtime source dependencies absent from research baseline",
+      "resolution": "Recovered the four files from working prior production; exact source hashes verified; new commit and deployment"
+    },
+    {
+      "command": "python -m pytest tests/test_public_solve.py tests/test_site_runtime_snapshot.py -q",
+      "result": "153 passed, 1 failed in 219.47s",
+      "failure": "New provenance test compared LF-normalized API text with CRLF production-byte hash",
+      "resolution": "Stored raw and LF hashes separately; rerun of snapshot and v2 tests: 24 passed"
+    }
+  ],
+  "checked_on": "2026-09-23"
+}

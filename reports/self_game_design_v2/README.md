@@ -97,3 +97,30 @@ Git attributes. The exporter refuses to change already-published bytes.
 
 The new Web view contains no `computeFixedField` substitute. Legacy HTML remains
 only in the preserved old experiment; the v2 runner no longer emits that HTML.
+
+## Release verification
+
+The user authorized production publication after verification. Deployed source:
+`3f286369e10d05d1e09bf1fb1a354e899a01ef01`. Production deployment:
+`dpl_6Sqq6yAfnxYQWyGAk46j2kyXTLZW` (READY, promoted).
+
+Fresh checks: 22 v2 tests, 152 existing public-solver tests, 2 production-source
+preservation tests, and 6 browser/Python parity tests pass. Local and remote
+production builds pass, including the 68-module Python dependency check.
+The deployed browser was checked at 1440, 390, and 320 pixels; manual goal play,
+keyboard/reset, replay controls, vertical comparison, timeline, metric metadata,
+English/Japanese research/archive routes, and exact JSON equality pass without
+page errors. The deployed math API returns its health response and the expected
+derivative answer. `web_verification.json` records the browser checks.
+
+Vercel aliases for mortra.ai and www.mortra.ai point to the new deployment.
+However, public DNS still points elsewhere, using ns1/ns2.emailverification.info.
+The domain registrar listed by RDAP is Key-Systems GmbH; the retailer and the
+reason for these nameservers are not established. Vercel recommends A
+`76.76.21.21`. A TLS-verified request directed to that server for mortra.ai
+returns the new homepage with HTTP 200. This is NOT evidence that public DNS
+is repaired. Domain recovery remains an external blocker.
+
+`site_release_verification.json` preserves the deployment IDs, failed staging
+attempt, corrected test-hash assumption, final results, and DNS limitation.
+No previous experiment is relabelled as corrected.
