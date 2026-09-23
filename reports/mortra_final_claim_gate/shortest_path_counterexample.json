@@ -1,0 +1,94 @@
+{
+  "num_nodes": 5,
+  "edges": [
+    [
+      3,
+      0
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      3,
+      1
+    ]
+  ],
+  "start_node": 3,
+  "goal_node": 2,
+  "bfs_shortest_path": [
+    3,
+    0,
+    2
+  ],
+  "bfs_path_length": 2,
+  "mortra_path": [
+    3,
+    1,
+    4,
+    2
+  ],
+  "mortra_path_length": 3,
+  "failure_type": "SUBOPTIMAL_DETOUR",
+  "psi_vector": [
+    2.8411,
+    2.98893,
+    3.69004,
+    2.62351,
+    3.32103
+  ],
+  "K_matrix": [
+    [
+      0.0,
+      0.0,
+      0.5,
+      0.5,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.5,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "mathematical_explanation": "K_support branching dilution (1/deg(u)) causes a shorter path with high outgoing degree to have a smaller geometric potential than a longer path with low branching or multi-path convergence."
+}

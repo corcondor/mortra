@@ -1,0 +1,242 @@
+{
+  "claim_verdicts": {
+    "CLAIM A \u2014 Not maze-specific": "PASS",
+    "CLAIM B \u2014 Domain-general finite-state core": "FAIL",
+    "CLAIM C \u2014 General finite-state planning": "FAIL",
+    "CLAIM D \u2014 Representation-independent": "FAIL",
+    "CLAIM E \u2014 Partial observability": "FAIL",
+    "CLAIM F \u2014 Universal shortest-path guarantee": "FAIL / COUNTEREXAMPLE"
+  },
+  "ood_scale": {
+    "S6 Permutation (N=720)": {
+      "budget": 7200,
+      "discovered_states": 720,
+      "total_states": 720,
+      "state_coverage_pct": 100.0,
+      "discovered_edges": 3600,
+      "edge_coverage_pct": 100.0,
+      "unseen_goal_tasks": 100,
+      "unseen_goal_success_pct": 100.0,
+      "oracle_k_success_pct": 100.0,
+      "mean_steps": 7.26,
+      "time_sec": 0.37
+    },
+    "S7 Permutation (N=5040)": {
+      "budget": 25000,
+      "discovered_states": 4916,
+      "total_states": 5040,
+      "state_coverage_pct": 97.54,
+      "discovered_edges": 23892,
+      "edge_coverage_pct": 79.01,
+      "unseen_goal_tasks": 100,
+      "unseen_goal_success_pct": 100.0,
+      "oracle_k_success_pct": 100.0,
+      "mean_steps": 12.09,
+      "time_sec": 1.0
+    },
+    "2x4 Sliding Puzzle (N=20160)": {
+      "budget": 20000,
+      "discovered_states": 5062,
+      "total_states": 20160,
+      "state_coverage_pct": 25.11,
+      "discovered_edges": 17230,
+      "edge_coverage_pct": 21.37,
+      "unseen_goal_tasks": 100,
+      "unseen_goal_success_pct": 24.0,
+      "oracle_k_success_pct": 24.0,
+      "mean_steps": 15.96,
+      "time_sec": 0.74
+    },
+    "Random Digraph N=500": {
+      "budget": 6000,
+      "discovered_states": 490,
+      "total_states": 500,
+      "state_coverage_pct": 98.0,
+      "discovered_edges": 1923,
+      "edge_coverage_pct": 96.15,
+      "unseen_goal_tasks": 100,
+      "unseen_goal_success_pct": 100.0,
+      "oracle_k_success_pct": 100.0,
+      "mean_steps": 4.61,
+      "time_sec": 0.2
+    },
+    "Random Digraph N=1000": {
+      "budget": 12000,
+      "discovered_states": 984,
+      "total_states": 1000,
+      "state_coverage_pct": 98.4,
+      "discovered_edges": 3865,
+      "edge_coverage_pct": 96.62,
+      "unseen_goal_tasks": 100,
+      "unseen_goal_success_pct": 100.0,
+      "oracle_k_success_pct": 100.0,
+      "mean_steps": 5.09,
+      "time_sec": 0.25
+    }
+  },
+  "opaque_observation": {
+    "A. True State ID (Baseline)": {
+      "nodes_instantiated": 58,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 92.0
+    },
+    "B. Random Binary Image (Clean)": {
+      "nodes_instantiated": 58,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 89.0
+    },
+    "C. Random Binary Image (Noisy: 5% bit flip)": {
+      "nodes_instantiated": 3001,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 0.0
+    },
+    "D. Grayscale Image (Clean)": {
+      "nodes_instantiated": 58,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 92.0
+    },
+    "E. Grayscale Image (Noisy: Gaussian+BG)": {
+      "nodes_instantiated": 3001,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 0.0
+    },
+    "F. Arbitrary Token String (Clean)": {
+      "nodes_instantiated": 58,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 94.0
+    },
+    "G. Arbitrary Token String (Noisy: 1-char flip)": {
+      "nodes_instantiated": 2092,
+      "true_states": 60,
+      "mean_state_purity": 1.0,
+      "unseen_goal_success_pct": 0.0
+    }
+  },
+  "stochastic_planning": {
+    "total_tasks_evaluated": 1000,
+    "mean_oracle_success_prob": 1.0,
+    "mean_mortra_success_prob": 0.981,
+    "mean_probability_regret": 0.019,
+    "p90_probability_regret": 0.028,
+    "mean_action_agreement_pct": 49.91
+  },
+  "pomdp_limit": {
+    "fully_observable_success_pct": 100,
+    "aliased_observation_success_pct": 0,
+    "oracle_belief_success_pct": 100.0,
+    "retention_ratio_pct": 0.0,
+    "conclusion": "FAIL (Memoryless fixed-field cannot resolve history-dependent branching)"
+  },
+  "math_transfer": {
+    "discovered_equation_states": 2188,
+    "evaluated_transform_pairs": 200,
+    "transformation_success_pct": 12.5,
+    "mean_transformation_steps": 12.36,
+    "domain_specific_heuristics_used": false
+  },
+  "language_surface": {
+    "canonical_surface_success_pct": 97,
+    "unseen_paraphrase_success_pct": 0,
+    "conclusion": "Representation Interface fails under surface variation; Reasoning Core intact given canonical alignment."
+  },
+  "shortest_path_counterexample": {
+    "num_nodes": 5,
+    "edges": [
+      [
+        3,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        3,
+        1
+      ]
+    ],
+    "start_node": 3,
+    "goal_node": 2,
+    "bfs_shortest_path": [
+      3,
+      0,
+      2
+    ],
+    "bfs_path_length": 2,
+    "mortra_path": [
+      3,
+      1,
+      4,
+      2
+    ],
+    "mortra_path_length": 3,
+    "failure_type": "SUBOPTIMAL_DETOUR",
+    "psi_vector": [
+      2.8411,
+      2.98893,
+      3.69004,
+      2.62351,
+      3.32103
+    ],
+    "K_matrix": [
+      [
+        0.0,
+        0.0,
+        0.5,
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "mathematical_explanation": "K_support branching dilution (1/deg(u)) causes a shorter path with high outgoing degree to have a smaller geometric potential than a longer path with low branching or multi-path convergence."
+  }
+}
