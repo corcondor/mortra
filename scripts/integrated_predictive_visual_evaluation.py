@@ -218,6 +218,7 @@ def evaluate(case, train, heldout, hidden_path, config, root, folder, fit_new, s
     raw = [o for obs,_ in heldout for o in obs]
     schedule = noise_schedule(case["spec"]["seed"],case["evaluation_trials"],config["planning_horizon"])
     result = {}
+    condition_assignments = {}
     for condition,learned in trained.items():
         if condition=="OLD":
             test_states = learned["test_states"]
@@ -248,6 +249,7 @@ def evaluate(case, train, heldout, hidden_path, config, root, folder, fit_new, s
             memory.update(steps=len(records),agreement_count=sum(r["agrees"] for r in records),recursive_full_history_agreement=1.0,
                           unknown_steps=sum(r["unknown"] for r in records),contradiction_steps=sum(r["contradiction"] for r in records),
                           symbol_collision_pairs=symbol_ambiguity["collision_pairs"])
+            memory.update(ev.memory_agreement_summary(records))
             counts = {(s,int(a)):c for (s,a),c in world.counts.items()}
             audit = ev.audit_operator(world.labels,[world.actions]*len(world.labels),counts,
                                       world.certificate["blocks"],world.certificate["rows"])
@@ -268,8 +270,16 @@ def evaluate(case, train, heldout, hidden_path, config, root, folder, fit_new, s
                           neutral_targets,case["evaluation_trials"],config["planning_horizon"],schedule)
         complete = rollout(game,environment.render_visual_frame,case["domain"],condition,"complete",learned,
                            complete_targets,case["evaluation_trials"],config["planning_horizon"],schedule)
+        complete["training_trace_reuse"] = ev.trace_reuse_audit(complete["tasks"],train)
         neutral["mixed_goal_states"] = mixed
         costs.update(reasoning_cpu=complete["reasoning_cpu"],neutral_reasoning_cpu=neutral["reasoning_cpu"])
         result[condition] = {"status":"COMPLETE","world_model":quality,"memory":memory,"operator":audit,
                              "neutral":neutral,"complete_system":complete,"compute":costs}
+        condition_assignments[condition] = [s for seq in test_states for s in seq]
+    for condition, diagnostic in ev.paired_partitions(condition_assignments,truth).items():
+        result[condition]["world_model"].update(
+            false_merge=diagnostic["false_merge"],false_split=diagnostic["false_split"],
+            known_assignment_fraction=diagnostic["known_assignment_fraction"],
+            paired_evaluable_fraction=diagnostic["paired_evaluable_fraction"],
+            hidden_state_partition_diagnostic=diagnostic)
     return result

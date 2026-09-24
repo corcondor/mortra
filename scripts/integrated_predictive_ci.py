@@ -55,6 +55,10 @@ def package_inputs():
 def initialize(output):
     output.mkdir(parents=True,exist_ok=False)
     sources = read(MANIFEST)
+    # Original frozen algorithms remain byte-identical. The corrected connection
+    # is a separately versioned adapter, frozen before this run's first fit.
+    adapter = "mortra_predictive_perception/symbol_world.py"
+    sources[adapter] = digest(ROOT/adapter)
     inputs = ROOT/"data/integrated-predictive-experience-20260924"
     for record in read(inputs/"provenance.json"):
         assert digest(inputs/record["input"]) == record["input_sha256"], "Packaged experience changed"
@@ -72,6 +76,8 @@ def initialize(output):
         "HEAD":git("rev-parse","HEAD"),"git_status_short":git("status","--short"),
         "run_id":os.environ.get("GITHUB_RUN_ID"),"run_attempt":os.environ.get("GITHUB_RUN_ATTEMPT"),
         "algorithm_freeze":"20260924-160455","source_sha256":sources,
+        "integration_revision":"learned-symbol-operators-v2",
+        "superseded_run":35971324989,
         "execution_location":"GitHub Actions" if os.environ.get("GITHUB_ACTIONS") else "local",
         "platform_interruption":"RUN NOT COMPLETED, never a mathematical FAIL"})
 

@@ -97,6 +97,9 @@ jobs:
   predictive-prepare:
     if: github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'integrated-predictive'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     outputs:
       report: ${{ steps.directory.outputs.report }}
       sha: ${{ steps.directory.outputs.sha }}
@@ -133,9 +136,20 @@ jobs:
           tests/test_integrated_predictive_development.py
           tests/test_adaptive_refinement.py
           tests/test_integrated_predictive_harness.py
+          tests/test_predictive_symbol_connection.py
           --junitxml="${{ steps.directory.outputs.report }}/tests.xml"
-      - name: Collect shared raw trajectories once
-        run: python -u scripts/evaluate_integrated_predictive_world_model.py --output "${{ steps.directory.outputs.report }}" --prepare-only
+      - name: Download unchanged shared trajectories from superseded run
+        uses: actions/download-artifact@v4
+        with:
+          name: integrated-predictive-shared-input
+          run-id: 35971324989
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/predictive-original-input
+      - name: Verify and reuse identical raw observations and actions
+        run: >-
+          python -u scripts/evaluate_integrated_predictive_world_model.py
+          --output "${{ steps.directory.outputs.report }}" --prepare-only
+          --reuse-shared "${{ runner.temp }}/predictive-original-input"
       - name: Preserve shared input and provenance
         if: always() && steps.directory.outputs.report != ''
         uses: actions/upload-artifact@v4
@@ -149,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 20
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
     env:

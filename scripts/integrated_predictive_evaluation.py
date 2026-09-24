@@ -219,7 +219,11 @@ def memory_records(world, episodes, symbols):
 
 
 def common_partition(assignments, true_classes):
-    result = partition_quality(assignments, true_classes)
+    if len(assignments) != len(true_classes):
+        raise ValueError("Assignment/truth lengths differ")
+    kinds = [assignment_kind(value) for value in assignments]
+    known = [i for i, kind in enumerate(kinds) if kind == "known"]
+    result = partition_quality([assignments[i] for i in known], [true_classes[i] for i in known])
     result["learned_same_pairs"] = result["over_merge_denominator"]
     result["true_same_pairs"] = result["over_split_denominator"]
     result["true_different_pairs"] = result["pairs"] - result["true_same_pairs"]
@@ -227,26 +231,91 @@ def common_partition(assignments, true_classes):
     result["false_merge"] = (result["over_merge_pairs"] / result["true_different_pairs"]
                              if result["true_different_pairs"] else None)
     result["false_split"] = result["over_split_rate"]
+    if not result["learned_same_pairs"]:
+        result["predictive_violation"] = None
+    if not result["true_same_pairs"]:
+        result["false_split"] = None
+    result.update(assignment_counts=dict(Counter(kinds)), evaluated_occurrences=len(known),
+                  total_occurrences=len(assignments),
+                  known_assignment_fraction=len(known)/len(assignments) if assignments else None,
+                  scope="known singleton assignments only; UNKNOWN/empty/set-valued beliefs are not asserted state equalities")
     return result
+
+
+def assignment_kind(value):
+    if value is None or value == UNKNOWN:
+        return "unknown"
+    if isinstance(value, frozenset):
+        if not value:
+            return "contradiction"
+        if UNKNOWN in value:
+            return "unknown"
+        if len(value) != 1:
+            return "ambiguous"
+    return "known"
+
+
+def paired_partitions(condition_assignments, true_classes):
+    """Use the same evaluable history carrier for every condition's comparison."""
+    if any(len(values) != len(true_classes) for values in condition_assignments.values()):
+        raise ValueError("Paired conditions have different history carriers")
+    indices = [i for i in range(len(true_classes))
+               if all(assignment_kind(values[i]) == "known" for values in condition_assignments.values())]
+    output = {}
+    for name, values in condition_assignments.items():
+        individual = common_partition(values, true_classes)
+        result = common_partition([values[i] for i in indices], [true_classes[i] for i in indices])
+        result.update(total_occurrences=len(true_classes),
+                      assignment_counts=individual["assignment_counts"],
+                      known_assignment_fraction=individual["known_assignment_fraction"],
+                      paired_evaluable_fraction=len(indices)/len(true_classes) if true_classes else None,
+                      condition_specific_partition_diagnostic=individual,
+                      scope="same intersection of known singleton histories for all conditions; coverage and abstentions reported separately")
+        output[name] = result
+    return output
+
+
+def memory_agreement_summary(records):
+    known = [r for r in records if not r["unknown"] and not r["contradiction"]]
+    agreeing = sum(r["agrees"] for r in known)
+    return {"known_nonempty_steps":len(known), "known_nonempty_agreement_count":agreeing,
+            "known_nonempty_agreement":agreeing/len(known) if known else None,
+            "all_step_agreement_is_implementation_check_only":True,
+            "unknown_equality_is_not_memory_capability_evidence":True}
+
+
+def trace_reuse_audit(tasks, training):
+    paths = [tuple(map(int, actions)) for _, actions in training]
+    successful = [tuple(t["actions"]) for t in tasks if t.get("actual_success", t.get("success")) and t["actions"]]
+    prefix = sum(any(path == seen[:len(path)] for seen in paths) for path in successful)
+    return {"nonempty_successful_trajectories":len(successful),
+            "equal_training_action_prefix":prefix,
+            "not_equal_training_action_prefix":len(successful)-prefix,
+            "scope":"trajectory reuse diagnostic only; not itself a capability/generalization certificate"}
 
 
 def ambiguity_diagnostics(raw, truth, assignments):
     groups = defaultdict(list)
     for i, row in enumerate(raw):
         groups[tuple(map(float, row))].append(i)
-    pair_cases = collisions = 0
+    pair_cases = collisions = evaluated_pairs = excluded_occurrences = 0
     participating = set()
     for indices in groups.values():
         if len({truth[i] for i in indices}) < 2:
             continue
         participating.update(indices)
         quality = common_partition([assignments[i] for i in indices], [truth[i] for i in indices])
-        pair_cases += quality["true_different_pairs"]
+        truth_counts = Counter(truth[i] for i in indices)
+        pair_cases += (len(indices)**2 - sum(n*n for n in truth_counts.values())) // 2
+        evaluated_pairs += quality["true_different_pairs"]
+        excluded_occurrences += len(indices)-quality["evaluated_occurrences"]
         collisions += quality["over_merge_pairs"]
     return {"same_observation_different_future_pairs": pair_cases,
             "history_occurrences_in_ambiguous_groups": len(participating),
             "collision_pairs": collisions,
-            "collision_rate": collisions/pair_cases if pair_cases else None}, participating
+            "evaluated_known_different_future_pairs":evaluated_pairs,
+            "excluded_uncertain_occurrences":excluded_occurrences,
+            "collision_rate": collisions/evaluated_pairs if evaluated_pairs else None}, participating
 
 
 def raw_support_by_state(episodes, assignments):

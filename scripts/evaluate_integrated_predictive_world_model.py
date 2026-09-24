@@ -1,6 +1,7 @@
 """Formal same-experience evaluation of frozen OLD and predictive perception.
 
-Only this harness and the external evaluator are new. Every algorithm source is
+The corrected symbol-to-world adapter and external evaluator are versioned
+separately from the unchanged reference, sweep and OLD. Every algorithm source is
 checked against source_sha.json before and after execution. Partial completion,
 unknown predictions, allocation refusal and assertion failures are not successes.
 """
@@ -38,7 +39,7 @@ from scripts import integrated_predictive_evaluation as ev
 from mortra_predictive_perception.adapters import ResponseSymbolizer, load_legacy_visual
 from mortra_predictive_perception.optimized import SweepResponseSymbolizer
 from mortra_predictive_perception.shared_data import save_episodes, load_episodes
-from mortra_predictive_perception.world import ObservedWorld
+from mortra_predictive_perception.symbol_world import SymbolWorld
 
 CONDITIONS = ("OLD", "NEW-ABS", "NEW-DELTA")
 PRIOR = Path("data/integrated-predictive-experience-20260924")
@@ -95,7 +96,7 @@ def protocol():
                           "spec": {"seed": seed, "actions": 5, "steps": steps},
                           "evaluation_seed": seed+300000, "evaluation_trials": trials,
                           "prior": str(PRIOR/f"game_{seed}.json") if domain == "MicroGame" else None})
-    return {"schema": 1, "conditions": CONDITIONS, "cases": cases, "planning_horizon": historical["planning_horizon"],
+    return {"schema": 2, "conditions": CONDITIONS, "cases": cases, "planning_horizon": historical["planning_horizon"],
             "evaluation_goals": historical["evaluation_goals"], "workers": 2,
             "training_data": "reuse saved observation/action experience; re-render missing raw frames once under fixed seeds",
             "heldout_data": "one common uniform-action collector with independent seed; no model selects its heldout input",
@@ -110,10 +111,13 @@ def protocol():
             "false_split": "same true predictive class split / all same-class history pairs",
             "predictive_violation": "different true predictive classes merged / all model-equal history pairs",
             "predictive_violation_note": "same over-merge numerator, different denominator; not independent evidence",
-            "state_metric": "OLD encoded state vs NEW belief; NEW sensory-symbol diagnostics separately retained",
+            "state_metric": "OLD known encoded state vs NEW known singleton belief; NEW sensory-symbol diagnostics separately retained",
             "future_error": "next raw observation MSE on predicted heldout transitions; unknown count and coverage reported",
             "old_response_readout": "training-only action-conditioned delta mean; evaluation readout, not an OLD algorithm change",
-            "memory_scope": "frozen observed-prefix model; not all consistent unseen worlds",
+            "memory_scope": "frozen learned-symbol transition relation; not all consistent unseen worlds",
+            "superseded_run": 35971324989,
+            "superseded_reason": "invalid world connection and UNKNOWN-as-state evaluation; not a model failure",
+            "partition_scope": "known singleton assignments only; abstentions and contradictions separately counted",
             "allocation_policy": "do not attempt a reference feature allocation larger than currently available physical memory; record RESOURCE UNAVAILABLE, NOT RUN",
             "timeouts": None, "algorithm_retuning_after_results": False}
 
@@ -231,11 +235,12 @@ def fit_new(episodes, heldout, actions, target, folder):
          "sweep_work": sweep.work})
     del reference, models
     gc.collect()
-    world = ObservedWorld(actions)
+    world = SymbolWorld(actions)
     start = time.process_time()
     for symbols, (_, controls) in zip(train_symbols, episodes, strict=True):
         world.add_episode(symbols, controls)
     world.freeze()
+    save(folder/f"{target}_connection_audit.json", world.connection_audit())
     costs["world_and_quotient_cpu"] = time.process_time()-start
     forbidden = {"q", "discount", "goal", "reward", "max_history", "max_history_depth", "confidence_threshold"}
     assert not forbidden & vars(sweep).keys()
@@ -300,6 +305,7 @@ def run_case(case, output, config):
         truth = [truth_partition[h] for episode in hidden for h in episode]
         raw = [row for obs, _ in heldout for row in obs]
         goals = sorted(set(map(int, emissions)))[:config["evaluation_goals"]]
+        condition_assignments = {}
         for condition in CONDITIONS:
             start = time.process_time()
             if condition == "OLD":
@@ -353,6 +359,7 @@ def run_case(case, output, config):
                               known_nonempty_steps=sum(not r["unknown"] and not r["contradiction"] for r in records),
                               symbol_collision_pairs=symbol_ambiguity["collision_pairs"],
                               mean_belief_size=float(np.mean([r["belief_size"] for r in records])))
+                memory.update(ev.memory_agreement_summary(records))
                 assert all(r["agrees"] for r in records), "Recursive/full-history disagreement"
                 indices = {a:i for i,a in enumerate(world.actions)}
                 counts = {(s,indices[a]): c for (s,a),c in world.counts.items()}
@@ -365,6 +372,7 @@ def run_case(case, output, config):
                 train_states = [[world.certificate["blocks"][p] for p in path] for _,_,path in world.episodes]
                 support = ev.raw_support_by_state(train, train_states)
                 quality.update(states=len(world.emissions), symbols=perception.report.generated_symbols,
+                               connection_audit=world.connection_audit(),
                                selected_history_depth_distribution=ev.available_depths(perception,heldout),
                                selected_history_depth_max=perception.report.selected_history_depth,
                                symbol_partition=symbol_quality,
@@ -375,6 +383,7 @@ def run_case(case, output, config):
                                contradiction_fraction=sum(not b for b in state_keys)/len(state_keys))
                 encoder = perception.encode_history
                 complete = ev.new_rollouts(world, perception, table, emissions, goals, support, config["planning_horizon"])
+                complete["training_trace_reuse"] = ev.trace_reuse_audit(complete["tasks"], train)
                 costs = {"perception_cpu": fit_costs["sweep"]["cpu_seconds"],
                          "reference_validation_fit_cpu": fit_costs["reference"]["cpu_seconds"],
                          "equivalence_and_encoding_cpu": fit_costs["equivalence_and_encoding_cpu"],
@@ -387,6 +396,9 @@ def run_case(case, output, config):
             result["conditions"][condition] = {"status": "COMPLETE", "world_model": quality, "memory": memory,
                                                "operator": audit, "neutral": neutral, "complete_system": complete,
                                                "compute": costs, "resource_sample": resources()}
+            condition_assignments[condition] = state_keys
+        for condition, quality in ev.paired_partitions(condition_assignments, truth).items():
+            result["conditions"][condition]["world_model"].update(quality)
         frozen_check(output)
         assert sha(data_dir/"train.npz") == manifest["train"]["sha256"]
         assert sha(data_dir/"heldout.npz") == manifest["heldout"]["sha256"]
@@ -437,7 +449,7 @@ def summarize(output, config):
         for condition in CONDITIONS:
             values = [r["conditions"][condition] for r in subset]
             entry = {"completed_environments": len(values)}
-            for key in ("predictive_violation", "false_merge", "false_split", "future_error", "states", "symbols", "fit_cpu", "model_memory_bytes"):
+            for key in ("predictive_violation", "false_merge", "false_split", "future_error", "states", "symbols", "fit_cpu", "model_memory_bytes", "known_assignment_fraction", "paired_evaluable_fraction", "unknown_state_fraction"):
                 known = [v["world_model"][key] for v in values if v["world_model"].get(key) is not None]
                 entry[key+"_environment_mean"] = float(np.mean(known)) if known else None
             for key in ("neutral", "complete_system"):
@@ -448,11 +460,19 @@ def summarize(output, config):
                               "success_at_reset":reset}
             steps = sum(v["memory"].get("steps",0) for v in values)
             agreeing = sum(v["memory"].get("agreement_count",0) for v in values)
+            known_steps = sum(v["memory"].get("known_nonempty_steps",0) for v in values)
+            known_agreeing = sum(v["memory"].get("known_nonempty_agreement_count",0) for v in values)
             entry["memory"] = {"steps":steps, "agreements":agreeing, "agreement":agreeing/steps if steps else None,
+                               "agreement_scope":"implementation equality, not recovery or capability",
+                               "known_nonempty_steps":known_steps,
+                               "known_nonempty_agreement":known_agreeing/known_steps if known_steps else None,
                                "unknown_steps":sum(v["memory"].get("unknown_steps",0) for v in values),
                                "contradiction_steps":sum(v["memory"].get("contradiction_steps",0) for v in values),
                                "same_observation_different_future_pairs":sum(v["memory"]["same_observation_different_future_pairs"] for v in values),
                                "collision_pairs":sum(v["memory"]["collision_pairs"] for v in values)}
+            entry["complete_system"]["training_trace_reuse"] = {
+                key:sum(v["complete_system"].get("training_trace_reuse",{}).get(key,0) for v in values)
+                for key in ("nonempty_successful_trajectories", "equal_training_action_prefix", "not_equal_training_action_prefix")}
             summary["domains"][domain][condition] = entry
     summary["compute"] = {"case_cpu_seconds":sum(r.get("cpu_seconds",0) for r in results),
                            "peak_worker_memory_bytes":max((r.get("resources",{}).get("process_peak_working_set_bytes") or 0 for r in results),default=0),
@@ -467,6 +487,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--prepare-only",action="store_true")
+    parser.add_argument("--reuse-shared",type=Path)
     parser.add_argument("--evaluate-prepared",action="store_true")
     parser.add_argument("--shard",type=int)
     parser.add_argument("--shards",type=int,default=30)
@@ -492,9 +513,25 @@ def main():
             shutil.copy2(path,output/"frozen_source"/"scripts"/path.name)
         save(output/"harness_sha.json",harness,exclusive=True)
         manifests = []
-        for case in config["cases"]:
-            manifests.append(prepare_case(case,output,config))
-            log(output,event="dataset_saved",case=case["id"],train_sha256=manifests[-1]["train"]["sha256"])
+        if args.reuse_shared:
+            previous = args.reuse_shared.resolve()
+            assert read(previous/"config.json")["cases"] == config["cases"], "Benchmark cases changed"
+            manifests = read(previous/"shared_dataset_hashes.json")
+            for record in manifests:
+                source = previous/"datasets"/record["case"]["id"]
+                for name,key in (("train.npz","train"),("heldout.npz","heldout")):
+                    assert sha(source/name) == record[key]["sha256"], "Shared input hash mismatch"
+                assert sha(source/"hidden_evaluator_only.json") == record["hidden_evaluator_only_sha256"]
+                shutil.copytree(source,output/"datasets"/record["case"]["id"])
+            save(output/"shared_input_origin.json", {
+                "run_id":35971324989, "artifact_id":10795982721,
+                "original_dataset_manifest_sha256":sha(previous/"shared_dataset_hashes.json"),
+                "all_raw_arrays_actions_episode_boundaries_unchanged":True},exclusive=True)
+            log(output,event="previous_shared_data_reused_without_recollection",cases=len(manifests))
+        else:
+            for case in config["cases"]:
+                manifests.append(prepare_case(case,output,config))
+                log(output,event="dataset_saved",case=case["id"],train_sha256=manifests[-1]["train"]["sha256"])
         save(output/"shared_dataset_hashes.json",manifests,exclusive=True)
         log(output,event="all_shared_data_frozen",cases=len(manifests))
     else:
