@@ -1,0 +1,54 @@
+name: Future Refinement Frozen Small AB
+
+on:
+  push:
+    branches: [research/mortra-latest-breakthroughs-20260923]
+    paths:
+      - vendor/future_refinement_core/**
+      - scripts/evaluate_future_refinement_small_ab.py
+      - tests/test_future_refinement_harness.py
+      - .github/workflows/future-refinement-small-ab.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  oracle-and-state-gate:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+      - run: pip install -r requirements-integrated-predictive.txt
+      - id: output
+        run: |
+          REPORT="reports/future_refinement_small_ab_$(date -u +%Y%m%d-%H%M%S)_gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mkdir -p "$REPORT"
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+          echo "REPORT=$REPORT" >> "$GITHUB_ENV"
+      - name: Verify untouched supplied files and OLD baseline
+        run: |
+          python -c 'from scripts.evaluate_future_refinement_small_ab import verify_sources; print(verify_sources())'
+          python -m pytest -q -p no:cacheprovider tests/test_future_refinement_harness.py
+      - name: Unmodified 26 oracle and core tests
+        working-directory: vendor/future_refinement_core
+        run: |
+          PYTHONPATH=.:tests python -m pytest -q -p no:cacheprovider tests/test_exact_moore_oracle.py tests/test_future_refinement_core.py --junitxml="$GITHUB_WORKSPACE/$REPORT/oracle_tests.xml" | tee "$GITHUB_WORKSPACE/$REPORT/stage0_tests.log"
+          python run_future_refinement_demo.py | tee "$GITHUB_WORKSPACE/$REPORT/stage0_demo.log"
+      - name: Shared-data state quality gate only
+        run: python -u scripts/evaluate_future_refinement_small_ab.py --output "$REPORT"
+      - name: Preserve all outcomes including gate refusal
+        if: always() && steps.output.outputs.report != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: future-refinement-small-ab
+          path: ${{ steps.output.outputs.report }}/
+          retention-days: 30
