@@ -79,7 +79,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, geometry, geometry-contracts, geometry-contraction, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study, integrated-predictive]
+        options: [worker, q-directed, theory-formation, geometry, geometry-contracts, geometry-contraction, dsl-feedback, temporal-utility, basis-quality, persistent-learning, frontier-reconnection, capacity-study, bottleneck-study, integrated-predictive, integrated-predictive-raw]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -94,6 +94,16 @@ permissions:
   contents: read
 
 jobs:
+  predictive-raw:
+    if: github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'integrated-predictive-raw'
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/predictive-raw-sequential.yml
+    with:
+      target_ref: ${{ inputs.target_ref || github.sha }}
+      expected_sha: ${{ inputs.expected_sha || github.sha }}
+
   predictive-prepare:
     if: github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'integrated-predictive'
     runs-on: ubuntu-latest
@@ -306,7 +316,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/q-directed-closure-20260913' || github.base_ref == 'codex/q-directed-closure-20260913'))
           || (github.event_name == 'push' && github.ref == 'refs/heads/codex/theory-formation-20260913')
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
-          || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker' && inputs.verification_suite != 'integrated-predictive') }}
+          || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker' && inputs.verification_suite != 'integrated-predictive' && inputs.verification_suite != 'integrated-predictive-raw') }}
     runs-on: ubuntu-latest
     timeout-minutes: ${{ (inputs.verification_suite == 'geometry-contraction' || inputs.verification_suite == 'geometry') && 60 || inputs.verification_suite == 'bottleneck-study' && 180 || (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || (inputs.verification_suite == 'dsl-feedback' || github.ref == 'refs/heads/codex/theory-formation-20260913') && 60 || 20 }}
     concurrency:

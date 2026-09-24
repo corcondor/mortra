@@ -1,0 +1,158 @@
+name: Raw Visual exact backend sequential comparison
+
+on:
+  workflow_call:
+    inputs:
+      target_ref:
+        required: true
+        type: string
+      expected_sha:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: mortra-raw-visual-sequential
+  cancel-in-progress: false
+
+env:
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  MPLBACKEND: Agg
+
+jobs:
+  prefix-gates:
+    runs-on: ubuntu-latest
+    outputs:
+      report: ${{ steps.directory.outputs.report }}
+      sha: ${{ steps.directory.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+          cache: pip
+          cache-dependency-path: requirements-integrated-predictive.txt
+      - run: pip install -r requirements-integrated-predictive.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: integrated-predictive-shared-input
+          run-id: 35975264733
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/predictive-shared-input
+      - id: directory
+        name: Pin code and reuse original raw observations
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          REPORT="reports/integrated_predictive_raw_$(date -u +%Y%m%d-%H%M%S)_gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          python scripts/evaluate_raw_visual_sequential.py initialize --output "$REPORT" --shared-input "$RUNNER_TEMP/predictive-shared-input"
+          pip freeze > "$REPORT/dependencies.txt"
+      - name: Unchanged algorithm tests and execution guards
+        run: >-
+          python -m pytest -q
+          tests/test_predictive_perception_handoff.py
+          tests/test_predictive_perception_sweep.py
+          tests/test_predictive_shared_data.py
+          tests/test_integrated_predictive_development.py
+          tests/test_adaptive_refinement.py
+          tests/test_integrated_predictive_harness.py
+          tests/test_predictive_symbol_connection.py
+          tests/test_raw_visual_sequential.py
+          --junitxml="${{ steps.directory.outputs.report }}/tests.xml"
+      - name: Assert reference equality on all five trajectory prefixes
+        run: python -u scripts/evaluate_raw_visual_sequential.py gates --output "${{ steps.directory.outputs.report }}"
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.directory.outputs.report != ''
+        with:
+          name: raw-visual-shared-input-and-gates
+          path: ${{ steps.directory.outputs.report }}/
+          retention-days: 30
+
+  raw-case:
+    needs: prefix-gates
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        seed: [201, 302, 403, 504, 605]
+    env:
+      REPORT: ${{ needs.prefix-gates.outputs.report }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prefix-gates.outputs.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+          cache: pip
+          cache-dependency-path: requirements-integrated-predictive.txt
+      - run: pip install -r requirements-integrated-predictive.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: raw-visual-shared-input-and-gates
+          path: ${{ env.REPORT }}
+      - name: Full-resolution full-history optimized evaluation in isolated process
+        run: >-
+          python -u scripts/evaluate_raw_visual_sequential.py case
+          --output "$REPORT" --case raw_visual_${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: raw-visual-case-${{ matrix.seed }}
+          path: ${{ env.REPORT }}/cases/
+          retention-days: 30
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: raw-visual-log-${{ matrix.seed }}
+          path: |
+            ${{ env.REPORT }}/run.log
+            ${{ env.REPORT }}/execution_command_raw_visual_${{ matrix.seed }}.json
+          retention-days: 30
+
+  aggregate:
+    needs: [prefix-gates, raw-case]
+    if: always() && needs.prefix-gates.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      REPORT: ${{ needs.prefix-gates.outputs.report }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prefix-gates.outputs.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+      - run: pip install -r requirements-integrated-predictive.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: raw-visual-shared-input-and-gates
+          path: ${{ env.REPORT }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: raw-visual-case-*
+          merge-multiple: true
+          path: ${{ env.REPORT }}/cases/
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: raw-visual-log-*
+          path: ${{ env.REPORT }}/environment_logs/
+      - name: Preserve incomplete cases and separate resource limits from task failure
+        run: python scripts/evaluate_raw_visual_sequential.py summarize --output "$REPORT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: raw-visual-exact-backend-comparison
+          path: ${{ env.REPORT }}/
+          retention-days: 30
