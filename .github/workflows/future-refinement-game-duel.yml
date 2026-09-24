@@ -1,0 +1,45 @@
+name: Future Refinement Development Game Duel
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/mortra-latest-breakthroughs-20260923]
+    paths:
+      - scripts/evaluate_future_refinement_game_duel.py
+      - tests/test_future_refinement_game_duel.py
+      - .github/workflows/future-refinement-game-duel.yml
+
+permissions:
+  contents: read
+
+jobs:
+  construct-games:
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [201, 302, 403]
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+      PYTHONHASHSEED: "0"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+      - run: pip install -r requirements-integrated-predictive.txt
+      - name: Frozen source and adapter checks
+        run: python -m pytest -q -p no:cacheprovider tests/test_future_refinement_game_duel.py
+      - name: Construct, self-play, edit and cross-play
+        run: python -u scripts/evaluate_future_refinement_game_duel.py --seed ${{ matrix.seed }} --output reports/future_refinement_game_duel_gh-${{ github.run_id }}-${{ github.run_attempt }}_seed-${{ matrix.seed }}
+      - name: Preserve results and unfinished records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-duel-seed-${{ matrix.seed }}
+          path: reports/future_refinement_game_duel_gh-${{ github.run_id }}-${{ github.run_attempt }}_seed-${{ matrix.seed }}/
+          retention-days: 30
