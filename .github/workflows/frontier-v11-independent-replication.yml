@@ -1,0 +1,137 @@
+name: Frontier v1.1 Independent Evolution Replication
+on:
+  push:
+    branches: [research/frontier-v11-independent-replication-20260925]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: frontier-v11-independent-replication-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MPLBACKEND: Agg
+jobs:
+  register-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_autonomous_game_frontier_v1.py tests/test_autonomous_game_frontier_v11.py tests/test_autonomous_game_frontier_v11_holdout.py tests/test_autonomous_game_frontier_v11_generation_holdout.py tests/test_autonomous_game_frontier_v11_replication.py -q --junitxml=correctness.xml
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_replication.py register --output reports/frontier_v11_replication/registration
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rep-registration
+          path: |
+            correctness.xml
+            reports/frontier_v11_replication/registration/
+          retention-days: 90
+  evolution:
+    needs: register-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [1101, 1202, 1303, 1404, 1505, 1606, 1707, 1808]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_replication.py evolve --seed ${{ matrix.seed }} --output reports/frontier_v11_replication/evolution/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rep-evolution-${{ matrix.seed }}
+          path: reports/frontier_v11_replication/evolution/${{ matrix.seed }}/
+          retention-days: 90
+  freeze-holdout:
+    needs: evolution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rep-evolution-*
+          path: new-evolution
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_replication.py freeze --input new-evolution --output reports/frontier_v11_replication/frozen
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rep-frozen
+          path: reports/frontier_v11_replication/frozen/
+          retention-days: 90
+  holdout:
+    needs: freeze-holdout
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [1101, 1202, 1303, 1404, 1505, 1606, 1707, 1808]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: rep-frozen
+          path: frozen
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_replication.py audit --frozen frozen --seed ${{ matrix.seed }} --output reports/frontier_v11_replication/holdout/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rep-holdout-${{ matrix.seed }}
+          path: reports/frontier_v11_replication/holdout/${{ matrix.seed }}/
+          retention-days: 90
+  summary:
+    needs: holdout
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: rep-frozen
+          path: frozen
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rep-holdout-*
+          path: holdout
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_replication.py summarize --input holdout --frozen frozen --output reports/frontier_v11_replication/summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rep-summary
+          path: reports/frontier_v11_replication/summary/
+          retention-days: 90
