@@ -1,0 +1,107 @@
+name: Frontier v1.1 G0-G10 Holdout Audit
+on:
+  push:
+    branches: [research/autonomous-game-frontier-v11-generation-holdout-20260925]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: frontier-v11-generation-holdout-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MPLBACKEND: Agg
+jobs:
+  correctness-and-freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_autonomous_game_frontier_v1.py tests/test_autonomous_game_frontier_v11.py tests/test_autonomous_game_frontier_v11_holdout.py tests/test_autonomous_game_frontier_v11_generation_holdout.py -q --junitxml=correctness.xml
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 36080469660
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: frontier-v11-stage*
+          path: archived
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 36085588461
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: frontier-v11-holdout-frozen
+          path: prior
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_generation_holdout.py prepare --input archived --prior prior --output reports/autonomous_game_frontier_v11_generation_holdout/frozen
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-generation-holdout-frozen
+          path: reports/autonomous_game_frontier_v11_generation_holdout/frozen/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-generation-holdout-correctness
+          path: correctness.xml
+  audit:
+    needs: correctness-and-freeze
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [201, 302, 403, 504, 605, 706, 807, 908]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontier-v11-generation-holdout-frozen
+          path: frozen
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_generation_holdout.py run --frozen frozen --seed ${{ matrix.seed }} --output reports/autonomous_game_frontier_v11_generation_holdout/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-generation-holdout-result-${{ matrix.seed }}
+          path: reports/autonomous_game_frontier_v11_generation_holdout/${{ matrix.seed }}/
+          retention-days: 90
+  summary:
+    needs: audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontier-v11-generation-holdout-frozen
+          path: frozen
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frontier-v11-generation-holdout-result-*
+          path: results
+      - run: python scripts/evaluate_autonomous_game_frontier_v11_generation_holdout.py summarize --input results --frozen frozen --output reports/autonomous_game_frontier_v11_generation_holdout/summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-generation-holdout-summary
+          path: reports/autonomous_game_frontier_v11_generation_holdout/summary/
+          retention-days: 90
