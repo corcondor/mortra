@@ -1,0 +1,40 @@
+name: Frontier v1.3 Saved Predictions Report Only
+on:
+  push:
+    branches: [research/frontier-v13-reporting-recovery-20260925]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+  MPLBACKEND: Agg
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 scipy==1.16.1 scikit-learn==1.7.2 pandas==2.2.3 matplotlib==3.10.5
+      - run: python scripts/report_frontier_v13_saved_predictions.py recover --base saved
+      - run: python scripts/evaluate_frontier_v13_structural_edit_prediction.py replay --source saved/dataset --folds saved/folds --output replay
+      - run: python scripts/evaluate_frontier_v13_structural_edit_prediction.py report --source saved/dataset --folds saved/folds --replay replay --output reports/frontier_v13_structural_edit_prediction
+      - run: python scripts/report_frontier_v13_saved_predictions.py annotate --base saved --report reports/frontier_v13_structural_edit_prediction
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v13-final
+          path: |
+            reports/frontier_v13_structural_edit_prediction/
+            saved/reproducibility_diagnostic.json
+          retention-days: 90
