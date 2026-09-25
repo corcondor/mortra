@@ -1,0 +1,125 @@
+name: Autonomous Game Frontier v1.1
+on:
+  push:
+    branches: [research/autonomous-game-frontier-v11-20260925]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: autonomous-game-frontier-v11-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MPLBACKEND: Agg
+jobs:
+  correctness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_autonomous_game_frontier_v1.py tests/test_autonomous_game_frontier_v11.py -q --junitxml=stage0.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-stage0
+          path: stage0.xml
+  smoke:
+    needs: correctness
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        seed: [201, 302, 403]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python scripts/evaluate_autonomous_game_frontier_v11.py --stage 1 --seed ${{ matrix.seed }} --output reports/autonomous_game_frontier_v11/stage1/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-stage1-${{ matrix.seed }}
+          path: reports/autonomous_game_frontier_v11/stage1/${{ matrix.seed }}/
+          retention-days: 90
+  smoke-summary:
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frontier-v11-stage1-*
+          path: retrieved-stage1
+      - run: python -m experiments.game_frontier_v11.summarize --stage 1 --input retrieved-stage1 --output reports/autonomous_game_frontier_v11/stage1-summary --enforce-gate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-stage1-summary
+          path: reports/autonomous_game_frontier_v11/stage1-summary/
+          retention-days: 90
+  main:
+    needs: smoke-summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [201, 302, 403, 504, 605, 706, 807, 908]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python scripts/evaluate_autonomous_game_frontier_v11.py --stage 2 --seed ${{ matrix.seed }} --output reports/autonomous_game_frontier_v11/stage2/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-stage2-${{ matrix.seed }}
+          path: reports/autonomous_game_frontier_v11/stage2/${{ matrix.seed }}/
+          retention-days: 90
+  main-summary:
+    needs: main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frontier-v11-stage2-*
+          path: retrieved-stage2
+      - run: python -m experiments.game_frontier_v11.summarize --stage 2 --input retrieved-stage2 --output reports/autonomous_game_frontier_v11/stage2-summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-v11-stage2-summary
+          path: reports/autonomous_game_frontier_v11/stage2-summary/
+          retention-days: 90
