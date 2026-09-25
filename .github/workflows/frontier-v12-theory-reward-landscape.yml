@@ -1,0 +1,170 @@
+name: Frontier v1.2 Theory Reward Landscape
+on:
+  push:
+    branches: [research/frontier-v12-theory-reward-landscape-20260925]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: frontier-v12-theory-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MPLBACKEND: Agg
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  stage0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 scipy==1.16.1 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_autonomous_game_frontier_v1.py tests/test_autonomous_game_frontier_v11.py tests/test_autonomous_game_frontier_v11_holdout.py tests/test_autonomous_game_frontier_v11_generation_holdout.py tests/test_autonomous_game_frontier_v11_replication.py tests/test_autonomous_game_frontier_v12.py tests/test_frontier_v12_theory.py -q --junitxml=correctness.xml
+      - run: python scripts/download_frontier_v12_audit_sources.py --output source
+      - run: python scripts/audit_frontier_v12_theory.py register --source source --output reports/frontier_v12_theory_reward_landscape/registration
+      - run: python scripts/audit_frontier_v12_theory.py saved --source source --output reports/frontier_v12_theory_reward_landscape/saved
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-registration
+          path: reports/frontier_v12_theory_reward_landscape/registration/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-saved
+          path: reports/frontier_v12_theory_reward_landscape/saved/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-tests
+          path: correctness.xml
+          retention-days: 90
+  stage1:
+    needs: stage0
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 scipy==1.16.1 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: theory-registration
+          path: registration
+      - uses: actions/download-artifact@v4
+        with:
+          name: theory-saved
+          path: saved
+      - run: python scripts/audit_frontier_v12_theory.py landscape --input registration/inputs/2101.json --stage 1 --output smoke/landscape
+      - run: python scripts/download_frontier_v12_audit_sources.py --field-only --output source
+      - run: python scripts/audit_frontier_v12_theory.py field --source source --seed 2101 --stage 1 --output smoke/field
+      - run: python scripts/audit_frontier_v12_theory.py smoke-check --registration registration --input smoke/landscape --field smoke/field --saved saved --output smoke/check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-smoke
+          path: smoke/
+          retention-days: 90
+  landscape:
+    needs: stage1
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [2101,2202,2303,2404,2505,2606,2707,2808]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 scipy==1.16.1 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: theory-registration
+          path: registration
+      - run: python scripts/audit_frontier_v12_theory.py landscape --input registration/inputs/${{ matrix.seed }}.json --stage 2 --output reports/landscape/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-landscape-${{ matrix.seed }}
+          path: reports/landscape/${{ matrix.seed }}/
+          retention-days: 90
+  field:
+    needs: stage1
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [2101,2202,2303,2404,2505,2606,2707,2808]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 scipy==1.16.1 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - run: python scripts/download_frontier_v12_audit_sources.py --field-only --output source
+      - run: python scripts/audit_frontier_v12_theory.py field --source source --seed ${{ matrix.seed }} --output reports/field/${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-field-${{ matrix.seed }}
+          path: reports/field/${{ matrix.seed }}/
+          retention-days: 90
+  summary:
+    needs: [landscape,field]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 scipy==1.16.1 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - uses: actions/download-artifact@v4
+        with:
+          name: theory-registration
+          path: registration
+      - uses: actions/download-artifact@v4
+        with:
+          name: theory-saved
+          path: saved
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: theory-landscape-*
+          path: landscape
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: theory-field-*
+          path: field
+      - run: python scripts/audit_frontier_v12_theory.py summarize --registration registration --input landscape --saved saved --field field --output reports/frontier_v12_theory_reward_landscape/final
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: theory-final
+          path: reports/frontier_v12_theory_reward_landscape/final/
+          retention-days: 90
