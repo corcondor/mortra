@@ -1,0 +1,54 @@
+name: MORTRA autonomous entrypoint capability record
+on:
+  push:
+    branches: [research/mortra-autonomous-completion-20260927]
+    paths:
+      - experiments/autonomous_completion/**
+      - tests/test_autonomous_completion_observer.py
+      - docs/research/AUTONOMOUS-COMPLETION-EXECUTION-20260927.md
+      - .github/workflows/mortra-autonomous-completion.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: autonomous-completion-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MPLBACKEND: Agg
+jobs:
+  record-capability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            experiments
+            scripts
+            tests
+            docs
+            .github
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy==1.26.4 matplotlib==3.10.5 psutil==7.0.0 pytest==8.4.1
+      - name: Test recorder and oracle denial, not game quality
+        run: python -m pytest tests/test_autonomous_completion_observer.py -q --junitxml=observer-tests.xml
+      - name: Run unchanged Designer and preserve any stop
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m experiments.autonomous_completion.probe --output reports/autonomous_completion_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT} 2>&1 | tee execution.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autonomous-capability-record-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            observer-tests.xml
+            execution.log
+            reports/autonomous_completion_*/
+          retention-days: 90
