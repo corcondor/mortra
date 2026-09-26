@@ -1,0 +1,336 @@
+{
+  "algebra": {
+    "baseline_differences": 0,
+    "baseline_episode_reproductions": 192,
+    "doob_decisions_checked": 57231,
+    "doob_numeric_mode_disagreements": 0,
+    "graphs_with_frontier": 93,
+    "initial_graphs_audited": 96,
+    "max_discounted_reconstruction_relative_error": 9.39474409091231e-16,
+    "max_doob_row_error": 8.881784197001252e-16,
+    "max_undiscounted_reconstruction_relative_error": 5.548686661285388e-14,
+    "undiscounted_applicable": 84,
+    "undiscounted_not_applicable": 9
+  },
+  "config": {
+    "all_policies_same_no_frontier_fallback": true,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 76099999,
+    "deadline_objective": "maximize terminal weight reachable within remaining action budget; then minimize steps",
+    "deterministic_repeats": 1,
+    "doob_repeats": 10,
+    "execution_planner": "unchanged CachingSparsePlanner q=0.90",
+    "finite_policy_also_computes_frozen_reference_fields_for_common_graph_interface": true,
+    "inference_unit": "world; average repeats within task before world aggregation",
+    "max_steps": 4096,
+    "missing_worlds": "retained, never replaced",
+    "no_outcome_tuning": true,
+    "pass_threshold": null,
+    "policies": [
+      "fixed_generic",
+      "fixed_task",
+      "doob_generic",
+      "doob_task",
+      "deadline_generic",
+      "deadline_task"
+    ],
+    "primary_descriptive_endpoints": [
+      "task success",
+      "failure-capped steps"
+    ],
+    "resource_exhaustion": "RUN INCOMPLETE; not task failure",
+    "rng_formula": "76000000 + world_index*10000 + task_id*100 + repeat",
+    "source_run": 36220511321,
+    "source_weights": "unchanged: 1 or exp(progress before unknown action)",
+    "starting_snapshot_steps": 512,
+    "study": "registered retrospective mechanism pilot; no confirmatory generalization claim",
+    "tasks_per_world": 12,
+    "unknown_successors": "not predicted; existing separate virtual terminal per untried action",
+    "world_seeds": [
+      73000000,
+      73000001,
+      73000002,
+      73000003,
+      73000004,
+      73000005,
+      73000006,
+      73000007
+    ]
+  },
+  "paired_world_differences": {
+    "deadline_generic_minus_fixed_generic": {
+      "mean_capped_steps": {
+        "ci95_world_bootstrap": [
+          0.04166666666666696,
+          6.083333333333334
+        ],
+        "mean": 2.697916666666667,
+        "values": [
+          0.3333333333333357,
+          0.0,
+          0.0,
+          0.0,
+          12.0,
+          0.0,
+          0.0,
+          9.25
+        ],
+        "worlds": 8
+      },
+      "success_rate": {
+        "ci95_world_bootstrap": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "worlds": 8
+      }
+    },
+    "deadline_task_minus_fixed_task": {
+      "mean_capped_steps": {
+        "ci95_world_bootstrap": [
+          -0.2604166666666665,
+          6.78125
+        ],
+        "mean": 2.947916666666667,
+        "values": [
+          2.5833333333333357,
+          0.0,
+          0.0,
+          0.0,
+          12.0,
+          0.0,
+          -2.083333333333332,
+          11.083333333333332
+        ],
+        "worlds": 8
+      },
+      "success_rate": {
+        "ci95_world_bootstrap": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "worlds": 8
+      }
+    },
+    "doob_generic_minus_fixed_generic": {
+      "mean_capped_steps": {
+        "ci95_world_bootstrap": [
+          4.345833333333333,
+          35.428125
+        ],
+        "mean": 18.99375,
+        "values": [
+          34.766666666666666,
+          0.0,
+          0.0,
+          0.0,
+          47.625,
+          0.0,
+          59.308333333333344,
+          10.25
+        ],
+        "worlds": 8
+      },
+      "success_rate": {
+        "ci95_world_bootstrap": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "worlds": 8
+      }
+    },
+    "doob_task_minus_fixed_task": {
+      "mean_capped_steps": {
+        "ci95_world_bootstrap": [
+          4.8552083333333345,
+          37.778125
+        ],
+        "mean": 20.38229166666667,
+        "values": [
+          38.841666666666676,
+          0.0,
+          0.0,
+          0.0,
+          47.625,
+          0.0,
+          63.65000000000001,
+          12.941666666666666
+        ],
+        "worlds": 8
+      },
+      "success_rate": {
+        "ci95_world_bootstrap": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "worlds": 8
+      }
+    }
+  },
+  "policies": {
+    "deadline_generic": {
+      "cpu_seconds": 7.335219588999995,
+      "episodes": 96,
+      "exploration_policy_cpu_seconds": 2.1778124479999743,
+      "process_peak_rss_bytes_so_far": 74772480,
+      "successes": 96,
+      "wall_seconds": 7.336302503000134,
+      "world_mean_capped_steps": 25.479166666666668,
+      "world_mean_success_rate": 1.0,
+      "worlds": 8
+    },
+    "deadline_task": {
+      "cpu_seconds": 6.321282261000001,
+      "episodes": 96,
+      "exploration_policy_cpu_seconds": 1.7382650969999744,
+      "process_peak_rss_bytes_so_far": 74772480,
+      "successes": 96,
+      "wall_seconds": 6.322230218000044,
+      "world_mean_capped_steps": 25.78125,
+      "world_mean_success_rate": 1.0,
+      "worlds": 8
+    },
+    "doob_generic": {
+      "cpu_seconds": 119.9632581639999,
+      "episodes": 960,
+      "exploration_policy_cpu_seconds": 55.35007541600042,
+      "process_peak_rss_bytes_so_far": 74772480,
+      "successes": 960,
+      "wall_seconds": 119.98051716700014,
+      "world_mean_capped_steps": 41.775,
+      "world_mean_success_rate": 1.0,
+      "worlds": 8
+    },
+    "doob_task": {
+      "cpu_seconds": 121.380784702,
+      "episodes": 960,
+      "exploration_policy_cpu_seconds": 56.1285176369999,
+      "process_peak_rss_bytes_so_far": 74772480,
+      "successes": 960,
+      "wall_seconds": 121.40528328999994,
+      "world_mean_capped_steps": 43.215625,
+      "world_mean_success_rate": 1.0,
+      "worlds": 8
+    },
+    "fixed_generic": {
+      "cpu_seconds": 6.020798998000023,
+      "episodes": 96,
+      "exploration_policy_cpu_seconds": 1.3643023139999741,
+      "process_peak_rss_bytes_so_far": 74772480,
+      "successes": 96,
+      "wall_seconds": 6.0216800329999245,
+      "world_mean_capped_steps": 22.78125,
+      "world_mean_success_rate": 1.0,
+      "worlds": 8
+    },
+    "fixed_task": {
+      "cpu_seconds": 6.1026543189999565,
+      "episodes": 96,
+      "exploration_policy_cpu_seconds": 1.3956298110000422,
+      "process_peak_rss_bytes_so_far": 74772480,
+      "successes": 96,
+      "wall_seconds": 6.104958696000082,
+      "world_mean_capped_steps": 22.833333333333332,
+      "world_mean_success_rate": 1.0,
+      "worlds": 8
+    }
+  },
+  "scope": "8 previously observed fixed worlds; retrospective descriptive pilot, not fresh confirmation",
+  "status": "COMPLETE",
+  "world_statuses": [
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000000,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000001,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000002,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000003,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000004,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000005,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000006,
+      "status": "COMPLETE"
+    },
+    {
+      "baseline_reproductions": 24,
+      "episodes": 288,
+      "seed": 73000007,
+      "status": "COMPLETE"
+    }
+  ],
+  "worlds_complete": 8,
+  "worlds_fixed": 8
+}

@@ -1,0 +1,45 @@
+{
+  "all_policies_same_no_frontier_fallback": true,
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 76099999,
+  "deadline_objective": "maximize terminal weight reachable within remaining action budget; then minimize steps",
+  "deterministic_repeats": 1,
+  "doob_repeats": 10,
+  "execution_planner": "unchanged CachingSparsePlanner q=0.90",
+  "finite_policy_also_computes_frozen_reference_fields_for_common_graph_interface": true,
+  "inference_unit": "world; average repeats within task before world aggregation",
+  "max_steps": 4096,
+  "missing_worlds": "retained, never replaced",
+  "no_outcome_tuning": true,
+  "pass_threshold": null,
+  "policies": [
+    "fixed_generic",
+    "fixed_task",
+    "doob_generic",
+    "doob_task",
+    "deadline_generic",
+    "deadline_task"
+  ],
+  "primary_descriptive_endpoints": [
+    "task success",
+    "failure-capped steps"
+  ],
+  "resource_exhaustion": "RUN INCOMPLETE; not task failure",
+  "rng_formula": "76000000 + world_index*10000 + task_id*100 + repeat",
+  "source_run": 36220511321,
+  "source_weights": "unchanged: 1 or exp(progress before unknown action)",
+  "starting_snapshot_steps": 512,
+  "study": "registered retrospective mechanism pilot; no confirmatory generalization claim",
+  "tasks_per_world": 12,
+  "unknown_successors": "not predicted; existing separate virtual terminal per untried action",
+  "world_seeds": [
+    73000000,
+    73000001,
+    73000002,
+    73000003,
+    73000004,
+    73000005,
+    73000006,
+    73000007
+  ]
+}
