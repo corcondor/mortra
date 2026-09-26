@@ -1,0 +1,107 @@
+{
+  "status": "READ_ONLY_TRACE_AUDIT",
+  "seed": 79020004,
+  "method": "virtual_frontier",
+  "evaluation": 0,
+  "commit": "5f8b36744a29327928c87d6db888f2f045dbea79",
+  "artifact_id": 10917048485,
+  "artifact_sha256": "326e01cad269f56b84b6e075a47c3e87fa3068cac73a27f2d9098b5aa9ba30ea",
+  "new_policy_runs": 0,
+  "initial_goal_position": [
+    10,
+    10
+  ],
+  "learned_states": 448,
+  "learned_pairs": 1716,
+  "recorded_transition_count": 2500,
+  "goal_states_in_learned_model": 0,
+  "recorded_model_reachability": {
+    "goal_reachable_on_recorded_edges": false,
+    "recorded_path_length": null
+  },
+  "phases": {
+    "mortra": {
+      "trials": 50,
+      "successes": 0,
+      "actual_actions": 5000,
+      "unique_action_sequences": 5,
+      "constant_action_trials": 50,
+      "states_not_in_saved_learner": 0,
+      "transition_triples_not_in_saved_learner": 0,
+      "successful_trials": [],
+      "reachability_after_union_of_all_observed_phase_edges": {
+        "goal_reachable_on_recorded_edges": false,
+        "recorded_path_length": null
+      }
+    },
+    "random": {
+      "trials": 50,
+      "successes": 5,
+      "actual_actions": 4722,
+      "unique_action_sequences": 50,
+      "constant_action_trials": 0,
+      "states_not_in_saved_learner": 155,
+      "transition_triples_not_in_saved_learner": 579,
+      "successful_trials": [
+        {
+          "trial": 19,
+          "steps": 54
+        },
+        {
+          "trial": 28,
+          "steps": 63
+        },
+        {
+          "trial": 35,
+          "steps": 22
+        },
+        {
+          "trial": 44,
+          "steps": 63
+        },
+        {
+          "trial": 48,
+          "steps": 20
+        }
+      ],
+      "reachability_after_union_of_all_observed_phase_edges": {
+        "goal_reachable_on_recorded_edges": true,
+        "recorded_path_length": 8,
+        "recorded_path_actions": [
+          1,
+          3,
+          3,
+          3,
+          3,
+          1,
+          3,
+          3
+        ]
+      }
+    }
+  },
+  "targeted": {
+    "candidate_count": 20,
+    "accepted": 0,
+    "candidate_successes": {
+      "0": 20
+    },
+    "final_game_equals_initial": true
+  },
+  "random_mutation_first_accepted_solved_candidate": {
+    "iteration": 2,
+    "mutation": "Random move goal to (2, 4)",
+    "decision_reason": "Accepted: rescued unsolvable game to solvable",
+    "goal_position": [
+      2,
+      4
+    ],
+    "successes": 50
+  },
+  "limitations": [
+    "One outcome-selected failure case, development diagnosis only.",
+    "Recorded random baseline data are used only in a diagnostic union; do not train a production learner on held-out evaluation traces.",
+    "A path in the union of recorded transitions does not prove the current greedy field readout follows it.",
+    "This script does not execute a revised policy or prove the proposed integration improves performance."
+  ]
+}
