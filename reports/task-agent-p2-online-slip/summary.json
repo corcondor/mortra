@@ -1,0 +1,110 @@
+{
+  "horizon_for_cost": 512,
+  "table": [
+    {
+      "slip": 0.05,
+      "planner": "linear",
+      "tasks": 368,
+      "frozen_p_success_512": 0.9823,
+      "online_success_512": 0.9991,
+      "online_success_2048": 1,
+      "frozen_mean_cost": 24.841,
+      "online_mean_cost": 16.081,
+      "tasks_online_cheaper": 244,
+      "tasks_frozen_cheaper": 124,
+      "sign_test_p": 3.898098886110009e-10
+    },
+    {
+      "slip": 0.05,
+      "planner": "shortest",
+      "tasks": 368,
+      "frozen_p_success_512": 0.9827,
+      "online_success_512": 0.9991,
+      "online_success_2048": 1,
+      "frozen_mean_cost": 25.901,
+      "online_mean_cost": 16.161,
+      "tasks_online_cheaper": 248,
+      "tasks_frozen_cheaper": 120,
+      "sign_test_p": 2.270475228618481e-11
+    },
+    {
+      "slip": 0.1,
+      "planner": "linear",
+      "tasks": 368,
+      "frozen_p_success_512": 0.9478,
+      "online_success_512": 1,
+      "online_success_2048": 1,
+      "frozen_mean_cost": 49.433,
+      "online_mean_cost": 20.352,
+      "tasks_online_cheaper": 263,
+      "tasks_frozen_cheaper": 105,
+      "sign_test_p": 9.149771107843791e-17
+    },
+    {
+      "slip": 0.1,
+      "planner": "shortest",
+      "tasks": 368,
+      "frozen_p_success_512": 0.9501,
+      "online_success_512": 0.9991,
+      "online_success_2048": 0.9991,
+      "frozen_mean_cost": 50.915,
+      "online_mean_cost": 20.333,
+      "tasks_online_cheaper": 242,
+      "tasks_frozen_cheaper": 126,
+      "sign_test_p": 1.5036023840598905e-09
+    },
+    {
+      "slip": 0.2,
+      "planner": "linear",
+      "tasks": 368,
+      "frozen_p_success_512": 0.9226,
+      "online_success_512": 0.9937,
+      "online_success_2048": 0.9982,
+      "frozen_mean_cost": 64.804,
+      "online_mean_cost": 28.406,
+      "tasks_online_cheaper": 257,
+      "tasks_frozen_cheaper": 110,
+      "sign_test_p": 1.1093031026164505e-14
+    },
+    {
+      "slip": 0.2,
+      "planner": "shortest",
+      "tasks": 368,
+      "frozen_p_success_512": 0.9316,
+      "online_success_512": 0.9937,
+      "online_success_2048": 0.9982,
+      "frozen_mean_cost": 61.58,
+      "online_mean_cost": 29.232,
+      "tasks_online_cheaper": 253,
+      "tasks_frozen_cheaper": 114,
+      "sign_test_p": 3.0684005880724443e-13
+    }
+  ],
+  "paired": [
+    {
+      "slip": 0.05,
+      "comparison": "online linear vs online shortest",
+      "linear_cheaper": 96,
+      "shortest_cheaper": 65,
+      "sign_test_p": 0.01778742288933372
+    },
+    {
+      "slip": 0.1,
+      "comparison": "online linear vs online shortest",
+      "linear_cheaper": 146,
+      "shortest_cheaper": 82,
+      "sign_test_p": 2.6926376424760556e-05
+    },
+    {
+      "slip": 0.2,
+      "comparison": "online linear vs online shortest",
+      "linear_cheaper": 187,
+      "shortest_cheaper": 96,
+      "sign_test_p": 6.847160714177031e-08
+    }
+  ],
+  "failure_reasons": {
+    "success": 6619,
+    "task_step_limit": 5
+  }
+}
