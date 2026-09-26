@@ -79,7 +79,7 @@ class FieldPlanner(ProductPlanner):
         s2i = _learner_state_to_id(learner)
         version = getattr(learner, "version", None)
         if (self._cached is not None and version is not None and start_state in s2i
-                and self._cached[0] == (version, id(task))):
+                and self._cached[0] == version and self._cached[2] is task):
             m = task.advance(task.initial_memory if memory is None else memory, start_state)
             if (s2i[start_state], m) in self._cached[1].index:
                 self.reuses += 1
@@ -87,7 +87,8 @@ class FieldPlanner(ProductPlanner):
         model = self._fresh(learner, task, start_state, memory)
         self.builds += 1
         if version is not None:
-            self._cached = ((version, id(task)), model)
+            # the task is held, not just its id(), so a later task cannot inherit this model
+            self._cached = (version, model, task)
         return model
 
     def _fresh(self, learner, task, start_state, memory):

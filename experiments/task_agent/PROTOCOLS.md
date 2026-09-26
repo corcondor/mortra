@@ -69,3 +69,65 @@ committed uniform results exactly; no drift run before this.
   and (b) `linear_oracle` is cheaper than `shortest_oracle` on fewer tasks
   under `drift_state` than under uniform (336 of 368). Both, or H3 is not
   supported. The same two statements for `drift_global` are secondary.
+
+## P4. One model carried across a sequence of tasks
+
+Written after a smoke run of four tasks per policy on world 2303 that printed
+only row counts and seconds; no P1 result had been read.
+
+- Worlds and tasks: the eight archived worlds, the 46 registered tasks of each.
+  Start: the canonical budget-512 snapshot, copied ONCE per sequence into a
+  `VersionedLearner` and carried through all 46 tasks. Budget per task 4096.
+- Orders: three random orders per world (`order:{seed}:{k}`), shared by every
+  policy. Unit of analysis: a (world, order) sequence, 24 units.
+- Policies: `structural`, `frontier_t0`, `optimistic_optimal_goal` (task-directed
+  exploration), `optimistic_linear_rmax` (broad exploration: every untried
+  action worth the same). Planner `FieldPlanner("linear")`, which reproduces the
+  delivered planner's decisions.
+- Primary hypothesis H4: with d = steps(`optimistic_optimal_goal`) -
+  steps(`optimistic_linear_rmax`) summed over positions 0-22 (d1) and 23-45
+  (d2), d2 > d1 -- the directed policy's advantage shrinks, or its disadvantage
+  grows, once the model is richer -- on more units than the reverse, sign test
+  p < 0.05. This is the claim that broad exploration pays for itself later.
+- Secondary: total steps per policy and every pairwise sign test; the number of
+  tasks that needed exploration, by position; failures.
+
+## P5. The task automaton inferred from labelled traces
+
+Written after unit tests on a ten-cell line world and a timing smoke on three
+tasks of world 2303 that read only the seconds column.
+
+- Worlds and tasks: the eight archived worlds, the 368 registered tasks.
+  Planning and judging on the TRUE world graph (`exact_slip.true_graph`), so
+  only the automaton is being inferred.
+- Per task: the states from which the true task can be accomplished, less the
+  registered start, shuffled by `pool:{seed}:{task}`; the first 16 are held-out
+  starts, the next 16 demonstration starts. Per demonstration start: one
+  shortest accomplishing run (ties at random), one 32-step random walk, and the
+  shortest world route to where the demonstration ended; each labelled at every
+  step by the true automaton, cut at the first acceptance. N in {2, 4, 8, 16};
+  the sample for N is the first N rows of the sample for 16.
+- Conditions: `goal_set` (no automaton: accomplished means reaching a state
+  some demonstration ended in); `rpni_random` (N demonstrations + N random
+  walks); `rpni_near_miss` (+ N direct routes); `rpni_counterexample`
+  (`rpni_random`'s sample, then up to 16 rounds at the registered start of
+  infer - plan - execute - add the observed trace).
+- Measures: held-out success (the true automaton accepts along the executed
+  plan), held-out optimal (in the true shortest number of steps), equivalence
+  on this world from the registered and held-out starts, inferred memory size,
+  rounds.
+- The prediction, from how RPNI generalises and not from any P5 result: random
+  walks almost never visit a task's landmark states, so nothing in
+  `rpni_random`'s sample contradicts "reach where the demonstrations ended",
+  and RPNI's greedy merging returns that; a direct route to the same end state
+  that does not accomplish the task is exactly the contradiction.
+- Primary hypothesis H5, at N = 16, on the 272 `sequence`, `all_of` and `branch`
+  tasks: (a) `rpni_random`'s held-out success rate is within 0.05 of
+  `goal_set`'s; and (b) `rpni_near_miss` and `rpni_counterexample` each have
+  more held-out successes than `goal_set` on more tasks than the reverse, sign
+  test p < 0.05. Both (a) and (b), or H5 is not supported.
+- Secondary: everything at N = 2, 4, 8; the 96 `condition_then` tasks
+  separately, where equivalence is predicted to be rare (states that satisfy
+  "variable j = v" but never appeared are not transitions of the inferred
+  automaton) while held-out success need not be low (a plan through a seen
+  triggering state still accomplishes the task); rounds to success.

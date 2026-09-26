@@ -163,19 +163,22 @@ class CachingSparsePlanner(SparseProductPlanner):
     def __init__(self, q=0.90):
         super().__init__(q)
         self._key = None
+        self._task = None
         self._model = None
         self.hits = 0
         self.builds = 0
 
     def build(self, learner, task, start_state, memory=None):
-        key = (len(learner.counts), len(_learner_id_to_state(learner)), id(task), start_state,
-               memory)
-        if key == self._key:
+        # the task is compared by identity with a HELD reference: an id() alone can be
+        # reused by a later task object once the earlier one is garbage-collected
+        key = (len(learner.counts), len(_learner_id_to_state(learner)), start_state, memory)
+        if key == self._key and task is self._task:
             self.hits += 1
             return self._model
         self.builds += 1
         self._model = super().build(learner, task, start_state, memory)
         self._key = key
+        self._task = task
         return self._model
 
 

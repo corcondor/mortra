@@ -189,15 +189,18 @@ class OptimisticFieldPolicy:
 
     def _field(self, learner, task, world_state, memory):
         s2i = _learner_state_to_id(learner)
-        key = (len(learner.counts), id(task))
+        # the version of the model is its number of tried pairs (deterministic worlds);
+        # the task is held and compared by identity, so a later task cannot inherit it
+        version = getattr(learner, "version", len(learner.counts))
         z = (s2i[world_state], task.advance(memory, world_state))
-        if self._cache is not None and self._cache[0] == key and z in self._cache[1]["index"]:
+        if (self._cache is not None and self._cache[0] == version and self._cache[3] is task
+                and self._cache[4] is learner and z in self._cache[1]["index"]):
             self.reuses += 1
             return self._cache[1], self._cache[2]
         model = self._build(learner, task, world_state, memory)
         field = self._linear(model) if self.field_kind == "linear" else self._optimal(model)
         self.solves += 1
-        self._cache = (key, model, field)
+        self._cache = (version, model, field, task, learner)
         return model, field
 
     # -- the decision ------------------------------------------------------------------
