@@ -1,0 +1,102 @@
+{
+  "all_fixed_worlds_complete": false,
+  "analysis_scope": "PARTIAL / DESCRIPTIVE",
+  "completed_worlds": 65,
+  "episodes": 3120,
+  "fixed_worlds": 70,
+  "headroom_recovery": {
+    "bootstrap_nonpositive_denominator": 0,
+    "causal_attribution": false,
+    "ci95": [
+      0.815905805522637,
+      0.9311921903924593
+    ],
+    "ratio_of_mean_differences": 0.8816116612442639
+  },
+  "no_outcome_tuning": true,
+  "phase": "reproduce",
+  "policies": {
+    "current_task": {
+      "cpu_seconds": 285.94638545099997,
+      "exploration_episodes": 322,
+      "mean_capped_steps": 102.23205128205129,
+      "median_capped_steps": 16.0,
+      "n": 780,
+      "peak_process_rss_bytes": 75218944,
+      "successes": 779,
+      "wall_seconds": 285.9947309979999
+    },
+    "generic": {
+      "cpu_seconds": 303.28274851900005,
+      "exploration_episodes": 322,
+      "mean_capped_steps": 103.25128205128205,
+      "median_capped_steps": 16.0,
+      "n": 780,
+      "peak_process_rss_bytes": 75218944,
+      "successes": 779,
+      "wall_seconds": 303.32904904800023
+    },
+    "oracle_direct": {
+      "cpu_seconds": 22.024572090000003,
+      "exploration_episodes": 322,
+      "mean_capped_steps": 13.011538461538462,
+      "median_capped_steps": 12.0,
+      "n": 780,
+      "peak_process_rss_bytes": 75218944,
+      "successes": 780,
+      "wall_seconds": 22.02950500900016
+    },
+    "oracle_source": {
+      "cpu_seconds": 73.75875110900003,
+      "exploration_episodes": 322,
+      "mean_capped_steps": 23.694871794871794,
+      "median_capped_steps": 13.0,
+      "n": 780,
+      "peak_process_rss_bytes": 75218944,
+      "successes": 780,
+      "wall_seconds": 73.8698158060004
+    }
+  },
+  "reproduction_gate_passed": true,
+  "reproduction_mismatches": 0,
+  "status_counts": {
+    "COMPLETE": 65,
+    "task_generation_unavailable": 5
+  },
+  "unique_tasks": 780,
+  "world_paired": {
+    "current_task_minus_generic": {
+      "ci95": [
+        -1.9730769230769454,
+        -0.24358974358975125
+      ],
+      "mean": -1.0192307692307687,
+      "median_world_difference": 0.0,
+      "worlds_better": 18,
+      "worlds_tied": 41,
+      "worlds_worse": 6
+    },
+    "oracle_direct_minus_generic": {
+      "ci95": [
+        -128.12625000000003,
+        -57.45945512820522
+      ],
+      "mean": -90.2397435897436,
+      "median_world_difference": -23.0,
+      "worlds_better": 42,
+      "worlds_tied": 23,
+      "worlds_worse": 0
+    },
+    "oracle_source_minus_generic": {
+      "ci95": [
+        -115.33054487179486,
+        -48.89868589743591
+      ],
+      "mean": -79.55641025641025,
+      "median_world_difference": -21.75,
+      "worlds_better": 40,
+      "worlds_tied": 23,
+      "worlds_worse": 2
+    }
+  }
+}
