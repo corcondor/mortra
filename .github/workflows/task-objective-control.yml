@@ -1,0 +1,135 @@
+name: MORTRA Objective Control Mechanism Pilot
+on:
+  push:
+    branches: [research/task-objective-control-20260927]
+    paths:
+      - experiments/task_agent/objective_control.py
+      - experiments/task_agent/run_objective_control.py
+      - tests/test_objective_control.py
+      - docs/research/TASK-OBJECTIVE-CONTROL-20260927.md
+      - .github/workflows/task-objective-control.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: task-objective-control-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - &checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /experiments/
+            /scripts/evaluate_cross_domain_generalization.py
+            /tests/test_task_agent.py
+            /tests/test_task_agent_fields.py
+            /tests/test_virtual_frontier.py
+            /tests/test_virtual_frontier_fresh70.py
+            /tests/test_objective_control.py
+            /docs/research/TASK-VIRTUAL-FRONTIER-FRESH70-20260926.md
+            /docs/research/TASK-OBJECTIVE-CONTROL-20260927.md
+            /.github/workflows/task-virtual-frontier-fresh70.yml
+            /.github/workflows/task-objective-control.yml
+      - &python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - &runtime
+        name: Pinned runtime and frozen source
+        run: |
+          pip install numpy==1.26.4 scipy==1.16.1 pytest==8.4.1 psutil==7.0.0 matplotlib==3.10.6
+          git fetch origin 24c44da50aac2c084a91fdd9f6754f0429da9350 --depth=1
+      - &inputs
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 36220511321
+          name: fresh70-registration-36220511321
+          path: input
+      - name: Existing tests plus algebra, finite-budget and executor equivalence tests
+        run: |
+          mkdir -p out
+          python -m pytest tests/test_task_agent.py tests/test_task_agent_fields.py tests/test_virtual_frontier.py tests/test_virtual_frontier_fresh70.py tests/test_objective_control.py -q --junitxml=out/tests.xml 2>&1 | tee out/tests.log
+      - name: Freeze existing inputs and all experimental conditions before outcomes
+        run: python -m experiments.task_agent.run_objective_control register --registration input/registration --output out/preregistered
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: objective-registration-${{ github.run_id }}
+          path: out/
+          retention-days: 90
+  evaluate:
+    needs: register
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - *checkout
+      - *python
+      - *runtime
+      - *inputs
+      - uses: actions/download-artifact@v4
+        with:
+          name: objective-registration-${{ github.run_id }}
+          path: prereg
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 36220511321
+          name: fresh70-worlds-36220511321-0
+          path: old
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 36220511321
+          name: fresh70-worlds-36220511321-1
+          path: old
+      - name: Frozen world, private starting models, registered six readouts
+        run: |
+          seed=$((73000000 + ${{ matrix.index }}))
+          python -m experiments.task_agent.run_objective_control world --registration input/registration --prereg prereg/preregistered --old-runs old --index ${{ matrix.index }} --output out/$seed
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: objective-world-${{ github.run_id }}-${{ matrix.index }}
+          path: out/
+          retention-days: 90
+  summarize:
+    if: always() && needs.register.result == 'success'
+    needs: [register, evaluate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - *checkout
+      - *python
+      - *runtime
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: objective-world-${{ github.run_id }}-*
+          path: runs
+      - name: World-paired results with completeness and baseline replay checks
+        run: python -m experiments.task_agent.run_objective_control summary --runs runs --output out/summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: objective-summary-${{ github.run_id }}
+          path: out/
+          retention-days: 90
