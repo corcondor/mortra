@@ -1,0 +1,62 @@
+name: MORTRA Pretraining Exact Reproduction Gate
+on:
+  push:
+    branches: [research/task-pretraining-fresh64-20260927]
+    paths:
+      - experiments/task_agent/pretraining.py
+      - experiments/task_agent/pretraining_reproduction.py
+      - experiments/task_agent/data/pretraining_reference/**
+      - tests/test_pretraining_reproduction.py
+      - docs/research/TASK-PRETRAINING-FRESH64-20260927.md
+      - .github/workflows/task-pretraining-fresh64.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: task-pretraining-${{ github.ref }}
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            experiments
+            scripts
+            tests
+            docs/research
+            .github/workflows
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.5'
+      - name: Pinned runtime and frozen history
+        run: |
+          pip install numpy==2.3.5 scipy==1.17.0 pytest==9.0.2 psutil==7.0.0
+          git fetch origin 24c44da50aac2c084a91fdd9f6754f0429da9350 --depth=1
+          git fetch origin 154f7a62988a52265b17c4dd0ad02839c9e32cc3 --depth=1
+      - name: Unchanged canonical tests and comparison harness tests
+        run: |
+          mkdir -p out
+          python -m pytest tests/test_task_agent.py tests/test_task_agent_fields.py tests/test_virtual_frontier.py tests/test_virtual_frontier_fresh70.py tests/test_objective_control.py tests/test_oracle_scale.py tests/test_pretraining_reproduction.py -q --junitxml=out/canonical-tests.xml 2>&1 | tee out/canonical-tests.log
+      - name: Standalone and canonical 864-row, snapshot, and full-trace gate
+        run: python -m experiments.task_agent.pretraining_reproduction gate --output out/reproduction 2>&1 | tee out/run.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pretraining-reproduction-${{ github.run_id }}-attempt-${{ github.run_attempt }}
+          path: out/
+          retention-days: 90
