@@ -1,0 +1,24 @@
+{
+  "basic_tasks_each": 3,
+  "branch_tasks": 3,
+  "max_steps": 4096,
+  "numerical_tolerance": 1e-12,
+  "policies": [
+    "structural",
+    "frontier_t0",
+    "virtual_frontier",
+    "task_virtual_frontier"
+  ],
+  "policy_order": "fixed, as listed; wall-time ratios are engineering diagnostics",
+  "q": 0.9,
+  "seeds": [
+    2202,
+    2303,
+    2505
+  ],
+  "source": "exp(task.progress(memory_before_unknown_action))",
+  "stage": "cohort",
+  "start_budget": 512,
+  "task_generation_budget": 8192,
+  "task_seed_offset": 600000
+}
