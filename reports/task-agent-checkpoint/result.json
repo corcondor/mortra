@@ -1,0 +1,167 @@
+{
+  "environment": {
+    "sha": "4847a287723e8ce4c7387c8539038c55144a55fe",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "reproduction": {
+    "worlds": {
+      "rows": 8,
+      "differences": []
+    },
+    "task_specs": {
+      "rows": 368,
+      "registered": 368,
+      "differences": [],
+      "difference_count": 0
+    },
+    "results": {
+      "registered_rows": 4416,
+      "compared": 4416,
+      "difference_count": 0,
+      "differences": []
+    }
+  },
+  "linear_against_optimal_at_8192": {
+    "sequence": {
+      "tasks": 96,
+      "linear_optimal": 87,
+      "optimal_optimal": 96,
+      "optimal_faster": 9,
+      "linear_faster": 0,
+      "same_steps": 87,
+      "linear_steps": 1908,
+      "optimal_steps": 1896,
+      "shortest_steps": 1896
+    },
+    "all_of": {
+      "tasks": 96,
+      "linear_optimal": 81,
+      "optimal_optimal": 96,
+      "optimal_faster": 15,
+      "linear_faster": 0,
+      "same_steps": 81,
+      "linear_steps": 1553,
+      "optimal_steps": 1519,
+      "shortest_steps": 1519
+    },
+    "condition_then": {
+      "tasks": 96,
+      "linear_optimal": 92,
+      "optimal_optimal": 96,
+      "optimal_faster": 4,
+      "linear_faster": 0,
+      "same_steps": 92,
+      "linear_steps": 956,
+      "optimal_steps": 952,
+      "shortest_steps": 952
+    },
+    "branch": {
+      "tasks": 80,
+      "linear_optimal": 75,
+      "optimal_optimal": 80,
+      "optimal_faster": 5,
+      "linear_faster": 0,
+      "same_steps": 75,
+      "linear_steps": 755,
+      "optimal_steps": 738,
+      "shortest_steps": 738
+    }
+  },
+  "linear_not_optimal_examples": [
+    {
+      "seed": 2303,
+      "task_id": 41,
+      "task_type": "branch",
+      "linear_steps": 17,
+      "optimal_steps": 11,
+      "shortest": 11
+    },
+    {
+      "seed": 2505,
+      "task_id": 42,
+      "task_type": "branch",
+      "linear_steps": 16,
+      "optimal_steps": 12,
+      "shortest": 12
+    },
+    {
+      "seed": 2808,
+      "task_id": 10,
+      "task_type": "all_of",
+      "linear_steps": 20,
+      "optimal_steps": 15,
+      "shortest": 15
+    },
+    {
+      "seed": 2808,
+      "task_id": 40,
+      "task_type": "branch",
+      "linear_steps": 17,
+      "optimal_steps": 13,
+      "shortest": 13
+    },
+    {
+      "seed": 2303,
+      "task_id": 37,
+      "task_type": "branch",
+      "linear_steps": 10,
+      "optimal_steps": 8,
+      "shortest": 8
+    },
+    {
+      "seed": 2808,
+      "task_id": 13,
+      "task_type": "all_of",
+      "linear_steps": 20,
+      "optimal_steps": 16,
+      "shortest": 16
+    },
+    {
+      "seed": 2303,
+      "task_id": 19,
+      "task_type": "all_of",
+      "linear_steps": 11,
+      "optimal_steps": 9,
+      "shortest": 9
+    },
+    {
+      "seed": 2505,
+      "task_id": 13,
+      "task_type": "all_of",
+      "linear_steps": 17,
+      "optimal_steps": 14,
+      "shortest": 14
+    },
+    {
+      "seed": 2202,
+      "task_id": 34,
+      "task_type": "all_of",
+      "linear_steps": 21,
+      "optimal_steps": 18,
+      "shortest": 18
+    },
+    {
+      "seed": 2404,
+      "task_id": 13,
+      "task_type": "all_of",
+      "linear_steps": 16,
+      "optimal_steps": 14,
+      "shortest": 14
+    }
+  ],
+  "seconds_per_method": {
+    "static_source": 13.7,
+    "dynamic_source": 12.86,
+    "product_compiler": 21.82,
+    "optimal_product": 22.53
+  },
+  "field_costs_at_8192": {
+    "product_graphs": 368,
+    "mean_product_states": 912.0,
+    "linear_field_seconds_each": 0.003135,
+    "optimal_field_seconds_each": 0.000605,
+    "note": "the linear field is a sparse LU solve of I - qK; the optimal field is one reverse breadth-first search. Both on the identical product graph"
+  },
+  "total_seconds": 89.6
+}
