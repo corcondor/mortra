@@ -1,0 +1,113 @@
+name: Task Agent Virtual Frontier Fresh 70 Worlds
+on:
+  push:
+    branches: [research/task-agent-product-field-20260926]
+    paths:
+      - experiments/task_agent/run_virtual_frontier_fresh70.py
+      - tests/test_virtual_frontier_fresh70.py
+      - docs/research/TASK-VIRTUAL-FRONTIER-FRESH70-20260926.md
+      - .github/workflows/task-virtual-frontier-fresh70.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: task-virtual-frontier-fresh70-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - &checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /experiments/
+            /scripts/evaluate_cross_domain_generalization.py
+            /tests/test_task_agent.py
+            /tests/test_task_agent_fields.py
+            /tests/test_virtual_frontier.py
+            /tests/test_virtual_frontier_fresh70.py
+            /docs/research/TASK-VIRTUAL-FRONTIER-FRESH70-20260926.md
+            /.github/workflows/task-virtual-frontier-fresh70.yml
+      - &python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - &runtime
+        name: Pinned runtime and frozen source access
+        run: |
+          pip install numpy==1.26.4 scipy==1.16.1 pytest==8.4.1 psutil==7.0.0
+          git fetch origin 24c44da50aac2c084a91fdd9f6754f0429da9350 --depth=1
+      - name: Byte-identity audit before tests
+        run: python -m experiments.task_agent.run_virtual_frontier_fresh70 audit --output out/preflight.json
+      - name: Existing 41 tests and harness tests, before fresh worlds
+        run: python -m pytest tests/test_task_agent.py tests/test_task_agent_fields.py tests/test_virtual_frontier.py tests/test_virtual_frontier_fresh70.py -q --junitxml=out/tests.xml 2>&1 | tee out/tests.log
+      - name: Freeze ALL worlds, tasks and snapshots before ANY policy outcome
+        run: python -m experiments.task_agent.run_virtual_frontier_fresh70 register --output out/registration
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fresh70-registration-${{ github.run_id }}
+          path: out/
+          retention-days: 90
+  evaluate:
+    needs: register
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    steps:
+      - *checkout
+      - *python
+      - *runtime
+      - uses: actions/download-artifact@v4
+        with:
+          name: fresh70-registration-${{ github.run_id }}
+          path: input
+      - name: Unchanged four policies, private copies, five fixed worlds
+        run: python -m experiments.task_agent.run_virtual_frontier_fresh70 shard --registration input/registration --index ${{ matrix.shard }} --output out/shard_${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fresh70-worlds-${{ github.run_id }}-${{ matrix.shard }}
+          path: out/
+          retention-days: 90
+  summarize:
+    if: always() && needs.register.result == 'success'
+    needs: [register, evaluate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - *checkout
+      - *python
+      - *runtime
+      - uses: actions/download-artifact@v4
+        with:
+          name: fresh70-registration-${{ github.run_id }}
+          path: input
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fresh70-worlds-${{ github.run_id }}-*
+          path: runs
+          merge-multiple: true
+      - name: World-paired analysis without redefining the 70-world denominator
+        run: python -m experiments.task_agent.run_virtual_frontier_fresh70 aggregate --registration input/registration --runs runs --output out/summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fresh70-summary-${{ github.run_id }}
+          path: out/
+          retention-days: 90
