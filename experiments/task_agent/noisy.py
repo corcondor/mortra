@@ -44,24 +44,49 @@ METHODS = ("linear", "linear_empirical", "shortest", "expected")
 Q = checkpoint.Q
 
 
-class SlipEngine:
-    """The canonical Engine; with probability `slip` the action is replaced by a random one."""
+NOISES = ("uniform", "drift_state", "drift_global")
 
-    def __init__(self, genome, slip, seed):
+
+def drift_action(state, num_actions, noise):
+    """The action a drift executes instead: fixed per state, or action 0 everywhere."""
+    if noise == "drift_global":
+        return 0
+    digest = hashlib.sha256(repr(tuple(int(v) for v in state)).encode()).digest()
+    return int.from_bytes(digest[:4], "big") % num_actions
+
+
+class SlipEngine:
+    """The canonical Engine; with probability `slip` the action is replaced by another.
+
+    `noise="uniform"` replaces it by one drawn uniformly from all actions (the
+    original model). `drift_state` replaces it by a fixed action per state and
+    `drift_global` by action 0 -- noise that is not the averaging a
+    uniform-policy field performs.
+    """
+
+    def __init__(self, genome, slip, seed, noise="uniform"):
+        if noise not in NOISES:
+            raise ValueError(noise)
         self.base = checkpoint.Engine(genome)
         self.initial = self.base.initial
         self.num_actions = self.base.num_actions
         self.dom = self.base.dom
         self.slip = float(slip)
         self.seed = str(seed)
+        self.noise = noise
         self.clock = 0
 
     def step(self, state, action):
         digest = hashlib.sha256(f"{self.seed}:{self.clock}".encode()).digest()
         self.clock += 1
         draw = int.from_bytes(digest[:8], "big")/2**64
-        other = int.from_bytes(digest[8:12], "big") % self.num_actions
-        return self.base.step(state, other if draw < self.slip else action)
+        if draw >= self.slip:
+            return self.base.step(state, action)
+        if self.noise == "uniform":
+            other = int.from_bytes(digest[8:12], "big") % self.num_actions
+        else:
+            other = drift_action(state, self.num_actions, self.noise)
+        return self.base.step(state, other)
 
 
 def train(engine, budget):

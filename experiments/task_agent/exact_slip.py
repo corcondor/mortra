@@ -251,7 +251,21 @@ def true_product(states, edges, automaton, start, num_actions):
     return index, order
 
 
-def slip_matrix(order, index, edges, automaton, states, actions, slip, num_actions):
+def executed(noise, slip, state, action, num_actions):
+    """The law of the executed action given the intended one: {action: probability}."""
+    weights = {action: 1.0-slip}
+    if slip > 0:
+        if noise == "uniform":
+            for b in range(num_actions):
+                weights[b] = weights.get(b, 0.0)+slip/num_actions
+        else:
+            b = noisy.drift_action(state, num_actions, noise)
+            weights[b] = weights.get(b, 0.0)+slip
+    return weights
+
+
+def slip_matrix(order, index, edges, automaton, states, actions, slip, num_actions,
+                noise="uniform"):
     """Transitions of the true process for a policy: actions[k] per product state, -1 = fail."""
     n = len(order)
     r, c, p = [], [], []
@@ -263,11 +277,7 @@ def slip_matrix(order, index, edges, automaton, states, actions, slip, num_actio
         if a < 0:
             fail[k] = 1.0
             continue
-        weights = {}
-        weights[a] = weights.get(a, 0.0)+(1.0-slip)
-        if slip > 0:
-            for b in range(num_actions):
-                weights[b] = weights.get(b, 0.0)+slip/num_actions
+        weights = executed(noise, slip, states[s], a, num_actions)
         for b, w in weights.items():
             t = edges[s][b]
             z = (t, automaton.update(m, states[t]))
@@ -278,9 +288,10 @@ def slip_matrix(order, index, edges, automaton, states, actions, slip, num_actio
 
 
 def evaluate(order, index, edges, automaton, states, actions, slip, num_actions,
-             horizon=HORIZON):
+             horizon=HORIZON, noise="uniform"):
     """P(success within the horizon) and expected cost with failure charged at the horizon."""
-    M, fail = slip_matrix(order, index, edges, automaton, states, actions, slip, num_actions)
+    M, fail = slip_matrix(order, index, edges, automaton, states, actions, slip, num_actions,
+                          noise)
     accept = np.array([automaton.done(m) for (_, m) in order], dtype=bool)
     live = np.zeros(len(order))
     live[0] = 1.0
@@ -304,8 +315,8 @@ def evaluate(order, index, edges, automaton, states, actions, slip, num_actions,
 
 
 def ssp_policy(order, index, edges, automaton, states, slip, num_actions,
-               *, sweeps=100000, tolerance=1e-10):
-    """Minimise expected steps to acceptance under the true slip kernel. The ceiling."""
+               *, sweeps=100000, tolerance=1e-10, noise="uniform"):
+    """Minimise expected steps to acceptance under the true noise kernel. The ceiling."""
     n = len(order)
     accept = np.array([automaton.done(m) for (_, m) in order], dtype=bool)
     succ = np.zeros((n, num_actions), dtype=int)
@@ -313,6 +324,12 @@ def ssp_policy(order, index, edges, automaton, states, slip, num_actions,
         for b in range(num_actions):
             t = edges[s][b]
             succ[k, b] = index[(t, automaton.update(m, states[t]))]
+    # E[k, a, b] = P(execute b | intend a) at product state k
+    E = np.zeros((n, num_actions, num_actions))
+    for k, (s, m) in enumerate(order):
+        for a in range(num_actions):
+            for b, w in executed(noise, slip, states[s], a, num_actions).items():
+                E[k, a, b] += w
     # start from the deterministic distance, a lower bound on expected steps under any
     # slip (no sequence of actions reaches acceptance in fewer), so the iteration only
     # has to climb, and states that cannot reach acceptance start and stay at the cap
@@ -330,14 +347,13 @@ def ssp_policy(order, index, edges, automaton, states, slip, num_actions,
                 V[u] = V[v]+1
                 queue.append(u)
     for _ in range(sweeps):
-        mean_all = V[succ].mean(axis=1)
-        q_values = 1.0+(1.0-slip)*V[succ]+slip*mean_all[:, None]
+        q_values = 1.0+np.einsum("kab,kb->ka", E, V[succ])
         fresh = np.where(accept, 0.0, np.minimum(q_values.min(axis=1), 1e9))
         if np.max(np.abs(fresh-V)) < tolerance:
             V = fresh
             break
         V = fresh
-    q_values = 1.0+(1.0-slip)*V[succ]+slip*V[succ].mean(axis=1)[:, None]
+    q_values = 1.0+np.einsum("kab,kb->ka", E, V[succ])
     actions = np.argmin(q_values, axis=1)                   # lowest index on ties
     actions[accept] = -1
     actions[V >= 1e8] = -1
@@ -371,7 +387,7 @@ def policies_on_true_states(order, states, learner, prods, policies):
 
 
 def task_rows(world, slip, task_id, task_type, start, spec, learner, states, edges, ids,
-              num_actions):
+              num_actions, noise="uniform"):
     automaton = checkpoint.TaskAutomaton(spec)
     index, order = true_product(states, edges, automaton, start, num_actions)
     learned_det = product(learned_model(learner, empirical=False), learner.i2s, automaton)
@@ -391,11 +407,14 @@ def task_rows(world, slip, task_id, task_type, start, spec, learner, states, edg
     }
     kinds = {name: ("learned" if name in LEARNED else "oracle") for name in policies}
     acts = policies_on_true_states(order, states, learner, kinds, policies)
-    acts["ssp_optimal"] = ssp_policy(order, index, edges, automaton, states, slip, num_actions)
+    acts["ssp_optimal"] = ssp_policy(order, index, edges, automaton, states, slip, num_actions,
+                                     noise=noise)
     rows = []
     for name in PLANNERS:
-        result = evaluate(order, index, edges, automaton, states, acts[name], slip, num_actions)
-        rows.append({"slip": slip, "seed": world, "task_id": task_id, "task_type": task_type,
+        result = evaluate(order, index, edges, automaton, states, acts[name], slip, num_actions,
+                          noise=noise)
+        rows.append({"noise": noise, "slip": slip, "seed": world, "task_id": task_id,
+                     "task_type": task_type,
                      "planner": name, "true_product_states": len(order),
                      "learned_states": len(learner.i2s), **result})
     return rows
