@@ -1,12 +1,85 @@
 {
   "episodes": 2208,
+  "note": "'needs_exploration' = no accepting path in the budget-512 product graph; medians count every failure at the 4096 budget; rows marked post_hoc were designed after the world-2505 pilot",
   "success": [
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "frontier",
+      "post_hoc": false,
+      "episodes": 157,
+      "median_steps_failures_at_budget": 12,
+      "mean_seconds": 0.095,
+      "success_at_512": 157,
+      "success_at_1024": 157,
+      "success_at_2048": 157,
+      "success_at_4096": 157
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "frontier_t0",
+      "post_hoc": true,
+      "episodes": 157,
+      "median_steps_failures_at_budget": 12,
+      "mean_seconds": 0.094,
+      "success_at_512": 157,
+      "success_at_1024": 157,
+      "success_at_2048": 157,
+      "success_at_4096": 157
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "structural",
+      "post_hoc": false,
+      "episodes": 157,
+      "median_steps_failures_at_budget": 12,
+      "mean_seconds": 0.094,
+      "success_at_512": 157,
+      "success_at_1024": 157,
+      "success_at_2048": 157,
+      "success_at_4096": 157
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "task_conditioned",
+      "post_hoc": false,
+      "episodes": 157,
+      "median_steps_failures_at_budget": 12,
+      "mean_seconds": 0.093,
+      "success_at_512": 157,
+      "success_at_1024": 157,
+      "success_at_2048": 157,
+      "success_at_4096": 157
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "task_conditioned_t0",
+      "post_hoc": true,
+      "episodes": 157,
+      "median_steps_failures_at_budget": 12,
+      "mean_seconds": 0.095,
+      "success_at_512": 157,
+      "success_at_1024": 157,
+      "success_at_2048": 157,
+      "success_at_4096": 157
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "uncertainty",
+      "post_hoc": false,
+      "episodes": 157,
+      "median_steps_failures_at_budget": 12,
+      "mean_seconds": 0.094,
+      "success_at_512": 157,
+      "success_at_1024": 157,
+      "success_at_2048": 157,
+      "success_at_4096": 157
+    },
     {
       "subset": "all",
       "policy": "frontier",
+      "post_hoc": false,
       "episodes": 368,
-      "median_steps_solved": 38.0,
-      "mean_steps_solved": 483.4,
+      "median_steps_failures_at_budget": 38.0,
       "mean_seconds": 1.193,
       "success_at_512": 244,
       "success_at_1024": 290,
@@ -16,9 +89,9 @@
     {
       "subset": "all",
       "policy": "frontier_t0",
+      "post_hoc": true,
       "episodes": 368,
-      "median_steps_solved": 37.0,
-      "mean_steps_solved": 213.2,
+      "median_steps_failures_at_budget": 37.0,
       "mean_seconds": 0.595,
       "success_at_512": 317,
       "success_at_1024": 353,
@@ -28,9 +101,9 @@
     {
       "subset": "all",
       "policy": "structural",
+      "post_hoc": false,
       "episodes": 368,
-      "median_steps_solved": 27,
-      "mean_steps_solved": 335.1,
+      "median_steps_failures_at_budget": 37.0,
       "mean_seconds": 0.841,
       "success_at_512": 299,
       "success_at_1024": 326,
@@ -40,9 +113,9 @@
     {
       "subset": "all",
       "policy": "task_conditioned",
+      "post_hoc": false,
       "episodes": 368,
-      "median_steps_solved": 37.5,
-      "mean_steps_solved": 459.5,
+      "median_steps_failures_at_budget": 37.5,
       "mean_seconds": 1.351,
       "success_at_512": 248,
       "success_at_1024": 303,
@@ -52,9 +125,9 @@
     {
       "subset": "all",
       "policy": "task_conditioned_t0",
+      "post_hoc": true,
       "episodes": 368,
-      "median_steps_solved": 37.5,
-      "mean_steps_solved": 204.3,
+      "median_steps_failures_at_budget": 37.5,
       "mean_seconds": 0.717,
       "success_at_512": 325,
       "success_at_1024": 353,
@@ -64,9 +137,9 @@
     {
       "subset": "all",
       "policy": "uncertainty",
+      "post_hoc": false,
       "episodes": 368,
-      "median_steps_solved": 21.0,
-      "mean_steps_solved": 606.5,
+      "median_steps_failures_at_budget": 38.0,
       "mean_seconds": 2.113,
       "success_at_512": 221,
       "success_at_1024": 248,
@@ -74,11 +147,11 @@
       "success_at_4096": 320
     },
     {
-      "subset": "out_of_model",
+      "subset": "needs_exploration",
       "policy": "frontier",
+      "post_hoc": false,
       "episodes": 211,
-      "median_steps_solved": 781,
-      "mean_steps_solved": 833.2,
+      "median_steps_failures_at_budget": 781,
       "mean_seconds": 2.01,
       "success_at_512": 87,
       "success_at_1024": 133,
@@ -86,11 +159,11 @@
       "success_at_4096": 211
     },
     {
-      "subset": "out_of_model",
+      "subset": "needs_exploration",
       "policy": "frontier_t0",
+      "post_hoc": true,
       "episodes": 211,
-      "median_steps_solved": 296,
-      "mean_steps_solved": 361.8,
+      "median_steps_failures_at_budget": 296,
       "mean_seconds": 0.968,
       "success_at_512": 160,
       "success_at_1024": 196,
@@ -98,11 +171,11 @@
       "success_at_4096": 211
     },
     {
-      "subset": "out_of_model",
+      "subset": "needs_exploration",
       "policy": "structural",
+      "post_hoc": false,
       "episodes": 211,
-      "median_steps_solved": 352.0,
-      "mean_steps_solved": 585.1,
+      "median_steps_failures_at_budget": 363,
       "mean_seconds": 1.397,
       "success_at_512": 142,
       "success_at_1024": 169,
@@ -110,11 +183,11 @@
       "success_at_4096": 202
     },
     {
-      "subset": "out_of_model",
+      "subset": "needs_exploration",
       "policy": "task_conditioned",
+      "post_hoc": false,
       "episodes": 211,
-      "median_steps_solved": 684,
-      "mean_steps_solved": 791.5,
+      "median_steps_failures_at_budget": 684,
       "mean_seconds": 2.286,
       "success_at_512": 91,
       "success_at_1024": 146,
@@ -122,11 +195,11 @@
       "success_at_4096": 211
     },
     {
-      "subset": "out_of_model",
+      "subset": "needs_exploration",
       "policy": "task_conditioned_t0",
+      "post_hoc": true,
       "episodes": 211,
-      "median_steps_solved": 250,
-      "mean_steps_solved": 346.4,
+      "median_steps_failures_at_budget": 250,
       "mean_seconds": 1.18,
       "success_at_512": 168,
       "success_at_1024": 196,
@@ -134,166 +207,358 @@
       "success_at_4096": 211
     },
     {
-      "subset": "out_of_model",
+      "subset": "needs_exploration",
       "policy": "uncertainty",
+      "post_hoc": false,
       "episodes": 211,
-      "median_steps_solved": 929,
-      "mean_steps_solved": 1177.8,
+      "median_steps_failures_at_budget": 1396,
       "mean_seconds": 3.616,
       "success_at_512": 64,
       "success_at_1024": 91,
       "success_at_2048": 123,
       "success_at_4096": 163
-    },
-    {
-      "subset": "starts_in_model",
-      "policy": "frontier",
-      "episodes": 157,
-      "median_steps_solved": 12,
-      "mean_steps_solved": 13.4,
-      "mean_seconds": 0.095,
-      "success_at_512": 157,
-      "success_at_1024": 157,
-      "success_at_2048": 157,
-      "success_at_4096": 157
-    },
-    {
-      "subset": "starts_in_model",
-      "policy": "frontier_t0",
-      "episodes": 157,
-      "median_steps_solved": 12,
-      "mean_steps_solved": 13.4,
-      "mean_seconds": 0.094,
-      "success_at_512": 157,
-      "success_at_1024": 157,
-      "success_at_2048": 157,
-      "success_at_4096": 157
-    },
-    {
-      "subset": "starts_in_model",
-      "policy": "structural",
-      "episodes": 157,
-      "median_steps_solved": 12,
-      "mean_steps_solved": 13.4,
-      "mean_seconds": 0.094,
-      "success_at_512": 157,
-      "success_at_1024": 157,
-      "success_at_2048": 157,
-      "success_at_4096": 157
-    },
-    {
-      "subset": "starts_in_model",
-      "policy": "task_conditioned",
-      "episodes": 157,
-      "median_steps_solved": 12,
-      "mean_steps_solved": 13.4,
-      "mean_seconds": 0.093,
-      "success_at_512": 157,
-      "success_at_1024": 157,
-      "success_at_2048": 157,
-      "success_at_4096": 157
-    },
-    {
-      "subset": "starts_in_model",
-      "policy": "task_conditioned_t0",
-      "episodes": 157,
-      "median_steps_solved": 12,
-      "mean_steps_solved": 13.4,
-      "mean_seconds": 0.095,
-      "success_at_512": 157,
-      "success_at_1024": 157,
-      "success_at_2048": 157,
-      "success_at_4096": 157
-    },
-    {
-      "subset": "starts_in_model",
-      "policy": "uncertainty",
-      "episodes": 157,
-      "median_steps_solved": 12,
-      "mean_steps_solved": 13.4,
-      "mean_seconds": 0.094,
-      "success_at_512": 157,
-      "success_at_1024": 157,
-      "success_at_2048": 157,
-      "success_at_4096": 157
     }
   ],
-  "paired_against_structural": [
+  "paired": [
     {
-      "policy": "frontier",
-      "reference": "structural",
-      "tasks": 211,
-      "both_solved": 202,
-      "policy_fewer_steps": 31,
-      "reference_fewer_steps": 120,
-      "same_steps": 51,
-      "only_policy_solved": 9,
-      "only_reference_solved": 0,
-      "median_step_ratio": 1.444
+      "a": "task_conditioned",
+      "b": "structural",
+      "post_hoc": false,
+      "a_fewer_steps": 49,
+      "b_fewer_steps": 118,
+      "tied": 44,
+      "sign_test_p": 9.467012913583218e-08,
+      "per_world_a_b_tied": {
+        "2101": [
+          12,
+          12,
+          6
+        ],
+        "2202": [
+          23,
+          2,
+          8
+        ],
+        "2404": [
+          1,
+          21,
+          4
+        ],
+        "2505": [
+          0,
+          37,
+          3
+        ],
+        "2606": [
+          7,
+          27,
+          11
+        ],
+        "2707": [
+          0,
+          19,
+          4
+        ],
+        "2808": [
+          6,
+          0,
+          8
+        ]
+      }
     },
     {
-      "policy": "frontier_t0",
-      "reference": "structural",
-      "tasks": 211,
-      "both_solved": 202,
-      "policy_fewer_steps": 93,
-      "reference_fewer_steps": 37,
-      "same_steps": 72,
-      "only_policy_solved": 9,
-      "only_reference_solved": 0,
-      "median_step_ratio": 1.0
+      "a": "frontier",
+      "b": "structural",
+      "post_hoc": false,
+      "a_fewer_steps": 40,
+      "b_fewer_steps": 120,
+      "tied": 51,
+      "sign_test_p": 1.7524500188513453e-10,
+      "per_world_a_b_tied": {
+        "2101": [
+          10,
+          10,
+          10
+        ],
+        "2202": [
+          21,
+          4,
+          8
+        ],
+        "2404": [
+          1,
+          19,
+          6
+        ],
+        "2505": [
+          0,
+          37,
+          3
+        ],
+        "2606": [
+          1,
+          33,
+          11
+        ],
+        "2707": [
+          1,
+          17,
+          5
+        ],
+        "2808": [
+          6,
+          0,
+          8
+        ]
+      }
     },
     {
-      "policy": "task_conditioned",
-      "reference": "structural",
-      "tasks": 211,
-      "both_solved": 202,
-      "policy_fewer_steps": 40,
-      "reference_fewer_steps": 118,
-      "same_steps": 44,
-      "only_policy_solved": 9,
-      "only_reference_solved": 0,
-      "median_step_ratio": 1.344
+      "a": "uncertainty",
+      "b": "structural",
+      "post_hoc": false,
+      "a_fewer_steps": 2,
+      "b_fewer_steps": 150,
+      "tied": 59,
+      "sign_test_p": 4.0739249604083244e-42,
+      "per_world_a_b_tied": {
+        "2101": [
+          0,
+          21,
+          9
+        ],
+        "2202": [
+          0,
+          16,
+          17
+        ],
+        "2404": [
+          1,
+          19,
+          6
+        ],
+        "2505": [
+          0,
+          37,
+          3
+        ],
+        "2606": [
+          0,
+          34,
+          11
+        ],
+        "2707": [
+          1,
+          17,
+          5
+        ],
+        "2808": [
+          0,
+          6,
+          8
+        ]
+      }
     },
     {
-      "policy": "task_conditioned_t0",
-      "reference": "structural",
-      "tasks": 211,
-      "both_solved": 202,
-      "policy_fewer_steps": 108,
-      "reference_fewer_steps": 38,
-      "same_steps": 56,
-      "only_policy_solved": 9,
-      "only_reference_solved": 0,
-      "median_step_ratio": 0.985
+      "a": "task_conditioned",
+      "b": "frontier",
+      "post_hoc": false,
+      "a_fewer_steps": 79,
+      "b_fewer_steps": 40,
+      "tied": 92,
+      "sign_test_p": 0.00044531067691715544,
+      "per_world_a_b_tied": {
+        "2101": [
+          13,
+          11,
+          6
+        ],
+        "2202": [
+          20,
+          5,
+          8
+        ],
+        "2404": [
+          6,
+          5,
+          15
+        ],
+        "2505": [
+          2,
+          2,
+          36
+        ],
+        "2606": [
+          26,
+          8,
+          11
+        ],
+        "2707": [
+          9,
+          6,
+          8
+        ],
+        "2808": [
+          3,
+          3,
+          8
+        ]
+      }
     },
     {
-      "policy": "uncertainty",
-      "reference": "structural",
-      "tasks": 211,
-      "both_solved": 163,
-      "policy_fewer_steps": 2,
-      "reference_fewer_steps": 111,
-      "same_steps": 50,
-      "only_policy_solved": 0,
-      "only_reference_solved": 39,
-      "median_step_ratio": 2.408
+      "a": "frontier_t0",
+      "b": "structural",
+      "post_hoc": true,
+      "a_fewer_steps": 102,
+      "b_fewer_steps": 37,
+      "tied": 72,
+      "sign_test_p": 3.22000274970309e-08,
+      "per_world_a_b_tied": {
+        "2101": [
+          20,
+          1,
+          9
+        ],
+        "2202": [
+          25,
+          0,
+          8
+        ],
+        "2404": [
+          5,
+          5,
+          16
+        ],
+        "2505": [
+          16,
+          13,
+          11
+        ],
+        "2606": [
+          21,
+          13,
+          11
+        ],
+        "2707": [
+          9,
+          5,
+          9
+        ],
+        "2808": [
+          6,
+          0,
+          8
+        ]
+      }
+    },
+    {
+      "a": "task_conditioned_t0",
+      "b": "structural",
+      "post_hoc": true,
+      "a_fewer_steps": 117,
+      "b_fewer_steps": 38,
+      "tied": 56,
+      "sign_test_p": 1.4788685528456974e-10,
+      "per_world_a_b_tied": {
+        "2101": [
+          20,
+          4,
+          6
+        ],
+        "2202": [
+          25,
+          0,
+          8
+        ],
+        "2404": [
+          10,
+          7,
+          9
+        ],
+        "2505": [
+          18,
+          12,
+          10
+        ],
+        "2606": [
+          27,
+          7,
+          11
+        ],
+        "2707": [
+          11,
+          8,
+          4
+        ],
+        "2808": [
+          6,
+          0,
+          8
+        ]
+      }
+    },
+    {
+      "a": "task_conditioned_t0",
+      "b": "frontier_t0",
+      "post_hoc": true,
+      "a_fewer_steps": 77,
+      "b_fewer_steps": 48,
+      "tied": 86,
+      "sign_test_p": 0.011959013523238282,
+      "per_world_a_b_tied": {
+        "2101": [
+          15,
+          8,
+          7
+        ],
+        "2202": [
+          18,
+          6,
+          9
+        ],
+        "2404": [
+          7,
+          7,
+          12
+        ],
+        "2505": [
+          3,
+          4,
+          33
+        ],
+        "2606": [
+          22,
+          12,
+          11
+        ],
+        "2707": [
+          10,
+          7,
+          6
+        ],
+        "2808": [
+          2,
+          4,
+          8
+        ]
+      }
     }
   ],
-  "task_conditioned_vs_frontier": {
-    "pair": [
-      "task_conditioned",
-      "frontier"
-    ],
-    "out_of_model_tasks": 211,
-    "identical_episodes": 92
-  },
-  "task_conditioned_t0_vs_frontier_t0": {
-    "pair": [
-      "task_conditioned_t0",
-      "frontier_t0"
-    ],
-    "out_of_model_tasks": 211,
-    "identical_episodes": 86
-  }
+  "identical_episodes": [
+    {
+      "pair": [
+        "task_conditioned",
+        "frontier"
+      ],
+      "out_of_model_tasks": 211,
+      "identical_episodes": 92
+    },
+    {
+      "pair": [
+        "task_conditioned_t0",
+        "frontier_t0"
+      ],
+      "out_of_model_tasks": 211,
+      "identical_episodes": 86
+    }
+  ]
 }

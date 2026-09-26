@@ -25,19 +25,27 @@ def load(paths):
     return rows
 
 
-def success_table(rows):
+POST_HOC = {"frontier_t0", "task_conditioned_t0"}
+
+
+def success_table(rows, budget=4096):
+    """Success by cap, and the median with every failure counted at the budget.
+
+    The subset is named for what it is: whether an accepting path already exists
+    in the budget-512 product graph -- not whether the start state is known.
+    """
     groups = defaultdict(list)
     for r in rows:
-        subset = "starts_in_model" if r["starts_in_model"] else "out_of_model"
+        subset = "accepting_path_at_512" if r["starts_in_model"] else "needs_exploration"
         groups[(subset, r["policy"])].append(r)
         groups[("all", r["policy"])].append(r)
     out = []
     for (subset, policy), items in sorted(groups.items()):
         solved = [r for r in items if r["success"]]
-        steps = sorted(r["task_steps"] for r in solved)
-        row = {"subset": subset, "policy": policy, "episodes": len(items),
-               "median_steps_solved": statistics.median(steps) if steps else None,
-               "mean_steps_solved": round(statistics.mean(steps), 1) if steps else None,
+        censored = sorted(r["task_steps"] if r["success"] else budget for r in items)
+        row = {"subset": subset, "policy": policy, "post_hoc": policy in POST_HOC,
+               "episodes": len(items),
+               "median_steps_failures_at_budget": statistics.median(censored),
                "mean_seconds": round(statistics.mean(r["seconds"] for r in items), 3)}
         for cap in CAPS:
             row[f"success_at_{cap}"] = sum(1 for r in solved if r["task_steps"] <= cap)
@@ -45,42 +53,41 @@ def success_table(rows):
     return out
 
 
-def paired(rows, reference="structural"):
-    """Each policy against the reference on the same task: who finished first, and by how much."""
+def sign_p(wins, losses):
+    from math import comb
+
+    n = wins+losses
+    if n == 0:
+        return 1.0
+    k = min(wins, losses)
+    return min(1.0, 2*sum(comb(n, i) for i in range(k+1))/2**n)
+
+
+def paired(rows, a, b, budget=4096):
+    """a against b on the tasks that needed exploration; a failure costs more than any success."""
     by = defaultdict(dict)
     for r in rows:
         by[(r["seed"], r["task_id"])][r["policy"]] = r
-    table = defaultdict(lambda: {"tasks": 0, "both_solved": 0, "policy_fewer_steps": 0,
-                                 "reference_fewer_steps": 0, "same_steps": 0,
-                                 "only_policy_solved": 0, "only_reference_solved": 0,
-                                 "step_ratios": []})
-    for key, per in by.items():
-        if reference not in per:
+    wins = losses = ties = 0
+    per_world = defaultdict(lambda: [0, 0, 0])
+    for (seed, task_id), per in by.items():
+        if a not in per or b not in per or per[a]["starts_in_model"]:
             continue
-        ref = per[reference]
-        if ref["starts_in_model"]:
-            continue                               # only the tasks that needed exploration
-        for policy, r in per.items():
-            if policy == reference:
-                continue
-            t = table[policy]
-            t["tasks"] += 1
-            if r["success"] and ref["success"]:
-                t["both_solved"] += 1
-                t["policy_fewer_steps"] += r["task_steps"] < ref["task_steps"]
-                t["reference_fewer_steps"] += ref["task_steps"] < r["task_steps"]
-                t["same_steps"] += r["task_steps"] == ref["task_steps"]
-                t["step_ratios"].append(r["task_steps"]/max(1, ref["task_steps"]))
-            elif r["success"]:
-                t["only_policy_solved"] += 1
-            elif ref["success"]:
-                t["only_reference_solved"] += 1
-    out = []
-    for policy, t in sorted(table.items()):
-        ratios = t.pop("step_ratios")
-        out.append({"policy": policy, "reference": reference, **t,
-                    "median_step_ratio": round(statistics.median(ratios), 3) if ratios else None})
-    return out
+        ca = per[a]["task_steps"] if per[a]["success"] else budget+1
+        cb = per[b]["task_steps"] if per[b]["success"] else budget+1
+        if ca < cb:
+            wins += 1
+            per_world[seed][0] += 1
+        elif cb < ca:
+            losses += 1
+            per_world[seed][1] += 1
+        else:
+            ties += 1
+            per_world[seed][2] += 1
+    return {"a": a, "b": b, "post_hoc": a in POST_HOC or b in POST_HOC,
+            "a_fewer_steps": wins, "b_fewer_steps": losses, "tied": ties,
+            "sign_test_p": sign_p(wins, losses),
+            "per_world_a_b_tied": {k: v for k, v in sorted(per_world.items())}}
 
 
 def identical(rows, one, two):
@@ -97,15 +104,27 @@ def identical(rows, one, two):
     return {"pair": [one, two], "out_of_model_tasks": total, "identical_episodes": same}
 
 
+COMPARISONS = (("task_conditioned", "structural"), ("frontier", "structural"),
+               ("uncertainty", "structural"), ("task_conditioned", "frontier"),
+               ("frontier_t0", "structural"), ("task_conditioned_t0", "structural"),
+               ("task_conditioned_t0", "frontier_t0"))
+
+
 def main(output_dir):
     output = Path(output_dir)
     rows = load(sorted(output.glob("episodes-*.csv")))
+    policies = {r["policy"] for r in rows}
     report = {"episodes": len(rows),
+              "note": "'needs_exploration' = no accepting path in the budget-512 product graph; "
+                      "medians count every failure at the 4096 budget; rows marked post_hoc were "
+                      "designed after the world-2505 pilot",
               "success": success_table(rows),
-              "paired_against_structural": paired(rows),
-              "task_conditioned_vs_frontier": identical(rows, "task_conditioned", "frontier"),
-              "task_conditioned_t0_vs_frontier_t0": identical(rows, "task_conditioned_t0",
-                                                               "frontier_t0")}
+              "paired": [paired(rows, a, b) for a, b in COMPARISONS
+                         if a in policies and b in policies],
+              "identical_episodes": [identical(rows, a, b) for a, b in
+                                     (("task_conditioned", "frontier"),
+                                      ("task_conditioned_t0", "frontier_t0"))
+                                     if a in policies and b in policies]}
     (output/"summary.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     return report
 

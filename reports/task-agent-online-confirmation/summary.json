@@ -1,0 +1,346 @@
+{
+  "episodes": 1472,
+  "note": "'needs_exploration' = no accepting path in the budget-512 product graph; medians count every failure at the 4096 budget; rows marked post_hoc were designed after the world-2505 pilot",
+  "success": [
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "frontier_t0",
+      "post_hoc": true,
+      "episodes": 163,
+      "median_steps_failures_at_budget": 14,
+      "mean_seconds": 0.076,
+      "success_at_512": 163,
+      "success_at_1024": 163,
+      "success_at_2048": 163,
+      "success_at_4096": 163
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "structural",
+      "post_hoc": false,
+      "episodes": 163,
+      "median_steps_failures_at_budget": 14,
+      "mean_seconds": 0.075,
+      "success_at_512": 163,
+      "success_at_1024": 163,
+      "success_at_2048": 163,
+      "success_at_4096": 163
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "task_conditioned",
+      "post_hoc": false,
+      "episodes": 163,
+      "median_steps_failures_at_budget": 14,
+      "mean_seconds": 0.077,
+      "success_at_512": 163,
+      "success_at_1024": 163,
+      "success_at_2048": 163,
+      "success_at_4096": 163
+    },
+    {
+      "subset": "accepting_path_at_512",
+      "policy": "task_conditioned_t0",
+      "post_hoc": true,
+      "episodes": 163,
+      "median_steps_failures_at_budget": 14,
+      "mean_seconds": 0.075,
+      "success_at_512": 163,
+      "success_at_1024": 163,
+      "success_at_2048": 163,
+      "success_at_4096": 163
+    },
+    {
+      "subset": "all",
+      "policy": "frontier_t0",
+      "post_hoc": true,
+      "episodes": 368,
+      "median_steps_failures_at_budget": 27.0,
+      "mean_seconds": 0.438,
+      "success_at_512": 329,
+      "success_at_1024": 358,
+      "success_at_2048": 368,
+      "success_at_4096": 368
+    },
+    {
+      "subset": "all",
+      "policy": "structural",
+      "post_hoc": false,
+      "episodes": 368,
+      "median_steps_failures_at_budget": 27.0,
+      "mean_seconds": 0.633,
+      "success_at_512": 302,
+      "success_at_1024": 333,
+      "success_at_2048": 353,
+      "success_at_4096": 357
+    },
+    {
+      "subset": "all",
+      "policy": "task_conditioned",
+      "post_hoc": false,
+      "episodes": 368,
+      "median_steps_failures_at_budget": 27.0,
+      "mean_seconds": 1.031,
+      "success_at_512": 262,
+      "success_at_1024": 315,
+      "success_at_2048": 363,
+      "success_at_4096": 368
+    },
+    {
+      "subset": "all",
+      "policy": "task_conditioned_t0",
+      "post_hoc": true,
+      "episodes": 368,
+      "median_steps_failures_at_budget": 26.5,
+      "mean_seconds": 0.509,
+      "success_at_512": 328,
+      "success_at_1024": 357,
+      "success_at_2048": 368,
+      "success_at_4096": 368
+    },
+    {
+      "subset": "needs_exploration",
+      "policy": "frontier_t0",
+      "post_hoc": true,
+      "episodes": 205,
+      "median_steps_failures_at_budget": 221,
+      "mean_seconds": 0.726,
+      "success_at_512": 166,
+      "success_at_1024": 195,
+      "success_at_2048": 205,
+      "success_at_4096": 205
+    },
+    {
+      "subset": "needs_exploration",
+      "policy": "structural",
+      "post_hoc": false,
+      "episodes": 205,
+      "median_steps_failures_at_budget": 324,
+      "mean_seconds": 1.076,
+      "success_at_512": 139,
+      "success_at_1024": 170,
+      "success_at_2048": 190,
+      "success_at_4096": 194
+    },
+    {
+      "subset": "needs_exploration",
+      "policy": "task_conditioned",
+      "post_hoc": false,
+      "episodes": 205,
+      "median_steps_failures_at_budget": 592,
+      "mean_seconds": 1.79,
+      "success_at_512": 99,
+      "success_at_1024": 152,
+      "success_at_2048": 200,
+      "success_at_4096": 205
+    },
+    {
+      "subset": "needs_exploration",
+      "policy": "task_conditioned_t0",
+      "post_hoc": true,
+      "episodes": 205,
+      "median_steps_failures_at_budget": 220,
+      "mean_seconds": 0.855,
+      "success_at_512": 165,
+      "success_at_1024": 194,
+      "success_at_2048": 205,
+      "success_at_4096": 205
+    }
+  ],
+  "paired": [
+    {
+      "a": "task_conditioned",
+      "b": "structural",
+      "post_hoc": false,
+      "a_fewer_steps": 40,
+      "b_fewer_steps": 117,
+      "tied": 48,
+      "sign_test_p": 5.948252208807465e-10,
+      "per_world_a_b_tied": {
+        "2101": [
+          5,
+          11,
+          5
+        ],
+        "2202": [
+          21,
+          2,
+          13
+        ],
+        "2404": [
+          2,
+          25,
+          8
+        ],
+        "2505": [
+          0,
+          27,
+          8
+        ],
+        "2606": [
+          3,
+          28,
+          8
+        ],
+        "2707": [
+          3,
+          24,
+          6
+        ],
+        "2808": [
+          6,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "a": "frontier_t0",
+      "b": "structural",
+      "post_hoc": true,
+      "a_fewer_steps": 78,
+      "b_fewer_steps": 42,
+      "tied": 85,
+      "sign_test_p": 0.001299333097250276,
+      "per_world_a_b_tied": {
+        "2101": [
+          13,
+          0,
+          8
+        ],
+        "2202": [
+          23,
+          0,
+          13
+        ],
+        "2404": [
+          8,
+          5,
+          22
+        ],
+        "2505": [
+          7,
+          8,
+          20
+        ],
+        "2606": [
+          14,
+          17,
+          8
+        ],
+        "2707": [
+          7,
+          12,
+          14
+        ],
+        "2808": [
+          6,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "a": "task_conditioned_t0",
+      "b": "structural",
+      "post_hoc": true,
+      "a_fewer_steps": 91,
+      "b_fewer_steps": 50,
+      "tied": 64,
+      "sign_test_p": 0.0006993659206296754,
+      "per_world_a_b_tied": {
+        "2101": [
+          13,
+          1,
+          7
+        ],
+        "2202": [
+          23,
+          0,
+          13
+        ],
+        "2404": [
+          10,
+          12,
+          13
+        ],
+        "2505": [
+          7,
+          12,
+          16
+        ],
+        "2606": [
+          23,
+          8,
+          8
+        ],
+        "2707": [
+          9,
+          17,
+          7
+        ],
+        "2808": [
+          6,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "a": "task_conditioned_t0",
+      "b": "frontier_t0",
+      "post_hoc": true,
+      "a_fewer_steps": 61,
+      "b_fewer_steps": 63,
+      "tied": 81,
+      "sign_test_p": 0.9284921641248501,
+      "per_world_a_b_tied": {
+        "2101": [
+          13,
+          1,
+          7
+        ],
+        "2202": [
+          14,
+          8,
+          14
+        ],
+        "2404": [
+          9,
+          10,
+          16
+        ],
+        "2505": [
+          4,
+          6,
+          25
+        ],
+        "2606": [
+          15,
+          16,
+          8
+        ],
+        "2707": [
+          6,
+          16,
+          11
+        ],
+        "2808": [
+          0,
+          6,
+          0
+        ]
+      }
+    }
+  ],
+  "identical_episodes": [
+    {
+      "pair": [
+        "task_conditioned_t0",
+        "frontier_t0"
+      ],
+      "out_of_model_tasks": 205,
+      "identical_episodes": 81
+    }
+  ]
+}

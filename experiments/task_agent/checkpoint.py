@@ -297,7 +297,7 @@ def execute_source_policy(learner, engine, automaton, start, dynamic_memory=Fals
     return automaton.done(memory), steps
 
 
-def build_product_model(learner, automaton, start):
+def build_product_model(learner, automaton, start, *, solve=True):
     start = tuple(start)
     if start not in learner.s2i:
         return None
@@ -347,9 +347,13 @@ def build_product_model(learner, automaton, start):
     if 0 not in reachable:
         return {"reachable": False, "n_product_states": n, "ids": ids, "states": states,
                 "transitions": transitions}
-    g = np.zeros(n, dtype=float)
-    g[goals] = 1.0
-    psi = splu(identity(n, format="csc") - Q * K.tocsc()).solve(g)
+    # solve=False is for the optimal field, which needs the graph and not psi;
+    # the default keeps the original's behaviour exactly
+    psi = None
+    if solve:
+        g = np.zeros(n, dtype=float)
+        g[goals] = 1.0
+        psi = splu(identity(n, format="csc") - Q * K.tocsc()).solve(g)
     return {"reachable": True, "n_product_states": n, "ids": ids, "states": states,
             "transitions": transitions, "psi": psi, "goals": goals, "reverse": rev}
 
@@ -382,7 +386,7 @@ def execute_product_policy(learner, engine, automaton, start, horizon=HORIZON, *
     q^d with d the shortest distance to acceptance, which is computed by one
     reverse breadth-first search and no linear solve at all.
     """
-    model = build_product_model(learner, automaton, start)
+    model = build_product_model(learner, automaton, start, solve=(value != "optimal"))
     if model is None or not model["reachable"]:
         return False, 0, (0 if model is None else model["n_product_states"])
     if value == "optimal":
