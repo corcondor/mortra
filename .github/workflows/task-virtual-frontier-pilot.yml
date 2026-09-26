@@ -1,0 +1,63 @@
+name: Task Agent Virtual Frontier Development Pilot
+on:
+  push:
+    branches: [research/task-agent-product-field-20260926]
+    paths:
+      - experiments/task_agent/virtual_frontier.py
+      - experiments/task_agent/run_virtual_frontier_pilot.py
+      - tests/test_virtual_frontier.py
+      - docs/research/TASK-VIRTUAL-FRONTIER-PILOT-20260926.md
+      - .github/workflows/task-virtual-frontier-pilot.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: task-virtual-frontier-pilot-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+jobs:
+  development-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /experiments/
+            /scripts/evaluate_cross_domain_generalization.py
+            /tests/test_task_agent.py
+            /tests/test_task_agent_fields.py
+            /tests/test_virtual_frontier.py
+            /docs/research/TASK-VIRTUAL-FRONTIER-PILOT-20260926.md
+            /.github/workflows/task-virtual-frontier-pilot.yml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pinned runtime
+        run: pip install numpy==1.26.4 scipy==1.16.1 pytest==8.4.1 psutil==7.0.0
+      - name: Preserve baseline access
+        run: git fetch origin 6f9fc5018dd067fa693afb3b4d3ad1cfa04485e6 --depth=1
+      - name: Unchanged old tests and new mechanism gate
+        run: |
+          mkdir -p reports/virtual_frontier_pilot_${GITHUB_RUN_ID}
+          python -m pytest tests/test_task_agent.py tests/test_task_agent_fields.py tests/test_virtual_frontier.py -q --junitxml=reports/virtual_frontier_pilot_${GITHUB_RUN_ID}/tests.xml 2>&1 | tee reports/virtual_frontier_pilot_${GITHUB_RUN_ID}/tests.log
+      - name: One archived smoke world
+        run: python -m experiments.task_agent.run_virtual_frontier_pilot smoke --output reports/virtual_frontier_pilot_${GITHUB_RUN_ID}/smoke
+      - name: Small archived cohort, sequential
+        run: python -m experiments.task_agent.run_virtual_frontier_pilot cohort --output reports/virtual_frontier_pilot_${GITHUB_RUN_ID}/cohort
+      - name: Report gate and stop, never launch 70 worlds
+        run: python -m experiments.task_agent.run_virtual_frontier_pilot summary --output reports/virtual_frontier_pilot_${GITHUB_RUN_ID}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: virtual-frontier-pilot-${{ github.run_id }}
+          path: reports/virtual_frontier_pilot_${{ github.run_id }}/
+          retention-days: 90
