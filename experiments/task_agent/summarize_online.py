@@ -109,17 +109,33 @@ COMPARISONS = (("task_conditioned", "structural"), ("frontier", "structural"),
                ("frontier_t0", "structural"), ("task_conditioned_t0", "structural"),
                ("task_conditioned_t0", "frontier_t0"))
 
+# P1 (PROTOCOLS.md): the primary contrast first, then the secondary ones it names
+OPTIMISTIC = ("optimistic_linear_rmax", "optimistic_linear_shaped", "optimistic_linear_goal",
+              "optimistic_optimal_rmax", "optimistic_optimal_goal")
+P1_COMPARISONS = ((("optimistic_optimal_goal", "frontier_t0"),)
+                  + tuple((p, "frontier_t0") for p in OPTIMISTIC if p != "optimistic_optimal_goal")
+                  + tuple((p, "structural") for p in OPTIMISTIC)
+                  + (("optimistic_linear_rmax", "optimistic_optimal_rmax"),
+                     ("optimistic_linear_goal", "optimistic_optimal_goal"),
+                     ("optimistic_linear_rmax", "optimistic_linear_goal"),
+                     ("optimistic_optimal_rmax", "optimistic_optimal_goal")))
+
 
 def main(output_dir):
     output = Path(output_dir)
     rows = load(sorted(output.glob("episodes-*.csv")))
     policies = {r["policy"] for r in rows}
+    p1 = bool(policies & set(OPTIMISTIC))
+    note = ("'needs_exploration' = no accepting path in the budget-512 product graph; "
+            "medians count every failure at the 4096 budget; ")
+    note += ("P1: every policy here, the t0 baselines included, was fixed in PROTOCOLS.md before "
+             "the run; the post_hoc flag refers only to the original online run" if p1 else
+             "rows marked post_hoc were designed after the world-2505 pilot")
+    comparisons = P1_COMPARISONS + COMPARISONS if p1 else COMPARISONS
     report = {"episodes": len(rows),
-              "note": "'needs_exploration' = no accepting path in the budget-512 product graph; "
-                      "medians count every failure at the 4096 budget; rows marked post_hoc were "
-                      "designed after the world-2505 pilot",
+              "note": note,
               "success": success_table(rows),
-              "paired": [paired(rows, a, b) for a, b in COMPARISONS
+              "paired": [paired(rows, a, b) for a, b in comparisons
                          if a in policies and b in policies],
               "identical_episodes": [identical(rows, a, b) for a, b in
                                      (("task_conditioned", "frontier"),
