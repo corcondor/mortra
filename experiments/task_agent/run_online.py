@@ -62,6 +62,10 @@ def say(message):
 
 
 def policy_for(name, planner):
+    if name.startswith("optimistic_"):
+        from experiments.task_agent.optimism import OptimisticFieldPolicy
+        _, field, shaping = name.split("_")
+        return OptimisticFieldPolicy(field=field, shaping=shaping)
     if name == "frontier_t0":
         return FrontierFieldPolicy(low_count_threshold=0)
     if name == "task_conditioned_t0":
