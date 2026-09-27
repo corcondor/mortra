@@ -1,0 +1,46 @@
+{
+  "kind": "KNOWN_SEED_DEVELOPMENT_NOISY_RGB_SUFFIX_DISCOVERY",
+  "seeds": [
+    95027004,
+    95027005
+  ],
+  "cameras": {
+    "base": [
+      0.0,
+      0.0
+    ],
+    "shifted": [
+      0.32,
+      -0.24
+    ]
+  },
+  "initial_suffixes": [
+    []
+  ],
+  "batch": 8,
+  "image_size": 12,
+  "noise_floor": 0.01,
+  "calibration_histories": 100,
+  "calibration_margin": 1.18,
+  "reference_max_rounds": 20,
+  "reference_conformance_depth": 2,
+  "reference_max_closure_passes": 1000,
+  "heldout_episodes": 200,
+  "heldout_steps_per_episode": 25,
+  "heldout_action_seed_offset": 1000000,
+  "camera_adaptation": "separate learners; same fixed physics and RGB perturbation code",
+  "learner_inputs": [
+    "noisy four-view RGB",
+    "opaque executed action IDs"
+  ],
+  "forbidden_inputs": [
+    "success flag",
+    "clean RGB",
+    "true state IDs",
+    "reference access states",
+    "reference suffixes"
+  ],
+  "stopping_claim": "bounded empirical conformance only; no universal equality guarantee",
+  "seed": 95027004,
+  "camera": "base"
+}

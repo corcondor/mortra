@@ -1,0 +1,28 @@
+{
+  "status": "RUN_NOT_COMPLETED",
+  "seed": 95027004,
+  "camera": "shifted",
+  "error": "RuntimeError('table did not stabilize')",
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\run.py\", line 117, in main\n    model, rounds = table.learn(max_rounds=CONFIG['reference_max_rounds'], depth=CONFIG['reference_conformance_depth'])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 127, in machine\n    G=self.close_consistent(); reps=[g[0] for g in G];trans={};goal={}\n      ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 125, in close_consistent\n    raise RuntimeError('table did not stabilize')\nRuntimeError: table did not stabilize\n",
+  "wall_seconds": 420.6289025,
+  "cpu_seconds": 417.015625,
+  "peak_memory_bytes": 103698432,
+  "acquisition_sensors": [
+    {
+      "namespace": "calibration-v1",
+      "queries": 200,
+      "environment_actions": 524,
+      "exposures": 1600,
+      "views_per_exposure": 4,
+      "exact_duplicate_exposures": 0
+    },
+    {
+      "namespace": "training-v1",
+      "queries": 2060,
+      "environment_actions": 35036,
+      "exposures": 16480,
+      "views_per_exposure": 4,
+      "exact_duplicate_exposures": 0
+    }
+  ]
+}

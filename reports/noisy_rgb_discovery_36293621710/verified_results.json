@@ -1,0 +1,210 @@
+[
+  {
+    "result": {
+      "status": "RUN_NOT_COMPLETED",
+      "seed": 95027005,
+      "camera": "base",
+      "error": "RuntimeError('table did not stabilize')",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\run.py\", line 117, in main\n    model, rounds = table.learn(max_rounds=CONFIG['reference_max_rounds'], depth=CONFIG['reference_conformance_depth'])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 127, in machine\n    G=self.close_consistent(); reps=[g[0] for g in G];trans={};goal={}\n      ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 125, in close_consistent\n    raise RuntimeError('table did not stabilize')\nRuntimeError: table did not stabilize\n",
+      "wall_seconds": 190.49715800000007,
+      "cpu_seconds": 189.578125,
+      "peak_memory_bytes": 96124928,
+      "acquisition_sensors": [
+        {
+          "namespace": "calibration-v1",
+          "queries": 200,
+          "environment_actions": 524,
+          "exposures": 1600,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        },
+        {
+          "namespace": "training-v1",
+          "queries": 1371,
+          "environment_actions": 7415,
+          "exposures": 10968,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        }
+      ]
+    },
+    "checks": {
+      "calibration": {
+        "queries": 200,
+        "environment_actions": 524,
+        "exposures": 1600,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS"
+      },
+      "training": {
+        "queries": 1371,
+        "environment_actions": 7415,
+        "exposures": 10968,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS",
+        "summary_recomputation": {
+          "status": "PASS",
+          "summaries": 1371
+        }
+      },
+      "heldout": null
+    },
+    "artifact": "noisy-rgb-95027005-base-36293621710"
+  },
+  {
+    "result": {
+      "status": "RUN_NOT_COMPLETED",
+      "seed": 95027004,
+      "camera": "base",
+      "error": "RuntimeError('table did not stabilize')",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\run.py\", line 117, in main\n    model, rounds = table.learn(max_rounds=CONFIG['reference_max_rounds'], depth=CONFIG['reference_conformance_depth'])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 127, in machine\n    G=self.close_consistent(); reps=[g[0] for g in G];trans={};goal={}\n      ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 125, in close_consistent\n    raise RuntimeError('table did not stabilize')\nRuntimeError: table did not stabilize\n",
+      "wall_seconds": 417.76113670000007,
+      "cpu_seconds": 414.703125,
+      "peak_memory_bytes": 98254848,
+      "acquisition_sensors": [
+        {
+          "namespace": "calibration-v1",
+          "queries": 200,
+          "environment_actions": 524,
+          "exposures": 1600,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        },
+        {
+          "namespace": "training-v1",
+          "queries": 2111,
+          "environment_actions": 22815,
+          "exposures": 16888,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        }
+      ]
+    },
+    "checks": {
+      "calibration": {
+        "queries": 200,
+        "environment_actions": 524,
+        "exposures": 1600,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS"
+      },
+      "training": {
+        "queries": 2111,
+        "environment_actions": 22815,
+        "exposures": 16888,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS",
+        "summary_recomputation": {
+          "status": "PASS",
+          "summaries": 2111
+        }
+      },
+      "heldout": null
+    },
+    "artifact": "noisy-rgb-95027004-base-36293621710"
+  },
+  {
+    "result": {
+      "status": "RUN_NOT_COMPLETED",
+      "seed": 95027004,
+      "camera": "shifted",
+      "error": "RuntimeError('table did not stabilize')",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\run.py\", line 117, in main\n    model, rounds = table.learn(max_rounds=CONFIG['reference_max_rounds'], depth=CONFIG['reference_conformance_depth'])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 127, in machine\n    G=self.close_consistent(); reps=[g[0] for g in G];trans={};goal={}\n      ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 125, in close_consistent\n    raise RuntimeError('table did not stabilize')\nRuntimeError: table did not stabilize\n",
+      "wall_seconds": 420.6289025,
+      "cpu_seconds": 417.015625,
+      "peak_memory_bytes": 103698432,
+      "acquisition_sensors": [
+        {
+          "namespace": "calibration-v1",
+          "queries": 200,
+          "environment_actions": 524,
+          "exposures": 1600,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        },
+        {
+          "namespace": "training-v1",
+          "queries": 2060,
+          "environment_actions": 35036,
+          "exposures": 16480,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        }
+      ]
+    },
+    "checks": {
+      "calibration": {
+        "queries": 200,
+        "environment_actions": 524,
+        "exposures": 1600,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS"
+      },
+      "training": {
+        "queries": 2060,
+        "environment_actions": 35036,
+        "exposures": 16480,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS",
+        "summary_recomputation": {
+          "status": "PASS",
+          "summaries": 2060
+        }
+      },
+      "heldout": null
+    },
+    "artifact": "noisy-rgb-95027004-shifted-36293621710"
+  },
+  {
+    "result": {
+      "status": "RUN_NOT_COMPLETED",
+      "seed": 95027005,
+      "camera": "shifted",
+      "error": "RuntimeError('table did not stabilize')",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\run.py\", line 117, in main\n    model, rounds = table.learn(max_rounds=CONFIG['reference_max_rounds'], depth=CONFIG['reference_conformance_depth'])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 127, in machine\n    G=self.close_consistent(); reps=[g[0] for g in G];trans={};goal={}\n      ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 125, in close_consistent\n    raise RuntimeError('table did not stabilize')\nRuntimeError: table did not stabilize\n",
+      "wall_seconds": 297.44625479999996,
+      "cpu_seconds": 295.46875,
+      "peak_memory_bytes": 102060032,
+      "acquisition_sensors": [
+        {
+          "namespace": "calibration-v1",
+          "queries": 200,
+          "environment_actions": 524,
+          "exposures": 1600,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        },
+        {
+          "namespace": "training-v1",
+          "queries": 1996,
+          "environment_actions": 14655,
+          "exposures": 15968,
+          "views_per_exposure": 4,
+          "exact_duplicate_exposures": 0
+        }
+      ]
+    },
+    "checks": {
+      "calibration": {
+        "queries": 200,
+        "environment_actions": 524,
+        "exposures": 1600,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS"
+      },
+      "training": {
+        "queries": 1996,
+        "environment_actions": 14655,
+        "exposures": 15968,
+        "exact_duplicate_exposures": 0,
+        "raw_hash_verification": "PASS",
+        "summary_recomputation": {
+          "status": "PASS",
+          "summaries": 1996
+        }
+      },
+      "heldout": null
+    },
+    "artifact": "noisy-rgb-95027005-shifted-36293621710"
+  }
+]
