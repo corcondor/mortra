@@ -12,7 +12,11 @@ whenever the merge (with the folding that keeps it deterministic) never puts an
 accepted prefix and a rejected one in the same block. RPNI identifies a regular
 language in the limit and returns the target exactly once the sample contains a
 characteristic set -- and returns something smaller and more general when it
-does not. Which of those happens here is the experiment.
+does not. Here that guarantee is never in force: traces of one world determine
+the task only through its language restricted to world paths, whose minimal DFA
+has about one state per product node, and no sampling scheme below can contain
+a characteristic set for it or for the task automaton
+(docs/research/TASK-AGENT-ROUND2-20260927.md, section 6.7).
 
 The alphabet is the world's own states, as indices into the true state list;
 nothing tells the learner which of them matter. Labels come from the true

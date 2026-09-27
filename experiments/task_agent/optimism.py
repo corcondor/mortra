@@ -24,8 +24,13 @@ Three choices of W, each stated as what it is:
            variables from state u to the nearest predicate still to be satisfied.
            The only variant that uses what the task SAYS -- the target state's
            values -- and so the only one that can steer exploration toward a goal
-           the model has never seen. A heuristic, not a bound: one action may
-           change a variable by more than one.
+           the model has never seen. A heuristic, not a bound, in every archived
+           world: h is measured at u while W values u's successor (off by one),
+           and one true step can move the variables by Delta > 1 in L1. The
+           admissible form is q^(L(m)-2+ceil(h/Delta))/(1-q), L(m) the fewest
+           states taking memory m to acceptance (docs/research/
+           TASK-AGENT-ROUND2-20260927.md, section 6.5). Only ratios of W enter a
+           decision, so the off-by-one alone changes nothing.
 
 Two fields on the augmented graph, as in the rest of this work:
 
@@ -35,8 +40,14 @@ Two fields on the augmented graph, as in the rest of this work:
            value of heading for the best untried action by the shortest route
 
 The field depends only on the forward-reachable part of the product, so it is
-recomputed when the model changes (a new tried pair) and otherwise reused; the
-decisions are those of a fresh computation up to floating-point ties.
+recomputed when the model changes and otherwise reused; the decisions are those
+of a fresh computation up to floating-point ties. "The model changes" is read
+from `learner.version` when the learner has one (online_slip.VersionedLearner)
+and otherwise from the number of tried pairs, which is a complete fingerprint of
+the modal graph only in a DETERMINISTIC world. In a slipping world with a plain
+learner a modal successor can change without a new pair and the reused field is
+stale (4 of 4 test episodes diverged from a fresh computation); use a
+VersionedLearner there.
 """
 from __future__ import annotations
 
