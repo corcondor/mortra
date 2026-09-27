@@ -1,0 +1,160 @@
+name: Noisy RGB V2 provisional family scheduling
+on:
+  workflow_dispatch:
+  push:
+    branches: ['research/noisy-rgb-provisional-family-*']
+    paths: ['experiments/noisy_rgb_predictive_family/config.json']
+permissions:
+  contents: read
+  actions: read
+env:
+  GH_TOKEN: ${{ github.token }}
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+jobs:
+  preflight:
+    runs-on: windows-latest
+    timeout-minutes: 360
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_noisy_rgb_discovery.py tests/test_noisy_rgb_version_space.py tests/test_noisy_rgb_v2_diagnosis.py tests/test_noisy_rgb_predictive_v2.py tests/test_noisy_rgb_v2_checkpoints.py tests/test_noisy_rgb_v2_public_labels.py tests/test_noisy_rgb_depth2_audit.py tests/test_noisy_rgb_predictive_family.py -q --junitxml=tests/results.xml
+      - run: python -m experiments.noisy_rgb_predictive_family.gate --output preflight
+      - id: plan
+        shell: pwsh
+        run: |
+          $matrix = Get-Content preflight/matrix.json -Raw | ConvertFrom-Json
+          $remaining = @($matrix.include | Where-Object { -not ($_.seed -eq 97027000 -and $_.camera -eq 'base') })
+          $json = @{include=$remaining} | ConvertTo-Json -Compress -Depth 6
+          "matrix=$json" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: family-preflight-${{ github.run_id }}
+          path: |
+            preflight
+            tests/results.xml
+            experiments/noisy_rgb_predictive_family/PROTOCOL.md
+            experiments/noisy_rgb_predictive_family/config.json
+          retention-days: 90
+  first:
+    needs: preflight
+    runs-on: windows-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
+      - run: python -m experiments.noisy_rgb_v2_redundancy_audit.artifacts --seed 97027000 --camera base --output saved_A
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path logs | Out-Null
+          python -m experiments.noisy_rgb_predictive_family.run --seed 97027000 --camera base --output results/97027000_base_V2 2>&1 | Tee-Object logs/run.log
+          exit $LASTEXITCODE
+      - run: python -m experiments.noisy_rgb_predictive_family.analyze --a saved_A --b results/97027000_base_V2 --output analysis
+      - if: always()
+        run: python -m experiments.noisy_rgb_predictive_v2.compact --input results --output compact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: family-compact-97027000-base-${{ github.run_id }}
+          path: |
+            compact
+            analysis/comparison.json
+            analysis/hashes.json
+            results/*_family_execution.json
+            logs
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: family-full-97027000-base-${{ github.run_id }}
+          path: |
+            results
+            analysis
+            saved_A
+            logs
+          compression-level: 0
+          retention-days: 90
+  compare:
+    needs: [preflight,first]
+    runs-on: windows-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.preflight.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
+      - run: python -m experiments.noisy_rgb_v2_redundancy_audit.artifacts --seed ${{ matrix.seed }} --camera ${{ matrix.camera }} --output saved_A
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path logs | Out-Null
+          python -m experiments.noisy_rgb_predictive_family.run --seed ${{ matrix.seed }} --camera ${{ matrix.camera }} --output results/${{ matrix.seed }}_${{ matrix.camera }}_V2 2>&1 | Tee-Object logs/run.log
+          exit $LASTEXITCODE
+      - run: python -m experiments.noisy_rgb_predictive_family.analyze --a saved_A --b results/${{ matrix.seed }}_${{ matrix.camera }}_V2 --output analysis
+      - if: always()
+        run: python -m experiments.noisy_rgb_predictive_v2.compact --input results --output compact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: family-compact-${{ matrix.seed }}-${{ matrix.camera }}-${{ github.run_id }}
+          path: |
+            compact
+            analysis/comparison.json
+            analysis/hashes.json
+            results/*_family_execution.json
+            logs
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: family-full-${{ matrix.seed }}-${{ matrix.camera }}-${{ github.run_id }}
+          path: |
+            results
+            analysis
+            saved_A
+            logs
+          compression-level: 0
+          retention-days: 90
+  aggregate:
+    needs: [preflight,first,compare]
+    if: always()
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 matplotlib==3.9.4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: family-compact-*
+          path: saved
+      - run: python -m experiments.noisy_rgb_predictive_family.aggregate --input saved --output summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: family-summary-${{ github.run_id }}
+          path: summary
+          retention-days: 90

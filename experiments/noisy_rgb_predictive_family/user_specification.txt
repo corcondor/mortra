@@ -1,0 +1,588 @@
+`corcondor/mortra` の現在の Noisy RGB Predictive V2 を基準に、**provisional family compression のみを追加した比較実験**を実装・実行してください。
+
+目的は状態同一性の条件を緩めることではありません。
+
+目的は、
+
+```text
+同じ／非常に近い未確定仮説を表す多数の provisional history が、
+同じ識別実験を何度も重複実行している可能性
+```
+
+を検証し、
+
+```text
+state identity は別々のまま保持しつつ、
+探索・probe・証拠要求だけを family 単位で共有
+```
+
+したとき、状態獲得効率が改善するかを測定することです。
+
+---
+
+## 1. 基準
+
+Repository:
+
+```text
+corcondor/mortra
+```
+
+現在のV2系列:
+
+```text
+branch:
+research/noisy-rgb-predictive-v2-20260927
+
+frozen development source:
+3e777cd5274a30e3119c125a932a6bbca98e1830
+```
+
+既存の
+
+```text
+experiments/noisy_rgb_predictive_v2/
+```
+
+および既存Actions・reports・artifactsは変更・削除しないでください。
+
+現在のV2にある以下の条件は維持してください。
+
+```text
+- SAME / DIFFERENT / UNRESOLVED
+- NEW hypothesis
+- provisional node
+- 空列 + 長さ1 + 長さ2の全31実験
+- 全31実験のSAME + 公開label一致をempirical merge条件とする
+- 複数candidateを勝手に一つへ統合しない
+- counterexampleでunmergeしNEWを復活できる
+- mergeは EMPIRICALLY_EQUIVALENT_DEPTH_2 であり、
+  無限未来の同値とは扱わない
+```
+
+---
+
+## 2. 新規moduleで実装
+
+既存V2を直接変更せず、
+
+```text
+experiments/noisy_rgb_predictive_family/
+```
+
+を新規作成してください。
+
+比較arm:
+
+```text
+A = frozen current V2
+B = V2 + provisional family sharing
+```
+
+状態同一性判定・RGB判定・閾値・camera・physics・action alphabet・probe depthは変更しないでください。
+
+---
+
+## 3. provisional family の意味
+
+familyはstateではありません。
+
+```text
+family membership != state identity
+family membership != merge
+family membership != SAME certificate
+```
+
+です。
+
+各provisional historyは従来どおり独立した
+
+```text
+PredictiveNode
+```
+
+として保存してください。
+
+familyは、
+
+```text
+「次にどの証拠を取りに行くか」
+```
+
+を共有するためだけの探索単位です。
+
+---
+
+## 4. family signature
+
+hidden state / true classを一切使わず、現在までの公開証拠だけでfamilyを構成してください。
+
+初期案として、以下の組をfamily signatureとしてください。
+
+```text
+(
+    sorted existing candidate representative IDs,
+    NEW possible flag,
+    public-label signature of already sampled endpoints,
+    observed outgoing-action mask,
+    known local SAME/DIFFERENT/UNRESOLVED pattern,
+    already tested distinguishing suffix set
+)
+```
+
+履歴そのものやhidden state IDをsignatureに入れないでください。
+
+RGBのnearest-neighborだけでfamilyを作らないでください。
+
+---
+
+## 5. familyを作ってもnodeを統合しない
+
+同じfamilyに
+
+```text
+h1
+h2
+h3
+...
+```
+
+が入っても、
+
+```text
+h1 == h2
+```
+
+とは扱わないでください。
+
+各nodeの
+
+```text
+history
+outgoing transitions
+certificates
+candidate set
+merge status
+```
+
+は別々に保持します。
+
+family側に保持してよいのは、
+
+```text
+- 次に試すprobe候補
+- probeの優先順位
+- 既に情報量が低かったprobe
+- candidate pairを分離した既知のsuffix
+- 必要な未取得証拠の種類
+```
+
+です。
+
+---
+
+## 6. probe sharing
+
+現在のV2では、多数のprovisional nodeが同様の31実験を個別に繰り返します。
+
+Bでは、family内で
+
+```text
+次にどのprobeを試すか
+```
+
+を共有してください。
+
+例えばfamily内で
+
+```text
+jump
+```
+
+がcandidate setを全く縮めなかった場合、
+
+その情報をfamily-level schedulingに利用し、別nodeでも優先順位を下げて構いません。
+
+ただし、
+
+```text
+h1で得たSAME certificateを
+h2のSAME certificateとして流用
+```
+
+してはいけません。
+
+**証拠そのものはhistory-specificのまま**です。
+
+共有するのはprobe selection policyだけです。
+
+---
+
+## 7. local distinguishing certificate sharing
+
+既知の
+
+```text
+(q7, q13, suffix=[forward])
+```
+
+のような代表state間のDIFFERENT certificateはfamily内で再利用して構いません。
+
+つまりcandidate setに
+
+```text
+q7, q13
+```
+
+が同時に残るfamilyでは、
+
+```text
+forward
+```
+
+を高優先度probeとして再利用できます。
+
+ただし実際のtarget historyに対する比較RGBは必ず取得してください。
+
+---
+
+## 8. family split
+
+family内のnodeで新しい証拠が得られ、
+
+```text
+candidate set
+public label
+observed transitions
+known difference pattern
+```
+
+が変化した場合、そのnodeを自動的に別familyへ移してください。
+
+family構造は可逆・動的で構いません。
+
+---
+
+## 9. family saturation
+
+同一familyについて、
+
+```text
+新しいcandidate exclusionなし
+新しいrepresentativeなし
+新しいdistinguishing witnessなし
+```
+
+が固定回数続いた場合、
+
+```text
+FAMILY_SATURATED
+```
+
+としてprobe優先度を下げてください。
+
+これはstate mergeではありません。
+
+後で新しいrepresentative / certificate / counterexampleが増えれば再activateしてください。
+
+固定回数は実行前protocolで決め、結果を見て変更しないでください。
+
+---
+
+## 10. development比較
+
+fresh seedはまだ使用しないでください。
+
+既にdevelopmentとして使用済みの
+
+```text
+97027000 ... 97027031
+```
+
+を使います。
+
+camera:
+
+```text
+base
+shifted
+```
+
+比較:
+
+```text
+32 world × 2 camera × 2 arm
+= 128 runs
+```
+
+ただし既存V2の保存済み結果が再利用可能なら、
+A側は再実行せず保存artifact/checkpointを比較対象として使ってください。
+
+Bのみ新規実行でも構いません。
+
+その場合はA/Bでresource accountingの違いを明記してください。
+
+---
+
+## 11. checkpoint
+
+既存と同じ:
+
+```text
+50,000 exposure sets
+100,000
+250,000
+500,000
+```
+
+を維持してください。
+
+checkpointごとにfreeze copyを作り、学習本体へtruthを返さず監査します。
+
+---
+
+## 12. 主要指標
+
+今回のprimary endpointは完成state machineではありません。
+
+必ず以下を保存してください。
+
+```text
+provisional node count
+provisional family count
+mean nodes per family
+p50 / p95 / max nodes per family
+
+confirmed representatives
+represented confirmed true classes
+represented provisional true classes
+represented union true classes
+
+exposures / represented true class
+actions / represented true class
+
+probe count
+repeated probe count
+family-shared scheduling decisions
+avoided redundant probe opportunities
+
+empirical merges
+unmerges
+wrong empirical merges
+transition errors
+
+heldout correct unique
+heldout wrong unique
+heldout unresolved
+coverage including NEW
+
+partial 3D control success
+```
+
+---
+
+## 13. hidden-truth redundancy audit
+
+checkpoint freeze後のみhidden truthを使用し、
+
+各familyについて
+
+```text
+familyに含まれるnode数
+familyに含まれるtrue predictive class数
+```
+
+を求めてください。
+
+特に、
+
+```text
+pure family:
+1 true classだけを含む
+
+mixed family:
+2 class以上を含む
+```
+
+を集計してください。
+
+重要:
+
+```text
+pure familyだから学習中にmerge可能だった
+```
+
+とは主張しないでください。
+
+これはpost-freeze diagnosticです。
+
+---
+
+## 14. depth ceilingも同時監査
+
+学習とは独立したpost-freeze truth auditとして、
+
+各worldについて
+
+```text
+P0
+P1
+P2
+P∞
+```
+
+のclass数とpartition equalityを保存してください。
+
+ただしこれはfamily learnerへ入力しないでください。
+
+特に
+
+```text
+P1 == P∞
+```
+
+かどうかを保存してください。
+
+一般環境でもdepth 1で十分だとは主張しないでください。
+
+---
+
+## 15. 成功判定
+
+BがAより良いとするのは、少なくとも以下のどれかが同じresource checkpointで改善した場合です。
+
+```text
+represented true classes ↑
+exposures per represented class ↓
+heldout unresolved ↓
+confirmed state count ↑
+control success ↑
+```
+
+かつ、
+
+```text
+wrong unique
+wrong empirical merge
+transition error
+```
+
+を悪化させないこと。
+
+provisional node数が減っただけでは成功としないでください。
+
+---
+
+## 16. 重要な失敗パターン
+
+以下も結果として保存してください。
+
+### family ≈ node
+
+```text
+family_count ≈ provisional_count
+```
+
+なら、単純な重複探索が主因ではない可能性があります。
+
+### familyは小さいがmixedが多い
+
+family圧縮signatureが粗すぎます。
+
+### pure familyが巨大なのにprobe量が減らない
+
+probe-sharing実装が効いていません。
+
+### probe量は減るがrepresented classが増えない
+
+センサ情報量またはSAME確定が次のボトルネックです。
+
+---
+
+## 17. 禁止
+
+development結果を見て以下を変更しないでください。
+
+```text
+RGB threshold
+stability rule
+probe depth
+31実験集合
+merge criterion
+camera
+physics
+arena
+actions
+noise model
+seed
+```
+
+NN / embedding / oracle state / hidden classも学習へ入れないでください。
+
+---
+
+## 18. 次段階との境界
+
+この実験ではsensor-program探索を入れないでください。
+
+まず
+
+```text
+V2
+vs
+V2 + family scheduling
+```
+
+だけを比較します。
+
+family圧縮が効かなければ、その後の別実験で
+
+```text
+sensor-program exploration
+```
+
+を追加します。
+
+そこでは、
+
+```text
+provisional family uncertainty reduction
+/ observation cost
+```
+
+をsensor-programのfitnessにする予定です。
+
+今回はそこまで進めないでください。
+
+---
+
+## 19. 最終報告
+
+最終的に最も知りたいのは、
+
+```text
+2338個のprovisional node
+```
+
+のような増殖が、
+
+```text
+A. 本当に異なる仮説が多い
+B. 同じ仮説に同じ実験を繰り返している
+```
+
+のどちらなのかです。
+
+必ず
+
+```text
+nodes
+families
+true classes
+probe count
+represented classes
+```
+
+を同じcheckpoint上で並べて報告してください。
+
+結果が悪くても方式を変更せず、そのまま報告して終了してください。
