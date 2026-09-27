@@ -46,7 +46,7 @@ def minimum_cover(masks, universe):
     return list(solve(universe))
 
 
-def diagnose(folder, output):
+def diagnose(folder, output, snapshot_callback=None):
     output.mkdir(parents=True, exist_ok=False)
     saved = json.loads((folder/'result.json').read_text())
     assert saved['arm'] == 'V'
@@ -72,6 +72,7 @@ def diagnose(folder, output):
     context = ['other']
     cal_sensor = next(s for s in saved['acquisition_sensors'] if s['namespace']=='calibration-v1')
     budget = dict(actions=cal_sensor['environment_actions'], exposures=cal_sensor['exposures'])
+    checkpointed=set()
     class StoredStatistics(Statistics):
         def __init__(self, n):
             super().__init__(None)
@@ -85,6 +86,11 @@ def diagnose(folder, output):
         def summary(self,h,rep=0):
             key = (tuple(h),rep)
             if key not in self.cache:
+                if snapshot_callback is not None:
+                    for target in (50000,100000,250000,500000):
+                        if target not in checkpointed and budget['exposures']+self.n>target:
+                            snapshot_callback(target,dict(budget),table,stats)
+                            checkpointed.add(target)
                 if budget['exposures']+self.n > 500000:
                     raise ResourceLimit('exposure_sets')
                 if budget['actions']+len(h) > 1000000:
@@ -186,6 +192,8 @@ def diagnose(folder, output):
     assert json.loads(json.dumps(table.E)) == table_saved['E']
     assert budget['exposures'] == saved['acquisition_exposure_sets']
     assert budget['actions'] == saved['acquisition_environment_actions']
+    if snapshot_callback is not None:
+        snapshot_callback('final',dict(budget),table,stats)
     assert counts['true_class_unrepresented_snapshots'] == saved['acquisition_audit']['true_class_unrepresented']
     for s in stats.values():
         assert list(s.cache) == s.keys

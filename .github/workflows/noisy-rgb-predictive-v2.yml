@@ -1,0 +1,162 @@
+name: Noisy RGB predictive provisional V2
+on:
+  workflow_dispatch:
+  push:
+    branches: ['research/noisy-rgb-predictive-v2-*']
+    paths: ['experiments/noisy_rgb_predictive_v2/launch.json']
+permissions:
+  contents: read
+  actions: read
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+jobs:
+  preflight:
+    runs-on: windows-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      phase: ${{ steps.plan.outputs.phase }}
+      seed: ${{ steps.plan.outputs.seed }}
+      camera: ${{ steps.plan.outputs.camera }}
+      arm: ${{ steps.plan.outputs.arm }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_noisy_rgb_discovery.py tests/test_noisy_rgb_version_space.py tests/test_noisy_rgb_v2_diagnosis.py tests/test_noisy_rgb_predictive_v2.py tests/test_noisy_rgb_v2_checkpoints.py tests/test_noisy_rgb_v2_public_labels.py -q --junitxml=preflight/tests.xml
+      - run: python -m experiments.noisy_rgb_predictive_v2.gate --output preflight/gate
+      - uses: actions/download-artifact@v4
+        with:
+          repository: corcondor/mortra
+          run-id: '36301127275'
+          github-token: ${{ github.token }}
+          name: vs-97027028-base-V-36301127275
+          path: original
+      - run: python -m experiments.noisy_rgb_predictive_v2.reconstruct_v1 --input original --output preflight/reconstructed --checkpoint-only
+      - id: plan
+        shell: pwsh
+        run: |
+          $reg = Get-Content experiments/noisy_rgb_predictive_v2/launch.json -Raw | ConvertFrom-Json
+          "matrix=$(Get-Content preflight/gate/matrix.json -Raw)" >> $env:GITHUB_OUTPUT
+          "phase=$($reg.phase)" >> $env:GITHUB_OUTPUT
+          "seed=$($reg.first_condition.seed)" >> $env:GITHUB_OUTPUT
+          "camera=$($reg.first_condition.camera)" >> $env:GITHUB_OUTPUT
+          "arm=$($reg.first_condition.arm)" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv2-preflight-${{ github.run_id }}
+          path: preflight
+          retention-days: 90
+  first:
+    needs: preflight
+    runs-on: windows-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path logs | Out-Null
+          python -m experiments.noisy_rgb_predictive_v2.run --phase ${{ needs.preflight.outputs.phase }} --seed ${{ needs.preflight.outputs.seed }} --camera ${{ needs.preflight.outputs.camera }} --arm ${{ needs.preflight.outputs.arm }} --output results/${{ needs.preflight.outputs.seed }}_${{ needs.preflight.outputs.camera }}_${{ needs.preflight.outputs.arm }} 2>&1 | Tee-Object logs/run.log
+          exit $LASTEXITCODE
+      - if: always()
+        run: python -m experiments.noisy_rgb_predictive_v2.compact --input results --output compact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv2-compact-first-${{ github.run_id }}
+          path: |
+            compact
+            logs
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv2-full-first-${{ github.run_id }}
+          path: |
+            results
+            logs
+          compression-level: 0
+          retention-days: 90
+  compare:
+    needs: [preflight, first]
+    runs-on: windows-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJSON(needs.preflight.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        if: needs.preflight.outputs.phase == 'development' && matrix.arm == 'V1'
+        with:
+          repository: corcondor/mortra
+          run-id: '36301127275'
+          github-token: ${{ github.token }}
+          name: vs-${{ matrix.seed }}-${{ matrix.camera }}-V-36301127275
+          path: original
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path logs | Out-Null
+          if ('${{ needs.preflight.outputs.phase }}' -eq 'development' -and '${{ matrix.arm }}' -eq 'V1') {
+            python -m experiments.noisy_rgb_predictive_v2.reconstruct_v1 --input original --output results/${{ matrix.seed }}_${{ matrix.camera }}_${{ matrix.arm }} 2>&1 | Tee-Object logs/run.log
+          } else {
+            python -m experiments.noisy_rgb_predictive_v2.run --phase ${{ needs.preflight.outputs.phase }} --seed ${{ matrix.seed }} --camera ${{ matrix.camera }} --arm ${{ matrix.arm }} --output results/${{ matrix.seed }}_${{ matrix.camera }}_${{ matrix.arm }} 2>&1 | Tee-Object logs/run.log
+          }
+          exit $LASTEXITCODE
+      - if: always()
+        run: python -m experiments.noisy_rgb_predictive_v2.compact --input results --output compact
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv2-compact-${{ matrix.seed }}-${{ matrix.camera }}-${{ matrix.arm }}-${{ github.run_id }}
+          path: |
+            compact
+            logs
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv2-full-${{ matrix.seed }}-${{ matrix.camera }}-${{ matrix.arm }}-${{ github.run_id }}
+          path: |
+            results
+            logs
+          compression-level: 0
+          retention-days: 90
+  aggregate:
+    needs: [preflight, first, compare]
+    if: always()
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install matplotlib==3.9.4 numpy==1.26.4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pv2-compact-*
+          path: saved
+      - run: python -m experiments.noisy_rgb_predictive_v2.aggregate --input saved --output aggregate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pv2-summary-${{ github.run_id }}
+          path: aggregate
+          retention-days: 90
