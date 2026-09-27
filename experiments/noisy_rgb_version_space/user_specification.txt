@@ -1,0 +1,1094 @@
+`corcondor/mortra` で、Noisy RGB状態獲得の次段階として **version-space / unresolved / active discrimination** を実装し、大規模比較実験を実行してください。
+
+目的は新しい画像モデルや新しいゲームをCodexが考案することではありません。
+
+目的は、既存実験で確認された
+
+```text
+A ~ B
+B ~ C
+A !~ C
+```
+
+という非推移なRGB類似関係を、決定論的な同値関係としてL*へ直接渡す設計をやめ、
+
+```text
+SAME
+DIFFERENT
+UNRESOLVED
+```
+
+と
+
+```text
+candidate predictive-state set
+```
+
+を保持し、曖昧な場合だけ再撮影・action probeを行う方式へ変更したとき、
+
+**大きい7×7×3環境で、状態獲得・識別行動列獲得・heldout認識が安定して成立するか**
+
+を検証することです。
+
+---
+
+## 1. 正本を固定する
+
+Repository:
+
+```text
+corcondor/mortra
+```
+
+開始点:
+
+```text
+branch:
+research/noisy-rgb-suffix-discovery-20260927
+
+commit:
+e178b2faefb05e6c579e475df935836aa0a01d5e
+```
+
+既存失敗実験:
+
+```text
+GitHub Actions:
+36293621710
+
+execution commit:
+7ad519c5dbc3b7443b8f0549262246c1eb2296c5
+```
+
+主要コード:
+
+```text
+experiments/noisy_rgb_discovery/PROTOCOL.md
+experiments/noisy_rgb_discovery/core.py
+experiments/noisy_rgb_discovery/run.py
+experiments/noisy_rgb_discovery/evaluate.py
+experiments/noisy_rgb_discovery/sensor.py
+experiments/noisy_rgb_discovery/source.py
+experiments/noisy_rgb_discovery/reference/stat_psm.py
+tests/test_noisy_rgb_discovery.py
+```
+
+旧実験、旧レポート、旧artifactを変更・削除しないでください。
+
+特に
+
+```text
+experiments/noisy_rgb_discovery/reference/stat_psm.py
+```
+
+は旧hard-membership baselineの正本として凍結してください。
+
+---
+
+## 2. 既知の失敗機構を再現してから開始する
+
+変更前に、run `36293621710` の保存結果から最低限以下を再確認してください。
+
+```text
+4条件すべて RUN_NOT_COMPLETED
+各条件 access histories = 1001
+発見した非空suffix = 0
+4000回の追加のうち3778回 = 94.45% が multiple-group ambiguity
+```
+
+さらに保存RGBから、
+
+```text
+a      = [1]
+bridge = [0,1,0]
+b      = [0,1]
+```
+
+について、
+
+```text
+a ~ bridge
+bridge ~ b
+a !~ b
+```
+
+となる非推移例を再計算してください。
+
+ここが一致しなければ新実験へ進まず停止してください。
+
+---
+
+## 3. 新しい実装は別moduleにする
+
+旧コードを直接書き換えないでください。
+
+例えば、
+
+```text
+experiments/noisy_rgb_version_space/
+```
+
+を新規作成してください。
+
+再利用するもの:
+
+```text
+Statistics
+Sensor
+physics3d / DelayedJumpArena
+RGB renderer
+existing calibration procedure
+existing action alphabet
+existing heldout evaluatorの入力生成
+```
+
+変更するのは、
+
+```text
+「観測を既存stateへどう所属させるか」
+「曖昧なとき何を追加観測するか」
+```
+
+だけです。
+
+新しいNN、CNN、embedding network、oracle state ID、座標、clean RGB、完全状態グラフを学習側へ導入してはいけません。
+
+---
+
+## 4. 二値 out_same を状態同値として使わない
+
+旧方式:
+
+```python
+same = z <= T
+```
+
+をそのまま状態の同値関係として使ってはいけません。
+
+pair comparisonは必ず
+
+```text
+SAME
+DIFFERENT
+UNRESOLVED
+```
+
+の3値を返してください。
+
+### 初回比較
+
+既存と同じ独立RGB batchを使います。
+
+現在の既存score
+
+```text
+z(x,y)
+```
+
+と既存calibration threshold `T` 自体は、最初の実験では変更しません。
+
+ただし1回の `z <= T` / `z > T` だけで確定してはいけません。
+
+### 再測定
+
+同じ2 historyについて独立noise namespaceで再撮影します。
+
+固定stage:
+
+```text
+8 exposures / history
+16 exposures / history
+32 exposures / history
+```
+
+とします。
+
+途中結果を見て回数を増減しないでください。
+
+各stageで独立replicate comparisonを保存してください。
+
+### 三値判定
+
+少なくとも、
+
+```text
+すべての独立replicateが T より十分同側
+```
+
+でなければhard SAME / DIFFERENTへ落とさないでください。
+
+具体的なconfidence ruleは実行前に `PROTOCOL_VS.md` に数式で固定してください。
+
+重要:
+
+- 一度でも判定が安定しなければ即splitしない。
+- UNRESOLVEDは失敗ではない。
+- UNRESOLVEDを新state追加と同じ処理へ流さない。
+- 閾値を結果を見て変更しない。
+- confidence ruleをfresh run開始後に変更しない。
+
+---
+
+## 5. group_index ではなく candidate set を持つ
+
+新実装では、
+
+```python
+group_index(history) -> int | None
+```
+
+を中心にしないでください。
+
+代わりに概念的に、
+
+```python
+candidate_states(history) -> set[state_id]
+```
+
+を持ってください。
+
+各既存代表state `r` について、
+
+```text
+compare(history, r) == DIFFERENT
+```
+
+なら候補から削除。
+
+```text
+SAME
+UNRESOLVED
+```
+
+なら候補として残す。
+
+従って、
+
+```text
+candidate count = 0
+```
+
+と
+
+```text
+candidate count > 1
+```
+
+を同じ処理にしてはいけません。
+
+---
+
+## 6. 候補0個の場合
+
+候補が0になっても、即座に新stateを追加しないでください。
+
+全既存代表に対して32-exposure確認まで行い、
+
+```text
+全代表と CONFIRMED DIFFERENT
+```
+
+になった場合だけ、新しいaccess stateとして追加してください。
+
+その判定証拠を保存してください。
+
+---
+
+## 7. 候補が複数の場合
+
+これが今回の中心です。
+
+```text
+candidate set = {q1,q2,...}
+```
+
+をそのまま保持します。
+
+access historyを追加して逃げないでください。
+
+### 7.1 まず追加撮影
+
+8→16→32 exposureで候補を再評価します。
+
+DIFFERENTになった候補だけ削除します。
+
+### 7.2 それでも複数なら active action probe
+
+候補集合を最も分けそうなactionを選んでください。
+
+action alphabetは既存のものだけです。
+
+最初はdepth 1:
+
+```text
+[a]
+```
+
+を全actionについて評価。
+
+必要ならdepth 2:
+
+```text
+[a1,a2]
+```
+
+まで候補にします。
+
+depth 3以上は今回のprimary protocolでは使わないでください。
+
+各probe `e` について、
+
+```text
+現在のcandidate statesが
+probe後に何種類の予測観測へ分かれるか
+```
+
+を、既に獲得済みのRGB evidenceとtransition evidenceから計算してください。
+
+選択基準は実行前に固定し、例えば
+
+```text
+expected remaining candidate count
+```
+
+が最小のprobeを選びます。
+
+同点はaction IDの辞書順など固定規則にしてください。
+
+### 7.3 probeを実際に実行する
+
+target historyとcandidate代表historyについて、
+
+```text
+reset
+→ replay history
+→ selected action probe
+→ noisy RGB再撮影
+```
+
+を実行します。
+
+結果が DIFFERENT になったcandidateだけ削除してください。
+
+候補1個になるか、固定probe budgetに達するまで繰り返します。
+
+---
+
+## 8. それでも判定不能なら保留する
+
+probe budgetを使い切っても
+
+```text
+candidate count > 1
+```
+
+なら、
+
+```text
+UNRESOLVED
+```
+
+としてqueueへ残してください。
+
+**新状態を捏造しないでください。**
+
+後で新しいsuffix・新しいtransition evidenceが増えたら再評価します。
+
+同じunresolved entryを無限に回さないよう、
+
+```text
+last_evidence_version
+retry_count
+```
+
+を記録し、evidenceが増えていない場合は再試行しないでください。
+
+---
+
+## 9. 確定結果をrun内の学習データとして蓄積する
+
+確定した比較を捨てないでください。
+
+### SAME certificate
+
+保存:
+
+```text
+history A
+history B
+tested suffixes
+replicate scores
+camera condition
+threshold
+evidence version
+result = SAME-under-current-tests
+```
+
+### DIFFERENT certificate
+
+保存:
+
+```text
+history A
+history B
+witness action suffix
+replicate scores
+camera condition
+threshold
+result = DIFFERENT
+```
+
+### UNRESOLVED
+
+保存:
+
+```text
+remaining candidate states
+tested probes
+replicate scores
+retry count
+```
+
+同じrun内ではcertificateを再利用してください。
+
+ただし primary fresh experiment では、
+
+```text
+別seedから得たcertificate
+別camera条件から得たcertificate
+```
+
+を共有しないでください。
+
+各world/cameraは独立にゼロから学習します。
+
+---
+
+## 10. L* / machine constructionへの接続
+
+旧referenceの
+
+```text
+closure
+consistency
+counterexample
+suffix discovery
+```
+
+の目的は維持してください。
+
+ただし、
+
+```text
+extensionが複数groupに一致
+→ access state追加
+```
+
+という旧挙動は禁止します。
+
+新しい処理:
+
+```text
+extension
+→ candidate set
+→ active resolution
+```
+
+とし、
+
+### 1候補
+既存stateへ所属。
+
+### 0候補かつ全既存stateとconfirmed DIFFERENT
+新stateを追加。
+
+### 複数候補
+UNRESOLVEDとして処理し、action probeを実行。
+
+### consistency failure
+実際に候補stateの未来を分離したaction suffixだけを新しい識別suffixとして追加。
+
+つまり、
+
+```text
+suffixは曖昧さから逃げるためではなく、
+実際に未来を分けたcertificateとして追加
+```
+
+してください。
+
+---
+
+## 11. まず既知4条件でdevelopment gate
+
+以下は既に結果を見たdevelopment条件です。
+
+```text
+95027004 base
+95027004 shifted
+95027005 base
+95027005 shifted
+```
+
+ここでは結果をconfirmatory claimに使いません。
+
+比較:
+
+```text
+H = 旧hard-membership implementation
+V = 新version-space implementation
+```
+
+Hはrun `36293621710` と一致すること。
+
+Vについて確認:
+
+```text
+multiple-group ambiguityをaccess追加へ直接流していない
+UNRESOLVEDが実際に発生している
+再撮影が実際に行われる
+active probeが実際に行われる
+certificateが保存される
+```
+
+Vが例外なく動作し、unit test / auditが通ったら次へ進みます。
+
+Vがこの4条件で必ず完成modelを作れることをfresh実験開始条件にはしないでください。
+重要なのは情報境界・実装・記録の正しさです。
+
+---
+
+## 12. Fresh large-scale experiment
+
+development gate後、**fresh結果を見る前に**protocolとseed manifestをcommitしてください。
+
+候補seed:
+
+```text
+97027000 ... 97027031
+```
+
+32 worldsです。
+
+まずrepo内のtracked files・reports・protocolを検索し、この32 seedが過去に使用されていないことを確認してください。
+
+1つでも既使用なら、勝手に置換せず停止し、
+
+```text
+which seeds were already used
+```
+
+を報告してください。
+
+未使用なら、その32 seedをmanifestへ固定します。
+
+Camera:
+
+```text
+base
+shifted (.32,-.24)
+```
+
+したがって、
+
+```text
+32 worlds × 2 cameras = 64 world-camera conditions
+```
+
+です。
+
+各条件で、
+
+```text
+H: old hard membership
+V: version-space membership
+```
+
+を独立実行します。
+
+合計:
+
+```text
+128 acquisition runs
+```
+
+です。
+
+GitHub Actions matrixを使い、`fail-fast: false`。
+
+`max-parallel` は8以下。
+
+BLAS / OMP / MKLは1 thread。
+
+---
+
+## 13. 予算
+
+Hは旧protocolをそのまま維持:
+
+```text
+1000 closure passes
+20 rounds
+depth-2 conformance
+```
+
+Vも総資源上限を実行前に固定してください。
+
+最低限保存:
+
+```text
+max acquisition environment actions
+max RGB exposure sets
+max wall time
+max unresolved probes per membership
+max depth = 2
+```
+
+HとVで単純に「同じclosure pass数」だけを公平性としないでください。
+
+最終報告では、
+
+```text
+accuracyだけ
+```
+
+ではなく、
+
+```text
+environment actions
+RGB exposures
+CPU
+wall time
+memory
+```
+
+も必ず比較してください。
+
+---
+
+## 14. Fresh evaluation
+
+学習が完了したmodelだけについて、学習後に凍結し、
+
+旧experimentと同じ
+
+```text
+200 random-action episodes
+25 steps
+= 5000 prefixes / condition
+```
+
+をheldout評価してください。
+
+heldout RGBは独立noise namespace。
+
+評価中はmodel / certificates / suffixesを更新しない。
+
+比較:
+
+```text
+unique prediction accuracy
+unresolved rate
+wrong unique prediction rate
+candidate-set coverage
+mean candidate-set size
+true predictive class recovery
+transition errors
+over-split
+under-merge
+```
+
+内部state / true quotientは**モデル凍結後の監査にのみ使用**してください。
+
+---
+
+## 15. 重要な新指標
+
+今回必ず追加:
+
+```text
+membership queries
+initial ambiguous memberships
+resolved by resampling
+resolved by depth-1 action probe
+resolved by depth-2 action probe
+remaining unresolved
+new states created
+confirmed SAME certificates
+confirmed DIFFERENT certificates
+spurious split witnesses
+candidate-set false exclusion count
+mean / p95 candidate-set size
+probe actions by action ID
+probe suffix length distribution
+```
+
+特に、
+
+```text
+candidate-set false exclusion
+```
+
+は重要です。
+
+監査時に真のpredictive classが途中でcandidate setから消えていた場合、その時点と原因を保存してください。
+
+0であることを期待して結果を改変してはいけません。
+
+---
+
+## 16. Old-vs-new主要比較
+
+world-cameraを独立単位にして、
+
+```text
+H vs V
+```
+
+を比較してください。
+
+主要endpoint:
+
+```text
+1. acquisition completion rate
+2. heldout wrong-unique rate
+3. heldout unresolved rate
+4. predictive-transition error
+5. acquisition environment actions
+```
+
+副次endpoint:
+
+```text
+learned state count
+suffix count
+RGB exposure count
+CPU
+memory
+```
+
+64条件の平均だけでなく、
+
+```text
+improve / tie / worsen
+```
+
+を必ず併記してください。
+
+---
+
+## 17. 学習後の3D control確認
+
+Vで完成した各modelについて、state learningを凍結した後にのみ、別phaseとして3D controlを確認してください。
+
+goal情報をstate discoveryへ逆流させないでください。
+
+publicに実際にgoalへ到達した経験からgoal nodeをラベルし、
+
+既存MORTRAの
+
+```text
+solve_fixed_field
+q = 0.90
+```
+
+を使ってください。
+
+保存:
+
+```text
+goal-label acquisition actions
+control success
+control steps
+control action sequence
+```
+
+controlで失敗してもstate modelを再学習してはいけません。
+
+---
+
+## 18. 禁止事項
+
+結果を見た後に以下をしてはいけません。
+
+```text
+閾値変更
+confidence rule変更
+seed交換
+camera変更
+arena縮小
+action alphabet変更
+probe depth変更
+failed conditionだけ再実行
+NN/embedding追加
+oracle state ID使用
+complete graph使用
+clean RGB使用
+人手でsuffix指定
+```
+
+実装bugで停止した場合は、
+
+```text
+bug
+call stack
+affected conditions
+```
+
+を保存し、研究結果と区別してください。
+
+---
+
+## 19. Scopeと、なぜ現時点では一般ゲームまで証明したことにしないか
+
+今回の実験条件は、
+
+```text
+有限状態に落とせる3D world
+reset可能
+action alphabet有限
+physicsは決定論的
+RGB sensorだけ確率的
+同じaction historyを何度も再実行可能
+```
+
+です。
+
+この条件では、
+
+```text
+reset
+→ 同じaction historyを再生
+→ 別noiseで再撮影
+```
+
+を繰り返せるため、
+
+**RGBの違いが本当にworld-stateの違いに由来するのか、それとも撮影noiseだけなのか**
+
+を独立再観測で検査できます。
+
+これは今回のversion-space方式にとって重要な能力です。
+
+一方、Minecraft/FPS級の一般環境では、今後さらに次の問題が入ります。
+
+### 19.1 完全resetできない環境
+
+実ゲームでは、
+
+```text
+敵AIの内部状態
+他プレイヤー
+乱数
+破壊された地形
+物理シミュレーションの微差
+```
+
+などにより、同じ世界状態へ完全に戻って再撮影できない場合があります。
+
+その場合、
+
+```text
+同じhistoryを再実行して比較
+```
+
+という現在の検査方法をそのまま使えません。
+
+将来的には、
+
+```text
+reset/replay型の状態同定
+```
+
+から、
+
+```text
+オンラインbelief-state更新
+```
+
+へ一般化する必要があります。
+
+### 19.2 確率的なworld dynamics
+
+今回のphysicsは、
+
+```text
+(state, action) -> next_state
+```
+
+が固定です。
+
+一般的なゲームでは、
+
+```text
+P(next_state | state, action)
+```
+
+として扱う必要がある場合があります。
+
+その場合、「同じpredictive state」の定義も、
+
+```text
+同じactionをすると同じnext stateになる
+```
+
+ではなく、
+
+```text
+同じaction列に対して同じ未来分布を生成する
+```
+
+へ一般化する必要があります。
+
+### 19.3 連続状態
+
+今回の位置・heading・jump状態は有限状態として扱えます。
+
+実FPSでは、
+
+```text
+continuous position
+continuous velocity
+continuous camera rotation
+projectile trajectory
+physics values
+```
+
+など、ほぼ連続な状態空間になります。
+
+その場合、有限個のstate IDだけで表現するのではなく、
+
+```text
+局所的なpredictive equivalence
+continuous predictive state
+```
+
+または階層的なstate abstractionが必要になる可能性があります。
+
+### 19.4 任意camera
+
+今回比較するcamera条件は、
+
+```text
+base
+(.32,-.24) pixel shifted
+```
+
+のみです。
+
+これは画像平面上の固定された微小offsetであり、
+
+```text
+任意の3D camera position
+yaw
+pitch
+roll
+FOV
+occlusion
+first-person / third-person
+```
+
+への一般化を確認したものではありません。
+
+したがって将来はcameraそのものをlatent nuisanceとして扱い、
+
+```text
+cameraが違ってもaction-conditioned futureが同じなら同じworld state
+```
+
+と認識できるかを別に検証する必要があります。
+
+### 19.5 自然画像・複雑texture
+
+現在は人工的な3D rendererです。
+
+Minecraft/FPS級では、
+
+```text
+高解像度texture
+lighting
+shadow
+particle
+animation
+UI
+motion blur
+大量のobject
+```
+
+が入ります。
+
+今回のRGB分布比較がそのまま十分とは限りません。
+
+ただし、今回の実験はこれらが不可能だと示すものではありません。
+
+目的は、
+
+```text
+noisy visual observation
++
+action-conditioned future
++
+active experiment
+```
+
+だけからpredictive stateを構成できるか、最小条件で原理を確認することです。
+
+この有限・reset可能な条件で成立した後、
+
+```text
+resetを弱める
+→ dynamicsを確率化
+→ cameraを連続化
+→ stateを連続化
+→ rendererを複雑化
+```
+
+と一つずつ制約を外していくことで、Minecraft/FPS級への一般化可能性を段階的に検証できます。
+
+したがって最終報告では、
+
+```text
+Minecraft/FPS一般へ使えない
+```
+
+とは書かず、
+
+```text
+今回確認したのは有限・reset可能・決定論的physics +
+確率的RGB sensorの条件までである。
+
+より一般的な3Dゲームへ進むために、次にどの仮定を外す必要があるかが明確になった。
+```
+
+と記述してください。
+
+---
+
+## 20. この実験で確認したいこと
+
+確認したいのは、
+
+```text
+画像を一度見てstate IDへhard assignmentする
+```
+
+方法ではありません。
+
+確認したいのは、
+
+```text
+noisy RGB
+→ candidate predictive states
+→ UNRESOLVEDを保持
+→ 必要なものだけ再撮影
+→ 必要ならactionを自分で試す
+→ impossible candidatesだけ削る
+→ 確定した証拠を蓄積
+→ predictive state machine
+```
+
+という閉ループです。
+
+**「分からない」を保持できること自体を学習機構の一部として検証してください。**
+
+Codexは結果に合わせて別方式を考案せず、この固定比較を最後まで実行してください。
