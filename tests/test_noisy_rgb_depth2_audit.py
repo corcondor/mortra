@@ -100,3 +100,27 @@ def test_promotion_progress_reset_is_counted_not_called_new_sampling():
     prefix.accept(dict(event='belief',history=[0]))
     prefix.accept(dict(event='promotion',history=[2]))
     assert prefix.progress_cleared==1 and not prefix.probes[(0,)]
+
+
+def test_revoked_progress_is_not_counted_again_at_next_promotion():
+    for event in ('unmerge','merge_reopened'):
+        prefix=EventPrefix()
+        prefix.accept(dict(event='provisional_created',history=[0]))
+        prefix.accept(dict(event='active_probe',history=[0],selected=[1]))
+        prefix.accept(dict(event='belief',history=[0]))
+        prefix.accept(dict(event='empirical_merge',history=[0]))
+        prefix.accept(dict(event=event,history=[0],reason='not every current candidate has complete evidence'))
+        assert not prefix.probes[(0,)]
+        prefix.accept(dict(event='promotion',history=[2]))
+        assert prefix.progress_cleared==0
+
+
+def test_promotion_reopening_preserves_progress_until_completed_event():
+    prefix=EventPrefix()
+    prefix.accept(dict(event='provisional_created',history=[0]))
+    prefix.accept(dict(event='active_probe',history=[0],selected=[1]))
+    prefix.accept(dict(event='belief',history=[0]))
+    prefix.accept(dict(event='empirical_merge',history=[0]))
+    prefix.accept(dict(event='merge_reopened',history=[0],reason='new representative not compared; no transitive exclusion'))
+    prefix.accept(dict(event='promotion',history=[2]))
+    assert prefix.progress_cleared==1 and not prefix.probes[(0,)]

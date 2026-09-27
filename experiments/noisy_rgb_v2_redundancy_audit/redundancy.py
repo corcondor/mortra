@@ -43,7 +43,12 @@ class EventPrefix:
         if event=='provisional_created':
             self.status[tuple(row['history'])]='provisional'
         if event in ('unmerge','merge_reopened'):
-            self.status[tuple(row['history'])]='provisional'
+            h=tuple(row['history'])
+            self.status[h]='provisional'
+            # A new-representative reopening is part of the promotion below.
+            # Other revocations already clear progress in the frozen learner.
+            if event=='unmerge' or row.get('reason')!='new representative not compared; no transitive exclusion':
+                self.probes[h].clear()
         if event=='empirical_merge':
             self.status[tuple(row['history'])]='merged'
         if event=='active_probe':
@@ -241,4 +246,5 @@ def checkpoint_audit(state,meta,prefix,table,layers,statistics_keys,write_node,w
                'Statistical-only blocker means all 31 comparisons exist, same truth class, public labels and edge gates pass, no observed contradiction.',
                'NOT_COMPARED is distinct from a recorded UNRESOLVED result; saved RGB availability is counted without recomputing outcomes.',
                'Redundant histories share evaluator truth only; this does not license learner-side merging.',
-               'Literal certificate IDs and equal outcome patterns are different evidence-sharing notions.'])
+               'Literal certificate IDs and equal outcome patterns are different evidence-sharing notions.',
+               'Promotion reset counts use completed promotion events; an interrupted promotion may already have cleared live bookkeeping before its event.'])
