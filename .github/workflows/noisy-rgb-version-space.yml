@@ -81,11 +81,45 @@ jobs:
       - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
       - run: python -m experiments.noisy_rgb_version_space.run --phase ${{ needs.tests.outputs.phase }} --seed ${{ matrix.seed }} --camera ${{ matrix.camera }} --arm ${{ matrix.arm }} --output run_data/${{ matrix.seed }}_${{ matrix.camera }}_${{ matrix.arm }}
       - uses: actions/upload-artifact@v4
+        id: full_evidence
         if: always()
         with:
           name: vs-${{ matrix.seed }}-${{ matrix.camera }}-${{ matrix.arm }}-${{ github.run_id }}
           path: run_data/
           compression-level: 0
+          retention-days: 90
+      - name: Record immutable full-evidence receipt
+        if: always()
+        shell: pwsh
+        run: |
+          $folder = 'run_data/${{ matrix.seed }}_${{ matrix.camera }}_${{ matrix.arm }}'
+          if (Test-Path -LiteralPath $folder) {
+            @{
+              run_id = '${{ github.run_id }}'
+              source_sha = '${{ github.sha }}'
+              artifact_id = '${{ steps.full_evidence.outputs.artifact-id }}'
+              artifact_digest = '${{ steps.full_evidence.outputs.artifact-digest }}'
+              artifact_url = '${{ steps.full_evidence.outputs.artifact-url }}'
+              purpose = 'Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.'
+            } | ConvertTo-Json | Set-Content -LiteralPath "$folder/full_evidence_receipt.json" -Encoding utf8
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vs-compact-${{ matrix.seed }}-${{ matrix.camera }}-${{ matrix.arm }}-${{ github.run_id }}
+          path: |
+            run_data/**/result.json
+            run_data/**/acquisition_result.json
+            run_data/**/acquisition_audit.json
+            run_data/**/model_audit.json
+            run_data/**/heldout_summary.json
+            run_data/**/control.json
+            run_data/**/config.json
+            run_data/**/source_snapshot.json
+            run_data/**/artifact_hashes.json
+            run_data/**/full_evidence_receipt.json
+            run_data/**/recorded_input.png
+            run_data/**/recorded_input_provenance.json
           retention-days: 90
   aggregate:
     needs: [tests, experiment]
@@ -103,7 +137,7 @@ jobs:
       - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
       - uses: actions/download-artifact@v4
         with:
-          pattern: vs-9*
+          pattern: vs-compact-*
           path: downloaded
       - run: python -m experiments.noisy_rgb_version_space.aggregate --input downloaded --output summary --phase ${{ needs.tests.outputs.phase }}
       - uses: actions/upload-artifact@v4

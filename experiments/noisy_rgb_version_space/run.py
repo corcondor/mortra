@@ -77,6 +77,8 @@ def main():
     out = args.output
     out.mkdir(parents=True, exist_ok=False)
     config = dict(OLD_CONFIG, phase=args.phase, seed=args.seed, arm=args.arm, camera=args.camera,
+                  kind='NOISY_RGB_CANDIDATE_SET_'+args.phase.upper(),
+                  seeds=[95027004, 95027005] if args.phase == 'development' else manifest['seeds'],
                   new_limits=LIMITS, old_algorithm_unchanged=True, protocol_sha=sha(ROOT/'PROTOCOL_VS.md'))
     write(out/'config.json', config)
     files = {str(p): sha(p) for folder in (ROOT, ROOT.parent/'noisy_rgb_discovery')
