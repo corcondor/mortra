@@ -1,0 +1,45 @@
+name: Read-only noisy RGB development evidence audit
+on:
+  push:
+    branches: [research/noisy-rgb-version-space-20260927]
+    paths:
+      - scripts/verify_noisy_rgb_vs_evidence.py
+      - .github/workflows/noisy-rgb-vs-evidence-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+jobs:
+  audit:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        condition: [95027004-base, 95027004-shifted, 95027005-base, 95027005-shifted]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 36300223767
+          name: vs-${{ matrix.condition }}-V-36300223767
+          path: evidence
+      - run: python scripts/verify_noisy_rgb_vs_evidence.py evidence --output audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vs-evidence-audit-${{ matrix.condition }}-${{ github.run_id }}
+          path: audit.json
+          retention-days: 90
