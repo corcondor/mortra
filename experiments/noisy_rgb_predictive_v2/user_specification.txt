@@ -1,0 +1,410 @@
+現在の `corcondor/mortra` の結果を引き継ぎ、Noisy RGB version-space学習器の次段階を実装・検証してください。
+
+正本:
+
+```text
+report commit:
+c8afe549a26d5499b9243003452cd833e9fa431d
+
+execution commit:
+cb61cb548f07243250b1ea07ebb0d8ff46bd9dae
+
+existing module:
+experiments/noisy_rgb_version_space/core.py
+experiments/noisy_rgb_version_space/run.py
+experiments/noisy_rgb_version_space/evaluate.py
+experiments/noisy_rgb_version_space/PROTOCOL_VS.md
+```
+
+過去のV1/Hコード・結果は変更しないでください。
+
+今回の目的は閾値調整、予算増加、probe depth増加ではありません。
+
+確認済みの結果:
+
+```text
+64/64 V conditionsで非空suffixを発見
+suffix 3〜29
+candidate-set false exclusion = 0
+spurious DIFFERENT witness = 0
+spurious suffix witness = 0
+
+しかし:
+completed model = 0/64
+representatives = 4〜52
+true predictive classes = 192〜204
+true-class-unrepresented candidate snapshots = 27,403
+consistency probes = 340,968
+UNRESOLVED comparisons = 530,428
+```
+
+したがって次は、
+
+1. 未発見stateを探索しながら獲得できること
+2. 獲得済みsuffixの利用コストを下げること
+3. 完全state machine完成前でも性能を測ること
+
+を検証します。
+
+### A. まず保存済み64 V runだけを使ったread-only診断
+
+新しい環境操作を行う前に、保存済みeventsから以下を集計してください。
+
+- true classがまだrepresentativeに存在しないmembership event
+- そのeventで既存representativeが何個
+  SAME / DIFFERENT / UNRESOLVEDだったか
+- 新state作成を阻止した最後のUNRESOLVED pair
+- consistency probeに消費されたRGB query / exposure / action
+- global Eの各suffixが実際にstate識別へ使用された回数
+- 各membershipを一意化するのに必要だった最小suffix subset
+
+hidden truthはこのpost-freeze診断にのみ使用してください。
+
+この診断で結果に合わせてV1を書き換えず、結果を保存してください。
+
+### B. V2では explicit NEW hypothesis を導入
+
+新規moduleを作成してください。
+
+```text
+experiments/noisy_rgb_predictive_v2/
+```
+
+state classificationを
+
+```text
+single state ID
+```
+
+ではなく
+
+```text
+CandidateBelief:
+    existing_candidates: set[state_id]
+    new_state_possible: bool
+```
+
+として保持してください。
+
+初期状態では、
+
+```text
+new_state_possible = True
+```
+
+です。
+
+既存representativeとの比較がDIFFERENTなら、そのrepresentativeだけ候補から削除します。
+
+SAME / UNRESOLVEDなら候補を残します。
+
+ただしUNRESOLVEDが存在するという理由だけで、
+
+```text
+new_state_possible = False
+```
+
+にしてはいけません。
+
+### C. provisional predictive node
+
+候補が複数、またはNEW可能性が残るhistoryについて、
+
+```text
+新stateと確定するまで何もしない
+```
+
+ことを禁止します。
+
+そのhistoryを
+
+```text
+provisional node
+```
+
+として保持し、そのnodeから実際にactionを実行してtransition evidenceを集めてください。
+
+provisional nodeはconfirmed stateではありません。
+
+保存:
+
+```text
+history
+existing candidate set
+NEW flag
+outgoing observed transitions
+distinguishing certificates
+evidence version
+```
+
+後から既存stateとの同一性が十分確認できればmerge。
+
+既存stateのどれとも未来構造が整合しなくなればnew confirmed stateへ昇格。
+
+誤って早期mergeしないでください。
+
+### D. global E scanをやめ、discrimination treeを作る
+
+現在の
+
+```python
+for representative in S:
+    for suffix in E:
+        compare(...)
+```
+
+をprimary classifierとして使わないでください。
+
+既に獲得したDIFFERENT certificateを使って、
+
+```text
+Adaptive Discrimination Tree
+```
+
+を作成してください。
+
+内部node:
+```text
+distinguishing suffix
+```
+
+branch:
+```text
+observed SAME / DIFFERENT / UNRESOLVED evidence
+```
+
+leaf:
+```text
+candidate representative set
+```
+
+としてください。
+
+既知stateの識別時には、rootから必要なsuffixだけ実行してください。
+
+全suffixを全representativeへ評価するのは監査用だけにしてください。
+
+新しいsuffixが発見された場合も、全transitionを無条件に破棄して再計算しないでください。
+影響するleafだけをrefineしてください。
+
+### E. suffixはlocal certificateとして保存
+
+例えば
+
+```text
+q7 と q13 は [forward] で区別できる
+```
+
+なら、
+
+```text
+(q7,q13,[forward],certificate)
+```
+
+として保存してください。
+
+全stateへ強制するglobal featureとして扱わないでください。
+
+必要なら同じsuffixを別branchでも再利用して構いません。
+
+### F. active experiment
+
+CandidateBeliefが
+
+```text
+{q3,q8} + NEW
+```
+
+なら、
+
+既存transition evidenceとRGB evidenceから、
+
+```text
+どのaction / suffixを試すと
+候補間の予測futureが最も分かれるか
+```
+
+を選択してください。
+
+depthは今回も1〜2に固定してください。
+
+結果を見てdepthを増やしてはいけません。
+
+NEW hypothesisについては既知のfutureを仮定してscoreしてはいけません。
+未知として扱ってください。
+
+### G. 完成machineを待たずcheckpoint評価
+
+固定resource checkpointsを実行前に決めてください。
+
+例えば:
+
+```text
+50,000 exposure sets
+100,000
+250,000
+500,000
+```
+
+各checkpointでlearnerをfreezeして、学習を続けるcopyとは分離して評価してください。
+
+評価項目:
+
+```text
+confirmed representative count
+provisional node count
+represented true predictive classes
+candidate coverage
+wrong unique rate
+unresolved rate
+transition prediction error on known transitions
+mean candidate-set size
+environment actions
+RGB exposures
+CPU
+memory
+```
+
+hidden truthはcheckpoint copyをfreezeした後にのみ使用。
+
+### H. partial-graph 3D control
+
+完全closureをcontrol開始条件にしないでください。
+
+freezeしたpartial predictive graphについて、
+
+現在のbelief内のすべてのcandidate stateで同じactionが最善なら実行できます。
+
+actionが候補ごとに異なる場合は、
+
+```text
+active visual probe
+```
+
+を先に実行してください。
+
+それでも決まらなければUNRESOLVEDとして停止。
+
+oracle state IDへfallbackしてはいけません。
+
+既存 `solve_fixed_field(q=.90)` は、confirmed transition subgraphで利用して構いません。
+
+未知transitionは既知のものとして補完しないでください。
+
+### I. Development
+
+まず今回既に使用した
+
+```text
+97027000..97027031
+```
+
+をdevelopment専用として利用してください。
+
+V1の保存結果とV2を比較し、
+
+```text
+代表state獲得速度
+撮影量
+candidate coverage
+partial control
+```
+
+を見る。
+
+この段階の結果をfresh claimにしないでください。
+
+### J. Fresh確認
+
+development後にコード・protocol・全閾値・checkpoint・budgetを固定commitしてください。
+
+その後、repo内で未使用であることを検索確認した新しいseed集合をmanifestへ登録します。
+
+最低:
+
+```text
+16 worlds × 2 cameras
+```
+
+可能なら:
+
+```text
+32 worlds × 2 cameras
+```
+
+を実行。
+
+比較条件:
+
+```text
+V1 frozen baseline
+V2 predictive/provisional learner
+```
+
+Hは既に失敗機構が十分確認されているため、fresh本比較へ再投入する必要はありません。
+
+ただしHの過去結果を削除しないでください。
+
+### K. 禁止
+
+結果を見て以下を変更しない:
+
+```text
+RGB threshold
+statistical stability rule
+camera
+arena
+probe depth
+action alphabet
+seed replacement
+goal
+physics
+```
+
+NN / CNN / pretrained embedding / oracle state / complete graphも追加しない。
+
+今回検証するのは、
+
+```text
+確定するまで動けないstate learner
+```
+
+から
+
+```text
+不確実なまま探索し、
+経験によってmerge/split/new-state化するlearner
+```
+
+へ変える効果です。
+
+### L. 最重要比較
+
+最終報告で、
+
+```text
+V1:
+「既存stateのどれかだと証明できないため停止」
+
+V2:
+「候補集合＋NEWを保持したまま探索を継続」
+```
+
+の差を明示してください。
+
+特に、
+
+```text
+true predictive classes ≈ 200
+```
+
+に対して、resource budgetごとに何classまで自律的に表現できたかを曲線として保存してください。
+
+完成率だけではなく、
+
+```text
+classes discovered / exposures
+control success / exposures
+```
+
+を主要指標にしてください。

@@ -1,0 +1,94 @@
+name: Noisy RGB V2 prerequisite read-only V1 diagnosis
+on:
+  push:
+    branches: [research/noisy-rgb-predictive-v2-20260927]
+    paths:
+      - experiments/noisy_rgb_predictive_v2/diagnose_v1.py
+      - tests/test_noisy_rgb_v2_diagnosis.py
+      - .github/workflows/noisy-rgb-v2-diagnosis.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+jobs:
+  preflight:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest tests/test_noisy_rgb_v2_diagnosis.py -q
+      - uses: actions/download-artifact@v4
+        with:
+          repository: corcondor/mortra
+          run-id: '36301127275'
+          github-token: ${{ github.token }}
+          name: vs-97027028-base-V-36301127275
+          path: original
+      - run: python -m experiments.noisy_rgb_predictive_v2.diagnose_v1 --input original --output diagnosis/97027028_base
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v2-diagnosis-preflight-${{ github.run_id }}
+          path: diagnosis
+          retention-days: 90
+  diagnose:
+    needs: preflight
+    runs-on: windows-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        seed: [97027000,97027001,97027002,97027003,97027004,97027005,97027006,97027007,97027008,97027009,97027010,97027011,97027012,97027013,97027014,97027015,97027016,97027017,97027018,97027019,97027020,97027021,97027022,97027023,97027024,97027025,97027026,97027027,97027028,97027029,97027030,97027031]
+        camera: [base, shifted]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install numpy==1.26.4 Pillow==11.3.0 psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          repository: corcondor/mortra
+          run-id: '36301127275'
+          github-token: ${{ github.token }}
+          name: vs-${{ matrix.seed }}-${{ matrix.camera }}-V-36301127275
+          path: original
+      - run: python -m experiments.noisy_rgb_predictive_v2.diagnose_v1 --input original --output diagnosis/${{ matrix.seed }}_${{ matrix.camera }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v2-diagnosis-${{ matrix.seed }}-${{ matrix.camera }}-${{ github.run_id }}
+          path: diagnosis
+          retention-days: 90
+  aggregate:
+    needs: diagnose
+    if: always()
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: v2-diagnosis-970*
+          path: results
+      - shell: pwsh
+        run: |
+          $files = @(Get-ChildItem results -Recurse -Filter diagnosis.json)
+          if ($files.Count -ne 64) { throw "Incomplete read-only diagnosis: $($files.Count)/64" }
+          $rows = @($files | ForEach-Object { Get-Content $_.FullName -Raw | ConvertFrom-Json })
+          if (@($rows | Where-Object { -not $_.passed }).Count) { throw 'Diagnosis failed' }
+          $rows | ConvertTo-Json -Depth 12 | Set-Content diagnosis_summary.json -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v2-diagnosis-summary-${{ github.run_id }}
+          path: diagnosis_summary.json
+          retention-days: 90
