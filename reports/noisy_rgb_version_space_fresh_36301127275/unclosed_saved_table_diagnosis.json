@@ -1,0 +1,58 @@
+{
+  "mode": "READ_ONLY_SAVED_STATISTICS; no environment construction, sampling, learning or rerun",
+  "seed": 97027025,
+  "camera": "shifted",
+  "arm": "H",
+  "threshold": 1.4223493409156798,
+  "access_histories": 67,
+  "provisional_groups": 63,
+  "suffixes": [
+    []
+  ],
+  "unclosed_representative_extensions": [
+    {
+      "representative": 4,
+      "history": [
+        0,
+        1
+      ],
+      "action": 4,
+      "extension": [
+        0,
+        1,
+        4
+      ],
+      "extension_already_in_S": true,
+      "candidates": [
+        4,
+        9
+      ]
+    },
+    {
+      "representative": 28,
+      "history": [
+        0,
+        2,
+        0,
+        1,
+        1
+      ],
+      "action": 0,
+      "extension": [
+        0,
+        2,
+        0,
+        1,
+        1,
+        0
+      ],
+      "extension_already_in_S": true,
+      "candidates": [
+        4,
+        9
+      ]
+    }
+  ],
+  "reason": "Frozen close_consistent only adds a nonunique extension when it is not already in S. An existing ambiguous extension can therefore survive return; machine then raises.",
+  "original_traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\run.py\", line 124, in main\n    model, rounds = table.learn(max_rounds=20, depth=2)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 132, in machine\n    if idx is None:raise RuntimeError('not closed at machine construction')\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: not closed at machine construction\n"
+}

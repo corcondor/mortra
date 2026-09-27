@@ -1,0 +1,1570 @@
+{
+  "status": "READBACK_PASSED_WITH_RECORDED_IMPLEMENTATION_ERRORS",
+  "experimental_errors": [
+    {
+      "key": [
+        97027025,
+        "shifted",
+        "H"
+      ],
+      "error": "IMPLEMENTATION_ERROR",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\run.py\", line 124, in main\n    model, rounds = table.learn(max_rounds=20, depth=2)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 155, in learn\n    m=self.machine();cex=self.counterexample(m,depth)\n      ^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py\", line 120, in machine\n    m = super().machine()\n        ^^^^^^^^^^^^^^^^^\n  File \"D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py\", line 132, in machine\n    if idx is None:raise RuntimeError('not closed at machine construction')\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: not closed at machine construction\n"
+    }
+  ],
+  "bug_separated_costs": {
+    "acquisition_environment_actions": {
+      "paired": 63,
+      "H_mean": 16338.412698412698,
+      "V_mean": 182539.47619047618,
+      "improve": 0,
+      "tie": 0,
+      "worsen": 63
+    },
+    "acquisition_exposure_sets": {
+      "paired": 63,
+      "H_mean": 16362.539682539682,
+      "V_mean": 483360,
+      "improve": 0,
+      "tie": 0,
+      "worsen": 63
+    },
+    "acquisition_cpu_seconds": {
+      "paired": 63,
+      "H_mean": 344.8965773809524,
+      "V_mean": 136.65451388888889,
+      "improve": 63,
+      "tie": 0,
+      "worsen": 0
+    },
+    "acquisition_wall_seconds": {
+      "paired": 63,
+      "H_mean": 347.3332749698413,
+      "V_mean": 138.05846597936508,
+      "improve": 63,
+      "tie": 0,
+      "worsen": 0
+    },
+    "peak_memory_bytes": {
+      "paired": 63,
+      "H_mean": 106520576,
+      "V_mean": 862490949.0793651,
+      "improve": 0,
+      "tie": 0,
+      "worsen": 63
+    }
+  },
+  "excluded_bug_cost_pairs": [
+    [
+      97027025,
+      "shifted"
+    ]
+  ],
+  "run_id": 36301127275,
+  "exact_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+  "expected_conditions": 64,
+  "expected_runs": 128,
+  "verified_compact_runs": 128,
+  "identical_source_maps": true,
+  "source_files": {
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\aggregate.py": "82f324e8abd39978cb4cacedd9b8cfd74f259a57f93e35d6df19767cf44a7557",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\core.py": "9b0f6b110781ea768a1791f59fd136f81caadd4693e92aeb6c9bc88dd1218474",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\evaluate.py": "3817596e27cbffbb2b3c8c8d58ecbeb1001b5131c75a4e4bf75a2789fb291061",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\fresh_manifest.json": "a0e7089c47dbd8e08a1ed75c94626fe19f4eb7796eecf5f76b85d494fa19cb01",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\preflight.json": "23dc617a86ff81ba5358f96abca78899a3a6f11f1e6aeec87835c1abb28bc257",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\PROTOCOL_VS.md": "e6bcaf1853ae830ae6a57e43fd1879d4c77a65d395c56e0ce2b671f7b8203e37",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\run.py": "7c3cb191dfd72f61f120a8061e0552b7e54ca6ac59b5ea281947d800bc6ccaee",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\runtime.py": "1cda8387f96715e1f330344e236821a6e1565335026b3bf184e3c4cabd93caad",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_version_space\\__init__.py": "046d3f4f4d598df83325819bc24984b50a9cc334ebccb2f7645408270bf76ad2",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\core.py": "a504be35e4993b23d5de18ef6389cea8136125a91fa0da3ebbdcd160c16363fb",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\evaluate.py": "277713520b33b809f45817bb7ce4cacf5a3295a30ba8f84d9e18509968cfb47c",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\PROTOCOL.md": "96b4c22299a5b3458ee26a49bf107b5e455eb042452e497697b737ea19ec26fe",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\run.py": "44d25ce5e8de1e5bf862e643c34714ea85cbca6bec5eba67a6edb3c2521fc9d1",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\sensor.py": "623445b88544ef6e36064b3ee146064402e18d64627f70715aead3684a73a1f3",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\source.py": "9ec48cf12d3a3826ee0fe13c2cd77afacda15cd2ce62b4a187f7ec4082ca1c04",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\__init__.py": "651b97fde3f07c85a0f4f8ef738c55ecb9f668c3c6379caa125087bc5c18a2bb",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\noisy_active.py": "5e93bf079c47be00258e174f94586e245166df857238ab41c49317f6f85ebd33",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\physics3d.py": "bf36fceb6b787a2f0c6e7d1f43c629912ddc224c85512ca9c7680a357713f4e5",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\run_experiment.py": "1e39f962a41c49999a9f9cef3aa0ab633c0a1e2b0eb4665b0730b682fe8eacf5",
+    "D:\\a\\mortra\\mortra\\experiments\\noisy_rgb_discovery\\reference\\stat_psm.py": "db14c31a2a42d4f9b8623cd832cedccbf85d48a04e19729c1f10719ae4de5514",
+    "scripts/evaluate_autonomous_game_design_loop.py": "df56f03dda3bb376526e3ca964eb8ff96dd950d17f3d32288eb7a35e10790e34"
+  },
+  "endpoints": {
+    "completed": {
+      "paired": 64,
+      "improve": 0,
+      "tie": 64,
+      "worsen": 0,
+      "H": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "V": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "H_mean": 0.0,
+      "V_mean": 0.0
+    },
+    "actions": {
+      "paired": 64,
+      "improve": 0,
+      "tie": 0,
+      "worsen": 64,
+      "H": [
+        9469,
+        11864,
+        12892,
+        21769,
+        9571,
+        15488,
+        34887,
+        16909,
+        10324,
+        13892,
+        16688,
+        16913,
+        11589,
+        29379,
+        8878,
+        25854,
+        14199,
+        24091,
+        11707,
+        17419,
+        14924,
+        14404,
+        17379,
+        20109,
+        14961,
+        12499,
+        16396,
+        14958,
+        17816,
+        18947,
+        8628,
+        15574,
+        11099,
+        11169,
+        19047,
+        14461,
+        8543,
+        20939,
+        10261,
+        17390,
+        11156,
+        13173,
+        11354,
+        34489,
+        19315,
+        17324,
+        15574,
+        17882,
+        12502,
+        22542,
+        18924,
+        2759,
+        16196,
+        16829,
+        15886,
+        6186,
+        6499,
+        8074,
+        39858,
+        35540,
+        10179,
+        10411,
+        17952,
+        18189
+      ],
+      "V": [
+        195103,
+        173410,
+        187678,
+        174280,
+        202366,
+        193890,
+        191038,
+        182186,
+        190506,
+        178245,
+        177095,
+        173366,
+        177828,
+        171902,
+        188708,
+        188015,
+        182796,
+        172496,
+        215744,
+        216308,
+        243608,
+        175118,
+        184752,
+        183076,
+        196708,
+        195956,
+        173392,
+        170059,
+        198245,
+        197246,
+        223938,
+        177822,
+        194522,
+        190846,
+        235197,
+        183666,
+        77354,
+        169520,
+        193720,
+        186850,
+        194242,
+        193778,
+        203322,
+        184679,
+        178736,
+        170251,
+        176569,
+        171633,
+        177025,
+        172932,
+        183772,
+        182014,
+        200773,
+        178021,
+        178710,
+        176500,
+        12854,
+        212948,
+        181342,
+        171752,
+        47204,
+        220152,
+        246603,
+        181634
+      ],
+      "H_mean": 16126.234375,
+      "V_mean": 182531.265625
+    }
+  },
+  "arms": {
+    "H": {
+      "conditions": 64,
+      "statuses": {
+        "RUN_NOT_COMPLETED_OLD_CLOSURE_LIMIT": 63,
+        "IMPLEMENTATION_ERROR": 1
+      },
+      "complete_models": 0,
+      "complete_heldout": 0,
+      "metrics": {
+        "acquisition_environment_actions": {
+          "mean": 16126.234375,
+          "median": 15531.0,
+          "min": 2759,
+          "max": 39858,
+          "total": 1032079
+        },
+        "acquisition_exposure_sets": {
+          "mean": 16173.875,
+          "median": 15728.0,
+          "min": 4288,
+          "max": 27792,
+          "total": 1035128
+        },
+        "acquisition_cpu_seconds": {
+          "mean": 339.552490234375,
+          "median": 320.328125,
+          "min": 2.875,
+          "max": 750.234375,
+          "total": 21731.359375
+        },
+        "acquisition_wall_seconds": {
+          "mean": 341.9524007296875,
+          "median": 322.2067342,
+          "min": 2.957323599999995,
+          "max": 756.3522663,
+          "total": 21884.9536467
+        },
+        "peak_memory_bytes": {
+          "mean": 105763072,
+          "median": 104235008.0,
+          "min": 58040320,
+          "max": 194543616,
+          "total": 6768836608
+        },
+        "access_histories": {
+          "mean": 987.265625,
+          "median": 1001.0,
+          "min": 67,
+          "max": 1058,
+          "total": 63185
+        },
+        "nonempty_suffix_count": {
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0,
+          "max": 1,
+          "total": 2
+        }
+      },
+      "mechanisms": {},
+      "audit_totals": {}
+    },
+    "V": {
+      "conditions": 64,
+      "statuses": {
+        "INCOMPLETE_RESOURCE_LIMIT": 61,
+        "INCOMPLETE_UNRESOLVED_FIXED_POINT": 3
+      },
+      "complete_models": 0,
+      "complete_heldout": 0,
+      "metrics": {
+        "acquisition_environment_actions": {
+          "mean": 182531.265625,
+          "median": 183371.0,
+          "min": 12854,
+          "max": 246603,
+          "total": 11682001
+        },
+        "acquisition_exposure_sets": {
+          "mean": 483620,
+          "median": 500000.0,
+          "min": 61072,
+          "max": 500000,
+          "total": 30951680
+        },
+        "acquisition_cpu_seconds": {
+          "mean": 136.7294921875,
+          "median": 146.7578125,
+          "min": 9.125,
+          "max": 164.0,
+          "total": 8750.6875
+        },
+        "acquisition_wall_seconds": {
+          "mean": 138.1274973921875,
+          "median": 147.82049340000003,
+          "min": 9.343691000000007,
+          "max": 164.94744909999986,
+          "total": 8840.1598331
+        },
+        "peak_memory_bytes": {
+          "mean": 862128320,
+          "median": 893843456.0,
+          "min": 116551680,
+          "max": 1028952064,
+          "total": 55176212480
+        },
+        "access_histories": {
+          "mean": 44.609375,
+          "median": 45.0,
+          "min": 4,
+          "max": 52,
+          "total": 2855
+        },
+        "nonempty_suffix_count": {
+          "mean": 21.578125,
+          "median": 22.0,
+          "min": 3,
+          "max": 29,
+          "total": 1381
+        }
+      },
+      "mechanisms": {
+        "membership_queries": 41395,
+        "initial_ambiguous_memberships": 41270,
+        "consistency_probes": 340968,
+        "new_states_created": 2791,
+        "resolved_by_resampling": 34424,
+        "probe_depth_1": 20263,
+        "probe_action_0": 42002,
+        "probe_action_1": 41247,
+        "probe_action_2": 40383,
+        "resolved_by_depth_1": 128,
+        "probe_action_3": 39477,
+        "probe_action_4": 38766,
+        "probe_depth_2": 90806,
+        "unresolved_events": 3306,
+        "resolved_by_depth_2": 645,
+        "comparisons": 18606036,
+        "UNRESOLVED_comparisons": 17990842,
+        "UNRESOLVED_certificates": 530428,
+        "DIFFERENT_comparisons": 391858,
+        "DIFFERENT_certificates": 391858,
+        "certificate_reuse": 31352750,
+        "SAME_comparisons": 223336,
+        "SAME_certificates": 223336,
+        "remaining_unresolved": 928
+      },
+      "audit_totals": {
+        "candidate_set_checks": 238000,
+        "true_class_unrepresented": 27403,
+        "candidate_set_false_exclusion_count": 0,
+        "different_witness_checks": 391858,
+        "spurious_split_witnesses": 0,
+        "suffix_witness_checks": 1381,
+        "spurious_suffix_witnesses": 0,
+        "observed_assignment_false_merge_states": 560,
+        "true_classes": 12832,
+        "represented_true_classes": 2855,
+        "over_split": 0
+      }
+    }
+  },
+  "full_artifacts": [
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925726797",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925726797",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "01fac90f1939a1d6596d8e6cd6ab956a9cb42d54b4e45df9acadc108d36ba5cb"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925313356",
+      "artifact_id": "10925313356",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "1e7bc5e7b1b259b0698901202bcd5991ee213ae3ab65c1479bd027ef0f2cab27"
+    },
+    {
+      "artifact_id": "10925283232",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "f9bbcd1a75deb3cd1e1549fafbc7ba4e489679214133f4bb084efeeb96cbf162",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925283232"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925194306",
+      "run_id": "36301127275",
+      "artifact_id": "10925194306",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "b25c4cd7874544b5450cad3c32eeb47008191b6ca8d9ca3e5a966fc635738607"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "70a078bf9ac40e4fb8d89c0a95929e8408c5430ecf3597c31e7c382ca2a32099",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925253863",
+      "artifact_id": "10925253863"
+    },
+    {
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "f02177d95bf9c5a677ac0ebe12fd0d4ac530422ad8b2ae1aeeab72046983df19",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926090529",
+      "artifact_id": "10926090529"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925313970",
+      "artifact_digest": "decef6c562d423b1694123f17b823024000f12798d4e07f7485063872ad6d0df",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_id": "10925313970",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925671759",
+      "artifact_id": "10925671759",
+      "artifact_digest": "f76f692acc90f32c054b4fb66a168916ca8b7a9542da4db1aab4efff3f27ba54"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925821034",
+      "artifact_id": "10925821034",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "42899ea2cf66feae0be54670a22e5ae46303070fe27971058c0b7a421f53810b"
+    },
+    {
+      "artifact_id": "10926166178",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926166178",
+      "artifact_digest": "33063203e74f1603087652ed4f5c3bebc1fa2bfbe2244971eb9873335a10fffe",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10925920916",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925920916",
+      "artifact_digest": "7ce04998c8c7afbe6c738101f81bdf936c6842aa9a1432719d8b8bdfa785aaa0",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925457650",
+      "run_id": "36301127275",
+      "artifact_id": "10925457650",
+      "artifact_digest": "1fc6fc82fd61f7ac41ed1db3c3642a0b27e854a5db613df9d302fd8bf98d00b9",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925751536",
+      "artifact_id": "10925751536",
+      "run_id": "36301127275",
+      "artifact_digest": "dfee8b88b56de50a4170326acf18207fc0d9145b9f37c4b01d5ab524783f52bc",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "ea9c9bbd0a9f23cfbabd2e9ceddea24511f03ee2ee3599974e10f15f0e90e51c",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926275463",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926275463"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926211109",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10926211109",
+      "artifact_digest": "82922b6a5a3f6122d19112844f785880708dd281ecfc942e08074460debf6872"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "4a3dbbc3e7af3b77beffe85d33473eefb84a12a29f7759b5141e7333668fc559",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926311132",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926311132"
+    },
+    {
+      "artifact_digest": "e7dcb41dce14b1e2169e51b179ebcbe1c4058cf4d521bd2ff0f502c1e4241a28",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926206730",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926206730",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10925348624",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925348624",
+      "artifact_digest": "24cd6def52b0705bb4b85e68b248ba0fe0291c20831a41b73745d3f6d99d47d0"
+    },
+    {
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "00590f9f76a851e404abf5f827529bc2e284c158cd41daf2438d37e20eb56863",
+      "artifact_id": "10926071057",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926071057"
+    },
+    {
+      "artifact_id": "10925602581",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925602581",
+      "run_id": "36301127275",
+      "artifact_digest": "c5692a88d9dadd5b12f0c9e90ab1ff0f2596f0c270c5dd4a5aa7bda69c7d6aa4"
+    },
+    {
+      "artifact_id": "10925319044",
+      "artifact_digest": "d55bd59039f64a047b8b7539cd8873aaf31c842d0fbef259fa26817e0caf004a",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925319044"
+    },
+    {
+      "artifact_id": "10925468142",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925468142",
+      "artifact_digest": "f948cc8b02d0e6f3c6fc55c992a24adde3949d9276e6250d4b8b5841cf5cf23d",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10926151089",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926151089",
+      "artifact_digest": "18c9768511051ca1b751a28bd64ef15ee5e7d6ecbc6624c05eaf2a6383d2f110"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925816437",
+      "artifact_digest": "34b6572d767280e4e983882814359579ffc35cb012f953f256e95adbe4ab59b8",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925816437"
+    },
+    {
+      "artifact_id": "10925596974",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925596974",
+      "artifact_digest": "9b992cd910060a6936fa40b98956351afbaa827a2b8574c6b8fb505913d846d6",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925379196",
+      "artifact_digest": "4942375571d05a32f5ca06a9c82fd06af6942f8519332b767e8449f04ec8b89d",
+      "artifact_id": "10925379196",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925573321",
+      "artifact_digest": "25d7aa0cc113742018ad55a163d373d80ad5f7710386ab21ec4ece17faf5648f",
+      "artifact_id": "10925573321"
+    },
+    {
+      "artifact_digest": "76a8236f973cac1041f3b4ce1a183406df8986040f9fce0e4d2e05fab19ded9c",
+      "artifact_id": "10926011365",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926011365",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926096567",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926096567",
+      "artifact_digest": "52cc6a9e3b9cce1bdb0ca1ab2dc630b2171d85033b45643b8b4a5b791ed34552",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926121236",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926121236",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "8da067d3143cde970805b4536aa23de7e8a7b238b8f01cfe45686a89309c48e2"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "3f6ec3c2163b6d2f0f787dfa14a8be61e321aa473f38749ef6acdff9553eaaa9",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926062722",
+      "run_id": "36301127275",
+      "artifact_id": "10926062722"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10925299768",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925299768",
+      "artifact_digest": "3fdc7360f64e7c85806140ee9d9bed615eb14f64dbb49c8735d6d7e8ea28f3c9",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926327009",
+      "artifact_id": "10926327009",
+      "artifact_digest": "4700113c415e511a58cfeec9a312ce8810ccf29bba8a9ebd396c738b08f1374f",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_digest": "c2f4231148669cfbfe6ceb924b681bfb581cb63ad6d419e066f9c36c9415870e",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925437487",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925437487",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_digest": "3c165099347c21f9e5756f83465df9d695b7d0b1d11a9d2c81620e7ebc15c914",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925437586",
+      "artifact_id": "10925437586",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_digest": "b267d5bbbb4d701418f678c7b6abd9c04d99c62f866eca68f72a96b834679464",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925688219",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925688219"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926411064",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "b07e2be4998c7cc5157827528037a209508ae02e9e29a4af69bb553a62b3afaf",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926411064"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925498941",
+      "artifact_id": "10925498941",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_digest": "385998ee5c0a0c0eef2df37bfa4f6ce135438af71f5b56ff9a2be4ad9fe245b8",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_digest": "1ee32eee18a9f534fad187202cb33e38ce4b70f27a33370aeaa4a1bf58ebf399",
+      "artifact_id": "10925537504",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925537504",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925558772",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "42f92140726f64dc1f624b468bff97e8ed37b8db15b34dfab2727321f2342015",
+      "artifact_id": "10925558772"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925872206",
+      "run_id": "36301127275",
+      "artifact_digest": "725563a3c1220c7c6fedcd934345e3b1f4637c80505a609dbe87476a2aa5fa30",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10925872206",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "a4b3aa464e4aec4387078083d01dd94d3b8e637c9ec8ea6d104dc40f05909553",
+      "run_id": "36301127275",
+      "artifact_id": "10925852007",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925852007",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_digest": "1a934c66660cec2cdfe092238b6908907eb0dd23a5fdacf6167cfda233928ee2",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926257980",
+      "run_id": "36301127275",
+      "artifact_id": "10926257980",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "f54791ddb9ccd393db9400bea2ebd76db49e48cfe534cabcff6c765c10b9e28b",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926367134",
+      "artifact_id": "10926367134"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926500363",
+      "artifact_digest": "5dc8028236a698bc0cb1a52112e6282b4b67f7bcaa770c9a4e8ff12cfda360c0",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926500363",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10926216734",
+      "artifact_digest": "37684341d63fc95a7013f7d7611553ea98067e610bbac64dfc59fcbc3434f922",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926216734",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_id": "10926515580",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "552975ef7c71fe890ba6f31b71b2613c5ff43fceea3a6c2f30beaab66c54287a",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926515580"
+    },
+    {
+      "artifact_digest": "7b546b8cc98eb9602a50935de53e6f25818911779e89ec86afbb6e55a754b390",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926530456",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10926530456"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "6c8433907c9c310439ca750fe330560b60aa2ea94ffb8d09cf543786711d314d",
+      "artifact_id": "10925492959",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925492959"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925922309",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925922309",
+      "run_id": "36301127275",
+      "artifact_digest": "8e0c387d6ec76ba653d63d33e9257d8084be825ca63f74e766f9b7b02fdd83dc"
+    },
+    {
+      "artifact_id": "10926083513",
+      "artifact_digest": "9d7643a3b78f385ac05a05b84a4617f6eecdee07cf611b05b06330f333c3a20e",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926083513",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_digest": "289c5a152f199badc6ce80002198753377bd714cf1dbd28b1ff2d3d226bbcbd6",
+      "artifact_id": "10926600125",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926600125",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_digest": "755007fe7096557fed7b6acd819baf45d8a1f1e828ea5d41a36bc25118bd738d",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925993883",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925993883"
+    },
+    {
+      "artifact_digest": "c020087ef87d0ac359fe2f85c2a67037de8606f3fe17247260f568c8579197a9",
+      "artifact_id": "10926038580",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926038580",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926575701",
+      "artifact_digest": "ae0f8bbf6961ebb5a1a15db2d11d093851b27167d7142a6ddb8308fb4728d071",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926575701",
+      "run_id": "36301127275"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925634378",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10925634378",
+      "artifact_digest": "e0854d432208f452c01e79da44c895a6c709badbf7a4f17cf27d746f6431bb93"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10925927548",
+      "artifact_digest": "74c3cfd863bce8550b69134cbecab9a60c298994a175fdd2678b61469283d4db",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925927548"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926188503",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926188503",
+      "artifact_digest": "7b57edbea1c4f889201e200ae439a4829424d6f295f14f57916bce2d103f203d",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_id": "10925934043",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925934043",
+      "artifact_digest": "6080a2261a3e8e3735bcf4051eaa032414125fe73973c2b80282e5d49f63c9fc",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "fad5482c5363fdef8d06bfd2fd9aed21866717a8414a36455eaa9955c2b16a48",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10925484701",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925484701"
+    },
+    {
+      "artifact_id": "10926263719",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "455f26f69b788b72867bc867fd1200b2926447fcb8e220634055b64b4912558e",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926263719",
+      "run_id": "36301127275"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926072555",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "68ace36fb242f55d38a5fb8c479d0af1bce3e1d7d57d435b3ee9440979dda914",
+      "run_id": "36301127275",
+      "artifact_id": "10926072555"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925917972",
+      "artifact_id": "10925917972",
+      "run_id": "36301127275",
+      "artifact_digest": "6440722af04bd6390e254de55856f2c8fbfa4719721a042767e9304b6cba4700",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_digest": "d6243047e0d06764c27f80c07248a84987c7a9486dba9828cf4492f686c9bd10",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10926233723",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926233723"
+    },
+    {
+      "artifact_digest": "9fdb4476a587967e4f94ad50090175a1841efef14116a2d480301c49dfc0edfb",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_id": "10925704989",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925704989",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926745021",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926745021",
+      "run_id": "36301127275",
+      "artifact_digest": "1fe8cec711fe6bb1d18ac0799971a895dde2749c52d991a48f9f3d55a7f5a203",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_digest": "31c38084699c0af8694840dc8dbcd47f0578fe419e92f665361327cb009a6bd0",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926760149",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926760149"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926017774",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926017774",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "238d17aa949eeba87559f0531bd9969fa3c5499fecb61414d9416366b10d47f3",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_digest": "02de22821cdf0493909a2921c12bef30fba004ac8fa683482b07b4280c796d88",
+      "artifact_id": "10926059383",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926059383",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_digest": "44a8d3cb8f0167fd6f5a45c6aa1a31bce53f9ba3aab30d6cde4a33437fc2d1e6",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925744680",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10925744680"
+    },
+    {
+      "artifact_digest": "1de8b1e01308f0ba76e83700b4d0e2b121092a3b6b24a7c7fb30b7c8fe721e1e",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10926865380",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926865380"
+    },
+    {
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926117726",
+      "artifact_digest": "c851dbba0eeafa52aabf21ae17ae69068e04dc986afaf6b03d6bf40e6348bcf6",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926117726",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926492366",
+      "artifact_id": "10926492366",
+      "artifact_digest": "48c4d767c90ddeb903fabafc6bdbf6bd208e84d06976375c5cf2359e139598ae",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_id": "10925768205",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "0af5bfc8f01a4e03a4ea46f64ac2e603ca0e5f7521b86b92891e0676134e7d87",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925768205",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_id": "10925963411",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925963411",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "54ced9f73559dfe98e45231a712a9f7dd17d28aaa30943a054ec48cd79c7b724",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926104379",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "cb2720f66469602df13c7b043febb7963a92825b977dd3f938f3a729c02a1195",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926104379",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926184477",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "7df77cafec1584969f2a21a53e0618e614333926cdee14b4c7d8657139dd75d0",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926184477"
+    },
+    {
+      "artifact_id": "10926084686",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926084686",
+      "artifact_digest": "9577e9baf5ecf124b8bf7d341993b16be9e96ba0f08748fa57bdfbc8e7e43ad3",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_digest": "b99fa09c40f7a79ac1341e5837b2a2e494c3d5197fdc7dbba127f67b68573eba",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926685783",
+      "artifact_id": "10926685783",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926222921",
+      "artifact_digest": "6c54217318b80d78e91c89afd59f3cc985b5bcdf8910cfc170f3923f21f42560",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926222921",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10926527135",
+      "artifact_digest": "11c85dbdc8a20525bea42027a816c842f043f20d80d3092e9f2de043195eddb5",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926527135"
+    },
+    {
+      "artifact_digest": "85be55816e6079a69e98b7e16dc342ac6252bc2f6cd899e5a647ac0baaf8bd63",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926088354",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926088354"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926666430",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926666430",
+      "artifact_digest": "f1a7ce35512cef0e4fa8326f0fe3d46bfd1282d755c4228be459646e8710935f"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926780803",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "6329011daafaf9495974651210e336cdacc5b138063a916464aa2c26e94b3ccb",
+      "artifact_id": "10926780803"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926093458",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926093458",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "3db7db48491dcfb726fe119de6d51a52172f4ad916c56461102f3924ff4e05e5"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_digest": "4b0f472e4c5c447d0f0ec688ee5330de5759803c4e4539a8e33828fc1b135b97",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926392472",
+      "artifact_id": "10926392472"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926522646",
+      "artifact_id": "10926522646",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "19718c5e77313ec237782b28a01b4a437d2909f448acf403c0514df07bb32ce8",
+      "run_id": "36301127275"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_id": "10926925564",
+      "artifact_digest": "171898bcb01a1c46a88dee4931a0fe03eebb40955271eed479a42597b96be836",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926925564"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10925614326",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925614326",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "55f682683909ae65010a36076d9181665d72061f841816e6de5b31b770156516"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925399657",
+      "artifact_digest": "9a3180b95c626c1d0846cec08365ba9e0edfc3f4674bf8498567be2cb3d77a36",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10925399657"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "46ab84589335171d295bd5ee1678a47323e57ced8315ff439dbe04c75fe787a0",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925664178",
+      "artifact_id": "10925664178",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926264998",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926264998",
+      "artifact_digest": "b935e761613073f4d94e4a29c1bcd8f548d9d08f580597ae29bbded9cbde0691"
+    },
+    {
+      "artifact_id": "10926458456",
+      "run_id": "36301127275",
+      "artifact_digest": "ec55b9f37b1f20870052efb3a6bc48da29b980aeede29e601d322160a4e9663e",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926458456",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926651746",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926651746",
+      "artifact_digest": "77707c82fe132324083e7ca480bda13ce04e008a883b200472111cd8cb40a329"
+    },
+    {
+      "artifact_digest": "779ee820fc3421932cbeed2792b2ebab75af8098b08f9d9d3000696585d6eb31",
+      "artifact_id": "10926602807",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926602807",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_digest": "cc73799a3b4228e42af9ccc58e71a6daeaca263fb43473139593dbda71e3eeb7",
+      "artifact_id": "10926925974",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926925974",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_id": "10926602516",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "9662320c76c9cae5fb1c97f17466635b9716822e662da51f36039a4a31dfbdcc",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926602516"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926741683",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "5c83856b6101bcb95eb50d013aedaa3959ca66406759fedd9efd82bf2fc2c0dc",
+      "artifact_id": "10926741683"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926906201",
+      "artifact_digest": "67f25ad7222bdaf19bae68c11f08a1118d1117f91aeba1884cbe0d994ad41a13",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926906201"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926711822",
+      "artifact_digest": "38bccdd3d0241ba6227248d9af9fe9d7baddc785fd63c10cb23b5f77490ac5ee",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926711822"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "893c1a088f1fc9a0377aea2e054ff613dae12b7f99aaeafef1118c3a8764ccb8",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926771814",
+      "artifact_id": "10926771814"
+    },
+    {
+      "artifact_id": "10927020857",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10927020857",
+      "artifact_digest": "e85367cb35c06ae16d4891566c6ce55798dcf19216a30ab41ad86073e7da9c0a",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_id": "10926990853",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926990853",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_digest": "6c9f0d752e0687e294c056862753908b192d228d27011dd70e5923e80467b369"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10926741934",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926741934",
+      "artifact_digest": "6aa7bd71549e265636e4fb83e140997dbf3bd1d49431234b5e52930faebca177",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926528517",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275",
+      "artifact_id": "10926528517",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "8fdd6614e33738c03c89bce923a9251b08998f282797341caccd8f540cb8b935"
+    },
+    {
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "1adad5aeb24045b148627c6153375d3b2132e36e562fbd14fded9c7d1131a371",
+      "artifact_id": "10926399703",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926399703"
+    },
+    {
+      "artifact_id": "10926338636",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926338636",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "2719e521ca093f841166b227d908dd4e3305b1f748c5c5f90c46dc579e66f3e4",
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926323573",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926323573",
+      "artifact_digest": "06fb4c8f58a5394a3d2c51a7cc48e4313c7339be1f94ed0f4be6d94a9e121d30",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10927061279",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "5dba2e931b9abf91851e5ed044bd7d305800989ca7e529f1ff9ee2a896ee19cc",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10927061279"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926393369",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926393369",
+      "artifact_digest": "9f0fb8db611e7fcc815a96bbe30981351d05f658712792df92d9b74650c69d5d",
+      "run_id": "36301127275"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10926284041",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "f1991b3a6ecf44b69d137ab1733273751f6b15f93de644d2db1ba50fef6edb22",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926284041"
+    },
+    {
+      "run_id": "36301127275",
+      "artifact_id": "10925694662",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10925694662",
+      "artifact_digest": "4e727c86a4c1522ef4b9f5359e6fcad8524764b3f4a7b70167ce517de31d537a",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926772155",
+      "artifact_id": "10926772155",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "artifact_digest": "da2dced553d982ff99d949d6169a5992f1a490d81b7215758e30add99f31e6f5"
+    },
+    {
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926906606",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "5128cc2c7f1a5251d42da3f72ec127e842a1ad0eb298bcb19ac64fa0cbb3ae7d",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926906606"
+    },
+    {
+      "artifact_digest": "3b3ec41783a5ae35213ac2365f5b220363e7df1169c85180d013267caee8cbd6",
+      "run_id": "36301127275",
+      "artifact_id": "10926479395",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926479395"
+    },
+    {
+      "artifact_id": "10927101044",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10927101044",
+      "artifact_digest": "bfc1c6c721381f53a727b4b932f5a3b3e6799420ba4f145e6ee1eb7ac987a3f7",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_digest": "ab226ef81ad7a80c07a9cf4ed021f84f9d35e3fef4553f052b797afa709d48fa",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926239417",
+      "artifact_id": "10926239417",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_digest": "5ce19901f45909f127a2cabf9cb009ae0f6420a7d7b41c770b47f905fc822b29",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_id": "10926533824",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926533824",
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926762929",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "0f5fdefb85f1d4a29fdae6c75663da0bd132eae0bc46493a5bd3b66193c00f28",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926762929",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_digest": "c78e163390ab133150b69cd42a10e7f16340177d23ad915652b4ef0a5f80c6ed",
+      "run_id": "36301127275",
+      "artifact_id": "10926049673",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926049673",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "artifact_id": "10926772739",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926772739",
+      "run_id": "36301127275",
+      "artifact_digest": "1b7e422a9b15379bb7291d035a0161abc4427401747bfb6bfceece7097afe13f"
+    },
+    {
+      "run_id": "36301127275",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926677714",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926677714",
+      "artifact_digest": "8feb44cb1a3f958019e051fbe13bc23984a7cd876822365674b51b3644349b94",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_digest": "2632ab0b33bcdedf87462b6c72c98f0e1c4fb214ef09e2d6dfd613e6292827ed",
+      "run_id": "36301127275",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926514181",
+      "artifact_id": "10926514181",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    },
+    {
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_digest": "9969183cf358e1776d3a7f11c6c8975a3f92c8c3cc90d75576fcabc60b503615",
+      "run_id": "36301127275",
+      "artifact_id": "10927245048",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10927245048"
+    },
+    {
+      "run_id": "36301127275",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926349188",
+      "artifact_digest": "e81f0764cb263fe9deae710c7bba3fd8e755c653ca838e13745d2b06f630e031",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "artifact_id": "10926349188"
+    },
+    {
+      "artifact_id": "10926907451",
+      "run_id": "36301127275",
+      "artifact_digest": "06a474157c1a53b63e136b34e2c4a78e3f5c7b14fa321d1290cee8924a081aa1",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926907451",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only."
+    },
+    {
+      "artifact_digest": "26b6ac03381bec4c34f3dcad3e127b074c8dc16f228a54792a394318c846ce74",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10927265252",
+      "artifact_id": "10927265252",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae",
+      "run_id": "36301127275"
+    },
+    {
+      "artifact_url": "https://github.com/corcondor/mortra/actions/runs/36301127275/artifacts/10926549251",
+      "artifact_id": "10926549251",
+      "run_id": "36301127275",
+      "artifact_digest": "4b78e069aa734035fbbdb71e9571450e11b7e46a2aae7e5d058f8ec8f678d3b9",
+      "purpose": "Full raw RGB and evidence remain in the original artifact; compact copies are for aggregation only.",
+      "source_sha": "cb61cb548f07243250b1ea07ebb0d8ff46bd9dae"
+    }
+  ],
+  "notes": [
+    "Full original artifacts are retained separately; compact-file hashes were checked against their own original manifests.",
+    "Independent exhaustive RGB recomputation was performed on the four development V conditions, not all fresh conditions.",
+    "Access histories in H and representative states in V are not the same state-count quantity.",
+    "False exclusion is evaluated only where the true predictive class already has a representative.",
+    "Unfinished acquisition implies unmeasured heldout accuracy, not zero accuracy.",
+    "Two cameras share each world. Counts describe 64 paired conditions, not 64 independent worlds."
+  ]
+}
