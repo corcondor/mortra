@@ -1,0 +1,2101 @@
+{
+  "total_count": 18,
+  "jobs": [
+    {
+      "id": 108524774311,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJSjpw",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524774311",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524774311",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:21:32Z",
+      "started_at": "2026-09-27T01:21:34Z",
+      "completed_at": "2026-09-27T01:22:40Z",
+      "name": "gate",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T01:21:35Z",
+          "completed_at": "2026-09-27T01:21:35Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T01:21:35Z",
+          "completed_at": "2026-09-27T01:21:42Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T01:21:42Z",
+          "completed_at": "2026-09-27T01:21:42Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T01:21:42Z",
+          "completed_at": "2026-09-27T01:22:12Z"
+        },
+        {
+          "name": "Run python -m pytest tests/test_self_game_design_v2.py tests/test_self_design_v2_integration.py tests/test_v2_online_feedback.py tests/test_v2_feedback_loop_adapter.py tests/test_v2_feedback_production.py -q --junitxml=production-tests.xml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T01:22:12Z",
+          "completed_at": "2026-09-27T01:22:24Z"
+        },
+        {
+          "name": "Run gh run download 36284251256 --repo corcondor/mortra --name production-gate-records-36284251256 --dir previous",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T01:22:24Z",
+          "completed_at": "2026-09-27T01:22:28Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run gate-resume --inputs previous/reports/connection_gate --output reports/connection_gate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T01:22:28Z",
+          "completed_at": "2026-09-27T01:22:35Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T01:22:35Z",
+          "completed_at": "2026-09-27T01:22:36Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-09-27T01:22:36Z",
+          "completed_at": "2026-09-27T01:22:37Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T01:22:37Z",
+          "completed_at": "2026-09-27T01:22:37Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-09-27T01:22:37Z",
+          "completed_at": "2026-09-27T01:22:39Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-09-27T01:22:39Z",
+          "completed_at": "2026-09-27T01:22:39Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524774311",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011062,
+      "runner_name": "GitHub Actions 1000011062",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937506,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchIg",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937506",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937506",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T01:22:42Z",
+      "completed_at": "2026-09-27T02:16:12Z",
+      "name": "production (79020002)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T01:22:43Z",
+          "completed_at": "2026-09-27T01:22:44Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T01:22:44Z",
+          "completed_at": "2026-09-27T01:22:50Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T01:22:50Z",
+          "completed_at": "2026-09-27T01:22:50Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T01:22:50Z",
+          "completed_at": "2026-09-27T01:23:22Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T01:23:22Z",
+          "completed_at": "2026-09-27T01:23:22Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020002 --gate gate/gate_pass.json --output reports/production_79020002",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T01:23:22Z",
+          "completed_at": "2026-09-27T02:16:03Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T02:16:03Z",
+          "completed_at": "2026-09-27T02:16:09Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T02:16:09Z",
+          "completed_at": "2026-09-27T02:16:09Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T02:16:09Z",
+          "completed_at": "2026-09-27T02:16:09Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T02:16:09Z",
+          "completed_at": "2026-09-27T02:16:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T02:16:12Z",
+          "completed_at": "2026-09-27T02:16:12Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937506",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011063,
+      "runner_name": "GitHub Actions 1000011063",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937567,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchXw",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937567",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937567",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T02:15:17Z",
+      "completed_at": "2026-09-27T02:53:21Z",
+      "name": "production (79020006)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T02:15:18Z",
+          "completed_at": "2026-09-27T02:15:19Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T02:15:19Z",
+          "completed_at": "2026-09-27T02:15:27Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T02:15:27Z",
+          "completed_at": "2026-09-27T02:15:27Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T02:15:27Z",
+          "completed_at": "2026-09-27T02:16:07Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T02:16:07Z",
+          "completed_at": "2026-09-27T02:16:07Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020006 --gate gate/gate_pass.json --output reports/production_79020006",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T02:16:07Z",
+          "completed_at": "2026-09-27T02:53:12Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T02:53:12Z",
+          "completed_at": "2026-09-27T02:53:17Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T02:53:17Z",
+          "completed_at": "2026-09-27T02:53:18Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T02:53:18Z",
+          "completed_at": "2026-09-27T02:53:18Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T02:53:18Z",
+          "completed_at": "2026-09-27T02:53:20Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T02:53:20Z",
+          "completed_at": "2026-09-27T02:53:20Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937567",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011069,
+      "runner_name": "GitHub Actions 1000011069",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937569,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchYQ",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937569",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937569",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T02:04:59Z",
+      "completed_at": "2026-09-27T03:01:05Z",
+      "name": "production (79020005)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T02:05:00Z",
+          "completed_at": "2026-09-27T02:05:01Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T02:05:01Z",
+          "completed_at": "2026-09-27T02:05:06Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T02:05:06Z",
+          "completed_at": "2026-09-27T02:05:06Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T02:05:06Z",
+          "completed_at": "2026-09-27T02:05:31Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T02:05:31Z",
+          "completed_at": "2026-09-27T02:05:32Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020005 --gate gate/gate_pass.json --output reports/production_79020005",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T02:05:32Z",
+          "completed_at": "2026-09-27T03:00:56Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:00:56Z",
+          "completed_at": "2026-09-27T03:01:01Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:01:01Z",
+          "completed_at": "2026-09-27T03:01:02Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:01:02Z",
+          "completed_at": "2026-09-27T03:01:02Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:01:02Z",
+          "completed_at": "2026-09-27T03:01:04Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:01:04Z",
+          "completed_at": "2026-09-27T03:01:04Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937569",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011068,
+      "runner_name": "GitHub Actions 1000011068",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937583,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchbw",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937583",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937583",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T01:22:42Z",
+      "completed_at": "2026-09-27T02:04:57Z",
+      "name": "production (79020001)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T01:22:43Z",
+          "completed_at": "2026-09-27T01:22:45Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T01:22:45Z",
+          "completed_at": "2026-09-27T01:22:51Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T01:22:51Z",
+          "completed_at": "2026-09-27T01:22:51Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T01:22:51Z",
+          "completed_at": "2026-09-27T01:23:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T01:23:24Z",
+          "completed_at": "2026-09-27T01:23:25Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020001 --gate gate/gate_pass.json --output reports/production_79020001",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T01:23:25Z",
+          "completed_at": "2026-09-27T02:04:49Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T02:04:49Z",
+          "completed_at": "2026-09-27T02:04:53Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T02:04:53Z",
+          "completed_at": "2026-09-27T02:04:54Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T02:04:54Z",
+          "completed_at": "2026-09-27T02:04:54Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T02:04:54Z",
+          "completed_at": "2026-09-27T02:04:56Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T02:04:56Z",
+          "completed_at": "2026-09-27T02:04:56Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937583",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011065,
+      "runner_name": "GitHub Actions 1000011065",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937596,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchfA",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937596",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937596",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T01:22:44Z",
+      "completed_at": "2026-09-27T02:15:16Z",
+      "name": "production (79020000)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T01:22:45Z",
+          "completed_at": "2026-09-27T01:22:46Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T01:22:46Z",
+          "completed_at": "2026-09-27T01:22:58Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T01:22:58Z",
+          "completed_at": "2026-09-27T01:22:58Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T01:22:58Z",
+          "completed_at": "2026-09-27T01:23:33Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T01:23:33Z",
+          "completed_at": "2026-09-27T01:23:33Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020000 --gate gate/gate_pass.json --output reports/production_79020000",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T01:23:33Z",
+          "completed_at": "2026-09-27T02:15:06Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T02:15:06Z",
+          "completed_at": "2026-09-27T02:15:11Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T02:15:11Z",
+          "completed_at": "2026-09-27T02:15:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T02:15:12Z",
+          "completed_at": "2026-09-27T02:15:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T02:15:12Z",
+          "completed_at": "2026-09-27T02:15:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T02:15:14Z",
+          "completed_at": "2026-09-27T02:15:14Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937596",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011064,
+      "runner_name": "GitHub Actions 1000011064",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937598,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchfg",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937598",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937598",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T01:22:42Z",
+      "completed_at": "2026-09-27T01:41:27Z",
+      "name": "production (79020003)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T01:22:43Z",
+          "completed_at": "2026-09-27T01:22:45Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T01:22:45Z",
+          "completed_at": "2026-09-27T01:22:51Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T01:22:51Z",
+          "completed_at": "2026-09-27T01:22:51Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T01:22:51Z",
+          "completed_at": "2026-09-27T01:23:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T01:23:24Z",
+          "completed_at": "2026-09-27T01:23:25Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020003 --gate gate/gate_pass.json --output reports/production_79020003",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T01:23:25Z",
+          "completed_at": "2026-09-27T01:41:18Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T01:41:18Z",
+          "completed_at": "2026-09-27T01:41:22Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T01:41:22Z",
+          "completed_at": "2026-09-27T01:41:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T01:41:23Z",
+          "completed_at": "2026-09-27T01:41:23Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T01:41:23Z",
+          "completed_at": "2026-09-27T01:41:25Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T01:41:25Z",
+          "completed_at": "2026-09-27T01:41:25Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937598",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011066,
+      "runner_name": "GitHub Actions 1000011066",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937606,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchhg",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937606",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937606",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T02:16:14Z",
+      "completed_at": "2026-09-27T03:14:27Z",
+      "name": "production (79020007)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T02:16:15Z",
+          "completed_at": "2026-09-27T02:16:17Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T02:16:17Z",
+          "completed_at": "2026-09-27T02:16:22Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T02:16:22Z",
+          "completed_at": "2026-09-27T02:16:23Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T02:16:23Z",
+          "completed_at": "2026-09-27T02:17:01Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T02:17:01Z",
+          "completed_at": "2026-09-27T02:17:02Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020007 --gate gate/gate_pass.json --output reports/production_79020007",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T02:17:02Z",
+          "completed_at": "2026-09-27T03:14:17Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:14:17Z",
+          "completed_at": "2026-09-27T03:14:22Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:14:22Z",
+          "completed_at": "2026-09-27T03:14:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:14:23Z",
+          "completed_at": "2026-09-27T03:14:23Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:14:23Z",
+          "completed_at": "2026-09-27T03:14:26Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:14:26Z",
+          "completed_at": "2026-09-27T03:14:26Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937606",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011070,
+      "runner_name": "GitHub Actions 1000011070",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108524937613,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRJchjQ",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108524937613",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108524937613",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T01:22:41Z",
+      "started_at": "2026-09-27T01:41:29Z",
+      "completed_at": "2026-09-27T02:35:00Z",
+      "name": "production (79020004)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T01:41:30Z",
+          "completed_at": "2026-09-27T01:41:31Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T01:41:31Z",
+          "completed_at": "2026-09-27T01:41:36Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T01:41:36Z",
+          "completed_at": "2026-09-27T01:41:37Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T01:41:37Z",
+          "completed_at": "2026-09-27T01:42:08Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T01:42:08Z",
+          "completed_at": "2026-09-27T01:42:09Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run production --seed 79020004 --gate gate/gate_pass.json --output reports/production_79020004",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T01:42:09Z",
+          "completed_at": "2026-09-27T02:34:50Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T02:34:50Z",
+          "completed_at": "2026-09-27T02:34:56Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T02:34:56Z",
+          "completed_at": "2026-09-27T02:34:57Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T02:34:57Z",
+          "completed_at": "2026-09-27T02:34:57Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T02:34:57Z",
+          "completed_at": "2026-09-27T02:34:59Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T02:34:59Z",
+          "completed_at": "2026-09-27T02:34:59Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108524937613",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011067,
+      "runner_name": "GitHub Actions 1000011067",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450209,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPVoQ",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450209",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450209",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:17:54Z",
+      "completed_at": "2026-09-27T03:21:23Z",
+      "name": "common (79020005)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:17:55Z",
+          "completed_at": "2026-09-27T03:17:56Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:17:56Z",
+          "completed_at": "2026-09-27T03:18:02Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:18:02Z",
+          "completed_at": "2026-09-27T03:18:02Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:18:02Z",
+          "completed_at": "2026-09-27T03:18:39Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:18:39Z",
+          "completed_at": "2026-09-27T03:18:39Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:18:39Z",
+          "completed_at": "2026-09-27T03:18:40Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020005 --gate gate/gate_pass.json --inputs selected --output reports/common_79020005",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:18:40Z",
+          "completed_at": "2026-09-27T03:21:18Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:21:18Z",
+          "completed_at": "2026-09-27T03:21:19Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:21:19Z",
+          "completed_at": "2026-09-27T03:21:20Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:21:20Z",
+          "completed_at": "2026-09-27T03:21:22Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:21:22Z",
+          "completed_at": "2026-09-27T03:21:22Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450209",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011077,
+      "runner_name": "GitHub Actions 1000011077",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450214,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPVpg",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450214",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450214",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:18:28Z",
+      "completed_at": "2026-09-27T03:22:30Z",
+      "name": "common (79020007)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:18:29Z",
+          "completed_at": "2026-09-27T03:18:30Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:18:30Z",
+          "completed_at": "2026-09-27T03:18:37Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:18:37Z",
+          "completed_at": "2026-09-27T03:18:38Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:18:38Z",
+          "completed_at": "2026-09-27T03:19:14Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:19:14Z",
+          "completed_at": "2026-09-27T03:19:14Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:19:14Z",
+          "completed_at": "2026-09-27T03:19:16Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020007 --gate gate/gate_pass.json --inputs selected --output reports/common_79020007",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:19:16Z",
+          "completed_at": "2026-09-27T03:22:25Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:22:25Z",
+          "completed_at": "2026-09-27T03:22:26Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:22:26Z",
+          "completed_at": "2026-09-27T03:22:26Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:22:26Z",
+          "completed_at": "2026-09-27T03:22:29Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:22:29Z",
+          "completed_at": "2026-09-27T03:22:29Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450214",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011079,
+      "runner_name": "GitHub Actions 1000011079",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450247,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPVxw",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450247",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450247",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:14:29Z",
+      "completed_at": "2026-09-27T03:18:22Z",
+      "name": "common (79020002)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:14:30Z",
+          "completed_at": "2026-09-27T03:14:31Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:14:31Z",
+          "completed_at": "2026-09-27T03:14:36Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:14:36Z",
+          "completed_at": "2026-09-27T03:14:36Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:14:36Z",
+          "completed_at": "2026-09-27T03:15:02Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:15:02Z",
+          "completed_at": "2026-09-27T03:15:03Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:15:03Z",
+          "completed_at": "2026-09-27T03:15:04Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020002 --gate gate/gate_pass.json --inputs selected --output reports/common_79020002",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:15:04Z",
+          "completed_at": "2026-09-27T03:18:17Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:18:17Z",
+          "completed_at": "2026-09-27T03:18:18Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:18:18Z",
+          "completed_at": "2026-09-27T03:18:18Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:18:18Z",
+          "completed_at": "2026-09-27T03:18:21Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:18:21Z",
+          "completed_at": "2026-09-27T03:18:21Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450247",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011072,
+      "runner_name": "GitHub Actions 1000011072",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450253,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPVzQ",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450253",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450253",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:17:48Z",
+      "completed_at": "2026-09-27T03:21:38Z",
+      "name": "common (79020004)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:17:49Z",
+          "completed_at": "2026-09-27T03:17:50Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:17:50Z",
+          "completed_at": "2026-09-27T03:17:56Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:17:56Z",
+          "completed_at": "2026-09-27T03:17:56Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:17:56Z",
+          "completed_at": "2026-09-27T03:18:31Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:18:31Z",
+          "completed_at": "2026-09-27T03:18:32Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:18:32Z",
+          "completed_at": "2026-09-27T03:18:32Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020004 --gate gate/gate_pass.json --inputs selected --output reports/common_79020004",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:18:32Z",
+          "completed_at": "2026-09-27T03:21:33Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:21:33Z",
+          "completed_at": "2026-09-27T03:21:34Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:21:34Z",
+          "completed_at": "2026-09-27T03:21:35Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:21:35Z",
+          "completed_at": "2026-09-27T03:21:37Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:21:37Z",
+          "completed_at": "2026-09-27T03:21:37Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450253",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011076,
+      "runner_name": "GitHub Actions 1000011076",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450254,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPVzg",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450254",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450254",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:14:32Z",
+      "completed_at": "2026-09-27T03:17:52Z",
+      "name": "common (79020000)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:14:33Z",
+          "completed_at": "2026-09-27T03:14:35Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:14:35Z",
+          "completed_at": "2026-09-27T03:14:48Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:14:48Z",
+          "completed_at": "2026-09-27T03:14:49Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:14:49Z",
+          "completed_at": "2026-09-27T03:15:26Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:15:26Z",
+          "completed_at": "2026-09-27T03:15:27Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:15:27Z",
+          "completed_at": "2026-09-27T03:15:28Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020000 --gate gate/gate_pass.json --inputs selected --output reports/common_79020000",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:15:28Z",
+          "completed_at": "2026-09-27T03:17:47Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:17:47Z",
+          "completed_at": "2026-09-27T03:17:48Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:17:48Z",
+          "completed_at": "2026-09-27T03:17:48Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:17:48Z",
+          "completed_at": "2026-09-27T03:17:51Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:17:51Z",
+          "completed_at": "2026-09-27T03:17:51Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450254",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011074,
+      "runner_name": "GitHub Actions 1000011074",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450257,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPV0Q",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450257",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450257",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:15:01Z",
+      "completed_at": "2026-09-27T03:18:26Z",
+      "name": "common (79020001)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:15:02Z",
+          "completed_at": "2026-09-27T03:15:04Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:15:04Z",
+          "completed_at": "2026-09-27T03:15:11Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:15:11Z",
+          "completed_at": "2026-09-27T03:15:11Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:15:11Z",
+          "completed_at": "2026-09-27T03:15:44Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:15:44Z",
+          "completed_at": "2026-09-27T03:15:44Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:15:44Z",
+          "completed_at": "2026-09-27T03:15:45Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020001 --gate gate/gate_pass.json --inputs selected --output reports/common_79020001",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:15:45Z",
+          "completed_at": "2026-09-27T03:18:21Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:18:21Z",
+          "completed_at": "2026-09-27T03:18:22Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:18:22Z",
+          "completed_at": "2026-09-27T03:18:22Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:18:22Z",
+          "completed_at": "2026-09-27T03:18:24Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:18:24Z",
+          "completed_at": "2026-09-27T03:18:24Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450257",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011073,
+      "runner_name": "GitHub Actions 1000011073",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450265,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPV2Q",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450265",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450265",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:14:30Z",
+      "completed_at": "2026-09-27T03:17:45Z",
+      "name": "common (79020003)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:14:30Z",
+          "completed_at": "2026-09-27T03:14:32Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:14:32Z",
+          "completed_at": "2026-09-27T03:14:45Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:14:45Z",
+          "completed_at": "2026-09-27T03:14:45Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:14:45Z",
+          "completed_at": "2026-09-27T03:16:03Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:16:03Z",
+          "completed_at": "2026-09-27T03:16:03Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:16:03Z",
+          "completed_at": "2026-09-27T03:16:04Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020003 --gate gate/gate_pass.json --inputs selected --output reports/common_79020003",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:16:04Z",
+          "completed_at": "2026-09-27T03:17:40Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:17:40Z",
+          "completed_at": "2026-09-27T03:17:41Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:17:41Z",
+          "completed_at": "2026-09-27T03:17:41Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:17:41Z",
+          "completed_at": "2026-09-27T03:17:43Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:17:43Z",
+          "completed_at": "2026-09-27T03:17:43Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450265",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011075,
+      "runner_name": "GitHub Actions 1000011075",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108540450269,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRYPV3Q",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108540450269",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108540450269",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:14:27Z",
+      "started_at": "2026-09-27T03:18:25Z",
+      "completed_at": "2026-09-27T03:22:08Z",
+      "name": "common (79020006)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:18:26Z",
+          "completed_at": "2026-09-27T03:18:27Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:18:27Z",
+          "completed_at": "2026-09-27T03:18:33Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:18:33Z",
+          "completed_at": "2026-09-27T03:18:33Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:18:33Z",
+          "completed_at": "2026-09-27T03:19:12Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:19:12Z",
+          "completed_at": "2026-09-27T03:19:12Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:19:12Z",
+          "completed_at": "2026-09-27T03:19:13Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.run common --seed 79020006 --gate gate/gate_pass.json --inputs selected --output reports/common_79020006",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:19:13Z",
+          "completed_at": "2026-09-27T03:22:04Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:22:04Z",
+          "completed_at": "2026-09-27T03:22:05Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:22:05Z",
+          "completed_at": "2026-09-27T03:22:06Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:22:06Z",
+          "completed_at": "2026-09-27T03:22:08Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:22:08Z",
+          "completed_at": "2026-09-27T03:22:08Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108540450269",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000011078,
+      "runner_name": "GitHub Actions 1000011078",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 108541548937,
+      "run_id": 36285287250,
+      "workflow_name": "V2 actual feedback production loop development",
+      "head_branch": "research/v2-feedback-production-20260927",
+      "run_url": "https://api.github.com/repos/corcondor/mortra/actions/runs/36285287250",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSVXNj88AAAAZRZSZiQ",
+      "head_sha": "8ba2dc57049bfb20f9240975b67dcfe79290b905",
+      "url": "https://api.github.com/repos/corcondor/mortra/actions/jobs/108541548937",
+      "html_url": "https://github.com/corcondor/mortra/actions/runs/36285287250/job/108541548937",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-27T03:22:31Z",
+      "started_at": "2026-09-27T03:22:32Z",
+      "completed_at": "2026-09-27T03:23:03Z",
+      "name": "summary",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-09-27T03:22:33Z",
+          "completed_at": "2026-09-27T03:22:34Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-09-27T03:22:34Z",
+          "completed_at": "2026-09-27T03:22:35Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-09-27T03:22:35Z",
+          "completed_at": "2026-09-27T03:22:43Z"
+        },
+        {
+          "name": "Run python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-09-27T03:22:43Z",
+          "completed_at": "2026-09-27T03:22:57Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-09-27T03:22:57Z",
+          "completed_at": "2026-09-27T03:22:57Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-09-27T03:22:57Z",
+          "completed_at": "2026-09-27T03:22:58Z"
+        },
+        {
+          "name": "Run python -m experiments.v2_feedback_production.summarize --input results --output reports/production_summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-09-27T03:22:58Z",
+          "completed_at": "2026-09-27T03:23:00Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-09-27T03:23:00Z",
+          "completed_at": "2026-09-27T03:23:01Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-09-27T03:23:01Z",
+          "completed_at": "2026-09-27T03:23:01Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-09-27T03:23:01Z",
+          "completed_at": "2026-09-27T03:23:01Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-09-27T03:23:01Z",
+          "completed_at": "2026-09-27T03:23:01Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/corcondor/mortra/check-runs/108541548937",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000011080,
+      "runner_name": "GitHub Actions 1000011080",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}
