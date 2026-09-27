@@ -1,0 +1,32 @@
+{
+  "study": "outcome-selected development",
+  "seeds": [
+    79020000,
+    79020001,
+    79020002,
+    79020003,
+    79020004,
+    79020005,
+    79020006,
+    79020007
+  ],
+  "arms": [
+    "frozen",
+    "record_and_replan",
+    "record_replan_and_explore"
+  ],
+  "initial_actions": 2500,
+  "additional_actions": 5000,
+  "checkpoints": [
+    0,
+    1000,
+    5000
+  ],
+  "rollout_cap": 100,
+  "evaluation_trials": 50,
+  "q": 0.9,
+  "fallback_threshold": 1e-08,
+  "training_source": 1,
+  "game_edits": false,
+  "new_initial_training": false
+}
