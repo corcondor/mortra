@@ -37,7 +37,10 @@ jobs:
           python-version: '3.12.10'
       - run: python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0
       - run: python -m pytest tests/test_self_game_design_v2.py tests/test_self_design_v2_integration.py tests/test_v2_online_feedback.py tests/test_v2_feedback_loop_adapter.py tests/test_v2_feedback_production.py -q --junitxml=production-tests.xml
-      - run: python -m experiments.v2_feedback_production.run gate --output reports/connection_gate
+      - run: gh run download 36284251256 --repo corcondor/mortra --name production-gate-records-36284251256 --dir previous
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: python -m experiments.v2_feedback_production.run gate-resume --inputs previous/reports/connection_gate --output reports/connection_gate
       - uses: actions/upload-artifact@v4
         if: always()
         with:

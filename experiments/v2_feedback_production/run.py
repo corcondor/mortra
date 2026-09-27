@@ -140,7 +140,7 @@ def single(directory, data, arm):
 
 def normalized(value):
     if isinstance(value, dict):
-        return {k: normalized(v) for k, v in value.items() if k != "field_solve_seconds"}
+        return {k: normalized(v) for k, v in value.items() if k not in ("field_solve_seconds", "policy_seconds")}
     if isinstance(value, list):
         return [normalized(v) for v in value]
     return value
@@ -159,8 +159,23 @@ def gate(output):
     checks = []
     for seed in (79020000, 79020004):
         single(output / f"equivalence_{seed}", initial_data(seed), ARMS[2])
-        expected = output / f"smoke_{seed}_targeted/evaluations/evaluation_000"
-        actual = output / f"equivalence_{seed}/evaluations/evaluation_000"
+    verify_gate(output, output)
+
+
+def verify_gate(data, output):
+    checks = []
+    for seed in (79020000, 79020004):
+        for mode in MODES:
+            result = read(data / f"smoke_{seed}_{mode}/series.json")
+            assert result["status"] == "COMPLETE" and result["iterations"] == 5 and result["evaluations"] == 6
+            assert result["same_learner_and_metric_forwarding_audited"]
+            for i in range(6):
+                directory = data / f"smoke_{seed}_{mode}/evaluations/evaluation_{i:03d}"
+                audit = read(directory / "execution_audit.json")
+                assert audit["phase_actions"]["initial"] == 2500 and audit["phase_actions"]["additional"] == 5000
+                assert audit["same_learner_before_after_feedback_and_frozen"] and audit["no_random_or_evaluation_learning"]
+        expected = data / f"smoke_{seed}_targeted/evaluations/evaluation_000"
+        actual = data / f"equivalence_{seed}/evaluations/evaluation_000"
         for name in ("initial_learner.json", "final_learner.json", "evaluation_metrics.json", "frozen_trials.json"):
             assert read(expected / name) == read(actual / name), (seed, name)
             checks.append({"seed": seed, "file": name, "exact": True})
@@ -172,7 +187,8 @@ def gate(output):
         gc.collect()
     write(output / "gate_pass.json", {"passed": True, "real_loop_runs": 4, "real_loop_evaluations": 24,
         "additional_equivalence_evaluations": 2, "checks": checks, "mocks_used": False,
-        "timing_fields_excluded": ["telemetry.field_solve_seconds"]})
+        "timing_fields_excluded": ["telemetry.field_solve_seconds", "telemetry.policy_seconds"],
+        "verification_input": str(data), "prior_run": 36284251256 if data != output else None})
 
 
 def production(output, seed):
@@ -202,7 +218,7 @@ def common(output, seed, inputs):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("phase", choices=("gate", "production", "common"))
+    p.add_argument("phase", choices=("gate", "gate-resume", "production", "common"))
     p.add_argument("--seed", type=int, choices=SEEDS)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--inputs", type=Path)
@@ -215,6 +231,11 @@ def main():
         with (a.output / "run.log").open("x", encoding="utf-8", buffering=1) as log, redirect_stdout(log):
             if a.phase == "gate":
                 gate(a.output)
+            elif a.phase == "gate-resume":
+                previous = read(a.inputs / "source_snapshot.json")
+                assert previous["head"] == "8aefadc21004cee6842ffb9aac6c09e5e6b62a8b"
+                assert previous["frozen_sha256_lf"] == source_check()
+                verify_gate(a.inputs, a.output)
             else:
                 assert a.seed is not None and read(a.gate)["passed"]
                 if a.phase == "production":

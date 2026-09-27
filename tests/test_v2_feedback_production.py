@@ -51,3 +51,12 @@ def test_metric_forwarding_requires_identity(tmp_path):
     assert observer.metric_index(metric) == 0
     with pytest.raises(AssertionError):
         observer.metric_index(dict(metric))
+
+
+def test_equivalence_excludes_only_both_recorded_timers():
+    from experiments.v2_feedback_production.run import normalized
+    a = [{"action": 2, "best_value": .25, "telemetry": {"field_solve_seconds": 1, "policy_seconds": 2, "field_residual": 0}}]
+    b = [{"action": 2, "best_value": .25, "telemetry": {"field_solve_seconds": 3, "policy_seconds": 4, "field_residual": 0}}]
+    assert normalized(a) == normalized(b)
+    b[0]["best_value"] = .25000000001
+    assert normalized(a) != normalized(b)
