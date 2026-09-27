@@ -1,0 +1,156 @@
+name: V2 actual feedback production loop development
+on:
+  push:
+    branches: [research/v2-feedback-production-20260927]
+    paths:
+      - experiments/v2_feedback_production/**
+      - tests/test_v2_feedback_production.py
+      - .github/workflows/v2-feedback-production.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v2-feedback-production-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONUTF8: '1'
+  MPLBACKEND: Agg
+jobs:
+  gate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            experiments
+            scripts
+            tests
+            .github
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0
+      - run: python -m pytest tests/test_self_game_design_v2.py tests/test_self_design_v2_integration.py tests/test_v2_online_feedback.py tests/test_v2_feedback_loop_adapter.py tests/test_v2_feedback_production.py -q --junitxml=production-tests.xml
+      - run: python -m experiments.v2_feedback_production.run gate --output reports/connection_gate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-gate-records-${{ github.run_id }}
+          path: |
+            production-tests.xml
+            reports/connection_gate/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-gate-pass-${{ github.run_id }}
+          path: reports/connection_gate/gate_pass.json
+          retention-days: 90
+  production:
+    needs: gate
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [79020000, 79020001, 79020002, 79020003, 79020004, 79020005, 79020006, 79020007]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            experiments
+            scripts
+            tests
+            .github
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: production-gate-pass-${{ github.run_id }}
+          path: gate
+      - run: python -m experiments.v2_feedback_production.run production --seed ${{ matrix.seed }} --gate gate/gate_pass.json --output reports/production_${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-world-${{ matrix.seed }}-${{ github.run_id }}
+          path: reports/production_${{ matrix.seed }}/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-selection-${{ matrix.seed }}-${{ github.run_id }}
+          path: |
+            reports/production_${{ matrix.seed }}/world_complete.json
+            reports/production_${{ matrix.seed }}/resources.json
+            reports/production_${{ matrix.seed }}/*/final_game.json
+          retention-days: 90
+  common:
+    needs: [gate, production]
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        seed: [79020000, 79020001, 79020002, 79020003, 79020004, 79020005, 79020006, 79020007]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            experiments
+            scripts
+            .github
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: production-gate-pass-${{ github.run_id }}
+          path: gate
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: production-selection-*
+          path: selected
+      - run: python -m experiments.v2_feedback_production.run common --seed ${{ matrix.seed }} --gate gate/gate_pass.json --inputs selected --output reports/common_${{ matrix.seed }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-common-${{ matrix.seed }}-${{ github.run_id }}
+          path: reports/common_${{ matrix.seed }}/
+          retention-days: 90
+  summary:
+    needs: common
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            experiments
+            scripts
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+      - run: python -m pip install -r requirements-game-tests.txt scipy==1.17.0 psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: production-selection-*
+          path: results/selection
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: production-common-*
+          path: results/common
+      - run: python -m experiments.v2_feedback_production.summarize --input results --output reports/production_summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-summary-${{ github.run_id }}
+          path: reports/production_summary/
+          retention-days: 90
