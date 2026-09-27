@@ -51,7 +51,8 @@ def diagnose(folder, output):
     saved = json.loads((folder/'result.json').read_text())
     assert saved['arm'] == 'V'
     table_saved = json.loads((folder/'partial_table.json').read_text())
-    hashes = json.loads((folder/'artifact_hashes.json').read_text())
+    hashes = {name.replace('\\','/'): value for name,value in
+              json.loads((folder/'artifact_hashes.json').read_text()).items()}
     used_files = ['result.json','partial_table.json','events.jsonl.gz','calibration.json']
     for n in (8,16,32):
         used_files += [f'statistics_{n}/statistics_index.json',f'statistics_{n}/statistics.bin.gz',
