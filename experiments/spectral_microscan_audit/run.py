@@ -119,7 +119,44 @@ def high_frequency_energy(image):
     return float(np.sum(mag[mask]**2))
 
 
-def predictive_conflicts(states, game, code_by_state):
+def predictive_partition(states, game, screens):
+    """Exact first-person predictive quotient used only for post-hoc scoring."""
+    index={s:i for i,s in enumerate(states)}
+    observation=[screens[s].astype(np.float32).tobytes() for s in states]
+    labels={}
+    next_label=0
+    obs_to_label={}
+    for i,obs in enumerate(observation):
+        if obs not in obs_to_label:
+            obs_to_label[obs]=next_label
+            next_label+=1
+        labels[i]=obs_to_label[obs]
+    depth=0
+    while True:
+        sig_to_label={}
+        refined={}
+        for i,s in enumerate(states):
+            sig=(labels[i], tuple(labels[index[game.raw_step(s,a)]] for a in ACTIONS))
+            if sig not in sig_to_label:
+                sig_to_label[sig]=len(sig_to_label)
+            refined[i]=sig_to_label[sig]
+        depth+=1
+        if all(refined[i]==labels[i] for i in range(len(states))):
+            break
+        # Canonical numeric ids can permute even when the partition is stable.
+        old_groups=defaultdict(set)
+        new_groups=defaultdict(set)
+        for i in range(len(states)):
+            old_groups[labels[i]].add(i)
+            new_groups[refined[i]].add(i)
+        if {frozenset(v) for v in old_groups.values()} == {frozenset(v) for v in new_groups.values()}:
+            labels=refined
+            break
+        labels=refined
+    return {s:labels[index[s]] for s in states}, depth
+
+
+def predictive_conflicts(states, game, code_by_state, truth_class):
     groups = defaultdict(list)
     for s in states:
         groups[code_by_state[s]].append(s)
@@ -134,7 +171,7 @@ def predictive_conflicts(states, game, code_by_state):
             outcomes = defaultdict(list)
             for s in members:
                 nxt = game.raw_step(s, action)
-                outcomes[code_by_state[nxt]].append(s)
+                outcomes[truth_class[nxt]].append(s)
             total_repeated_state_actions += len(members)
             if len(outcomes) > 1:
                 conflict_groups += 1
@@ -142,11 +179,12 @@ def predictive_conflicts(states, game, code_by_state):
                 if len(examples) < 4:
                     examples.append(dict(group_size=len(members), action=action,
                                          outcome_count=len(outcomes)))
-    alias_states=sum(len(v) for v in groups.values() if len(v)>1)
+    alias_states=sum(len(v) for v in groups.values()
+                     if len({truth_class[s] for s in v})>1)
     total_state_actions=len(states)*len(ACTIONS)
     return dict(
         groups=len(groups),
-        alias_groups=sum(len(v)>1 for v in groups.values()),
+        alias_groups=sum(len({truth_class[s] for s in v})>1 for v in groups.values()),
         alias_states=alias_states,
         alias_state_fraction=alias_states/max(1,len(states)),
         max_alias=max(map(len, groups.values()), default=0),
@@ -162,7 +200,7 @@ def predictive_conflicts(states, game, code_by_state):
     )
 
 
-def active_offset_depth(states, codes):
+def active_offset_depth(states, codes, truth_class):
     base_groups = defaultdict(list)
     for s in states:
         base_groups[codes[s][(0,0)]].append(s)
@@ -170,14 +208,14 @@ def active_offset_depth(states, codes):
     depth_counts = Counter()
     unresolved = 0
     for members in base_groups.values():
-        if len(members) <= 1:
+        if len({truth_class[s] for s in members}) <= 1:
             depth_counts[0] += len(members)
             continue
         for target in members:
             candidates = set(members)
             remaining = [(2,0),(0,2),(2,2)]
             depth = 0
-            while len(candidates) > 1 and remaining:
+            while len({truth_class[s] for s in candidates}) > 1 and remaining:
                 # Generic minimax split: no fixed preferred offset.
                 scored = []
                 for off in remaining:
@@ -188,12 +226,13 @@ def active_offset_depth(states, codes):
                 target_code = codes[target][chosen]
                 candidates = {s for s in candidates if codes[s][chosen] == target_code}
                 depth += 1
-            if len(candidates) == 1:
+            if len({truth_class[s] for s in candidates}) == 1:
                 depth_counts[depth] += 1
             else:
                 unresolved += 1
     total = len(states)
-    initial_ambiguous=sum(len(v) for v in base_groups.values() if len(v)>1)
+    initial_ambiguous=sum(len(v) for v in base_groups.values()
+                          if len({truth_class[s] for s in v})>1)
     resolved_from_ambiguous=initial_ambiguous-unresolved
     mean_depth = sum(k*v for k,v in depth_counts.items()) / max(1, total)
     return dict(depth_histogram=dict(sorted(depth_counts.items())),
@@ -209,6 +248,7 @@ def audit_world(seed):
     game = PhysicsArena3D(seed, "state_opaque")
     states = reachable(game)
     screens = {s: gray_screen(game, s) for s in states}
+    truth_class, refinement_depth = predictive_partition(states, game, screens)
 
     base_codes = {s: quantize(sample(screens[s], (0,0)), 3) for s in states}
     micro_codes = {s: quantize(microscan(screens[s]), 3) for s in states}
@@ -235,14 +275,14 @@ def audit_world(seed):
         baseline_hf_error.append(abs(high_frequency_energy(base)-target_energy))
         micro_hf_error.append(abs(high_frequency_energy(micro)-target_energy))
 
-    changed = self_loops = 0
+    changed = unchanged = 0
     base_detect = mag_detect = phase_detect = 0
     base_false = mag_false = phase_false = 0
     spectral_samples = []
     for s in states:
         for action in ACTIONS:
             nxt = game.raw_step(s, action)
-            state_changed = nxt != s
+            state_changed = truth_class[nxt] != truth_class[s]
             base_changed = base_codes[nxt] != base_codes[s]
             mchange, pchange = spectral_change(microscan(screens[s]), microscan(screens[nxt]))
             mag_changed = mchange > 1e-12
@@ -253,7 +293,7 @@ def audit_world(seed):
                 mag_detect += mag_changed
                 phase_detect += phase_changed
             else:
-                self_loops += 1
+                unchanged += 1
                 base_false += base_changed
                 mag_false += mag_changed
                 phase_false += phase_changed
@@ -274,19 +314,21 @@ def audit_world(seed):
             micro_high_frequency_energy_abs_error_mean=float(np.mean(micro_hf_error)),
         ),
         predictive_aliasing=dict(
-            base=predictive_conflicts(states, game, base_codes),
-            micro=predictive_conflicts(states, game, micro_codes),
-            base_plus_spectrum=predictive_conflicts(states, game, spectral_codes),
+            predictive_classes=len(set(truth_class.values())),
+            refinement_depth=refinement_depth,
+            base=predictive_conflicts(states, game, base_codes, truth_class),
+            micro=predictive_conflicts(states, game, micro_codes, truth_class),
+            base_plus_spectrum=predictive_conflicts(states, game, spectral_codes, truth_class),
         ),
-        active_microscan=active_offset_depth(states, offset_codes),
+        active_microscan=active_offset_depth(states, offset_codes, truth_class),
         action_effect_detection=dict(
-            changed_transitions=changed, self_loops=self_loops,
+            predictive_changed_transitions=changed, predictive_unchanged_transitions=unchanged,
             base_detect_rate=base_detect/max(1,changed),
             magnitude_detect_rate=mag_detect/max(1,changed),
             phase_detect_rate=phase_detect/max(1,changed),
-            base_false_positive_rate=base_false/max(1,self_loops),
-            magnitude_false_positive_rate=mag_false/max(1,self_loops),
-            phase_false_positive_rate=phase_false/max(1,self_loops),
+            base_false_positive_rate=base_false/max(1,unchanged),
+            magnitude_false_positive_rate=mag_false/max(1,unchanged),
+            phase_false_positive_rate=phase_false/max(1,unchanged),
             samples=spectral_samples,
         ),
     )
