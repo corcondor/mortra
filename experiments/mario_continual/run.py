@@ -91,6 +91,9 @@ class ContinualMario:
             self.replay_frames = saved["replay_frames"]
             self.replays = saved["replays"]
             self.first_clear = saved.get("first_clear")
+            self.program_context_counts = saved.get("program_context_counts", Counter())
+            self.program_use_counts = saved.get("program_use_counts", Counter())
+            self.program_complete_counts = saved.get("program_complete_counts", Counter())
         else:
             self.vision = LiveRGBRegistry(device=args.device)
             self.memory = PredictiveRegistry(12)
@@ -103,6 +106,9 @@ class ContinualMario:
             self.replay_frames = 0
             self.replays = 0
             self.first_clear = None
+            self.program_context_counts = Counter()
+            self.program_use_counts = Counter()
+            self.program_complete_counts = Counter()
 
         self.frontier = VirtualFrontierPolicy(task_aware=False, task_source=False)
         self.planner = ProductPlanner(q=.90)
@@ -124,6 +130,9 @@ class ContinualMario:
             primitive_actions=self.primitive_actions,
             replay_frames=self.replay_frames, replays=self.replays,
             first_clear=self.first_clear,
+            program_context_counts=self.program_context_counts,
+            program_use_counts=self.program_use_counts,
+            program_complete_counts=self.program_complete_counts,
         )
         save_checkpoint(self.checkpoint_path, state)
         summary = self.summary(reason)
@@ -146,6 +155,11 @@ class ContinualMario:
             learned_tools=len(self.tools.records),
             reused_tools=sum(e["event"] == "tool_reused" for e in self.tools.events),
             refuted_tools=sum(e["event"] == "tool_counterexample" for e in self.tools.events),
+            unique_programs=len(self.learned_programs()),
+            transferred_programs=sum(count > 0 for count in self.program_use_counts.values()),
+            program_transfer_invocations=sum(self.program_use_counts.values()),
+            program_transfer_completions=sum(self.program_complete_counts.values()),
+            tool_policy=self.args.tool_policy,
             first_clear=self.first_clear,
             accelerator=device_info(self.args.device),
             wall_seconds=time.monotonic() - self.started,
@@ -278,6 +292,92 @@ class ContinualMario:
             choices.append((len(expansion), token))
         return max(choices)[1] if choices else None
 
+    def learned_programs(self):
+        """Return one canonical token per distinct executable primitive word.
+
+        A program is code, not a state-specific behavioural claim. The legacy
+        tool records may contain the same primitive word under many exact-state
+        guards; deduplicating by expansion separates executable identity from
+        those context certificates.
+        """
+        programs = {}
+        for token in sorted(self.tools.records):
+            actions = tuple(self.tools.flatten_token(token))
+            if len(actions) < 2:
+                continue
+            programs.setdefault(actions, token)
+        return programs
+
+    def choose_transfer_program(self, belief, preferred_action):
+        """Choose an untried learned program as a macro frontier option.
+
+        The base MORTRA policy still chooses the first primitive action. A
+        learned program may extend that action in a new predictive state, but
+        only once per (state, program) until new evidence is available. This
+        is the count-frontier analogue for learned action words and contains no
+        Mario-specific feature or direction heuristic.
+        """
+        if self.args.tool_policy != "program_frontier" or belief is None:
+            return None
+        q = belief.resolved_state
+        if q is None:
+            return None
+        candidates = []
+        for actions, token in self.learned_programs().items():
+            if actions[0] != int(preferred_action):
+                continue
+            if self.program_context_counts[(q, actions)] != 0:
+                continue
+            global_uses = self.program_use_counts[actions]
+            # Count uncertainty first; longer programs only break equal-count
+            # ties, because they test a strictly longer future action word.
+            candidates.append((global_uses, -len(actions), actions, token))
+        if not candidates:
+            return None
+        _, _, actions, token = min(candidates)
+        return token, actions
+
+    def run_transfer_program(self, token, actions, port, history, belief):
+        """Execute program code in a new context without importing old states.
+
+        The old record's expected-state sequence is evidence about the context
+        in which that record was learned; it is deliberately *not* assumed in a
+        new state. The primitive word itself is exact executable semantics.
+        Every step still passes through one_primitive, so predictive-state and
+        visual evidence continue to be updated online.
+        """
+        q = None if belief is None else belief.resolved_state
+        if q is None:
+            return None, belief, False
+        actions = tuple(int(a) for a in actions)
+        self.program_context_counts[(q, actions)] += 1
+        self.program_use_counts[actions] += 1
+        self.emit("program_transfer_invoked", tool=token, source_state=q,
+                  actions=list(actions), global_uses=self.program_use_counts[actions])
+        current = belief
+        packet = None
+        executed = []
+        for action in actions:
+            packet, target = self.one_primitive(
+                port, history, current, action, "learned_program_transfer")
+            executed.append(int(action))
+            if target is None:
+                self.emit("program_transfer_stopped", tool=token, source_state=q,
+                          actions=list(actions), executed=executed,
+                          status="UNRESOLVED_VISUAL")
+                return packet, current, True
+            current = target
+            if packet["kind"] == "terminal":
+                break
+        completed = len(executed) == len(actions)
+        if completed:
+            self.program_complete_counts[actions] += 1
+        self.emit("program_transfer_completed" if completed else "program_transfer_stopped",
+                  tool=token, source_state=q, actions=list(actions),
+                  executed=executed, status=packet.get("status") if packet else None,
+                  target_state=current.resolved_state if current is not None else None)
+        return packet, current, True
+
     def one_primitive(self, port, history, belief, action, reason):
         source_history = tuple(history)
         _, packet = port.step(action)
@@ -337,6 +437,8 @@ class ContinualMario:
         return packet, current, True
 
     def limits_reached(self):
+        if self.args.max_primitive_actions and self.primitive_actions >= self.args.max_primitive_actions:
+            return "infrastructure_primitive_action_limit"
         if self.args.max_decisions and self.decisions >= self.args.max_decisions:
             return "infrastructure_decision_limit"
         if self.args.max_episodes and self.episodes >= self.args.max_episodes:
@@ -379,12 +481,18 @@ class ContinualMario:
                     action, reason = self.choose_primitive(belief)
                     self.decisions += 1
 
-                    token = self.matching_tool(belief, action)
-                    if token is not None:
-                        packet, belief, used = self.run_tool(token, port, history, belief)
+                    transfer = self.choose_transfer_program(belief, action)
+                    if transfer is not None:
+                        token, actions = transfer
+                        packet, belief, used = self.run_transfer_program(
+                            token, actions, port, history, belief)
                     else:
-                        packet, belief = self.one_primitive(
-                            port, history, belief, action, reason)
+                        token = self.matching_tool(belief, action) if self.args.tool_policy == "legacy" else None
+                        if token is not None:
+                            packet, belief, used = self.run_tool(token, port, history, belief)
+                        else:
+                            packet, belief = self.one_primitive(
+                                port, history, belief, action, reason)
 
                     if self.primitive_actions % self.args.checkpoint_every == 0:
                         self.checkpoint("periodic")
@@ -432,7 +540,10 @@ def parse_args():
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto",
                         help="CUDA accelerates RGB statistics/FFT only; core graph reasoning remains CPU")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--tool-policy", choices=("legacy", "program_frontier"), default="legacy",
+                        help="legacy exact-state guard or learned-program macro frontier")
     # Zero means no algorithmic stop. These are infrastructure escape hatches.
+    parser.add_argument("--max-primitive-actions", type=int, default=0)
     parser.add_argument("--max-decisions", type=int, default=0)
     parser.add_argument("--max-episodes", type=int, default=0)
     parser.add_argument("--max-wall-seconds", type=float, default=0.)
