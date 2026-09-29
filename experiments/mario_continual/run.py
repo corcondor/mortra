@@ -229,7 +229,7 @@ class ContinualMario:
         chain = self.recent[-max_len:]
         for length in range(2, min(max_len, len(chain)) + 1):
             segment = chain[-length:]
-            if any(segment[i][2] != segment[i+1][0] for i in range(len(segment)-1):
+            if any(segment[i][2] != segment[i+1][0] for i in range(len(segment)-1)):
                 continue
             start = segment[0][0]
             actions = tuple(item[1] for item in segment)
