@@ -78,7 +78,7 @@ def test_active_probe_is_selected_by_separation_not_fixed_action_name():
 
     # Relabel the actions so only action 1 separates. The selector must follow
     # the observed separation, not a baked-in "forward" action.
-    transitions_b = [[0, 2], [2, 1], [1, 0]]
+    transitions_b = [[0, 2], [1, 1], [1, 0]]
     learner_b = DirectPredictiveLearner(ExactEvidence(transitions_b, observations), (0, 1))
     learner_b.reps = [(), (1, 0)]
     assert {learner_b.evidence.at(h) for h in learner_b.reps} == {0, 1}
