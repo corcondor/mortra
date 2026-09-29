@@ -1,0 +1,117 @@
+name: MORTRA learned-program frontier experiment
+
+on:
+  workflow_dispatch:
+    inputs:
+      primitive_actions:
+        description: Equal primitive-action budget per policy
+        required: false
+        default: '15000'
+  push:
+    branches: ['research/mortra-forward-integration-20260929']
+    paths:
+      - 'experiments/mario_continual/run.py'
+      - 'experiments/mario_continual/compare_tool_policies.py'
+      - 'tests/test_mario_continual.py'
+      - '.github/workflows/mortra-program-frontier-experiment.yml'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  real-mario:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [legacy, program_frontier]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth
+          python -m pip install numpy==1.26.4 Pillow==11.3.0 scipy==1.17.1 psutil==7.0.0 pytest==8.4.1
+      - name: Regression tests
+        run: python -m pytest -q tests/test_mario_continual.py tests/test_continual_tools.py
+      - name: Compile pinned Mario framework
+        run: python -m experiments.mario_continual.setup_game
+      - name: Run real Mario at equal primitive-action budget
+        shell: bash
+        run: |
+          BUDGET='${{ inputs.primitive_actions || '15000' }}'
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.run \
+              --game-dir experiments/mario_continual/game \
+              --build-dir experiments/mario_continual/build \
+              --bridge-source experiments/mario_continual/java/MortraBridge.java \
+              --level levels/notch/lvl-1.txt \
+              --output policy-run \
+              --device cpu \
+              --tool-policy '${{ matrix.mode }}' \
+              --max-primitive-actions "$BUDGET" \
+              --checkpoint-every 5000
+      - name: Verify run receipt
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          root=pathlib.Path('policy-run')
+          status=json.loads((root/'status.json').read_text())
+          assert status['tool_policy'] == '${{ matrix.mode }}', status
+          assert status['primitive_actions'] > 0, status
+          assert (root/'events.jsonl').stat().st_size > 0
+          assert not list(root.rglob('*.png')), 'PNG transport reappeared'
+          print(json.dumps(status,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tool-policy-${{ matrix.mode }}-${{ github.run_id }}
+          path: |
+            policy-run/status.json
+            policy-run/events.jsonl
+            policy-run/FIRST_CLEAR.json
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 30
+
+  compare:
+    needs: real-mario
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: tool-policy-*-${{ github.run_id }}
+          path: downloaded
+      - name: Compare measured outcomes
+        run: |
+          python -m experiments.mario_continual.compare_tool_policies \
+            --legacy downloaded/tool-policy-legacy-${{ github.run_id }}/policy-run \
+            --program-frontier downloaded/tool-policy-program_frontier-${{ github.run_id }}/policy-run \
+            --output PROGRAM_FRONTIER_COMPARISON.json
+          cat PROGRAM_FRONTIER_COMPARISON.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: program-frontier-comparison-${{ github.run_id }}
+          path: PROGRAM_FRONTIER_COMPARISON.json
+          retention-days: 30
