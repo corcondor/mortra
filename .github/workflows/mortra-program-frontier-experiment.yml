@@ -54,7 +54,7 @@ jobs:
       - name: Run real Mario at equal primitive-action budget
         shell: bash
         run: |
-          BUDGET='${{ inputs.primitive_actions || '15000' }}'
+          BUDGET='${{ inputs.primitive_actions || '50000' }}'
           xvfb-run -a -s '-screen 0 1280x1024x24' \
             python -m experiments.mario_continual.run \
               --game-dir experiments/mario_continual/game \
