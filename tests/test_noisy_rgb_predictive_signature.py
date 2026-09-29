@@ -1,4 +1,6 @@
 from experiments.noisy_rgb_predictive_signature.core import DirectPredictiveLearner
+from experiments.noisy_rgb_predictive_signature.adapter import PredictiveGraphAdapter
+from experiments.task_agent.core import ProductPlanner, SequenceTask, ExactState
 from experiments.noisy_rgb_version_space.core import SAME, DIFFERENT
 
 
@@ -83,3 +85,26 @@ def test_active_probe_is_selected_by_separation_not_fixed_action_name():
     learner_b.reps = [(), (1, 0)]
     assert {learner_b.evidence.at(h) for h in learner_b.reps} == {0, 1}
     assert learner_b.choose_identification_probe({0, 1}, set(), 32) == 1
+
+
+def test_predictive_quotient_drives_existing_product_planner_without_core_rewrite():
+    model = {
+        "reps": [(), (0,), (0, 1)],
+        "trans": {
+            (0, 0): 1, (0, 1): 0,
+            (1, 0): 0, (1, 1): 2,
+            (2, 0): 2, (2, 1): 2,
+        },
+    }
+    graph = PredictiveGraphAdapter(model, 2)
+    start = graph.state_token(0)
+    goal = graph.state_token(2)
+    task = SequenceTask([ExactState(goal)])
+    planner = ProductPlanner(q=.90)
+    built = planner.build(graph, task, start, task.initial_memory)
+    action = planner.choose_action(graph, task, start, task.initial_memory, built)
+    assert action == 0
+    next_state = graph.state_token(model["trans"][0, action])
+    action2 = planner.choose_action(
+        graph, task, next_state, task.advance(task.initial_memory, next_state))
+    assert action2 == 1
