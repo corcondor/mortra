@@ -153,3 +153,66 @@ def test_runner_learns_matches_and_executes_tool_without_bypassing_evidence():
     assert runner.tools.records[token]["status"] == "reused"
     assert any(event == "tool_invoked" for event, _ in runner.events)
     assert any(e["event"] == "tool_reused" for e in runner.tools.events)
+
+
+def test_program_frontier_reuses_action_word_across_exact_state_guards():
+    runner = object.__new__(ContinualMario)
+    runner.args = SimpleNamespace(tool_policy="program_frontier")
+    runner.tools = ProgramLibrary(3)
+    runner.program_context_counts = Counter()
+    runner.program_use_counts = Counter()
+    runner.program_complete_counts = Counter()
+
+    # Same executable word learned in two exact contexts. Legacy records are
+    # distinct, but the program frontier must expose one program identity.
+    t0 = runner.tools.register((1, 2), guard=10, expected_states=(11, 12),
+                               source="repeated_resolved_transition")
+    t1 = runner.tools.register((1, 2), guard=20, expected_states=(21, 22),
+                               source="repeated_resolved_transition")
+    assert t0 != t1
+    assert len(runner.learned_programs()) == 1
+
+    novel = PredictiveBelief("novel", (99,), False)
+    chosen = runner.choose_transfer_program(novel, 1)
+    assert chosen is not None
+    token, actions = chosen
+    assert actions == (1, 2)
+    assert token in (t0, t1)
+    # It is a frontier option: once tried at this state, it is not repeatedly
+    # forced there.
+    runner.program_context_counts[(99, actions)] += 1
+    assert runner.choose_transfer_program(novel, 1) is None
+
+
+def test_transfer_program_keeps_code_and_context_evidence_separate():
+    runner = object.__new__(ContinualMario)
+    runner.args = SimpleNamespace(tool_policy="program_frontier")
+    runner.tools = ProgramLibrary(3)
+    token = runner.tools.register((1, 2), guard=0, expected_states=(1, 2),
+                                  source="repeated_resolved_transition")
+    runner.program_context_counts = Counter()
+    runner.program_use_counts = Counter()
+    runner.program_complete_counts = Counter()
+    runner.events = []
+    runner.emit = lambda event, **values: runner.events.append((event, values))
+
+    outcomes = [
+        ({"kind":"observation","frame":1}, PredictiveBelief("X",(7,),False)),
+        ({"kind":"observation","frame":2}, PredictiveBelief("Y",(8,),False)),
+    ]
+    def one_primitive(self, port, history, belief, action, reason):
+        history.append(action)
+        assert reason == "learned_program_transfer"
+        return outcomes.pop(0)
+    runner.one_primitive = MethodType(one_primitive, runner)
+
+    source = PredictiveBelief("A", (99,), False)
+    packet, target, used = runner.run_transfer_program(
+        token, (1,2), object(), [], source)
+    assert used and packet["frame"] == 2 and target.resolved_state == 8
+    assert runner.program_use_counts[(1,2)] == 1
+    assert runner.program_complete_counts[(1,2)] == 1
+    # The old certificate was about guard 0. Executing the same code at state
+    # 99 must not incorrectly refute that certificate.
+    assert runner.tools.records[token]["status"] == "candidate"
+    assert not any(e["event"] == "tool_counterexample" for e in runner.tools.events)
