@@ -142,15 +142,22 @@ def predictive_conflicts(states, game, code_by_state):
                 if len(examples) < 4:
                     examples.append(dict(group_size=len(members), action=action,
                                          outcome_count=len(outcomes)))
+    alias_states=sum(len(v) for v in groups.values() if len(v)>1)
+    total_state_actions=len(states)*len(ACTIONS)
     return dict(
         groups=len(groups),
         alias_groups=sum(len(v)>1 for v in groups.values()),
+        alias_states=alias_states,
+        alias_state_fraction=alias_states/max(1,len(states)),
         max_alias=max(map(len, groups.values()), default=0),
         conflict_group_actions=conflict_groups,
         conflict_state_actions=conflict_state_actions,
+        total_state_actions=total_state_actions,
         repeated_state_actions=total_repeated_state_actions,
-        conflict_fraction=(conflict_state_actions/total_repeated_state_actions
-                           if total_repeated_state_actions else 0.0),
+        conflict_fraction_within_repeated=(
+            conflict_state_actions/total_repeated_state_actions
+            if total_repeated_state_actions else 0.0),
+        conflict_fraction_all=conflict_state_actions/max(1,total_state_actions),
         examples=examples,
     )
 
@@ -186,8 +193,13 @@ def active_offset_depth(states, codes):
             else:
                 unresolved += 1
     total = len(states)
+    initial_ambiguous=sum(len(v) for v in base_groups.values() if len(v)>1)
+    resolved_from_ambiguous=initial_ambiguous-unresolved
     mean_depth = sum(k*v for k,v in depth_counts.items()) / max(1, total)
     return dict(depth_histogram=dict(sorted(depth_counts.items())),
+                initial_ambiguous_states=initial_ambiguous,
+                resolved_from_ambiguous=resolved_from_ambiguous,
+                resolution_rate=(resolved_from_ambiguous/max(1,initial_ambiguous)),
                 unresolved_states=unresolved, total_states=total,
                 mean_extra_offsets=mean_depth,
                 max_resolved_depth=max(depth_counts, default=0))
@@ -301,14 +313,21 @@ def aggregate(rows):
             micro_high_frequency_error_mean=mean(("reconstruction","micro_high_frequency_energy_abs_error_mean")),
         ),
         predictive_aliasing=dict(
-            base_conflict_fraction=mean(("predictive_aliasing","base","conflict_fraction")),
-            micro_conflict_fraction=mean(("predictive_aliasing","micro","conflict_fraction")),
-            spectral_conflict_fraction=mean(("predictive_aliasing","base_plus_spectrum","conflict_fraction")),
+            base_conflict_fraction_all=mean(("predictive_aliasing","base","conflict_fraction_all")),
+            micro_conflict_fraction_all=mean(("predictive_aliasing","micro","conflict_fraction_all")),
+            spectral_conflict_fraction_all=mean(("predictive_aliasing","base_plus_spectrum","conflict_fraction_all")),
+            base_alias_state_fraction=mean(("predictive_aliasing","base","alias_state_fraction")),
+            micro_alias_state_fraction=mean(("predictive_aliasing","micro","alias_state_fraction")),
+            spectral_alias_state_fraction=mean(("predictive_aliasing","base_plus_spectrum","alias_state_fraction")),
             base_alias_groups=sum(r["predictive_aliasing"]["base"]["alias_groups"] for r in rows),
             micro_alias_groups=sum(r["predictive_aliasing"]["micro"]["alias_groups"] for r in rows),
             spectral_alias_groups=sum(r["predictive_aliasing"]["base_plus_spectrum"]["alias_groups"] for r in rows),
         ),
         active_microscan=dict(
+            initial_ambiguous_states=sum(r["active_microscan"]["initial_ambiguous_states"] for r in rows),
+            resolved_from_ambiguous=sum(r["active_microscan"]["resolved_from_ambiguous"] for r in rows),
+            resolution_rate=(sum(r["active_microscan"]["resolved_from_ambiguous"] for r in rows)/
+                             max(1,sum(r["active_microscan"]["initial_ambiguous_states"] for r in rows))),
             unresolved_states=sum(r["active_microscan"]["unresolved_states"] for r in rows),
             mean_extra_offsets=mean(("active_microscan","mean_extra_offsets")),
             max_resolved_depth=max(r["active_microscan"]["max_resolved_depth"] for r in rows),
