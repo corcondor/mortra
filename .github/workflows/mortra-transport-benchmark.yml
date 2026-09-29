@@ -1,0 +1,48 @@
+name: MORTRA transport benchmark
+
+on:
+  push:
+    branches: ['research/mortra-forward-integration-20260929']
+    paths:
+      - 'experiments/mario_continual/java/MortraBridge.java'
+      - 'experiments/mario_continual/port.py'
+      - 'experiments/mario_continual/benchmark_transport.py'
+      - '.github/workflows/mortra-transport-benchmark.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth
+          python -m pip install numpy==1.26.4 Pillow==11.3.0
+      - run: python -m experiments.mario_continual.setup_game
+      - run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.benchmark_transport \
+              --game-dir experiments/mario_continual/game \
+              --build-dir experiments/mario_continual/build \
+              --bridge-source experiments/mario_continual/java/MortraBridge.java \
+              --level levels/notch/lvl-1.txt \
+              --output transport-benchmark \
+              --samples 64
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: transport-benchmark-${{ github.run_id }}
+          path: transport-benchmark
+          retention-days: 30
