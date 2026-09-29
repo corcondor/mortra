@@ -1,9 +1,8 @@
-"""Live Mario RGB transport.
+"""Live Mario RGB transport using raw RGB batches.
 
-SNAP is a true repeated screen capture while the Java agent callback is blocked;
-it does not advance the game.  STEP is the only command that advances game time.
-No position, tile grid, enemy list, completion percentage or forward-model clone
-is exposed to the learner.
+The Java bridge writes uncompressed RGB bytes.  This avoids PNG encode/decode
+and allows repeated observations to cross the Java/Python boundary in one batch.
+SNAP/SNAPN never advance game time; STEP is the only advancing command.
 """
 from __future__ import annotations
 
@@ -14,7 +13,6 @@ import threading
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 
 BUTTON_MASKS = (0, 1, 2, 16, 17, 18, 8, 9, 10, 24, 25, 26)
 
@@ -39,8 +37,10 @@ class MarioRGBPort:
         self.process = None
         self.last_packet = None
         self.last_image = None
+        self.last_batch = None
         self.primitive_frames = 0
         self.snapshots = 0
+        self.batch_commands = 0
         self.actions = []
 
     def _pump(self):
@@ -50,6 +50,28 @@ class MarioRGBPort:
         finally:
             self.lines.put(None)
 
+    def _load_raw(self, packet):
+        image_path = Path(packet["rgb_file"]).resolve()
+        if self.output not in image_path.parents:
+            raise MarioProtocolError("RGB path outside run directory")
+        width = int(packet["width"])
+        height = int(packet["height"])
+        count = int(packet.get("count", 1))
+        expected = count * height * width * 3
+        data = np.fromfile(image_path, dtype=np.uint8, count=expected)
+        if data.size != expected:
+            raise MarioProtocolError(
+                f"RGB byte count mismatch: expected {expected}, got {data.size}")
+        batch = data.reshape(count, height, width, 3)
+        # Detach from any temporary file-backed lifetime before deleting the file.
+        batch = np.ascontiguousarray(batch)
+        if not self.keep_frames:
+            image_path.unlink(missing_ok=True)
+        self.snapshots += count
+        self.last_batch = batch
+        self.last_image = batch[-1]
+        return batch
+
     def _read(self):
         try:
             line = self.lines.get(timeout=120)
@@ -58,22 +80,16 @@ class MarioRGBPort:
         if line is None:
             raise MarioProtocolError("Mario bridge EOF")
         packet = json.loads(line)
-        if packet["kind"] == "observation":
-            image_path = Path(packet["rgb_file"]).resolve()
-            if self.output not in image_path.parents:
-                raise MarioProtocolError("RGB path outside run directory")
-            with Image.open(image_path) as image:
-                self.last_image = np.asarray(image.convert("RGB"), dtype=np.uint8)
-            if not self.keep_frames:
-                image_path.unlink(missing_ok=True)
-            self.snapshots += 1
-        elif packet["kind"] == "terminal":
+        kind = packet["kind"]
+        if kind in ("observation", "observation_batch"):
+            self._load_raw(packet)
+            if kind == "observation_batch":
+                self.batch_commands += 1
+        elif kind in ("terminal", "aborted"):
             # Terminal messages do not fabricate a new RGB observation.
             pass
-        elif packet["kind"] == "aborted":
-            pass
         else:
-            raise MarioProtocolError(f"unknown bridge packet {packet['kind']}")
+            raise MarioProtocolError(f"unknown bridge packet {kind}")
         self.last_packet = packet
         return packet
 
@@ -100,7 +116,7 @@ class MarioRGBPort:
         return self.last_image.copy(), packet
 
     def snap(self):
-        """Recapture the exact currently blocked game state without stepping."""
+        """Recapture one blocked game frame without stepping."""
         if self.process is None or self.process.poll() is not None:
             raise MarioProtocolError("episode is not running")
         frame = self.last_packet["frame"]
@@ -112,15 +128,35 @@ class MarioRGBPort:
         return self.last_image.copy(), packet
 
     def repeated_observation(self, samples):
+        """Return N same-frame captures with one Java round-trip.
+
+        The current observation already counts as sample 0.  One SNAPN command
+        obtains the remaining N-1 captures in a single raw file.
+        """
+        samples = int(samples)
         if samples < 1:
             raise ValueError("samples must be positive")
-        images = [self.last_image.copy()]
-        packets = [dict(self.last_packet)]
-        while len(images) < samples:
-            image, packet = self.snap()
-            images.append(image)
-            packets.append(packet)
-        return np.stack(images), packets
+        if self.last_image is None:
+            raise MarioProtocolError("no current observation")
+        if samples == 1:
+            return self.last_image[None, ...].copy(), [dict(self.last_packet)]
+
+        frame = int(self.last_packet["frame"])
+        first = self.last_image.copy()
+        self.process.stdin.write(f"SNAPN {samples-1}\n")
+        self.process.stdin.flush()
+        packet = self._read()
+        if packet["kind"] != "observation_batch" or int(packet["frame"]) != frame:
+            raise MarioProtocolError("SNAPN advanced or lost the source frame")
+        if self.last_batch is None or len(self.last_batch) != samples-1:
+            raise MarioProtocolError("SNAPN returned wrong batch size")
+        images = np.concatenate((first[None, ...], self.last_batch), axis=0)
+        packets = [dict(self.last_packet, kind="observation", count=1)] + [
+            dict(packet, batch_index=i) for i in range(samples-1)
+        ]
+        # Keep the semantic current observation as the most recent captured frame.
+        self.last_image = images[-1]
+        return images, packets
 
     def step(self, action, frames=None):
         if self.process is None or self.process.poll() is not None:
@@ -154,5 +190,8 @@ class MarioRGBPort:
         self.stderr.close()
 
     def metrics(self):
-        return dict(primitive_frames=self.primitive_frames,
-                    snapshots=self.snapshots, primitive_actions=len(self.actions))
+        return dict(
+            primitive_frames=self.primitive_frames,
+            snapshots=self.snapshots,
+            batch_commands=self.batch_commands,
+            primitive_actions=len(self.actions))
