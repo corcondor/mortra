@@ -40,6 +40,7 @@ class PredictiveRegistry:
         self.observation_states = defaultdict(set)
         self.events = []
         self.goal_states = set()
+        self.structure_version = 0
 
     @staticmethod
     def state_token(q):
@@ -53,6 +54,7 @@ class PredictiveRegistry:
         self.state_observation.append(observation)
         self.representative_history.append(tuple(history))
         self.observation_states[observation].add(q)
+        self.structure_version = getattr(self, "structure_version", 0) + 1
         self.events.append(dict(event="predictive_state_added", state=q,
                                 observation=observation, history=list(history),
                                 reason=reason))
@@ -66,10 +68,15 @@ class PredictiveRegistry:
     def record_transition(self, u, action, v):
         u, action, v = int(u), int(action), int(v)
         key = (u, action)
+        old_dest = self.dest_map.get(key)
+        was_known = key in self.counts
         self.action_visits[key] += 1
         row = self.counts.setdefault(key, {})
         row[v] = row.get(v, 0) + 1
-        self.dest_map[key] = max(row.items(), key=lambda item: (item[1], -item[0]))[0]
+        new_dest = max(row.items(), key=lambda item: (item[1], -item[0]))[0]
+        self.dest_map[key] = new_dest
+        if not was_known or old_dest != new_dest:
+            self.structure_version = getattr(self, "structure_version", 0) + 1
 
     def belief(self, observation, history):
         states = sorted(self.observation_states.get(observation, ()))
