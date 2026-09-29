@@ -7,9 +7,11 @@ on:
       - 'experiments/noisy_rgb_discovery/**'
       - 'experiments/noisy_rgb_version_space/**'
       - 'experiments/noisy_rgb_predictive_signature/**'
+      - 'experiments/continual_tools/**'
       - 'tests/test_noisy_rgb_discovery.py'
       - 'tests/test_noisy_rgb_version_space.py'
       - 'tests/test_noisy_rgb_predictive_signature.py'
+      - 'tests/test_continual_tools.py'
       - '.github/workflows/mortra-forward-integration.yml'
   workflow_dispatch:
 
@@ -37,6 +39,7 @@ jobs:
           tests/test_noisy_rgb_discovery.py
           tests/test_noisy_rgb_version_space.py
           tests/test_noisy_rgb_predictive_signature.py
+          tests/test_continual_tools.py
           --junitxml=forward-integration-tests.xml
       - uses: actions/upload-artifact@v4
         if: always()
