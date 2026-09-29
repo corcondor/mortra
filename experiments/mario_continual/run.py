@@ -500,7 +500,8 @@ class ContinualMario:
 
                 status = packet.get("status")
                 self.emit("episode_terminal", status=status,
-                          episode_primitive_frames=port.primitive_frames)
+                          episode_primitive_frames=port.primitive_frames,
+                          completion_audit_only=packet.get("completion_audit_only"))
                 if status == "WIN":
                     self.first_clear = dict(
                         episode=episode,
