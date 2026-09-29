@@ -27,7 +27,7 @@ class MarioRGBPort:
     action_count = len(BUTTON_MASKS)
 
     def __init__(self, game_dir, build_dir, bridge_source, level, output, *,
-                 seconds=60, frames_per_action=8):
+                 seconds=60, frames_per_action=8, keep_frames=False):
         self.game_dir = Path(game_dir).resolve()
         self.build_dir = Path(build_dir).resolve()
         self.bridge_source = Path(bridge_source).resolve()
@@ -35,6 +35,7 @@ class MarioRGBPort:
         self.output = Path(output).resolve()
         self.seconds = int(seconds)
         self.frames_per_action = int(frames_per_action)
+        self.keep_frames = bool(keep_frames)
         self.process = None
         self.last_packet = None
         self.last_image = None
@@ -61,7 +62,10 @@ class MarioRGBPort:
             image_path = Path(packet["rgb_file"]).resolve()
             if self.output not in image_path.parents:
                 raise MarioProtocolError("RGB path outside run directory")
-            self.last_image = np.asarray(Image.open(image_path).convert("RGB"), dtype=np.uint8)
+            with Image.open(image_path) as image:
+                self.last_image = np.asarray(image.convert("RGB"), dtype=np.uint8)
+            if not self.keep_frames:
+                image_path.unlink(missing_ok=True)
             self.snapshots += 1
         elif packet["kind"] == "terminal":
             # Terminal messages do not fabricate a new RGB observation.
