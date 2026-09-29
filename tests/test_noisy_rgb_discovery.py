@@ -131,3 +131,30 @@ def test_evaluation_truth_not_imported_by_core():
     from experiments.noisy_rgb_discovery import core
     assert not hasattr(core, 'truth')
     assert not hasattr(core, 'make_game')
+
+
+def test_shrinking_floor_matches_20260928_schedule_and_preserves_legacy_default():
+    # The legacy path remains byte-for-byte semantic default at n=32.
+    x = np.zeros((32, 1, 1, 1, 1), dtype=np.uint8)
+    y = np.full((32, 1, 1, 1, 1), 2, dtype=np.uint8)
+    port = RGBPort((0,), lambda history, rep: x if rep == 0 else y)
+    fixed = Statistics(port)
+    shrinking = Statistics(port, floor_mode='shrinking')
+    a, b = fixed.summary((), 0), fixed.summary((), 1)
+    assert fixed.effective_noise_floor(a, b) == pytest.approx(.01)
+    a2, b2 = shrinking.summary((), 0), shrinking.summary((), 1)
+    assert shrinking.effective_noise_floor(a2, b2) == pytest.approx(.01)
+    assert fixed.z(a, b) == pytest.approx(shrinking.z(a2, b2))
+
+    e512 = type(a)(a.mean, a.var, 512)
+    assert shrinking.effective_noise_floor(e512, e512) == pytest.approx(.01*(32/512)**.25)
+
+
+def test_exact_clean_zero_variance_is_not_a_calibration_error():
+    same = np.zeros((8, 1, 1, 1, 1), dtype=np.uint8)
+    other = np.full((8, 1, 1, 1, 1), 255, dtype=np.uint8)
+    stats = Statistics(RGBPort((0,), lambda h, rep: same if rep == 0 else other), noise_floor=0.)
+    a = stats.summary((), 0)
+    b = stats.summary((), 1)
+    assert stats.z(a, a) == 0.0
+    assert np.isinf(stats.z(a, b))
