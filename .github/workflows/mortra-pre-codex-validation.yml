@@ -1,0 +1,191 @@
+name: MORTRA pre-Codex validation
+
+on:
+  push:
+    branches: ['research/mortra-forward-integration-20260929']
+    paths:
+      - 'experiments/accelerator.py'
+      - 'experiments/continual_tools/**'
+      - 'experiments/mario_continual/**'
+      - 'experiments/noisy_rgb_discovery/**'
+      - 'experiments/noisy_rgb_version_space/**'
+      - 'experiments/noisy_rgb_predictive_signature/**'
+      - 'experiments/spectral_microscan_audit/**'
+      - 'experiments/task_agent/**'
+      - 'tests/test_accelerator.py'
+      - 'tests/test_continual_tools.py'
+      - 'tests/test_mario_continual.py'
+      - 'tests/test_noisy_rgb_discovery.py'
+      - 'tests/test_noisy_rgb_predictive_signature.py'
+      - 'tests/test_noisy_rgb_version_space.py'
+      - '.github/workflows/mortra-pre-codex-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install runtime dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth
+          python -m pip install numpy==1.26.4 Pillow==11.3.0 scipy==1.17.1 psutil==7.0.0 pytest==8.4.1
+      - name: Compile all changed Python modules
+        run: |
+          python -m compileall -q \
+            experiments/accelerator.py \
+            experiments/continual_tools \
+            experiments/mario_continual \
+            experiments/noisy_rgb_predictive_signature \
+            experiments/spectral_microscan_audit
+      - name: Run regression and integration unit tests
+        run: |
+          python -m pytest -q \
+            tests/test_accelerator.py \
+            tests/test_noisy_rgb_discovery.py \
+            tests/test_noisy_rgb_version_space.py \
+            tests/test_noisy_rgb_predictive_signature.py \
+            tests/test_continual_tools.py \
+            tests/test_mario_continual.py \
+            --junitxml=pre-codex-tests.xml
+      - name: Compile pinned real Mario framework and bridge
+        run: python -m experiments.mario_continual.setup_game
+      - name: Real-engine hash/mmap transport benchmark
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.benchmark_transport \
+              --game-dir experiments/mario_continual/game \
+              --build-dir experiments/mario_continual/build \
+              --bridge-source experiments/mario_continual/java/MortraBridge.java \
+              --level levels/notch/lvl-1.txt \
+              --output pre-codex-transport \
+              --samples 16
+      - name: Real Mario persistent-learning smoke A
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.run \
+              --game-dir experiments/mario_continual/game \
+              --build-dir experiments/mario_continual/build \
+              --bridge-source experiments/mario_continual/java/MortraBridge.java \
+              --level levels/notch/lvl-1.txt \
+              --output pre-codex-mario \
+              --device cpu \
+              --checkpoint-every 4 \
+              --max-decisions 12
+      - name: Verify first checkpoint is real and nonempty
+        run: |
+          python - <<'PY'
+          import json, pathlib, pickle
+          root=pathlib.Path('pre-codex-mario')
+          assert (root/'checkpoint.pkl').exists()
+          assert (root/'status.json').exists()
+          status=json.loads((root/'status.json').read_text())
+          assert status['decisions'] == 12, status
+          assert status['primitive_actions'] >= 12, status
+          assert status['predictive_states'] >= 1, status
+          assert status['observation_classes'] >= 1, status
+          assert list((root/'episodes').glob('episode_*')), status
+          state=pickle.loads((root/'checkpoint.pkl').read_bytes())
+          assert state['decisions'] == 12
+          assert len(state['vision'].prototypes) >= 1
+          assert len(state['memory'].id_to_state) >= 1
+          assert not list(root.rglob('*.png')), 'PNG transport reappeared'
+          print(json.dumps(status, indent=2))
+          PY
+      - name: Resume same MORTRA checkpoint in a new real game process
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.run \
+              --game-dir experiments/mario_continual/game \
+              --build-dir experiments/mario_continual/build \
+              --bridge-source experiments/mario_continual/java/MortraBridge.java \
+              --level levels/notch/lvl-1.txt \
+              --output pre-codex-mario \
+              --device cpu \
+              --checkpoint-every 4 \
+              --max-decisions 24 \
+              --resume
+      - name: Verify checkpoint/resume preserved and advanced memory
+        run: |
+          python - <<'PY'
+          import json, pathlib, pickle
+          root=pathlib.Path('pre-codex-mario')
+          status=json.loads((root/'status.json').read_text())
+          state=pickle.loads((root/'checkpoint.pkl').read_bytes())
+          assert status['decisions'] == 24, status
+          assert state['decisions'] == 24
+          assert status['primitive_actions'] >= 24, status
+          assert status['predictive_states'] >= 1, status
+          assert status['observation_classes'] >= 1, status
+          assert len(list((root/'episodes').glob('episode_*'))) >= 2
+          assert not list(root.rglob('*.png')), 'PNG transport reappeared'
+          print(json.dumps(status, indent=2))
+          PY
+      - name: Predictive/spectral audit on fresh worlds
+        run: |
+          python -m experiments.spectral_microscan_audit.run \
+            --output pre-codex-spectral \
+            --seed-start 99229000 \
+            --worlds 2 \
+            --device cpu
+      - name: Write validation manifest
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          files=[
+            'experiments/accelerator.py',
+            'experiments/mario_continual/java/MortraBridge.java',
+            'experiments/mario_continual/port.py',
+            'experiments/mario_continual/evidence.py',
+            'experiments/mario_continual/predictive.py',
+            'experiments/mario_continual/run.py',
+            'experiments/continual_tools/core.py',
+            'experiments/noisy_rgb_predictive_signature/core.py',
+            'experiments/spectral_microscan_audit/run.py',
+          ]
+          manifest={
+            'commit': subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip(),
+            'status': 'PRE_CODEX_CPU_AND_REAL_MARIO_VALIDATED',
+            'gpu_hardware_tested': False,
+            'gpu_note': 'GitHub hosted runner has no CUDA GPU; CPU/CUDA-kernel equivalence tests pass, T4 hardware remains a separate check.',
+            'files': {p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() for p in files},
+            'transport': json.loads(pathlib.Path('pre-codex-transport/result.json').read_text()),
+            'mario': json.loads(pathlib.Path('pre-codex-mario/status.json').read_text()),
+            'spectral': json.loads(pathlib.Path('pre-codex-spectral/result.json').read_text())['aggregate'],
+          }
+          pathlib.Path('PRE_CODEX_VALIDATION.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          print(json.dumps({k:v for k,v in manifest.items() if k!='files'},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pre-codex-validation-${{ github.run_id }}
+          path: |
+            PRE_CODEX_VALIDATION.json
+            pre-codex-tests.xml
+            pre-codex-transport/result.json
+            pre-codex-mario/status.json
+            pre-codex-mario/events.jsonl
+            pre-codex-spectral/result.json
+            experiments/mario_continual/setup_receipt.json
+            experiments/mario_continual/javac.log
+          retention-days: 30
