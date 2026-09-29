@@ -15,6 +15,7 @@ import pickle
 from pathlib import Path
 import time
 
+from experiments.accelerator import device_info
 from experiments.continual_tools import ProgramLibrary
 from experiments.mario_continual.evidence import LiveRGBRegistry
 from experiments.mario_continual.port import MarioRGBPort
@@ -79,6 +80,7 @@ class ContinualMario:
         if args.resume and self.checkpoint_path.exists():
             saved = load_checkpoint(self.checkpoint_path)
             self.vision = saved["vision"]
+            self.vision.device = args.device
             self.memory = saved["memory"]
             self.tools = saved["tools"]
             self.sequence_counts = saved["sequence_counts"]
@@ -90,7 +92,7 @@ class ContinualMario:
             self.replays = saved["replays"]
             self.first_clear = saved.get("first_clear")
         else:
-            self.vision = LiveRGBRegistry()
+            self.vision = LiveRGBRegistry(device=args.device)
             self.memory = PredictiveRegistry(12)
             self.tools = ProgramLibrary(12)
             self.sequence_counts = Counter()
@@ -143,6 +145,7 @@ class ContinualMario:
             reused_tools=sum(e["event"] == "tool_reused" for e in self.tools.events),
             refuted_tools=sum(e["event"] == "tool_counterexample" for e in self.tools.events),
             first_clear=self.first_clear,
+            accelerator=device_info(self.args.device),
             wall_seconds=time.monotonic() - self.started,
         )
 
@@ -409,6 +412,8 @@ def parse_args():
     parser.add_argument("--seconds", type=int, default=60)
     parser.add_argument("--frames-per-action", type=int, default=8)
     parser.add_argument("--checkpoint-every", type=int, default=100)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto",
+                        help="CUDA accelerates RGB statistics/FFT only; core graph reasoning remains CPU")
     parser.add_argument("--resume", action="store_true")
     # Zero means no algorithmic stop. These are infrastructure escape hatches.
     parser.add_argument("--max-decisions", type=int, default=0)
