@@ -106,6 +106,8 @@ class ContinualMario:
 
         self.frontier = VirtualFrontierPolicy(task_aware=False, task_source=False)
         self.planner = ProductPlanner(q=.90)
+        self._frontier_cache = {}
+        self._goal_cache = {}
         self.started = time.monotonic()
         self._event_handle = self.events_path.open("a", encoding="utf8", buffering=1)
 
@@ -205,16 +207,31 @@ class ContinualMario:
         q = belief.resolved_state
         if q is not None:
             token = self.memory.state_token(q)
+            version = getattr(self.memory, "structure_version", 0)
             if self.memory.goal_states:
-                goals = {self.memory.state_token(g) for g in self.memory.goal_states}
+                goal_ids = tuple(sorted(self.memory.goal_states))
+                cache_key = (version, q, goal_ids)
+                if cache_key in self._goal_cache:
+                    return self._goal_cache[cache_key], "goal_field_cached"
+                goals = {self.memory.state_token(g) for g in goal_ids}
                 task = GoalTask(goals)
                 action = self.planner.choose_action(
                     self.memory, task, token, task.initial_memory)
                 if action is not None:
-                    return int(action), "goal_field"
+                    action = int(action)
+                    self._goal_cache[cache_key] = action
+                    return action, "goal_field"
+
+            cache_key = (version, q)
+            if cache_key in self._frontier_cache:
+                return self._frontier_cache[cache_key], "virtual_frontier_cached"
             decision = self.frontier.choose(
                 self.memory, token, NullTask(), 0)
-            return int(decision.action), "virtual_frontier"
+            action = int(decision.action)
+            telemetry = getattr(self.frontier, "last_telemetry", None) or {}
+            if telemetry.get("virtual_field_decision"):
+                self._frontier_cache[cache_key] = action
+            return action, "virtual_frontier"
 
         # Candidate uncertainty with no currently separating action: explore the
         # least observed primitive over all candidates.
