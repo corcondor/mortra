@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 
 from experiments.mario_continual.port import BUTTON_MASKS, MarioRGBPort
+from experiments.mario_continual.predictive import PredictiveRegistry
 
 
 def test_mario_action_alphabet_is_the_existing_twelve_button_masks():
@@ -38,3 +39,28 @@ def test_java_bridge_has_nonadvancing_snap_protocol():
     # Repeated capture happens inside the command loop before STEP returns held
     # buttons to MarioGame.
     assert source.index('line.equals("SNAP")') < source.index('parts[0].equals("STEP")')
+
+
+def test_one_step_counterexample_splits_visual_alias_and_becomes_active_probe():
+    memory = PredictiveRegistry(2)
+
+    first = memory.belief("A", ())
+    assert first.candidates == (0,)
+    target, source = memory.update(first, 0, "B", (), (0,))
+    assert source == 0 and target.resolved_state == 1
+
+    # A later context has the same current observation A, so it is not assigned
+    # a new graph node merely because its history is different.
+    alias = memory.belief("A", (1, 1))
+    assert alias.candidates == (0,) and alias.new_state_possible
+
+    # Its action-0 future is C, contradicting q0's already observed A--0-->B.
+    target2, split = memory.update(alias, 0, "C", (1, 1), (1, 1, 0))
+    assert split not in (None, 0)
+    assert memory.state_observation[split] == "A"
+    assert target2.resolved_state is not None
+    assert set(memory.belief("A", ()).candidates) == {0, split}
+
+    # The discriminating action is inferred from the learned successor
+    # observations rather than a fixed action name.
+    assert memory.choose_identifying_action(memory.belief("A", ())) == 0
