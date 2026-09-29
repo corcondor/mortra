@@ -172,6 +172,10 @@ def test_program_frontier_reuses_action_word_across_exact_state_guards():
     assert t0 != t1
     assert len(runner.learned_programs()) == 1
 
+    runner.memory = PredictiveRegistry(3)
+    # Program transfer is a deeper-frontier operation: the first primitive edge
+    # must already be known in the current predictive state.
+    runner.memory.counts[(99, 1)] = {100: 1}
     novel = PredictiveBelief("novel", (99,), False)
     chosen = runner.choose_transfer_program(novel, 1)
     assert chosen is not None
