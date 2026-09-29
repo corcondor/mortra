@@ -12,6 +12,7 @@ from hashlib import sha256
 
 import numpy as np
 
+from experiments.accelerator import device_info, z_score_rgb_batches
 from experiments.noisy_rgb_discovery.core import Emission, Statistics
 from experiments.noisy_rgb_version_space.core import SAME, DIFFERENT, UNRESOLVED, stability
 
@@ -49,7 +50,7 @@ class ObservationBelief:
 class LiveRGBRegistry:
     def __init__(self, *, threshold=1.22,
                  stages=(8, 16, 32, 64, 128, 256, 512, 1024),
-                 base_floor=.01, reference_n=32):
+                 base_floor=.01, reference_n=32, device="auto"):
         self.threshold = float(threshold)
         self.stages = tuple(int(n) for n in stages)
         if tuple(sorted(self.stages)) != self.stages or self.stages[0] < 2:
@@ -57,6 +58,7 @@ class LiveRGBRegistry:
         self.statistics = Statistics(
             None, noise_floor=base_floor, floor_mode="shrinking",
             reference_n=reference_n)
+        self.device = str(device)
         self.prototypes = []
         self.events = []
 
@@ -75,13 +77,17 @@ class LiveRGBRegistry:
             reference = replay(prototype["history"], 2*n)
             scores = []
             for part in (slice(0, n), slice(n, 2*n)):
-                a = emission(current[part])
-                b = emission(reference[part])
-                scores.append(self.statistics.z(a, b))
+                scores.append(z_score_rgb_batches(
+                    current[part], reference[part],
+                    noise_floor=self.statistics.noise_floor,
+                    reference_n=self.statistics.reference_n,
+                    device=getattr(self, "device", "auto")))
             result = stability(scores, self.threshold, n, decision_stage=32)
+            floor = self.statistics.noise_floor * (
+                self.statistics.reference_n / float(n)) ** .25
             rows.append(dict(stage=n, scores=scores, result=result,
-                             floor=self.statistics.effective_noise_floor(
-                                 emission(current[:n]), emission(reference[:n]))))
+                             floor=floor,
+                             accelerator=device_info(getattr(self, "device", "auto"))["resolved"]))
             if result != UNRESOLVED:
                 return result, rows
         return UNRESOLVED, rows
