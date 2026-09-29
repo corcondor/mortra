@@ -21,10 +21,28 @@ class Emission:
 
 
 class Statistics:
-    def __init__(self, port, noise_floor=.01):
-        self.port, self.noise_floor = port, noise_floor
+    def __init__(self, port, noise_floor=.01, *, floor_mode='fixed', reference_n=32):
+        if floor_mode not in ('fixed', 'shrinking'):
+            raise ValueError('floor_mode must be fixed or shrinking')
+        if noise_floor < 0 or reference_n <= 0:
+            raise ValueError('invalid noise-floor configuration')
+        self.port, self.noise_floor = port, float(noise_floor)
+        self.floor_mode, self.reference_n = floor_mode, int(reference_n)
         self.cache = {}
         self.query_count = self.query_actions = self.exposures = 0
+
+    def effective_noise_floor(self, a, b):
+        if self.floor_mode == 'fixed':
+            return self.noise_floor
+        if a.n != b.n:
+            raise ValueError('shrinking-floor comparison requires equal sample counts')
+        if a.n <= 0:
+            raise ValueError('sample count must be positive')
+        # 2026-09-28 finite-sample follow-up:
+        # lambda_n = lambda_32 * (32/n)^(1/4).
+        # Keep the historical fixed rule as the default; the forward-integration
+        # runner opts into this rule explicitly.
+        return self.noise_floor * (self.reference_n / float(a.n)) ** .25
 
     def summary(self, history, rep=0):
         key = (tuple(history), int(rep))
@@ -39,8 +57,17 @@ class Statistics:
         return self.cache[key]
 
     def z(self, a, b):
-        den = a.var/a.n + b.var/b.n + self.noise_floor**2
-        return float(np.sqrt(np.mean((a.mean-b.mean)**2/den)))
+        floor = self.effective_noise_floor(a, b)
+        den = a.var/a.n + b.var/b.n + floor**2
+        # Exact clean observations can have zero variance and zero configured
+        # floor. Treat exact equality as zero distance rather than a calibration
+        # failure; a nonzero numerator with zero denominator is infinitely
+        # separated.
+        numerator = (a.mean-b.mean)**2
+        if np.all(den == 0):
+            return 0.0 if np.all(numerator == 0) else float('inf')
+        terms = np.divide(numerator, den, out=np.full_like(numerator, np.inf, dtype=float), where=den>0)
+        return float(np.sqrt(np.mean(terms)))
 
 
 def calibrate(statistics, actions, words=100, margin=1.18):
@@ -56,7 +83,8 @@ def calibrate(statistics, actions, words=100, margin=1.18):
     scores = [statistics.z(statistics.summary(h, 0), statistics.summary(h, 1)) for h in histories]
     threshold = max(scores) * margin
     return threshold, dict(histories=histories, scores=scores, margin=margin, threshold=threshold,
-                           noise_floor=statistics.noise_floor)
+                           noise_floor=statistics.noise_floor, floor_mode=statistics.floor_mode,
+                           reference_n=statistics.reference_n)
 
 
 class EventList(list):
@@ -132,7 +160,11 @@ def predict_from_rgb(statistics, history, suffixes, prototypes, threshold):
         x = statistics.summary(tuple(history)+tuple(e))
         means = np.stack([p[j].mean for p in prototypes])
         variances = np.stack([p[j].var/p[j].n for p in prototypes])
-        d = np.sqrt(np.mean((means-x.mean)**2 / (variances+x.var/x.n+statistics.noise_floor**2), axis=1))
+        floors = np.array([statistics.effective_noise_floor(p[j], x) for p in prototypes], dtype=float)
+        den = variances + x.var/x.n + floors[:, None]**2
+        d = np.sqrt(np.mean(np.divide((means-x.mean)**2, den,
+                                      out=np.full_like(means, np.inf, dtype=float),
+                                      where=den>0), axis=1))
         scores = np.maximum(scores, d)
     eligible = np.flatnonzero(scores <= threshold).tolist()
     return dict(candidates=eligible, predicted=eligible[0] if len(eligible) == 1 else None,
