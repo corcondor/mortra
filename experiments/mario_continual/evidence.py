@@ -17,11 +17,6 @@ from experiments.noisy_rgb_discovery.core import Emission, Statistics
 from experiments.noisy_rgb_version_space.core import SAME, DIFFERENT, UNRESOLVED, stability
 
 
-def image_hash(image):
-    array = np.asarray(image, dtype=np.uint8)
-    return sha256(array.tobytes()).hexdigest()
-
-
 def emission(images):
     x = np.asarray(images, dtype=np.uint8)
     if x.ndim != 4 or x.shape[-1] != 3:
@@ -63,10 +58,12 @@ class LiveRGBRegistry:
         self.events = []
 
     def _exact_probe(self, port):
-        first = np.asarray(port.last_image, dtype=np.uint8).copy()
-        second, packet = port.snap()
-        exact = bool(np.array_equal(first, second))
-        return np.stack([first, second]), exact, packet
+        first_hash = port.last_hash
+        if first_hash is None:
+            raise RuntimeError("missing current frame hash")
+        second_hash, packet = port.snap_hash()
+        exact = first_hash == second_hash
+        return first_hash, second_hash, exact, packet
 
     def _noisy_compare(self, port, prototype, replay):
         if replay is None:
@@ -95,8 +92,8 @@ class LiveRGBRegistry:
     def observe(self, port, history, *, replay=None, allow_new=True):
         """Classify the currently blocked frame without advancing the game."""
         history = tuple(int(a) for a in history)
-        pair, current_exact, packet = self._exact_probe(port)
-        current_hash = image_hash(pair[0]) if current_exact else None
+        first_hash, second_hash, current_exact, packet = self._exact_probe(port)
+        current_hash = first_hash if current_exact else None
 
         possible, same, excluded, certificates = [], [], [], []
         for q, prototype in enumerate(self.prototypes):
@@ -126,7 +123,6 @@ class LiveRGBRegistry:
                 self.prototypes.append(dict(
                     history=history,
                     exact_hash=current_hash,
-                    exact_reference=pair[0].copy() if current_exact else None,
                 ))
                 self.events.append(dict(event="observation_class_added", observation=q,
                                         history=history, exact=current_exact,
