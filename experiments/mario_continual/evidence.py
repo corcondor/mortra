@@ -41,6 +41,10 @@ class ObservationBelief:
     status: str
     evidence: tuple
 
+    @property
+    def resolved_state(self):
+        return self.confirmed_same[0] if self.status == SAME and len(self.confirmed_same) == 1 else None
+
 
 class LiveRGBRegistry:
     def __init__(self, *, threshold=1.22,
