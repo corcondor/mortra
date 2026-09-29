@@ -156,6 +156,7 @@ class ContinualMario:
             reused_tools=sum(e["event"] == "tool_reused" for e in self.tools.events),
             refuted_tools=sum(e["event"] == "tool_counterexample" for e in self.tools.events),
             unique_programs=len(self.learned_programs()),
+            portable_programs=len(self.portable_programs()),
             transferred_programs=sum(count > 0 for count in self.program_use_counts.values()),
             program_transfer_invocations=sum(self.program_use_counts.values()),
             program_transfer_completions=sum(self.program_complete_counts.values()),
@@ -295,10 +296,9 @@ class ContinualMario:
     def learned_programs(self):
         """Return one canonical token per distinct executable primitive word.
 
-        A program is code, not a state-specific behavioural claim. The legacy
-        tool records may contain the same primitive word under many exact-state
-        guards; deduplicating by expansion separates executable identity from
-        those context certificates.
+        Program identity is the primitive action word.  Exact-state tool records
+        remain context-specific certificates about where that word was observed.
+        This separation is invariant under predictive-state ID renaming.
         """
         programs = {}
         for token in sorted(self.tools.records):
@@ -307,6 +307,31 @@ class ContinualMario:
                 continue
             programs.setdefault(actions, token)
         return programs
+
+    def program_support(self):
+        """Observed independent contexts supporting each executable word.
+
+        One exact context cannot distinguish a genuinely reusable program from a
+        state-specific coincidence.  Two distinct guards are the minimum direct
+        evidence of cross-context recurrence, so only words with support >=2 are
+        admitted to the portable program frontier.
+        """
+        support = {}
+        for token, record in self.tools.records.items():
+            actions = tuple(self.tools.flatten_token(token))
+            if len(actions) < 2:
+                continue
+            support.setdefault(actions, set()).add(record["guard"])
+        return support
+
+    def portable_programs(self):
+        programs = self.learned_programs()
+        support = self.program_support()
+        return {
+            actions: (token, len(support.get(actions, ())))
+            for actions, token in programs.items()
+            if len(support.get(actions, ())) >= 2
+        }
 
     def choose_transfer_program(self, belief, preferred_action):
         """Choose an untried learned program as a macro frontier option.
@@ -330,18 +355,20 @@ class ContinualMario:
         if (q, int(preferred_action)) not in self.memory.counts:
             return None
         candidates = []
-        for actions, token in self.learned_programs().items():
+        for actions, (token, support_count) in self.portable_programs().items():
             if actions[0] != int(preferred_action):
                 continue
             if self.program_context_counts[(q, actions)] != 0:
                 continue
             global_uses = self.program_use_counts[actions]
-            # Count uncertainty first; longer programs only break equal-count
-            # ties, because they test a strictly longer future action word.
-            candidates.append((global_uses, -len(actions), actions, token))
+            # Explore low-use programs first.  For equal usage, prefer the word
+            # with more independently observed contexts; length only breaks the
+            # remaining tie by probing a deeper future.
+            candidates.append(
+                (global_uses, -support_count, -len(actions), actions, token))
         if not candidates:
             return None
-        _, _, actions, token = min(candidates)
+        _, _, _, actions, token = min(candidates)
         return token, actions
 
     def run_transfer_program(self, token, actions, port, history, belief):
@@ -359,8 +386,10 @@ class ContinualMario:
         actions = tuple(int(a) for a in actions)
         self.program_context_counts[(q, actions)] += 1
         self.program_use_counts[actions] += 1
+        support_count = len(self.program_support().get(actions, ()))
         self.emit("program_transfer_invoked", tool=token, source_state=q,
-                  actions=list(actions), global_uses=self.program_use_counts[actions])
+                  actions=list(actions), global_uses=self.program_use_counts[actions],
+                  support_contexts=support_count)
         current = belief
         packet = None
         executed = []
