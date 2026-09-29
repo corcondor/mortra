@@ -32,19 +32,26 @@ class Budget:
         self.exposures += batch
 
 
-def measured_statistics(sensor, budget=None):
+def measured_statistics(sensor, budget=None, **statistics_kwargs):
     def sample(history, replicate):
         if budget is not None:
             budget.reserve(history, sensor.batch)
         return sensor.port.sample(history, replicate)
-    return Statistics(RGBPort(sensor.port.actions, sample))
+    return Statistics(RGBPort(sensor.port.actions, sample), **statistics_kwargs)
 
 
-def stage_sensors(game, bias, directory, phase, budget=None):
+def stage_sensors(game, bias, directory, phase, budget=None, *,
+                  stages=(8, 16, 32), floor_mode='fixed', noise_floor=.01,
+                  reference_n=32):
     sensors, statistics = {}, {}
-    for n in (8, 16, 32):
+    stages = tuple(stages)
+    if not stages or tuple(sorted(stages)) != stages or len(set(stages)) != len(stages):
+        raise ValueError('stages must be unique and increasing')
+    for n in stages:
         namespace = phase+'-v1' if n == 8 else f'vs-{phase}-{n}-v1'
         sensor = Sensor(game, bias, namespace, directory / f'{phase}_{n}', n, 12)
         sensors[n] = sensor
-        statistics[n] = measured_statistics(sensor, budget)
+        statistics[n] = measured_statistics(
+            sensor, budget, floor_mode=floor_mode, noise_floor=noise_floor,
+            reference_n=reference_n)
     return sensors, statistics
