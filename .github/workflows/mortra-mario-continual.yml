@@ -1,0 +1,139 @@
+name: MORTRA Mario continual clear
+
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: Mario AI Framework level path
+        required: false
+        default: levels/notch/lvl-1.txt
+      segment_seconds:
+        description: Seconds per resumable MORTRA segment
+        required: false
+        default: '1500'
+      segments:
+        description: Maximum segments in this Actions job
+        required: false
+        default: '12'
+  push:
+    branches: ['research/mortra-forward-integration-20260929']
+    paths:
+      - 'experiments/mario_continual/**'
+      - 'experiments/continual_tools/**'
+      - 'experiments/noisy_rgb_discovery/**'
+      - 'experiments/noisy_rgb_version_space/**'
+      - 'experiments/noisy_rgb_predictive_signature/**'
+      - 'experiments/task_agent/**'
+      - '.github/workflows/mortra-mario-continual.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  real-mario:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xauth
+          python -m pip install numpy==1.26.4 Pillow==11.3.0 scipy==1.17.1 psutil==7.0.0
+      - name: Compile pinned real Mario AI Framework
+        run: python -m experiments.mario_continual.setup_game
+      - name: Verify compiled framework receipt
+        run: |
+          cat experiments/mario_continual/setup_receipt.json
+          test -f experiments/mario_continual/build/MortraBridge.class
+      - name: Run persistent MORTRA until WIN or Actions infrastructure limit
+        id: learn
+        shell: bash
+        run: |
+          set -euo pipefail
+          LEVEL='${{ inputs.level || 'levels/notch/lvl-1.txt' }}'
+          SEGMENT='${{ inputs.segment_seconds || '1500' }}'
+          SEGMENTS='${{ inputs.segments || '12' }}'
+          OUT="$GITHUB_WORKSPACE/mario-continual-run"
+          mkdir -p "$OUT"
+          RESUME=''
+          for ((i=1; i<=SEGMENTS; i++)); do
+            if [[ -f "$OUT/FIRST_CLEAR.json" ]]; then break; fi
+            if [[ -f "$OUT/checkpoint.pkl" ]]; then RESUME='--resume'; fi
+            echo "=== MORTRA segment $i/$SEGMENTS, resume=$RESUME ==="
+            xvfb-run -a -s '-screen 0 1280x1024x24' \
+              python -m experiments.mario_continual.run \
+                --game-dir experiments/mario_continual/game \
+                --build-dir experiments/mario_continual/build \
+                --bridge-source experiments/mario_continual/java/MortraBridge.java \
+                --level "$LEVEL" \
+                --output "$OUT" \
+                --max-wall-seconds "$SEGMENT" \
+                --checkpoint-every 100 \
+                $RESUME
+            cat "$OUT/status.json" || true
+          done
+          if [[ -f "$OUT/FIRST_CLEAR.json" ]]; then
+            echo 'cleared=true' >> "$GITHUB_OUTPUT"
+            cat "$OUT/FIRST_CLEAR.json"
+          else
+            echo 'cleared=false' >> "$GITHUB_OUTPUT"
+            python - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('mario-continual-run')
+          status = json.loads((root/'status.json').read_text()) if (root/'status.json').exists() else {}
+          (root/'NO_CLEAR_WITHIN_ACTIONS_JOB.json').write_text(json.dumps(status, indent=2)+'\n')
+          print(json.dumps(status, indent=2))
+          PY
+          fi
+      - name: Summarize actual engine interaction
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('mario-continual-run')
+          status = json.loads((root/'status.json').read_text()) if (root/'status.json').exists() else {}
+          episodes = list((root/'episodes').glob('episode_*')) if (root/'episodes').exists() else []
+          replays = list((root/'replays').glob('replay_*')) if (root/'replays').exists() else []
+          summary = {
+            'first_clear': (root/'FIRST_CLEAR.json').exists(),
+            'episode_directories': len(episodes),
+            'replay_directories': len(replays),
+            'status': status,
+          }
+          (root/'ACTIONS_SUMMARY.json').write_text(json.dumps(summary, indent=2)+'\n')
+          print(json.dumps(summary, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mario-continual-${{ github.run_id }}
+          path: |
+            mario-continual-run
+            experiments/mario_continual/setup_receipt.json
+            experiments/mario_continual/javac.log
+          compression-level: 6
+          retention-days: 30
+      - name: Require a real engine clear
+        if: always()
+        run: |
+          if [[ ! -f mario-continual-run/FIRST_CLEAR.json ]]; then
+            echo 'MORTRA did not reach WIN inside this Actions job; checkpoint artifact was preserved.'
+            exit 2
+          fi
+          echo 'MORTRA reached WIN in the real Mario engine.'
