@@ -487,7 +487,10 @@ class ContinualMario:
                         packet, belief, used = self.run_transfer_program(
                             token, actions, port, history, belief)
                     else:
-                        token = self.matching_tool(belief, action) if self.args.tool_policy == "legacy" else None
+                        # Keep the exact-context certified path as exploitation
+                        # in both modes. program_frontier is a strict extension:
+                        # it adds untried cross-context program options before it.
+                        token = self.matching_tool(belief, action)
                         if token is not None:
                             packet, belief, used = self.run_tool(token, port, history, belief)
                         else:
