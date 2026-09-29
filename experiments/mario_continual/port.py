@@ -1,31 +1,43 @@
-"""Live Mario RGB transport using raw RGB batches.
+"""Low-overhead live Mario RGB transport.
 
-The Java bridge writes uncompressed RGB bytes.  This avoids PNG encode/decode
-and allows repeated observations to cross the Java/Python boundary in one batch.
-SNAP/SNAPN never advance game time; STEP is the only advancing command.
+Fast path: the Java bridge sends only a SHA-256 digest of the current exact
+frame.  Pixels cross into Python only on DUMP/SNAPN through one persistent mmap.
+This removes PNG encode/decode, per-frame file creation, and most pixel transfer.
 """
 from __future__ import annotations
 
 import json
+import os
 import queue
 import subprocess
+import tempfile
 import threading
+import uuid
 from pathlib import Path
 
 import numpy as np
 
 BUTTON_MASKS = (0, 1, 2, 16, 17, 18, 8, 9, 10, 24, 25, 26)
+MAX_BATCH = 256
 
 
 class MarioProtocolError(RuntimeError):
     pass
 
 
+def _shared_file(output):
+    if os.name != "nt":
+        candidate = Path("/dev/shm")
+        if candidate.exists() and os.access(candidate, os.W_OK):
+            return candidate / f"mortra-rgb-{uuid.uuid4().hex}.mmap"
+    return Path(output) / "rgb.mmap"
+
+
 class MarioRGBPort:
     action_count = len(BUTTON_MASKS)
 
     def __init__(self, game_dir, build_dir, bridge_source, level, output, *,
-                 seconds=60, frames_per_action=8, keep_frames=False):
+                 seconds=60, frames_per_action=8):
         self.game_dir = Path(game_dir).resolve()
         self.build_dir = Path(build_dir).resolve()
         self.bridge_source = Path(bridge_source).resolve()
@@ -33,14 +45,16 @@ class MarioRGBPort:
         self.output = Path(output).resolve()
         self.seconds = int(seconds)
         self.frames_per_action = int(frames_per_action)
-        self.keep_frames = bool(keep_frames)
+        self.shared_file = _shared_file(self.output).resolve()
+
         self.process = None
         self.last_packet = None
-        self.last_image = None
-        self.last_batch = None
+        self.last_hash = None
+        self.last_shape = None
         self.primitive_frames = 0
         self.snapshots = 0
         self.batch_commands = 0
+        self.pixel_bytes_read = 0
         self.actions = []
 
     def _pump(self):
@@ -50,26 +64,23 @@ class MarioRGBPort:
         finally:
             self.lines.put(None)
 
-    def _load_raw(self, packet):
+    def _read_batch(self, packet):
         image_path = Path(packet["rgb_file"]).resolve()
-        if self.output not in image_path.parents:
-            raise MarioProtocolError("RGB path outside run directory")
+        if image_path != self.shared_file:
+            raise MarioProtocolError("bridge returned unexpected mmap path")
         width = int(packet["width"])
         height = int(packet["height"])
-        count = int(packet.get("count", 1))
+        count = int(packet["count"])
         expected = count * height * width * 3
-        data = np.fromfile(image_path, dtype=np.uint8, count=expected)
-        if data.size != expected:
-            raise MarioProtocolError(
-                f"RGB byte count mismatch: expected {expected}, got {data.size}")
-        batch = data.reshape(count, height, width, 3)
-        # Detach from any temporary file-backed lifetime before deleting the file.
-        batch = np.ascontiguousarray(batch)
-        if not self.keep_frames:
-            image_path.unlink(missing_ok=True)
+        # Mapping the already-shared pages avoids an extra file decode and lets
+        # NumPy copy one contiguous block before the next Java write.
+        mapped = np.memmap(image_path, dtype=np.uint8, mode="r",
+                           shape=(count, height, width, 3))
+        batch = np.array(mapped, copy=True, order="C")
+        del mapped
+        self.pixel_bytes_read += expected
         self.snapshots += count
-        self.last_batch = batch
-        self.last_image = batch[-1]
+        self.batch_commands += 1
         return batch
 
     def _read(self):
@@ -81,12 +92,13 @@ class MarioRGBPort:
             raise MarioProtocolError("Mario bridge EOF")
         packet = json.loads(line)
         kind = packet["kind"]
-        if kind in ("observation", "observation_batch"):
-            self._load_raw(packet)
-            if kind == "observation_batch":
-                self.batch_commands += 1
+        if kind == "observation":
+            self.last_hash = str(packet["rgb_sha256"])
+            self.last_shape = (int(packet["height"]), int(packet["width"]), 3)
+            self.snapshots += 1
+        elif kind == "observation_batch":
+            packet["_batch"] = self._read_batch(packet)
         elif kind in ("terminal", "aborted"):
-            # Terminal messages do not fabricate a new RGB observation.
             pass
         else:
             raise MarioProtocolError(f"unknown bridge packet {kind}")
@@ -102,6 +114,7 @@ class MarioRGBPort:
         command = [
             "java", "-cp", str(self.build_dir), "MortraBridge",
             str(level_path), str(self.seconds), str(self.output), "true",
+            str(self.shared_file),
         ]
         self.process = subprocess.Popen(
             command, cwd=self.game_dir, stdin=subprocess.PIPE,
@@ -112,51 +125,61 @@ class MarioRGBPort:
         self.reader.start()
         packet = self._read()
         if packet["kind"] != "observation":
-            raise MarioProtocolError("episode did not produce an initial RGB observation")
-        return self.last_image.copy(), packet
+            raise MarioProtocolError("episode did not produce an initial observation")
+        return None, packet
 
-    def snap(self):
-        """Recapture one blocked game frame without stepping."""
+    def snap_hash(self):
+        """Recapture only a digest of the exact blocked frame."""
         if self.process is None or self.process.poll() is not None:
             raise MarioProtocolError("episode is not running")
-        frame = self.last_packet["frame"]
+        frame = int(self.last_packet["frame"])
         self.process.stdin.write("SNAP\n")
         self.process.stdin.flush()
         packet = self._read()
-        if packet["kind"] != "observation" or packet["frame"] != frame:
+        if packet["kind"] != "observation" or int(packet["frame"]) != frame:
             raise MarioProtocolError("SNAP advanced or lost the source frame")
-        return self.last_image.copy(), packet
+        return self.last_hash, packet
 
-    def repeated_observation(self, samples):
-        """Return N same-frame captures with one Java round-trip.
-
-        The current observation already counts as sample 0.  One SNAPN command
-        obtains the remaining N-1 captures in a single raw file.
-        """
-        samples = int(samples)
-        if samples < 1:
-            raise ValueError("samples must be positive")
-        if self.last_image is None:
-            raise MarioProtocolError("no current observation")
-        if samples == 1:
-            return self.last_image[None, ...].copy(), [dict(self.last_packet)]
-
+    def dump(self):
+        """Read the current already-captured frame through mmap without recapture."""
+        if self.process is None or self.process.poll() is not None:
+            raise MarioProtocolError("episode is not running")
         frame = int(self.last_packet["frame"])
-        first = self.last_image.copy()
-        self.process.stdin.write(f"SNAPN {samples-1}\n")
+        self.process.stdin.write("DUMP\n")
         self.process.stdin.flush()
         packet = self._read()
         if packet["kind"] != "observation_batch" or int(packet["frame"]) != frame:
-            raise MarioProtocolError("SNAPN advanced or lost the source frame")
-        if self.last_batch is None or len(self.last_batch) != samples-1:
-            raise MarioProtocolError("SNAPN returned wrong batch size")
-        images = np.concatenate((first[None, ...], self.last_batch), axis=0)
-        packets = [dict(self.last_packet, kind="observation", count=1)] + [
-            dict(packet, batch_index=i) for i in range(samples-1)
-        ]
-        # Keep the semantic current observation as the most recent captured frame.
-        self.last_image = images[-1]
-        return images, packets
+            raise MarioProtocolError("DUMP advanced or lost the source frame")
+        batch = packet.pop("_batch")
+        if len(batch) != 1:
+            raise MarioProtocolError("DUMP returned wrong batch size")
+        return batch[0], packet
+
+    def repeated_observation(self, samples):
+        """Get N same-state RGB captures in contiguous mmap chunks."""
+        samples = int(samples)
+        if samples < 1:
+            raise ValueError("samples must be positive")
+        if self.process is None or self.process.poll() is not None:
+            raise MarioProtocolError("episode is not running")
+        source_frame = int(self.last_packet["frame"])
+        parts = []
+        packets = []
+        remaining = samples
+        while remaining:
+            count = min(remaining, MAX_BATCH)
+            self.process.stdin.write(f"SNAPN {count}\n")
+            self.process.stdin.flush()
+            packet = self._read()
+            if packet["kind"] != "observation_batch" or int(packet["frame"]) != source_frame:
+                raise MarioProtocolError("SNAPN advanced or lost the source frame")
+            batch = packet.pop("_batch")
+            if len(batch) != count:
+                raise MarioProtocolError("SNAPN returned wrong batch size")
+            parts.append(batch)
+            packets.append(packet)
+            remaining -= count
+        return np.concatenate(parts, axis=0), packets
 
     def step(self, action, frames=None):
         if self.process is None or self.process.poll() is not None:
@@ -172,9 +195,7 @@ class MarioRGBPort:
         self.actions.append(action)
         self.primitive_frames += frames
         packet = self._read()
-        if packet["kind"] == "observation":
-            return self.last_image.copy(), packet
-        return None if self.last_image is None else self.last_image.copy(), packet
+        return None, packet
 
     def close(self):
         if self.process is None:
@@ -188,10 +209,16 @@ class MarioRGBPort:
                 self.process.kill()
                 self.process.wait()
         self.stderr.close()
+        try:
+            self.shared_file.unlink(missing_ok=True)
+        except OSError:
+            pass
 
     def metrics(self):
         return dict(
             primitive_frames=self.primitive_frames,
             snapshots=self.snapshots,
             batch_commands=self.batch_commands,
-            primitive_actions=len(self.actions))
+            pixel_bytes_read=self.pixel_bytes_read,
+            primitive_actions=len(self.actions),
+            transport="sha256-fastpath+persistent-mmap")
