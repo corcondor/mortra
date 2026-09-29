@@ -120,18 +120,19 @@ class PredictiveRegistry:
             if len(possible_sources) == 1:
                 source_resolved = next(iter(possible_sources))
 
-        if terminal_status == "WIN":
-            terminal_observation = ("terminal", "WIN")
+        if terminal_status is not None and terminal_status != "RUNNING":
+            terminal_observation = ("terminal", str(terminal_status))
             states = sorted(self.observation_states.get(terminal_observation, ()))
             if states:
                 target_candidates = {states[0]}
             else:
                 target_candidates = {
                     self.add_state(terminal_observation, target_history,
-                                   reason="observed_terminal_win")
+                                   reason="observed_terminal_" + str(terminal_status).lower())
                 }
             target_new_possible = False
-            self.goal_states.update(target_candidates)
+            if str(terminal_status) == "WIN":
+                self.goal_states.update(target_candidates)
         else:
             visual_targets = set(self.observation_states.get(target_observation, ()))
             if predicted_targets:
@@ -153,7 +154,9 @@ class PredictiveRegistry:
                 target_new_possible = True
 
         target = PredictiveBelief(
-            ("terminal", "WIN") if terminal_status == "WIN" else target_observation,
+            ("terminal", str(terminal_status))
+            if terminal_status is not None and terminal_status != "RUNNING"
+            else target_observation,
             tuple(sorted(target_candidates)), target_new_possible,
             "transition_update")
 
