@@ -55,7 +55,18 @@ class LiveRGBRegistry:
             reference_n=reference_n)
         self.device = str(device)
         self.prototypes = []
+        self.exact_index = {}
         self.events = []
+
+    def _ensure_exact_index(self):
+        # Checkpoints created before the hash-index optimization remain readable.
+        if not hasattr(self, "exact_index"):
+            self.exact_index = {}
+        if len(self.exact_index) < sum(p.get("exact_hash") is not None for p in self.prototypes):
+            self.exact_index = {
+                p["exact_hash"]: q for q, p in enumerate(self.prototypes)
+                if p.get("exact_hash") is not None
+            }
 
     def _exact_probe(self, port):
         first_hash = port.last_hash
@@ -95,13 +106,35 @@ class LiveRGBRegistry:
         first_hash, second_hash, current_exact, packet = self._exact_probe(port)
         current_hash = first_hash if current_exact else None
 
+        self._ensure_exact_index()
         possible, same, excluded, certificates = [], [], [], []
-        for q, prototype in enumerate(self.prototypes):
-            if current_exact and prototype["exact_hash"] is not None:
-                result = SAME if current_hash == prototype["exact_hash"] else DIFFERENT
-                detail = [dict(stage="exact", result=result)]
-            else:
-                result, detail = self._noisy_compare(port, prototype, replay)
+
+        # Deterministic screen captures take the O(1) hash path.  Pairwise SHA
+        # equality has exactly the same semantics as the old all-prototype loop.
+        if current_exact and current_hash in self.exact_index:
+            q = self.exact_index[current_hash]
+            belief = ObservationBelief((q,), (q,), False, SAME,
+                                       ((q, [dict(stage="exact", result=SAME)]),))
+            self.events.append(dict(
+                event="observation_belief", history=history,
+                candidates=[q], confirmed_same=[q],
+                new_state_possible=False, status=SAME, frame=packet["frame"],
+                lookup="sha256_index"))
+            return belief
+
+        noisy_candidates = []
+        if current_exact:
+            for q, prototype in enumerate(self.prototypes):
+                if prototype.get("exact_hash") is not None:
+                    excluded.append(q)
+                    certificates.append((q, [dict(stage="exact", result=DIFFERENT)]))
+                else:
+                    noisy_candidates.append((q, prototype))
+        else:
+            noisy_candidates = list(enumerate(self.prototypes))
+
+        for q, prototype in noisy_candidates:
+            result, detail = self._noisy_compare(port, prototype, replay)
             certificates.append((q, detail))
             if result == DIFFERENT:
                 excluded.append(q)
@@ -124,6 +157,8 @@ class LiveRGBRegistry:
                     history=history,
                     exact_hash=current_hash,
                 ))
+                if current_hash is not None:
+                    self.exact_index[current_hash] = q
                 self.events.append(dict(event="observation_class_added", observation=q,
                                         history=history, exact=current_exact,
                                         frame=packet["frame"]))
