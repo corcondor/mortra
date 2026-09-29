@@ -1,0 +1,77 @@
+name: MORTRA Codex handoff bundle
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['research/mortra-forward-integration-20260929']
+    paths:
+      - 'CODEX_FORWARD_INTEGRATION_HANDOFF.md'
+      - 'scripts/mortra_t4_validate.sh'
+      - '.github/workflows/mortra-build-handoff.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build exact source handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=7999f8e41f712b25b83902731badfabf06e007f9
+          HEAD_SHA=$(git rev-parse HEAD)
+          mkdir -p handoff/changed
+          printf '%s\n' "$BASE" > handoff/BASE_SHA.txt
+          printf '%s\n' "$HEAD_SHA" > handoff/HEAD_SHA.txt
+          git diff --name-only --diff-filter=ACMRT "$BASE..$HEAD_SHA" > handoff/CHANGED_FILES.txt
+          while IFS= read -r path; do
+            [[ -z "$path" ]] && continue
+            mkdir -p "handoff/changed/$(dirname "$path")"
+            cp -p "$path" "handoff/changed/$path"
+          done < handoff/CHANGED_FILES.txt
+          git diff --binary "$BASE..$HEAD_SHA" > handoff/MORTRA_FORWARD_INTEGRATION.patch
+          git log --reverse --format='%H %s' "$BASE..$HEAD_SHA" > handoff/COMMITS.txt
+          cp CODEX_FORWARD_INTEGRATION_HANDOFF.md handoff/
+          chmod +x scripts/mortra_t4_validate.sh
+          PATHS='.github experiments lib math_os_prototype scripts tests worker'
+          for file in package.json package-lock.json requirements.txt requirements-dev.txt pyproject.toml pytest.ini; do
+            [[ -e "$file" ]] && PATHS="$PATHS $file"
+          done
+          # shellcheck disable=SC2086
+          git archive --format=zip --output=handoff/MORTRA_SOURCE_TREE.zip HEAD_SHA_DO_NOT_USE 2>/dev/null || true
+          # git archive needs the resolved SHA, not a shell placeholder.
+          rm -f handoff/MORTRA_SOURCE_TREE.zip
+          # shellcheck disable=SC2086
+          git archive --format=zip --output=handoff/MORTRA_SOURCE_TREE.zip "$HEAD_SHA" $PATHS
+          (cd handoff/changed && zip -qr ../MORTRA_FORWARD_INTEGRATION_CHANGED_FILES.zip .)
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          root=pathlib.Path('handoff')
+          payload={
+            'base': (root/'BASE_SHA.txt').read_text().strip(),
+            'head': (root/'HEAD_SHA.txt').read_text().strip(),
+            'branch': 'research/mortra-forward-integration-20260929',
+            'changed_files': (root/'CHANGED_FILES.txt').read_text().splitlines(),
+            'artifacts': {},
+          }
+          for name in ('MORTRA_FORWARD_INTEGRATION.patch','MORTRA_SOURCE_TREE.zip','MORTRA_FORWARD_INTEGRATION_CHANGED_FILES.zip'):
+            p=root/name
+            payload['artifacts'][name]={
+              'bytes':p.stat().st_size,
+              'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+            }
+          (root/'HANDOFF_MANIFEST.json').write_text(json.dumps(payload,indent=2)+'\n')
+          print(json.dumps(payload,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mortra-codex-handoff-${{ github.run_id }}
+          path: handoff
+          compression-level: 0
+          retention-days: 30
