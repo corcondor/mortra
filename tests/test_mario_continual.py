@@ -11,21 +11,32 @@ def test_mario_action_alphabet_is_the_existing_twelve_button_masks():
     assert len(set(BUTTON_MASKS)) == 12
 
 
-def test_repeated_observation_uses_snapshots_not_steps(monkeypatch, tmp_path):
+def test_repeated_observation_batches_without_steps(monkeypatch, tmp_path):
     port = MarioRGBPort(tmp_path, tmp_path, tmp_path/"bridge.java", "level", tmp_path/"run")
-    port.last_image = np.zeros((2, 2, 3), dtype=np.uint8)
     port.last_packet = {"kind": "observation", "frame": 7}
-    calls = []
+    writes = []
 
-    def snap():
-        calls.append("snap")
-        return port.last_image.copy(), {"kind": "observation", "frame": 7}
+    class Stdin:
+        def write(self, value): writes.append(value)
+        def flush(self): pass
 
-    monkeypatch.setattr(port, "snap", snap)
+    class Process:
+        stdin = Stdin()
+        def poll(self): return None
+
+    port.process = Process()
+
+    def read():
+        packet = {"kind": "observation_batch", "frame": 7,
+                  "_batch": np.zeros((4, 2, 2, 3), dtype=np.uint8)}
+        port.last_packet = packet
+        return packet
+
+    monkeypatch.setattr(port, "_read", read)
     images, packets = port.repeated_observation(4)
     assert images.shape == (4, 2, 2, 3)
-    assert calls == ["snap", "snap", "snap"]
-    assert all(packet["frame"] == 7 for packet in packets)
+    assert writes == ["SNAPN 4\n"]
+    assert packets[0]["frame"] == 7
     assert port.primitive_frames == 0
     assert port.actions == []
 
@@ -35,7 +46,11 @@ def test_java_bridge_has_nonadvancing_snap_protocol():
               "java" / "MortraBridge.java").read_text(encoding="utf8")
     assert 'line.equals("SNAP")' in source
     assert "capture()" in source
-    assert "Expected SNAP or STEP" in source
+    assert "Expected SNAP, DUMP, SNAPN n, or STEP" in source
+    assert "MappedByteBuffer" in source
+    assert "SHA-256" in source
+    assert "ImageIO" not in source
+    assert "runGame(" in source and ", 0, visuals, 0, 1f)" in source
     # Repeated capture happens inside the command loop before STEP returns held
     # buttons to MarioGame.
     assert source.index('line.equals("SNAP")') < source.index('parts[0].equals("STEP")')
