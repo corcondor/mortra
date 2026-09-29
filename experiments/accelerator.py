@@ -128,15 +128,17 @@ def fft2_batch(images, *, device="auto"):
     if x.ndim != 3:
         raise ValueError("expected [batch,h,w] or [h,w]")
     resolved = resolve_device(device)
+    # Inputs already live on the host. Share the original centering operation
+    # so CUDA reduction order cannot introduce a different near-zero DC phase.
+    values = x.astype(np.float32)
+    centered = values - values.mean(axis=(-2, -1), keepdims=True)
     if resolved == "cpu":
-        centered = x.astype(np.float32) - x.astype(np.float32).mean(axis=(-2,-1), keepdims=True)
         spectrum = np.fft.fftshift(np.fft.fft2(centered, axes=(-2,-1)), axes=(-2,-1))
         return np.abs(spectrum), np.angle(spectrum)
 
     torch = _torch()
     with torch.inference_mode():
-        tensor = torch.as_tensor(x, device="cuda", dtype=torch.float32)
-        tensor = tensor - tensor.mean(dim=(-2,-1), keepdim=True)
+        tensor = torch.as_tensor(centered, device="cuda", dtype=torch.float32)
         spectrum = torch.fft.fftshift(torch.fft.fft2(tensor), dim=(-2,-1))
         magnitude = torch.abs(spectrum).cpu().numpy()
         phase = torch.angle(spectrum).cpu().numpy()

@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from experiments.accelerator import device_info
+from experiments.accelerator import fft2_batch
 from experiments.mario_continual import validate_cuda
 
 
@@ -31,6 +32,16 @@ def test_validation_rejects_wrong_cuda_result(monkeypatch):
     with pytest.raises(AssertionError):
         validate_cuda.check_kernels(np.zeros((2, 2, 2, 3), dtype=np.uint8),
                                    np.zeros((2, 2, 2, 3), dtype=np.uint8))
+
+
+def test_fft_centering_preserves_cpu_reference():
+    rng = np.random.default_rng(20260930)
+    gray = rng.integers(0, 256, (32, 24, 24, 3), dtype=np.uint8).astype(np.float32).mean(-1)
+    centered = gray - gray.mean(axis=(-2, -1), keepdims=True)
+    expected = np.fft.fftshift(np.fft.fft2(centered), axes=(-2, -1))
+    magnitude, phase = fft2_batch(gray, device="cpu")
+    np.testing.assert_allclose(magnitude * np.exp(1j * phase), expected,
+                               rtol=2e-6, atol=2e-3)
 
 
 @pytest.mark.skipif(not device_info("auto")["cuda_available"], reason="CUDA hardware required")
