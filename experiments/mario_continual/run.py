@@ -322,6 +322,13 @@ class ContinualMario:
         q = belief.resolved_state
         if q is None:
             return None
+        # A learned macro is a *deeper frontier* probe, not a replacement for
+        # an untried primitive edge.  If the base action itself is unknown at q,
+        # execute that primitive normally and learn its one-step consequence
+        # first.  Transfer is admitted only when the first edge is already
+        # evidenced, so the program extends exploration beyond known dynamics.
+        if (q, int(preferred_action)) not in self.memory.counts:
+            return None
         candidates = []
         for actions, token in self.learned_programs().items():
             if actions[0] != int(preferred_action):
