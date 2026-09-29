@@ -6,8 +6,8 @@ SAME, DIFFERENT, UNRESOLVED = 'SAME', 'DIFFERENT', 'UNRESOLVED'
 STAGES = (8, 16, 32)
 
 
-def stability(scores, threshold, stage):
-    if stage != 32:
+def stability(scores, threshold, stage, decision_stage=32):
+    if stage < decision_stage:
         return UNRESOLVED
     lo, hi = min(scores), max(scores)
     spread = hi-lo
@@ -19,9 +19,17 @@ def stability(scores, threshold, stage):
 
 
 class Evidence:
-    def __init__(self, statistics, threshold, camera, emit, check=lambda: None):
+    def __init__(self, statistics, threshold, camera, emit, check=lambda: None, *,
+                 stages=None, cumulative=True, decision_stage=32):
         self.statistics, self.threshold = statistics, threshold
         self.camera, self.emit, self.check = camera, emit, check
+        self.stages = tuple(sorted(statistics)) if stages is None else tuple(stages)
+        if not self.stages or any(n not in statistics for n in self.stages):
+            raise ValueError('evidence stages must exist in statistics')
+        if tuple(sorted(self.stages)) != self.stages or len(set(self.stages)) != len(self.stages):
+            raise ValueError('evidence stages must be unique and increasing')
+        self.cumulative = bool(cumulative)
+        self.decision_stage = int(decision_stage)
         self.cache = {}
         self.version = 0
         self.counts = Counter()
@@ -36,13 +44,14 @@ class Evidence:
             return self.cache[key]
         if pair[0] == pair[1]:
             return dict(id=None, result=SAME, scores=[], stage=stage, reflexive=True)
+        if stage not in self.stages:
+            raise ValueError('requested stage is not configured')
+        active_stages = [n for n in self.stages if n <= stage] if self.cumulative else [stage]
         scores = []
-        for n in STAGES:
-            if n > stage:
-                break
-            s = self.statistics[n]
-            scores.extend(s.z(s.summary(pair[0], j), s.summary(pair[1], j)) for j in (0, 1))
-        outcome = stability(scores, self.threshold, stage)
+        for n in active_stages:
+            stats = self.statistics[n]
+            scores.extend(stats.z(stats.summary(pair[0], j), stats.summary(pair[1], j)) for j in (0, 1))
+        outcome = stability(scores, self.threshold, stage, self.decision_stage)
         self.version += 1
         row = dict(event='comparison', id=self.version, history_a=h, history_b=r,
                    suffix=e, pair=pair, stage=stage, scores=scores, threshold=self.threshold,
@@ -51,7 +60,7 @@ class Evidence:
         self.cache[key] = row
         self.counts['comparisons'] += 1
         self.counts[outcome+'_comparisons'] += 1
-        if stage == 32:
+        if stage >= self.decision_stage:
             self.counts[outcome+'_certificates'] += 1
         self.emit(row)
         return row
