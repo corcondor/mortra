@@ -23,8 +23,10 @@ from pathlib import Path
 
 import numpy as np
 
+from experiments.accelerator import device_info, fft2_batch
 from experiments.noisy_rgb_discovery.reference.physics3d import PhysicsArena3D
 
+FFT_DEVICE = "cpu"
 OFFSETS = ((0, 0), (2, 0), (0, 2), (2, 2))
 ACTIONS = tuple(range(5))
 
@@ -77,11 +79,8 @@ def quantize(array, bits=3):
 
 
 def fft_parts(image):
-    centered = image - image.mean()
-    spectrum = np.fft.fftshift(np.fft.fft2(centered))
-    magnitude = np.abs(spectrum)
-    phase = np.angle(spectrum)
-    return magnitude, phase
+    magnitude, phase = fft2_batch(np.asarray(image), device=FFT_DEVICE)
+    return magnitude[0], phase[0]
 
 
 def normalized_magnitude_code(image, bins=16):
@@ -390,7 +389,10 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed-start", type=int, default=99029000)
     parser.add_argument("--worlds", type=int, default=16)
+    parser.add_argument("--device", choices=("cpu", "cuda", "auto"), default="cpu")
     args=parser.parse_args()
+    global FFT_DEVICE
+    FFT_DEVICE=args.device
     args.output.mkdir(parents=True, exist_ok=False)
     rows=[audit_world(seed) for seed in range(args.seed_start,args.seed_start+args.worlds)]
     result=dict(
@@ -402,6 +404,7 @@ def main():
             micro_reconstruction="four half-cell lattices interleaved to 24x24",
             spectral="FFT magnitude/phase of 24x24 micro-scan",
             policy_use="none; post-hoc structural audit only",
+            accelerator=device_info(args.device),
             hidden_state_use="reachable enumeration and scoring only; never sensor code",
         ),
         worlds=rows,
