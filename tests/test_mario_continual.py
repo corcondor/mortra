@@ -155,6 +155,33 @@ def test_runner_learns_matches_and_executes_tool_without_bypassing_evidence():
     assert any(e["event"] == "tool_reused" for e in runner.tools.events)
 
 
+def test_program_frontier_requires_two_distinct_contexts_before_transfer():
+    runner = object.__new__(ContinualMario)
+    runner.args = SimpleNamespace(tool_policy="program_frontier")
+    runner.tools = ProgramLibrary(3)
+    runner.program_context_counts = Counter()
+    runner.program_use_counts = Counter()
+    runner.program_complete_counts = Counter()
+    runner.memory = PredictiveRegistry(3)
+    runner.memory.counts[(99, 1)] = {100: 1}
+    novel = PredictiveBelief("novel", (99,), False)
+
+    # One context may be a coincidence: it is not portable evidence.
+    runner.tools.register((1, 2), guard=10, expected_states=(11, 12),
+                          source="repeated_resolved_transition")
+    assert len(runner.learned_programs()) == 1
+    assert len(runner.portable_programs()) == 0
+    assert runner.choose_transfer_program(novel, 1) is None
+
+    # The same word observed under a second distinct guard is the minimal direct
+    # evidence of cross-context recurrence.
+    runner.tools.register((1, 2), guard=20, expected_states=(21, 22),
+                          source="repeated_resolved_transition")
+    assert len(runner.portable_programs()) == 1
+    chosen = runner.choose_transfer_program(novel, 1)
+    assert chosen is not None and chosen[1] == (1, 2)
+
+
 def test_program_frontier_reuses_action_word_across_exact_state_guards():
     runner = object.__new__(ContinualMario)
     runner.args = SimpleNamespace(tool_policy="program_frontier")
