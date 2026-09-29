@@ -21,10 +21,15 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install numpy==1.26.4 Pillow==11.3.0
-      - run: python -m experiments.spectral_microscan_audit.run --output spectral-microscan-result --worlds 16
+      - name: Development protocol
+        run: python -m experiments.spectral_microscan_audit.run --output spectral-microscan-dev --seed-start 99029000 --worlds 16
+      - name: Fresh confirmation, unchanged protocol
+        run: python -m experiments.spectral_microscan_audit.run --output spectral-microscan-confirm --seed-start 99129000 --worlds 16
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: spectral-microscan-${{ github.run_id }}
-          path: spectral-microscan-result
+          path: |
+            spectral-microscan-dev
+            spectral-microscan-confirm
           retention-days: 30
