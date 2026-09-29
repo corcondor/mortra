@@ -6,7 +6,7 @@ on:
       primitive_actions:
         description: Equal primitive-action budget per policy
         required: false
-        default: '15000'
+        default: '50000'
   push:
     branches: ['research/mortra-forward-integration-20260929']
     paths:
@@ -106,8 +106,8 @@ jobs:
       - name: Compare measured outcomes
         run: |
           python -m experiments.mario_continual.compare_tool_policies \
-            --legacy downloaded/tool-policy-legacy-${{ github.run_id }}/policy-run \
-            --program-frontier downloaded/tool-policy-program_frontier-${{ github.run_id }}/policy-run \
+            --legacy downloaded/tool-policy-legacy-${{ github.run_id }} \
+            --program-frontier downloaded/tool-policy-program_frontier-${{ github.run_id }} \
             --output PROGRAM_FRONTIER_COMPARISON.json
           cat PROGRAM_FRONTIER_COMPARISON.json
       - uses: actions/upload-artifact@v4
