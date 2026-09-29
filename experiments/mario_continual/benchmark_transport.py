@@ -105,12 +105,21 @@ def main():
     finally:
         port.close()
 
-    # Rank only methods that actually move RGB pixels. Hash-only intentionally
-    # avoids RGB transfer and is reported separately.
-    pixel_methods=("mmap_single_live","mmap_batch_live",
-                   "png_disk_roundtrip","raw_file_roundtrip")
-    result["pixel_transport_ranking"]=sorted(
-        pixel_methods,key=lambda name:result[name]["ms_per_sample"])
+    # Only live methods include real screen capture, Java/Python IPC and
+    # transport. PNG/raw disk numbers above are post-capture codec/I/O baselines
+    # and must not be ranked against live transport.
+    live_pixel_methods=("mmap_single_live","mmap_batch_live")
+    result["live_pixel_transport_ranking"]=sorted(
+        live_pixel_methods,key=lambda name:result[name]["ms_per_sample"])
+    result["postcapture_io_baselines"]=(
+        "png_disk_roundtrip","raw_file_roundtrip")
+    result["comparison_scope"]={
+        "hash_only_live":"real capture + Java hash + IPC; no pixel transfer",
+        "mmap_single_live":"real capture + mmap pixel transfer, one frame/command",
+        "mmap_batch_live":"real captures + one batched mmap transfer",
+        "png_disk_roundtrip":"post-capture encode/write/read/decode only",
+        "raw_file_roundtrip":"post-capture write/read only",
+    }
     result["recommendation"]={
         "normal_exact_observation":"hash_only_live",
         "pixels_required":"mmap_batch_live",
