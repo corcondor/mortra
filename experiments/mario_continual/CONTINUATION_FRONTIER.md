@@ -178,3 +178,26 @@ The engine completion percentage is logged only *after terminal* as
 `completion_audit_only` so experiments can test whether the RGB statistic
 actually correlates with real progress.  It is never passed to
 `choose_primitive`, predictive updates, or frontier ranking.
+
+
+## Bootstrap rule
+
+The 8-episode RGB smoke produced no reliable global displacement witness.  The
+depth-only controller had already been shown to underperform the prior virtual
+frontier before such a witness appeared.  Therefore the final controller does
+not alter exploration before it has evidence for a progress statistic.
+
+If no reachable frontier carries reliable RGB-motion ancestry, the selected
+primitive is exactly the action returned by the previous
+`VirtualFrontierPolicy(task_aware=False, task_source=False)`.
+
+Only after a reliable RGB displacement is observed does the controller switch
+to displacement-prioritized continuation.  This makes the intervention
+conservative:
+
+    no visual progress evidence  =>  old exploration policy
+    visual progress evidence     =>  known-route continuation toward the
+                                     farthest visually displaced frontier
+
+Learned tools are still allowed only as exact prefixes of the selected primitive
+plan.
