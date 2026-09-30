@@ -1,3 +1,6 @@
+import numpy as np
+
+from experiments.mario_continual.port import estimate_profile_shift
 from experiments.mario_continual.predictive import PredictiveRegistry
 from experiments.task_agent.continuation_frontier import ContinuationFrontierPolicy
 
@@ -71,3 +74,53 @@ def test_continuation_frontier_extends_when_already_at_deepest_boundary():
     assert decision.action == 0
     assert policy.last_telemetry["target_state"] == q1
     assert policy.last_telemetry["planned_actions"] == (0,)
+
+
+def test_edge_profile_shift_recovers_global_translation():
+    rng = np.random.default_rng(20260930)
+    previous = rng.normal(size=64)
+    current = np.roll(previous, -3)
+    shift, score, margin, reliable = estimate_profile_shift(previous, current)
+    assert shift == 3
+    assert reliable
+    assert score > .99
+    assert margin > .02
+
+
+def test_visual_position_propagates_only_from_rgb_motion_evidence():
+    memory = PredictiveRegistry(2)
+    source = memory.belief("A", ())
+    target, _ = memory.update(
+        source, 0, "B", (), (0,),
+        visual_delta=2, visual_reliable=True)
+    q1 = target.resolved_state
+    assert memory.visual_position(q1) == 2.0
+    assert memory.visual_motion_count(q1) == 1
+
+    source2 = memory.belief("B", (0,))
+    target2, _ = memory.update(
+        source2, 1, "C", (0,), (0, 1),
+        visual_delta=7, visual_reliable=False)
+    q2 = target2.resolved_state
+    # Ambiguous image registration must not manufacture progress.
+    assert memory.visual_position(q2) == 2.0
+    assert memory.visual_motion_count(q2) == 1
+
+
+def test_visual_displacement_outranks_history_depth_once_observed():
+    memory = PredictiveRegistry(2)
+    q0 = memory.add_state("S0", (), reason="test")
+    q_visual = memory.add_state("SV", (0,), reason="test")
+    q_deep = memory.add_state("SD", (1, 1, 1, 1), reason="test")
+    memory.record_transition(q0, 0, q_visual)
+    memory.record_transition(q0, 1, q_deep)
+    memory.history_visual_position[(0,)] = 3.0
+    memory.history_visual_motion_count[(0,)] = 1
+    memory.history_visual_position[(1, 1, 1, 1)] = 0.0
+    memory.history_visual_motion_count[(1, 1, 1, 1)] = 0
+
+    policy = ContinuationFrontierPolicy()
+    decision = policy.choose(memory, memory.state_token(q0), None, 0)
+    assert decision.action == 0
+    assert policy.last_telemetry["target_state"] == q_visual
+    assert policy.last_telemetry["target_visual_extent"] == 3.0
