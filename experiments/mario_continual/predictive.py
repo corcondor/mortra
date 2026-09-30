@@ -41,19 +41,67 @@ class PredictiveRegistry:
         self.events = []
         self.goal_states = set()
         self.structure_version = 0
+        # Exact reset-relative action history is a context witness for the
+        # deterministic Mario bridge.  It prevents identical replays from
+        # manufacturing fresh predictive states when a visual class is aliased.
+        self.history_index = {}
+        self.observation_first_depth = {}
 
     @staticmethod
     def state_token(q):
         return ("predictive", int(q))
 
+    def _ensure_context_indexes(self):
+        # Checkpoints from earlier code remain readable.
+        if not hasattr(self, "history_index"):
+            self.history_index = {}
+        if not hasattr(self, "observation_first_depth"):
+            self.observation_first_depth = {}
+        indexed = len(self.history_index)
+        if indexed < len(self.id_to_state):
+            self.history_index = {}
+            self.observation_first_depth = {}
+            for q, (observation, history) in enumerate(
+                    zip(self.state_observation, self.representative_history)):
+                history = tuple(history)
+                self.history_index.setdefault((observation, history), q)
+                depth = len(history)
+                old = self.observation_first_depth.get(observation)
+                if old is None or depth < old:
+                    self.observation_first_depth[observation] = depth
+
+    def history_state(self, observation, history):
+        self._ensure_context_indexes()
+        return self.history_index.get((observation, tuple(history)))
+
+    def frontier_depth(self, q):
+        """First-evidence depth of q's observation, not a game oracle signal."""
+        self._ensure_context_indexes()
+        q = int(q)
+        observation = self.state_observation[q]
+        return int(self.observation_first_depth.get(
+            observation, len(self.representative_history[q])))
+
     def add_state(self, observation, history, *, reason):
+        history = tuple(history)
+        existing = self.history_state(observation, history)
+        if existing is not None:
+            self.events.append(dict(
+                event="predictive_history_reused", state=int(existing),
+                observation=observation, history=list(history), reason=reason))
+            return int(existing)
         q = len(self.id_to_state)
         token = self.state_token(q)
         self.state_to_id[token] = q
         self.id_to_state.append(token)
         self.state_observation.append(observation)
-        self.representative_history.append(tuple(history))
+        self.representative_history.append(history)
         self.observation_states[observation].add(q)
+        self.history_index[(observation, history)] = q
+        depth = len(history)
+        old_depth = self.observation_first_depth.get(observation)
+        if old_depth is None or depth < old_depth:
+            self.observation_first_depth[observation] = depth
         self.structure_version = getattr(self, "structure_version", 0) + 1
         self.events.append(dict(event="predictive_state_added", state=q,
                                 observation=observation, history=list(history),
@@ -79,6 +127,10 @@ class PredictiveRegistry:
             self.structure_version = getattr(self, "structure_version", 0) + 1
 
     def belief(self, observation, history):
+        exact = self.history_state(observation, history)
+        if exact is not None:
+            return PredictiveBelief(
+                observation, (int(exact),), False, "exact_history_context")
         states = sorted(self.observation_states.get(observation, ()))
         if not states:
             q = self.add_state(observation, history, reason="new_observation_class")
@@ -110,11 +162,13 @@ class PredictiveRegistry:
             else:
                 contradicted_sources.add(q)
 
-        # If every known candidate predicted a different observation and no
-        # candidate had an untried transition, the source itself is a new hidden
-        # predictive state despite sharing its current observation.
-        source_resolved = None
-        if source_candidates and not compatible_sources and not unknown_sources:
+        # Replaying an identical reset-relative action history reaches the same
+        # physical context in this deterministic bridge.  If that exact history
+        # is already known, reuse it even when old quotient evidence disagrees.
+        # The disagreement becomes transition evidence instead of a fake split.
+        source_resolved = self.history_state(source.observation, source_history)
+        if source_resolved is None and source_candidates \
+                and not compatible_sources and not unknown_sources:
             source_resolved = self.add_state(
                 source.observation, source_history,
                 reason="confirmed_one_step_counterexample_to_all_visual_candidates")
@@ -122,15 +176,18 @@ class PredictiveRegistry:
                 event="predictive_split", new_state=source_resolved,
                 prior_candidates=sorted(source_candidates), action=action,
                 observed_target=target_observation))
-        else:
+        elif source_resolved is None:
             possible_sources = compatible_sources | unknown_sources
             if len(possible_sources) == 1:
                 source_resolved = next(iter(possible_sources))
 
         if terminal_status is not None and terminal_status != "RUNNING":
             terminal_observation = ("terminal", str(terminal_status))
+            exact_target = self.history_state(terminal_observation, target_history)
             states = sorted(self.observation_states.get(terminal_observation, ()))
-            if states:
+            if exact_target is not None:
+                target_candidates = {int(exact_target)}
+            elif states:
                 target_candidates = {states[0]}
             else:
                 target_candidates = {
@@ -141,24 +198,29 @@ class PredictiveRegistry:
             if str(terminal_status) == "WIN":
                 self.goal_states.update(target_candidates)
         else:
+            exact_target = self.history_state(target_observation, target_history)
             visual_targets = set(self.observation_states.get(target_observation, ()))
-            if predicted_targets:
-                target_candidates = predicted_targets & visual_targets
-                if not target_candidates:
-                    target_candidates = predicted_targets
-            else:
-                target_candidates = set(visual_targets)
-
-            if not target_candidates:
-                target_candidates = {
-                    self.add_state(target_observation, target_history,
-                                   reason="new_observation_class_after_action")
-                }
+            if exact_target is not None:
+                target_candidates = {int(exact_target)}
                 target_new_possible = False
             else:
-                # Even one visually matching known state may hide another
-                # predictive state until future behaviour separates it.
-                target_new_possible = True
+                if predicted_targets:
+                    target_candidates = predicted_targets & visual_targets
+                    if not target_candidates:
+                        target_candidates = predicted_targets
+                else:
+                    target_candidates = set(visual_targets)
+
+                if not target_candidates:
+                    target_candidates = {
+                        self.add_state(target_observation, target_history,
+                                       reason="new_observation_class_after_action")
+                    }
+                    target_new_possible = False
+                else:
+                    # A visually matching known state may still hide another
+                    # predictive state until future behaviour separates it.
+                    target_new_possible = True
 
         target = PredictiveBelief(
             ("terminal", str(terminal_status))
