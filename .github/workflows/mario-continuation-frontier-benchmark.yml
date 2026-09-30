@@ -1,0 +1,88 @@
+name: Mario continuation frontier 100-episode benchmark
+
+on:
+  push:
+    branches:
+      - research/mario-continuation-frontier-20260930
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    strategy:
+      fail-fast: false
+      matrix:
+        policy: [continuation, virtual]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openjdk-17-jdk xvfb xauth
+          python -m pip install -q numpy scipy Pillow psutil
+          python -m experiments.mario_continual.setup_game
+      - name: Run 100 episodes
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.run \
+              --output /tmp/mario-${{ matrix.policy }} \
+              --device cpu \
+              --exploration-policy ${{ matrix.policy }} \
+              --max-episodes 100 \
+              --checkpoint-every 100000
+      - name: Analyze
+        run: |
+          POLICY='${{ matrix.policy }}' python - <<'PY'
+          import hashlib, json, os
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          policy = os.environ["POLICY"]
+          root = Path("/tmp/mario-" + policy)
+          status = json.loads((root / "status.json").read_text())
+          actions = defaultdict(list)
+          terminals = Counter()
+          reasons = Counter()
+          terminal_eps = set()
+          with (root / "events.jsonl").open() as handle:
+              for line in handle:
+                  row = json.loads(line)
+                  ep = row.get("episode")
+                  if row.get("event") == "primitive_step":
+                      actions[ep].append(int(row["action"]))
+                      reasons[row.get("reason")] += 1
+                  elif row.get("event") == "episode_terminal":
+                      terminals[row.get("status")] += 1
+                      terminal_eps.add(ep)
+
+          completed = sorted(ep for ep in actions if ep in terminal_eps)
+          hashes = [
+              hashlib.sha256(bytes(actions[ep])).hexdigest()
+              for ep in completed
+          ]
+          longest_repeat = 0
+          current = 0
+          previous = None
+          for digest in hashes:
+              if digest == previous:
+                  current += 1
+              else:
+                  current = 1
+                  previous = digest
+              longest_repeat = max(longest_repeat, current)
+
+          print("BENCHMARK_RESULT", json.dumps({
+              "policy": policy,
+              "status": status,
+              "terminal_counts": dict(terminals),
+              "completed_episodes": len(completed),
+              "unique_action_sequences": len(set(hashes)),
+              "longest_identical_consecutive_run": longest_repeat,
+              "mean_actions_per_completed_episode":
+                  sum(len(actions[e]) for e in completed) / max(1, len(completed)),
+              "reason_counts": dict(reasons),
+          }, sort_keys=True))
+          PY
