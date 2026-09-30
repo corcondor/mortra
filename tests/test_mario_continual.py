@@ -83,7 +83,13 @@ def test_one_step_counterexample_splits_visual_alias_and_becomes_active_probe():
 
     # The discriminating action is inferred from the learned successor
     # observations rather than a fixed action name.
-    assert memory.choose_identifying_action(memory.belief("A", ())) == 0
+    # Exact histories now resolve their previously evidenced context directly;
+    # a genuinely unseen history still exposes the visual aliases and therefore
+    # has an identifying action.
+    assert memory.belief("A", ()).resolved_state == 0
+    unseen = memory.belief("A", (2, 2))
+    assert set(unseen.candidates) == {0, split}
+    assert memory.choose_identifying_action(unseen) == 0
 
 
 def test_noisy_rgb_path_uses_batched_remeasurement_and_replay():
@@ -135,6 +141,12 @@ def test_runner_learns_matches_and_executes_tool_without_bypassing_evidence():
     belief0 = PredictiveBelief("A", (0,), False)
     token = ContinualMario.matching_tool(runner, belief0, 0)
     assert token is not None
+    # A multi-step program may only substitute for control when its complete
+    # primitive expansion is a prefix of the planner's current route.
+    assert ContinualMario.matching_tool(
+        runner, belief0, 0, planned_actions=(0, 2)) is None
+    assert ContinualMario.matching_tool(
+        runner, belief0, 0, planned_actions=(0, 1, 2)) == token
 
     outcomes = [
         ({"kind":"observation","frame":1}, PredictiveBelief("B",(1,),False)),
