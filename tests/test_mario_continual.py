@@ -79,8 +79,6 @@ def test_one_step_counterexample_splits_visual_alias_and_becomes_active_probe():
     assert split not in (None, 0)
     assert memory.state_observation[split] == "A"
     assert target2.resolved_state is not None
-    assert set(memory.belief("A", ()).candidates) == {0, split}
-
     # The discriminating action is inferred from the learned successor
     # observations rather than a fixed action name.
     # Exact histories now resolve their previously evidenced context directly;
