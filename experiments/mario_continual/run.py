@@ -445,8 +445,11 @@ class ContinualMario:
         actual_effect = None
         if completed:
             self.program_complete_counts[actions] += 1
-            actual_effect = self.conditional_model.observe_transfer(
-                self.memory, q, actions, state_path)
+            model = getattr(self, "conditional_model", None)
+            actual_effect = (
+                None if model is None else
+                model.observe_transfer(self.memory, q, actions, state_path)
+            )
             if prediction is not None and actual_effect is not None:
                 if actual_effect == prediction.effect:
                     self.conditional_stats["correct"] += 1
