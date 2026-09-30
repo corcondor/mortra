@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [legacy, program_frontier]
+        mode: [legacy, program_frontier, conditional_frontier]
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -108,6 +108,7 @@ jobs:
           python -m experiments.mario_continual.compare_tool_policies \
             --legacy downloaded/tool-policy-legacy-${{ github.run_id }} \
             --program-frontier downloaded/tool-policy-program_frontier-${{ github.run_id }} \
+            --conditional-frontier downloaded/tool-policy-conditional_frontier-${{ github.run_id }} \
             --output PROGRAM_FRONTIER_COMPARISON.json
           cat PROGRAM_FRONTIER_COMPARISON.json
       - uses: actions/upload-artifact@v4
