@@ -21,6 +21,43 @@ BUTTON_MASKS = (0, 1, 2, 16, 17, 18, 8, 9, 10, 24, 25, 26)
 MAX_BATCH = 256
 
 
+def estimate_profile_shift(previous, current, *, max_shift=8,
+                           min_similarity=.82, min_margin=.025):
+    """Estimate global horizontal scene translation from RGB edge profiles.
+
+    Positive shift means current screen content best matches a slice farther to
+    the right in the previous frame, i.e. the background moved left.  This is a
+    purely visual measurement; no Mario coordinates or completion values enter.
+    Ambiguous/repetitive profiles return zero with reliable=False.
+    """
+    x = np.asarray(previous, dtype=np.float64)
+    y = np.asarray(current, dtype=np.float64)
+    if x.ndim != 1 or y.shape != x.shape or len(x) < 16:
+        raise ValueError("edge profiles must be equal one-dimensional arrays")
+    scores = []
+    limit = min(int(max_shift), len(x) // 4)
+    for shift in range(-limit, limit + 1):
+        if shift > 0:
+            a, b = x[shift:], y[:-shift]
+        elif shift < 0:
+            a, b = x[:shift], y[-shift:]
+        else:
+            a, b = x, y
+        a = a - a.mean()
+        b = b - b.mean()
+        denom = float(np.linalg.norm(a) * np.linalg.norm(b))
+        score = -1.0 if denom <= 1e-12 else float(np.dot(a, b) / denom)
+        scores.append((score, -abs(shift), -shift, shift))
+    ranked = sorted(scores, reverse=True)
+    best_score, _, _, best_shift = ranked[0]
+    second_score = ranked[1][0] if len(ranked) > 1 else -1.0
+    margin = best_score - second_score
+    reliable = bool(best_score >= min_similarity and margin >= min_margin)
+    if not reliable:
+        best_shift = 0
+    return int(best_shift), float(best_score), float(margin), reliable
+
+
 class MarioProtocolError(RuntimeError):
     pass
 
@@ -56,6 +93,8 @@ class MarioRGBPort:
         self.batch_commands = 0
         self.pixel_bytes_read = 0
         self.actions = []
+        self.motion_profile = None
+        self.motion_frame = None
 
     def _pump(self):
         try:
@@ -95,6 +134,26 @@ class MarioRGBPort:
         if kind == "observation":
             self.last_hash = str(packet["rgb_sha256"])
             self.last_shape = (int(packet["height"]), int(packet["width"]), 3)
+            profile = packet.get("edge_profile")
+            frame = int(packet["frame"])
+            shift = 0
+            score = 0.0
+            margin = 0.0
+            reliable = False
+            if profile is not None:
+                profile = np.asarray(profile, dtype=np.float64)
+                if self.motion_profile is not None and self.motion_frame is not None \
+                        and frame > self.motion_frame:
+                    shift, score, margin, reliable = estimate_profile_shift(
+                        self.motion_profile, profile)
+                # Recaptures at the same blocked frame must not create motion.
+                if self.motion_frame is None or frame >= self.motion_frame:
+                    self.motion_profile = profile
+                    self.motion_frame = frame
+            packet["_visual_shift_bins"] = int(shift)
+            packet["_visual_shift_score"] = float(score)
+            packet["_visual_shift_margin"] = float(margin)
+            packet["_visual_shift_reliable"] = bool(reliable)
             self.snapshots += 1
         elif kind == "observation_batch":
             packet["_batch"] = self._read_batch(packet)
