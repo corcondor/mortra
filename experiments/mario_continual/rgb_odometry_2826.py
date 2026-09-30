@@ -146,7 +146,7 @@ def replay_with_odometry(name, planned, out_root, *, direction=None, continue_pa
             _, packet = port.step(action)
             pad_index += 1
             executed += 1
-            if executed >= ODOM_START:
+            if packet["kind"] == "observation" and executed >= ODOM_START:
                 current, _ = port.dump()
                 if previous is not None:
                     dx, dy, conf = phase_shift(previous, current)
