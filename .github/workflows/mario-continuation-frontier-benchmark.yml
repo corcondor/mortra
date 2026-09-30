@@ -47,6 +47,7 @@ jobs:
           terminals = Counter()
           reasons = Counter()
           terminal_eps = set()
+          completions = []
           with (root / "events.jsonl").open() as handle:
               for line in handle:
                   row = json.loads(line)
@@ -57,6 +58,9 @@ jobs:
                   elif row.get("event") == "episode_terminal":
                       terminals[row.get("status")] += 1
                       terminal_eps.add(ep)
+                      value = row.get("completion_audit_only")
+                      if value is not None:
+                          completions.append(float(value))
 
           completed = sorted(ep for ep in actions if ep in terminal_eps)
           hashes = [
@@ -84,5 +88,8 @@ jobs:
               "mean_actions_per_completed_episode":
                   sum(len(actions[e]) for e in completed) / max(1, len(completed)),
               "reason_counts": dict(reasons),
+              "max_completion_audit_only": max(completions) if completions else None,
+              "mean_completion_audit_only":
+                  sum(completions) / len(completions) if completions else None,
           }, sort_keys=True))
           PY
