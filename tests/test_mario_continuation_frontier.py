@@ -3,6 +3,7 @@ import numpy as np
 from experiments.mario_continual.port import estimate_profile_shift
 from experiments.mario_continual.predictive import PredictiveRegistry
 from experiments.task_agent.continuation_frontier import ContinuationFrontierPolicy
+from experiments.task_agent.virtual_frontier import VirtualFrontierPolicy
 
 
 def test_identical_reset_history_is_reused_without_predictive_state_growth():
@@ -49,6 +50,8 @@ def test_continuation_frontier_bypasses_shallow_local_unknowns():
     q2 = memory.add_state("S2", (0, 0), reason="test")
     memory.record_transition(q0, 0, q1)
     memory.record_transition(q1, 0, q2)
+    memory.history_visual_position[(0, 0)] = 2.0
+    memory.history_visual_motion_count[(0, 0)] = 1
 
     policy = ContinuationFrontierPolicy()
     decision = policy.choose(memory, memory.state_token(q0), None, 0)
@@ -68,6 +71,8 @@ def test_continuation_frontier_extends_when_already_at_deepest_boundary():
     q0 = memory.add_state("S0", (), reason="test")
     q1 = memory.add_state("S1", (0,), reason="test")
     memory.record_transition(q0, 0, q1)
+    memory.history_visual_position[(0,)] = 1.0
+    memory.history_visual_motion_count[(0,)] = 1
 
     policy = ContinuationFrontierPolicy()
     decision = policy.choose(memory, memory.state_token(q1), None, 0)
@@ -124,3 +129,17 @@ def test_visual_displacement_outranks_history_depth_once_observed():
     assert decision.action == 0
     assert policy.last_telemetry["target_state"] == q_visual
     assert policy.last_telemetry["target_visual_extent"] == 3.0
+
+
+def test_no_motion_signal_reproduces_virtual_frontier_action():
+    memory = PredictiveRegistry(3)
+    q0 = memory.add_state("S0", (), reason="test")
+    q1 = memory.add_state("S1", (0,), reason="test")
+    memory.record_transition(q0, 0, q1)
+
+    continuation = ContinuationFrontierPolicy()
+    virtual = VirtualFrontierPolicy(task_aware=False, task_source=False)
+    a = continuation.choose(memory, memory.state_token(q0), None, 0)
+    b = virtual.choose(memory, memory.state_token(q0), None, 0)
+    assert a.action == b.action
+    assert continuation.last_telemetry["bootstrap_virtual"]
