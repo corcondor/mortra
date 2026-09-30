@@ -1,0 +1,64 @@
+name: Mario continuation frontier engine smoke
+
+on:
+  push:
+    branches:
+      - research/mario-continuation-frontier-20260930
+  workflow_dispatch:
+
+jobs:
+  mario-engine-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openjdk-17-jdk xvfb xauth
+          python -m pip install -q numpy scipy Pillow psutil
+      - name: Build pinned Mario engine
+        run: python -m experiments.mario_continual.setup_game
+      - name: Run continuation policy
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24'             python -m experiments.mario_continual.run               --output /tmp/mario-continuation               --device cpu               --exploration-policy continuation               --max-episodes 8               --checkpoint-every 100000
+      - name: Run prior virtual policy
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24'             python -m experiments.mario_continual.run               --output /tmp/mario-virtual               --device cpu               --exploration-policy virtual               --max-episodes 8               --checkpoint-every 100000
+      - name: Summarize trajectories
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from collections import Counter
+          from pathlib import Path
+
+          for name in ("continuation", "virtual"):
+              root = Path("/tmp/mario-" + name)
+              status = json.loads((root / "status.json").read_text())
+              actions = {}
+              terminals = Counter()
+              reasons = Counter()
+              with (root / "events.jsonl").open() as handle:
+                  for line in handle:
+                      row = json.loads(line)
+                      ep = row.get("episode")
+                      if row.get("event") == "primitive_step":
+                          actions.setdefault(ep, []).append(row["action"])
+                          reasons[row.get("reason")] += 1
+                      elif row.get("event") == "episode_terminal":
+                          terminals[row.get("status")] += 1
+              hashes = {
+                  hashlib.sha256(bytes(seq)).hexdigest()
+                  for seq in actions.values()
+              }
+              print(json.dumps({
+                  "policy": name,
+                  "status": status,
+                  "terminal_counts": dict(terminals),
+                  "unique_action_sequences": len(hashes),
+                  "episode_action_lengths": [len(actions[k]) for k in sorted(actions)],
+                  "reasons": dict(reasons),
+              }, sort_keys=True))
+          PY
