@@ -153,6 +153,8 @@ class ContinualMario:
             refuted_tools=sum(e["event"] == "tool_counterexample" for e in self.tools.events),
             first_clear=self.first_clear,
             exploration_policy=self.args.exploration_policy,
+            visual_extent=self.memory.visual_extent()
+                if hasattr(self.memory, "visual_extent") else 0.0,
             accelerator=device_info(self.args.device),
             wall_seconds=time.monotonic() - self.started,
         )
@@ -310,11 +312,14 @@ class ContinualMario:
 
         terminal = packet["kind"] == "terminal"
         status = packet.get("status") if terminal else None
+        visual_delta = float(packet.get("_visual_shift_bins", 0.0))
+        visual_reliable = bool(packet.get("_visual_shift_reliable", False))
         if terminal:
             target_observation = ("terminal", status)
             target, source_resolved = self.memory.update(
                 belief, action, target_observation,
-                source_history, tuple(history), terminal_status=status)
+                source_history, tuple(history), terminal_status=status,
+                visual_delta=visual_delta, visual_reliable=visual_reliable)
         else:
             observation_belief = self.observe(port, tuple(history))
             observation = resolved_observation(observation_belief)
@@ -325,7 +330,8 @@ class ContinualMario:
             else:
                 target, source_resolved = self.memory.update(
                     belief, action, observation,
-                    source_history, tuple(history))
+                    source_history, tuple(history),
+                    visual_delta=visual_delta, visual_reliable=visual_reliable)
 
         if source_resolved is not None and target is not None and target.resolved_state is not None:
             self.recent.append((source_resolved, int(action), target.resolved_state))
@@ -334,7 +340,11 @@ class ContinualMario:
             self.learn_tools()
 
         self.emit("primitive_step", action=int(action), reason=reason,
-                  terminal=status, source_candidates=[] if belief is None else list(belief.candidates),
+                  terminal=status, visual_shift_bins=visual_delta,
+                  visual_shift_reliable=visual_reliable,
+                  visual_shift_score=packet.get("_visual_shift_score"),
+                  visual_shift_margin=packet.get("_visual_shift_margin"),
+                  source_candidates=[] if belief is None else list(belief.candidates),
                   target_candidates=[] if target is None else list(target.candidates))
         return packet, target
 
@@ -419,8 +429,12 @@ class ContinualMario:
                 # Evaluation-only engine metric.  It is recorded after terminal
                 # and is never exposed to choose_primitive/frontier selection.
                 completion_audit = packet.get("completion_audit_only")
+                visual_position = None
+                if hasattr(self.memory, "history_visual_position"):
+                    visual_position = self.memory.history_visual_position.get(tuple(history))
                 self.emit("episode_terminal", status=status,
                           completion_audit_only=completion_audit,
+                          visual_position=visual_position,
                           episode_primitive_frames=port.primitive_frames)
                 if status == "WIN":
                     self.first_clear = dict(
