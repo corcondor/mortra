@@ -126,3 +126,55 @@ Primary checks:
    sequences, terminal outcomes, and FIRST_CLEAR.
 
 The only success criterion remains the real engine terminal status `WIN`.
+
+
+## First continuation-depth experiment: rejected
+
+The first implementation ranked frontiers primarily by representative action
+history depth.  A real 100-episode Mario benchmark rejected that hypothesis:
+
+- continuation-depth: 99/99 completed episodes were unique, longest identical
+  consecutive action sequence = 1, but max engine completion audit was only
+  0.058089703;
+- prior virtual frontier: max engine completion audit was 0.108492985.
+
+Therefore the exact-repeat pathology was fixed, but action-history depth was not
+a valid proxy for game progress.  This negative result is retained rather than
+reinterpreted.
+
+## RGB displacement frontier
+
+The next controller keeps the exact-history identity and plan-safe tool
+invariants, but replaces survival/history depth as the primary frontier signal.
+
+Each blocked RGB frame supplies a compact 64-bin horizontal edge-energy profile.
+For two successive advancing frames, the Python port searches a bounded set of
+horizontal translations and evaluates normalized overlap correlation.  A shift
+is accepted only when both absolute similarity and the margin over the next-best
+shift exceed fixed thresholds.  Same-frame SNAP recaptures never create motion.
+
+For an exact action history h, the predictive memory integrates only reliable
+visual translations:
+
+    x_rgb(h a) = x_rgb(h) + delta_rgb
+
+and otherwise carries the previous value forward.  This is a direct statistic
+of observed RGB motion, not a learned latent representation.
+
+A reachable frontier q is now ranked by
+
+    (has_reliable_visual_motion,
+     abs(x_rgb(q)),
+     first_evidence_depth(q),
+     -known_route_length(q),
+     -q).
+
+The absolute displacement makes the rule direction-agnostic.  On a bounded
+side-scroller, one direction exhausts quickly while expansion of the other side
+continues.  No RIGHT action, Mario position, level coordinate, completion
+percentage, or goal location is encoded in the policy.
+
+The engine completion percentage is logged only *after terminal* as
+`completion_audit_only` so experiments can test whether the RGB statistic
+actually correlates with real progress.  It is never passed to
+`choose_primitive`, predictive updates, or frontier ranking.
