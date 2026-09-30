@@ -48,6 +48,8 @@ jobs:
           reasons = Counter()
           terminal_eps = set()
           completions = []
+          visual_positions = []
+          completion_visual_pairs = []
           with (root / "events.jsonl").open() as handle:
               for line in handle:
                   row = json.loads(line)
@@ -59,8 +61,13 @@ jobs:
                       terminals[row.get("status")] += 1
                       terminal_eps.add(ep)
                       value = row.get("completion_audit_only")
+                      visual = row.get("visual_position")
                       if value is not None:
                           completions.append(float(value))
+                      if visual is not None:
+                          visual_positions.append(float(visual))
+                      if value is not None and visual is not None:
+                          completion_visual_pairs.append((float(value), abs(float(visual))))
 
           completed = sorted(ep for ep in actions if ep in terminal_eps)
           hashes = [
@@ -78,6 +85,13 @@ jobs:
                   previous = digest
               longest_repeat = max(longest_repeat, current)
 
+          correlation = None
+          if len(completion_visual_pairs) >= 2:
+              import numpy as np
+              pair_array = np.asarray(completion_visual_pairs, dtype=float)
+              if np.std(pair_array[:, 0]) > 0 and np.std(pair_array[:, 1]) > 0:
+                  correlation = float(np.corrcoef(pair_array[:, 0], pair_array[:, 1])[0, 1])
+
           print("BENCHMARK_RESULT", json.dumps({
               "policy": policy,
               "status": status,
@@ -91,5 +105,8 @@ jobs:
               "max_completion_audit_only": max(completions) if completions else None,
               "mean_completion_audit_only":
                   sum(completions) / len(completions) if completions else None,
+              "max_abs_visual_position":
+                  max((abs(v) for v in visual_positions), default=None),
+              "completion_visual_correlation": correlation,
           }, sort_keys=True))
           PY
