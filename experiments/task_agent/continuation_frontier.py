@@ -3,12 +3,13 @@
 The generic virtual-frontier field treats every untried state-action pair as an
 equivalent terminal source.  In a continually refining predictive quotient that
 can create frontier mass faster than it is consumed.  This policy instead gives
-priority to the deepest *already evidenced* frontier and uses only known modal
-transitions to navigate there.
+priority to frontiers that extend the largest RGB-inferred visual displacement,
+then uses evidence depth only as a fallback.  Only known modal transitions are
+used to navigate there.
 
 No unknown successor, game coordinate, reward, completion percentage, or oracle
-state is read.  Depth comes from the representative real action history stored
-when a predictive state was first evidenced.
+state is read.  Visual displacement is reconstructed from global horizontal
+translation of compact RGB edge profiles; history depth is secondary.
 """
 from __future__ import annotations
 
@@ -39,6 +40,18 @@ def _frontier_depth(learner, q):
     return 0
 
 
+def _visual_position(learner, q):
+    if hasattr(learner, "visual_position"):
+        return float(learner.visual_position(int(q)))
+    return 0.0
+
+
+def _visual_motion_count(learner, q):
+    if hasattr(learner, "visual_motion_count"):
+        return int(learner.visual_motion_count(int(q)))
+    return 0
+
+
 def _path_to(target, start, previous, previous_action):
     actions = []
     states = [int(target)]
@@ -53,11 +66,18 @@ def _path_to(target, start, previous, previous_action):
 
 
 class ContinuationFrontierPolicy:
-    """Navigate to the deepest reachable untried boundary, then extend it.
+    """Navigate to the farthest visually displaced reachable boundary.
 
     Candidate frontier state q is ranked lexicographically by
 
-        (evidenced_depth(q), -known_route_length(q), -q).
+        (has_reliable_visual_motion,
+         abs(rgb_inferred_position(q)),
+         evidenced_depth(q),
+         -known_route_length(q),
+         -q).
+
+    Therefore survival time alone cannot dominate once a reliable camera-motion
+    witness has been observed.
 
     Once q is selected, an untried primitive at q is appended to the known route.
     Thus a shallow local untried action no longer automatically dominates a
@@ -93,7 +113,11 @@ class ContinuationFrontierPolicy:
                     if learner.action_visits.get((u, a), 0) == 0
                 )
                 if unknown:
+                    visual_position = _visual_position(learner, u)
+                    motion_count = _visual_motion_count(learner, u)
                     frontiers.append((
+                        int(motion_count > 0),
+                        abs(float(visual_position)),
                         _frontier_depth(learner, u),
                         -distance[u],
                         -u,
@@ -126,7 +150,7 @@ class ContinuationFrontierPolicy:
             }
             return decision
 
-        _, _, _, target, unknown = max(frontiers)
+        _, _, _, _, _, target, unknown = max(frontiers)
         target_action = min(
             unknown,
             key=lambda a: (learner.action_visits.get((target, a), 0), a),
@@ -142,6 +166,8 @@ class ContinuationFrontierPolicy:
         )
         bypassed = bool(target != start and local_unknown)
         target_depth = _frontier_depth(learner, target)
+        target_visual_position = _visual_position(learner, target)
+        target_motion_count = _visual_motion_count(learner, target)
         self.last_telemetry = {
             "planned_actions": planned,
             "route_states": route_states,
@@ -149,6 +175,10 @@ class ContinuationFrontierPolicy:
             "target_action": int(target_action),
             "target_depth": int(target_depth),
             "current_depth": int(_frontier_depth(learner, start)),
+            "target_visual_position": float(target_visual_position),
+            "target_visual_extent": abs(float(target_visual_position)),
+            "target_visual_motion_count": int(target_motion_count),
+            "current_visual_position": float(_visual_position(learner, start)),
             "route_length": len(route_actions),
             "reachable_states": len(previous),
             "frontier_states": len(frontiers),
@@ -158,10 +188,13 @@ class ContinuationFrontierPolicy:
             action=selected,
             policy=self.name,
             target_frontier=int(target),
-            score={int(target_action): float(target_depth)},
+            score={int(target_action): (
+                abs(float(target_visual_position))
+                if target_motion_count > 0 else float(target_depth)
+            )},
             reason=(
-                "follow known route to deepest evidenced frontier"
+                "follow known route to visually displaced frontier"
                 if route_actions
-                else "extend deepest evidenced frontier"
+                else "extend visually displaced frontier"
             ),
         )
