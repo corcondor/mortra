@@ -1,0 +1,48 @@
+name: Mario verify 51pct route 2826
+
+on:
+  push:
+    branches:
+      - research/mario-revisit-causal-20260930
+    paths:
+      - experiments/mario_continual/verify_51pct_2826.py
+      - .github/workflows/mario-verify-51pct-2826.yml
+  workflow_dispatch:
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        replica: [1, 2, 3]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb
+          python -m pip install -q numpy scipy Pillow psutil
+      - name: Build pinned Mario engine
+        run: python -m experiments.mario_continual.setup_game
+      - name: Replay stage1 and stage2
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -u -m experiments.mario_continual.verify_51pct_2826 ${{ matrix.replica }}
+      - name: Show result
+        if: always()
+        run: cat /tmp/verify_51pct_2826_${{ matrix.replica }}.json || true
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mario-verify-51pct-2826-${{ matrix.replica }}
+          path: /tmp/verify_51pct_2826_${{ matrix.replica }}.json
