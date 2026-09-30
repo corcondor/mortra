@@ -22,6 +22,7 @@ from experiments.mario_continual.port import MarioRGBPort
 from experiments.mario_continual.predictive import PredictiveRegistry
 from experiments.task_agent.core import ExactState, ProductPlanner, SequenceTask
 from experiments.task_agent.virtual_frontier import VirtualFrontierPolicy
+from experiments.task_agent.continuation_frontier import ContinuationFrontierPolicy
 
 
 @dataclass
@@ -104,10 +105,14 @@ class ContinualMario:
             self.replays = 0
             self.first_clear = None
 
-        self.frontier = VirtualFrontierPolicy(task_aware=False, task_source=False)
+        if args.exploration_policy == "continuation":
+            self.frontier = ContinuationFrontierPolicy()
+        else:
+            self.frontier = VirtualFrontierPolicy(task_aware=False, task_source=False)
         self.planner = ProductPlanner(q=.90)
         self._frontier_cache = {}
         self._goal_cache = {}
+        self._planned_actions = ()
         self.started = time.monotonic()
         self._event_handle = self.events_path.open("a", encoding="utf8", buffering=1)
 
@@ -147,6 +152,7 @@ class ContinualMario:
             reused_tools=sum(e["event"] == "tool_reused" for e in self.tools.events),
             refuted_tools=sum(e["event"] == "tool_counterexample" for e in self.tools.events),
             first_clear=self.first_clear,
+            exploration_policy=self.args.exploration_policy,
             accelerator=device_info(self.args.device),
             wall_seconds=time.monotonic() - self.started,
         )
@@ -197,11 +203,14 @@ class ContinualMario:
             visits = [sum(self.memory.action_visits.get((q, a), 0)
                           for q in range(len(self.memory.id_to_state)))
                       for a in range(self.memory.num_actions)]
-            return min(range(self.memory.num_actions), key=lambda a: (visits[a], a)), "unresolved_visual"
+            action = min(range(self.memory.num_actions), key=lambda a: (visits[a], a))
+            self._planned_actions = (int(action),)
+            return action, "unresolved_visual"
 
         if len(belief.candidates) > 1:
             action = self.memory.choose_identifying_action(belief)
             if action is not None:
+                self._planned_actions = (int(action),)
                 return int(action), "active_identification"
 
         q = belief.resolved_state
@@ -212,7 +221,9 @@ class ContinualMario:
                 goal_ids = tuple(sorted(self.memory.goal_states))
                 cache_key = (version, q, goal_ids)
                 if cache_key in self._goal_cache:
-                    return self._goal_cache[cache_key], "goal_field_cached"
+                    action = int(self._goal_cache[cache_key])
+                    self._planned_actions = (action,)
+                    return action, "goal_field_cached"
                 goals = {self.memory.state_token(g) for g in goal_ids}
                 task = GoalTask(goals)
                 action = self.planner.choose_action(
@@ -220,18 +231,25 @@ class ContinualMario:
                 if action is not None:
                     action = int(action)
                     self._goal_cache[cache_key] = action
+                    self._planned_actions = (action,)
                     return action, "goal_field"
 
             cache_key = (version, q)
             if cache_key in self._frontier_cache:
-                return self._frontier_cache[cache_key], "virtual_frontier_cached"
+                action = int(self._frontier_cache[cache_key])
+                self._planned_actions = (action,)
+                return action, "virtual_frontier_cached"
             decision = self.frontier.choose(
                 self.memory, token, NullTask(), 0)
             action = int(decision.action)
             telemetry = getattr(self.frontier, "last_telemetry", None) or {}
+            planned = tuple(int(a) for a in telemetry.get("planned_actions", (action,)))
+            if not planned or planned[0] != action:
+                raise RuntimeError("frontier policy returned an inconsistent action plan")
+            self._planned_actions = planned
             if telemetry.get("virtual_field_decision"):
                 self._frontier_cache[cache_key] = action
-            return action, "virtual_frontier"
+            return action, getattr(self.frontier, "name", "frontier")
 
         # Candidate uncertainty with no currently separating action: explore the
         # least observed primitive over all candidates.
@@ -240,7 +258,9 @@ class ContinualMario:
             total = sum(self.memory.action_visits.get((q, action), 0)
                         for q in belief.candidates)
             visits.append(total)
-        return min(range(self.memory.num_actions), key=lambda a: (visits[a], a)), "belief_frontier"
+        action = min(range(self.memory.num_actions), key=lambda a: (visits[a], a))
+        self._planned_actions = (int(action),)
+        return action, "belief_frontier"
 
     def learn_tools(self):
         # A tool candidate must be a repeated *resolved* transition word. This
@@ -264,7 +284,7 @@ class ContinualMario:
                 self.emit("tool_learned", tool=token, guard=start,
                           actions=list(actions), expected_states=list(expected))
 
-    def matching_tool(self, belief, preferred_action):
+    def matching_tool(self, belief, preferred_action, planned_actions=None):
         q = None if belief is None else belief.resolved_state
         if q is None:
             return None
@@ -275,6 +295,10 @@ class ContinualMario:
             expansion = self.tools.flatten_token(token)
             if not expansion or expansion[0] != preferred_action:
                 continue
+            if planned_actions is not None:
+                plan = tuple(int(a) for a in planned_actions)
+                if len(expansion) > len(plan) or tuple(plan[:len(expansion)]) != expansion:
+                    continue
             choices.append((len(expansion), token))
         return max(choices)[1] if choices else None
 
@@ -379,7 +403,8 @@ class ContinualMario:
                     action, reason = self.choose_primitive(belief)
                     self.decisions += 1
 
-                    token = self.matching_tool(belief, action)
+                    token = self.matching_tool(
+                        belief, action, getattr(self, "_planned_actions", (action,)))
                     if token is not None:
                         packet, belief, used = self.run_tool(token, port, history, belief)
                     else:
@@ -431,6 +456,10 @@ def parse_args():
     parser.add_argument("--checkpoint-every", type=int, default=100)
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto",
                         help="CUDA accelerates RGB statistics/FFT only; core graph reasoning remains CPU")
+    parser.add_argument(
+        "--exploration-policy", choices=("continuation", "virtual"),
+        default="continuation",
+        help="continuation navigates to the deepest evidenced frontier; virtual preserves the prior generic field")
     parser.add_argument("--resume", action="store_true")
     # Zero means no algorithmic stop. These are infrastructure escape hatches.
     parser.add_argument("--max-decisions", type=int, default=0)
