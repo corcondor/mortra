@@ -1,0 +1,37 @@
+name: Mario backward causal 2826
+
+on:
+  push:
+    branches:
+      - research/mario-revisit-causal-20260930
+    paths:
+      - experiments/mario_continual/backward_causal_2826.py
+      - .github/workflows/mario-backward-causal-2826.yml
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb
+          python -m pip install -q numpy scipy Pillow psutil
+      - name: Build pinned Mario engine
+        run: python -m experiments.mario_continual.setup_game
+      - name: Run backward causal sweep
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -u -m experiments.mario_continual.backward_causal_2826
+      - name: Show result
+        if: always()
+        run: cat /tmp/backward_causal_2826.json || true
