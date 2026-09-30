@@ -137,9 +137,16 @@ def test_no_motion_signal_reproduces_virtual_frontier_action():
     q1 = memory.add_state("S1", (0,), reason="test")
     memory.record_transition(q0, 0, q1)
 
+    class Task:
+        initial_memory = 0
+        def advance(self, memory, world_state): return 0
+        def accepting(self, memory): return False
+        def progress(self, memory): return 0.0
+
+    task = Task()
     continuation = ContinuationFrontierPolicy()
     virtual = VirtualFrontierPolicy(task_aware=False, task_source=False)
-    a = continuation.choose(memory, memory.state_token(q0), None, 0)
-    b = virtual.choose(memory, memory.state_token(q0), None, 0)
+    a = continuation.choose(memory, memory.state_token(q0), task, 0)
+    b = virtual.choose(memory, memory.state_token(q0), task, 0)
     assert a.action == b.action
     assert continuation.last_telemetry["bootstrap_virtual"]
