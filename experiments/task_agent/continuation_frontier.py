@@ -17,6 +17,7 @@ from collections import deque
 
 from .core import _learner_num_actions, _learner_state_to_id, modal_successors
 from .exploration import CountUncertaintyPolicy, ExplorationDecision
+from .virtual_frontier import VirtualFrontierPolicy
 
 
 def _terminal_state(learner, q):
@@ -91,6 +92,9 @@ class ContinuationFrontierPolicy:
     def __init__(self):
         self.last_telemetry = None
         self._fallback = CountUncertaintyPolicy()
+        # Preserve the experimentally validated generic explorer until RGB
+        # motion gives a grounded continuation signal.
+        self._bootstrap = VirtualFrontierPolicy(task_aware=False, task_source=False)
 
     def choose(self, learner, world_state, task, memory):
         state_ids = _learner_state_to_id(learner)
@@ -146,11 +150,43 @@ class ContinuationFrontierPolicy:
                 "route_length": 0,
                 "reachable_states": len(previous),
                 "frontier_states": 0,
+                "bootstrap_virtual": False,
                 "bypassed_local_frontier": False,
             }
             return decision
 
-        _, _, _, _, _, target, unknown = max(frontiers)
+        motion_frontiers = [row for row in frontiers if row[0] > 0]
+        if not motion_frontiers:
+            # Before the first reliable RGB displacement witness, changing the
+            # exploration distribution is unjustified.  Reproduce the prior
+            # generic virtual-frontier action exactly.
+            bootstrap = self._bootstrap.choose(
+                learner, world_state, task, memory)
+            action = int(bootstrap.action)
+            self.last_telemetry = {
+                "planned_actions": (action,),
+                "target_state": None,
+                "target_action": action,
+                "target_depth": None,
+                "target_visual_position": 0.0,
+                "target_visual_extent": 0.0,
+                "target_visual_motion_count": 0,
+                "route_length": 0,
+                "reachable_states": len(previous),
+                "frontier_states": len(frontiers),
+                "bootstrap_virtual": True,
+                "bypassed_local_frontier": False,
+                "bootstrap_telemetry": getattr(
+                    self._bootstrap, "last_telemetry", None),
+            }
+            return ExplorationDecision(
+                action=action,
+                policy=self.name,
+                score=bootstrap.score,
+                reason="no reliable RGB displacement yet; virtual-frontier bootstrap",
+            )
+
+        _, _, _, _, _, target, unknown = max(motion_frontiers)
         target_action = min(
             unknown,
             key=lambda a: (learner.action_visits.get((target, a), 0), a),
@@ -182,6 +218,7 @@ class ContinuationFrontierPolicy:
             "route_length": len(route_actions),
             "reachable_states": len(previous),
             "frontier_states": len(frontiers),
+            "bootstrap_virtual": False,
             "bypassed_local_frontier": bypassed,
         }
         return ExplorationDecision(
