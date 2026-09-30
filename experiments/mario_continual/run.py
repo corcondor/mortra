@@ -17,6 +17,8 @@ import time
 
 from experiments.accelerator import device_info
 from experiments.continual_tools import ProgramLibrary
+from experiments.continual_tools.conditional import (
+    ConditionalProgramModel, PREDICTED, UNRESOLVED as CONDITIONAL_UNRESOLVED)
 from experiments.mario_continual.evidence import LiveRGBRegistry
 from experiments.mario_continual.port import MarioRGBPort
 from experiments.mario_continual.predictive import PredictiveRegistry
@@ -94,6 +96,8 @@ class ContinualMario:
             self.program_context_counts = saved.get("program_context_counts", Counter())
             self.program_use_counts = saved.get("program_use_counts", Counter())
             self.program_complete_counts = saved.get("program_complete_counts", Counter())
+            self.conditional_model = saved.get("conditional_model", ConditionalProgramModel())
+            self.conditional_stats = saved.get("conditional_stats", Counter())
         else:
             self.vision = LiveRGBRegistry(device=args.device)
             self.memory = PredictiveRegistry(12)
@@ -109,6 +113,8 @@ class ContinualMario:
             self.program_context_counts = Counter()
             self.program_use_counts = Counter()
             self.program_complete_counts = Counter()
+            self.conditional_model = ConditionalProgramModel()
+            self.conditional_stats = Counter()
 
         self.frontier = VirtualFrontierPolicy(task_aware=False, task_source=False)
         self.planner = ProductPlanner(q=.90)
@@ -133,6 +139,8 @@ class ContinualMario:
             program_context_counts=self.program_context_counts,
             program_use_counts=self.program_use_counts,
             program_complete_counts=self.program_complete_counts,
+            conditional_model=self.conditional_model,
+            conditional_stats=self.conditional_stats,
         )
         save_checkpoint(self.checkpoint_path, state)
         summary = self.summary(reason)
@@ -161,6 +169,15 @@ class ContinualMario:
             program_transfer_invocations=sum(self.program_use_counts.values()),
             program_transfer_completions=sum(self.program_complete_counts.values()),
             tool_policy=self.args.tool_policy,
+            conditional_prediction_attempts=self.conditional_stats["attempts"],
+            conditional_predictions=self.conditional_stats["predicted"],
+            conditional_prediction_correct=self.conditional_stats["correct"],
+            conditional_prediction_wrong=self.conditional_stats["wrong"],
+            conditional_unresolved=self.conditional_stats["unresolved"],
+            conditional_precision=(
+                self.conditional_stats["correct"] /
+                max(1, self.conditional_stats["correct"] + self.conditional_stats["wrong"])
+            ),
             first_clear=self.first_clear,
             accelerator=device_info(self.args.device),
             wall_seconds=time.monotonic() - self.started,
@@ -334,84 +351,120 @@ class ContinualMario:
         }
 
     def choose_transfer_program(self, belief, preferred_action):
-        """Choose an untried learned program as a macro frontier option.
+        """Choose a learned macro frontier option.
 
-        The base MORTRA policy still chooses the first primitive action. A
-        learned program may extend that action in a new predictive state, but
-        only once per (state, program) until new evidence is available. This
-        is the count-frontier analogue for learned action words and contains no
-        Mario-specific feature or direction heuristic.
+        program_frontier transfers any independently recurrent executable word
+        after its first primitive edge is known.
+
+        conditional_frontier adds the missing P=>R layer: it transfers only
+        when structural evidence from prior contexts predicts one unambiguous
+        effect relation.  Missing evidence is UNRESOLVED and does not count as
+        a failure or counterexample.
         """
-        if self.args.tool_policy != "program_frontier" or belief is None:
+        if self.args.tool_policy not in ("program_frontier", "conditional_frontier") or belief is None:
             return None
         q = belief.resolved_state
         if q is None:
             return None
-        # A learned macro is a *deeper frontier* probe, not a replacement for
-        # an untried primitive edge.  If the base action itself is unknown at q,
-        # execute that primitive normally and learn its one-step consequence
-        # first.  Transfer is admitted only when the first edge is already
-        # evidenced, so the program extends exploration beyond known dynamics.
         if (q, int(preferred_action)) not in self.memory.counts:
             return None
+
         candidates = []
+        saw_unresolved = False
         for actions, (token, support_count) in self.portable_programs().items():
             if actions[0] != int(preferred_action):
                 continue
             if self.program_context_counts[(q, actions)] != 0:
                 continue
+
+            prediction = None
+            if self.args.tool_policy == "conditional_frontier":
+                self.conditional_stats["attempts"] += 1
+                prediction = self.conditional_model.predict(
+                    self.tools, self.memory, q, actions)
+                if prediction.status != PREDICTED:
+                    saw_unresolved = True
+                    self.conditional_stats["unresolved"] += 1
+                    continue
+
             global_uses = self.program_use_counts[actions]
-            # Explore low-use programs first.  For equal usage, prefer the word
-            # with more independently observed contexts; length only breaks the
-            # remaining tie by probing a deeper future.
-            candidates.append(
-                (global_uses, -support_count, -len(actions), actions, token))
+            predicted_support = 0 if prediction is None else prediction.support
+            candidates.append((
+                global_uses, -predicted_support, -support_count,
+                -len(actions), actions, token))
+
         if not candidates:
             return None
-        _, _, _, actions, token = min(candidates)
+        _, _, _, _, actions, token = min(candidates)
         return token, actions
 
     def run_transfer_program(self, token, actions, port, history, belief):
-        """Execute program code in a new context without importing old states.
-
-        The old record's expected-state sequence is evidence about the context
-        in which that record was learned; it is deliberately *not* assumed in a
-        new state. The primitive word itself is exact executable semantics.
-        Every step still passes through one_primitive, so predictive-state and
-        visual evidence continue to be updated online.
-        """
+        """Execute a program in a new context and update conditional evidence."""
         q = None if belief is None else belief.resolved_state
         if q is None:
             return None, belief, False
         actions = tuple(int(a) for a in actions)
+        prediction = None
+        if self.args.tool_policy == "conditional_frontier":
+            prediction = self.conditional_model.predict(
+                self.tools, self.memory, q, actions)
+            if prediction.status != PREDICTED:
+                # Selection should already have filtered this.  Preserve the
+                # three-valued semantics if graph evidence changed meanwhile.
+                return None, belief, False
+            self.conditional_stats["predicted"] += 1
+
         self.program_context_counts[(q, actions)] += 1
         self.program_use_counts[actions] += 1
         support_count = len(self.program_support().get(actions, ()))
         self.emit("program_transfer_invoked", tool=token, source_state=q,
                   actions=list(actions), global_uses=self.program_use_counts[actions],
-                  support_contexts=support_count)
+                  support_contexts=support_count,
+                  predicted_effect=None if prediction is None else prediction.effect,
+                  prediction_support=0 if prediction is None else prediction.support)
+
         current = belief
         packet = None
         executed = []
+        state_path = [q]
         for action in actions:
             packet, target = self.one_primitive(
                 port, history, current, action, "learned_program_transfer")
             executed.append(int(action))
-            if target is None:
+            if target is None or target.resolved_state is None:
                 self.emit("program_transfer_stopped", tool=token, source_state=q,
                           actions=list(actions), executed=executed,
                           status="UNRESOLVED_VISUAL")
                 return packet, current, True
             current = target
+            state_path.append(int(target.resolved_state))
             if packet["kind"] == "terminal":
                 break
+
         completed = len(executed) == len(actions)
+        actual_effect = None
         if completed:
             self.program_complete_counts[actions] += 1
+            actual_effect = self.conditional_model.observe_transfer(
+                self.memory, q, actions, state_path)
+            if prediction is not None and actual_effect is not None:
+                if actual_effect == prediction.effect:
+                    self.conditional_stats["correct"] += 1
+                    prediction_result = "CORRECT"
+                else:
+                    self.conditional_stats["wrong"] += 1
+                    prediction_result = "COUNTEREXAMPLE"
+            else:
+                prediction_result = None
+        else:
+            prediction_result = None
+
         self.emit("program_transfer_completed" if completed else "program_transfer_stopped",
                   tool=token, source_state=q, actions=list(actions),
                   executed=executed, status=packet.get("status") if packet else None,
-                  target_state=current.resolved_state if current is not None else None)
+                  target_state=current.resolved_state if current is not None else None,
+                  actual_effect=actual_effect,
+                  prediction_result=prediction_result)
         return packet, current, True
 
     def one_primitive(self, port, history, belief, action, reason):
@@ -580,8 +633,11 @@ def parse_args():
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto",
                         help="CUDA accelerates RGB statistics/FFT only; core graph reasoning remains CPU")
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--tool-policy", choices=("legacy", "program_frontier"), default="legacy",
-                        help="legacy exact-state guard or learned-program macro frontier")
+    parser.add_argument(
+        "--tool-policy",
+        choices=("legacy", "program_frontier", "conditional_frontier"),
+        default="legacy",
+        help="exact-state tools, unconditional cross-context programs, or learned P=>R transfer")
     # Zero means no algorithmic stop. These are infrastructure escape hatches.
     parser.add_argument("--max-primitive-actions", type=int, default=0)
     parser.add_argument("--max-decisions", type=int, default=0)
