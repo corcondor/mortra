@@ -30,31 +30,22 @@ def _modal_target(memory, q, action):
 
 
 def local_context(memory, q, first_action):
-    """Observable structural literals available before macro transfer.
+    """Minimal state-ID-invariant context known before macro transfer.
 
-    The first primitive edge must already be known by the caller.  We use its
-    response plus relations to any other already-known primitive successors.
-    Missing edges are not encoded as false facts; they remain unknown.
+    Transfer is only considered after the first primitive edge is observed.
+    Therefore its two directly evidenced relations are available without any
+    extra probe.  They are deliberately used instead of a full local graph
+    fingerprint: P should express a reusable condition, not memorize a scene.
     """
     q = int(q)
-    first_action = int(first_action)
-    first = _modal_target(memory, q, first_action)
+    first = _modal_target(memory, q, int(first_action))
     if first is None:
         return None
-
     obs = memory.state_observation
-    result = {
+    return {
         ("first_self",): first == q,
         ("first_same_observation",): obs[first] == obs[q],
     }
-    for action in range(memory.num_actions):
-        target = _modal_target(memory, q, action)
-        if target is None:
-            continue
-        result[("action_self", action)] = target == q
-        result[("action_same_observation", action)] = obs[target] == obs[q]
-        result[("action_matches_first_observation", action)] = obs[target] == obs[first]
-    return result
 
 
 def transition_relation(memory, source, target):
@@ -102,6 +93,7 @@ class ConditionalProgramModel:
     def __init__(self, minimum_contexts=2):
         self.minimum_contexts = int(minimum_contexts)
         self.extra_examples = defaultdict(list)
+        self._rule_cache = {}
 
     def _tool_examples(self, tools, memory, actions):
         examples = []
@@ -139,6 +131,19 @@ class ConditionalProgramModel:
         return True
 
     def rules(self, tools, memory, actions):
+        actions = tuple(int(a) for a in actions)
+        cache = getattr(self, "_rule_cache", None)
+        if cache is None:
+            self._rule_cache = {}
+            cache = self._rule_cache
+        cache_key = (
+            actions,
+            len(tools.records),
+            len(self.extra_examples.get(actions, ())),
+        )
+        if cache_key in cache:
+            return cache[cache_key]
+
         examples = self._tool_examples(tools, memory, actions)
         by_effect = defaultdict(list)
         for guard, context, effect, source in examples:
@@ -152,44 +157,9 @@ class ConditionalProgramModel:
 
             pos_contexts = [c for _, c, _ in positives]
             common = self._common_literals(pos_contexts)
-
-            # Always anchor transfer in the observed first-edge response.  These
-            # two facts are available before transfer because the first edge is
-            # required to be known.
-            anchor_keys = {
-                ("first_self",),
-                ("first_same_observation",),
-            }
-            selected = {k: v for k, v in common.items() if k in anchor_keys}
-
-            negatives = [
-                c for other, rows in by_effect.items() if other != effect
-                for _, c, _ in rows
-            ]
-
-            # Greedily add common structural literals only when they eliminate
-            # observed countereffects.  This learns a precondition rather than
-            # copying a full scene fingerprint.
-            surviving = list(negatives)
-            pool = {k: v for k, v in common.items() if k not in selected}
-            while surviving:
-                best = None
-                for key, value in pool.items():
-                    eliminated = sum(
-                        key in neg and neg[key] != value for neg in surviving)
-                    if eliminated:
-                        score = (eliminated, str(key))
-                        if best is None or score > best[0]:
-                            best = (score, key, value)
-                if best is None:
-                    break
-                _, key, value = best
-                selected[key] = value
-                del pool[key]
-                surviving = [
-                    neg for neg in surviving
-                    if not (key in neg and neg[key] != value)
-                ]
+            # With the minimal context, these are exactly the observed response
+            # of the already-known first primitive edge.
+            selected = dict(common)
 
             competing = 0
             for other, rows in by_effect.items():
@@ -206,6 +176,12 @@ class ConditionalProgramModel:
                 competing_support=competing,
                 literals=selected,
             ))
+        cache[cache_key] = rules
+        # Keep only recent cache generations; tools only grow monotonically in
+        # this experiment, so older entries cannot be selected again.
+        if len(cache) > 256:
+            newest = list(cache.items())[-128:]
+            self._rule_cache = dict(newest)
         return rules
 
     def predict(self, tools, memory, q, actions):
@@ -258,4 +234,5 @@ class ConditionalProgramModel:
             for i in range(len(actions)))
         self.extra_examples[actions].append(
             (state_path[0], context, effect, "transfer"))
+        self._rule_cache = {}
         return effect
