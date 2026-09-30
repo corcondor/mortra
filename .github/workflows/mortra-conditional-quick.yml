@@ -1,0 +1,92 @@
+name: MORTRA conditional-program quick validation
+
+on:
+  push:
+    branches: ['research/mortra-forward-integration-20260929']
+    paths:
+      - 'experiments/continual_tools/conditional.py'
+      - 'experiments/mario_continual/run.py'
+      - 'experiments/mario_continual/compare_tool_policies.py'
+      - 'tests/test_mario_continual.py'
+      - '.github/workflows/mortra-conditional-quick.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONUNBUFFERED: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  run:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [legacy, program_frontier, conditional_frontier]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth
+          python -m pip install numpy==1.26.4 Pillow==11.3.0 scipy==1.17.1 psutil==7.0.0 pytest==8.4.1
+      - run: python -m pytest -q tests/test_mario_continual.py tests/test_continual_tools.py
+      - run: python -m experiments.mario_continual.setup_game
+      - name: Run 15k real Mario
+        run: |
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            python -m experiments.mario_continual.run \
+              --game-dir experiments/mario_continual/game \
+              --build-dir experiments/mario_continual/build \
+              --bridge-source experiments/mario_continual/java/MortraBridge.java \
+              --level levels/notch/lvl-1.txt \
+              --output policy-run \
+              --device cpu \
+              --tool-policy '${{ matrix.mode }}' \
+              --max-primitive-actions 15000 \
+              --checkpoint-every 5000
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conditional-quick-${{ matrix.mode }}-${{ github.run_id }}
+          path: |
+            policy-run/status.json
+            policy-run/events.jsonl
+          retention-days: 30
+
+  compare:
+    needs: run
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: conditional-quick-*-${{ github.run_id }}
+          path: downloaded
+      - run: |
+          python -m experiments.mario_continual.compare_tool_policies \
+            --legacy downloaded/conditional-quick-legacy-${{ github.run_id }} \
+            --program-frontier downloaded/conditional-quick-program_frontier-${{ github.run_id }} \
+            --conditional-frontier downloaded/conditional-quick-conditional_frontier-${{ github.run_id }} \
+            --output CONDITIONAL_QUICK_COMPARISON.json
+          cat CONDITIONAL_QUICK_COMPARISON.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conditional-quick-comparison-${{ github.run_id }}
+          path: CONDITIONAL_QUICK_COMPARISON.json
+          retention-days: 30
