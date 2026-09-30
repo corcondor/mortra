@@ -32,6 +32,7 @@ import javax.swing.JFrame;
  */
 public final class MortraBridge implements MarioAgent {
     private static final int MAX_BATCH = 256;
+    private static final int EDGE_PROFILE_BINS = 64;
 
     private final BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     private final PrintWriter out = new PrintWriter(System.out, true);
@@ -59,12 +60,14 @@ public final class MortraBridge implements MarioAgent {
         final int width;
         final int height;
         final String hash;
+        final long[] edgeProfile;
 
-        Captured(byte[] rgb, int width, int height, String hash) {
+        Captured(byte[] rgb, int width, int height, String hash, long[] edgeProfile) {
             this.rgb = rgb;
             this.width = width;
             this.height = height;
             this.hash = hash;
+            this.edgeProfile = edgeProfile;
         }
     }
 
@@ -113,15 +116,33 @@ public final class MortraBridge implements MarioAgent {
         int height = image.getHeight();
         int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
         byte[] rgb = new byte[width * height * 3];
+        long[] edgeProfile = new long[EDGE_PROFILE_BINS];
         int k = 0;
-        for (int value : pixels) {
-            rgb[k++] = (byte)((value >>> 16) & 255);
-            rgb[k++] = (byte)((value >>> 8) & 255);
-            rgb[k++] = (byte)(value & 255);
+        for (int y = 0; y < height; y++) {
+            int previousR = 0, previousG = 0, previousB = 0;
+            for (int x = 0; x < width; x++) {
+                int value = pixels[y * width + x];
+                int r = (value >>> 16) & 255;
+                int g = (value >>> 8) & 255;
+                int b = value & 255;
+                rgb[k++] = (byte)r;
+                rgb[k++] = (byte)g;
+                rgb[k++] = (byte)b;
+                if (x > 0) {
+                    int bin = Math.min(EDGE_PROFILE_BINS - 1,
+                                       x * EDGE_PROFILE_BINS / width);
+                    edgeProfile[bin] += Math.abs(r - previousR)
+                                      + Math.abs(g - previousG)
+                                      + Math.abs(b - previousB);
+                }
+                previousR = r;
+                previousG = g;
+                previousB = b;
+            }
         }
         sha256.reset();
         String hash = hex(sha256.digest(rgb));
-        return new Captured(rgb, width, height, hash);
+        return new Captured(rgb, width, height, hash, edgeProfile);
     }
 
     private void ensureMap(int bytes) throws Exception {
@@ -153,13 +174,25 @@ public final class MortraBridge implements MarioAgent {
         // Python copies the mapped range before sending the next command.
     }
 
+    private static String edgeProfileJson(long[] profile) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (int i = 0; i < profile.length; i++) {
+            if (i > 0) builder.append(",");
+            builder.append(profile[i]);
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
     private String observationPacket(MarioForwardModel model, Captured capture) {
         return "{\"kind\":\"observation\",\"frame\":" + tick +
             ",\"snapshot\":" + (snapshot++) +
             ",\"status\":\"" + model.getGameStatus().toString() +
             "\",\"width\":" + capture.width +
             ",\"height\":" + capture.height +
-            ",\"rgb_sha256\":\"" + capture.hash + "\"}";
+            ",\"rgb_sha256\":\"" + capture.hash +
+            "\",\"edge_profile\":" + edgeProfileJson(capture.edgeProfile) + "}";
     }
 
     private String batchPacket(MarioForwardModel model, Captured[] captures) {
