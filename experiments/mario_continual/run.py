@@ -416,7 +416,11 @@ class ContinualMario:
                         print(json.dumps(self.summary("RUNNING")), flush=True)
 
                 status = packet.get("status")
+                # Evaluation-only engine metric.  It is recorded after terminal
+                # and is never exposed to choose_primitive/frontier selection.
+                completion_audit = packet.get("completion_audit_only")
                 self.emit("episode_terminal", status=status,
+                          completion_audit_only=completion_audit,
                           episode_primitive_frames=port.primitive_frames)
                 if status == "WIN":
                     self.first_clear = dict(
