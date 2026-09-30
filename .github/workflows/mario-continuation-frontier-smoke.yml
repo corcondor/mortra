@@ -21,6 +21,57 @@ jobs:
           python -m pip install -q numpy scipy Pillow psutil
       - name: Build pinned Mario engine
         run: python -m experiments.mario_continual.setup_game
+      - name: Probe RGB displacement sensor
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from experiments.mario_continual.port import MarioRGBPort
+
+          root = Path("experiments/mario_continual")
+          probes = {
+              "right_speed": [8],
+              "right_speed_jump": [11],
+              "run_jump_cycle": [8, 8, 11, 11],
+              "jump_run_cycle": [11, 11, 8, 8],
+          }
+          for name, pattern in probes.items():
+              out = Path("/tmp/motion-probe-" + name)
+              port = MarioRGBPort(
+                  root/"game", root/"build", root/"java"/"MortraBridge.java",
+                  "levels/notch/lvl-1.txt", out, seconds=60, frames_per_action=8)
+              reliable = []
+              signed = 0
+              absolute = 0
+              try:
+                  _, packet = port.start()
+                  i = 0
+                  while packet["kind"] == "observation" and i < 250:
+                      _, packet = port.step(pattern[i % len(pattern)])
+                      if packet["kind"] == "observation" and packet.get("_visual_shift_reliable"):
+                          shift = int(packet.get("_visual_shift_bins", 0))
+                          reliable.append({
+                              "step": i,
+                              "shift": shift,
+                              "score": packet.get("_visual_shift_score"),
+                              "margin": packet.get("_visual_shift_margin"),
+                          })
+                          signed += shift
+                          absolute += abs(shift)
+                      i += 1
+                  print("MOTION_PROBE", json.dumps({
+                      "name": name,
+                      "steps": i,
+                      "status": packet.get("status"),
+                      "completion_audit_only": packet.get("completion_audit_only"),
+                      "reliable_shift_count": len(reliable),
+                      "signed_shift_bins": signed,
+                      "absolute_shift_bins": absolute,
+                      "first_reliable": reliable[:5],
+                  }, sort_keys=True))
+              finally:
+                  port.close()
+          PY
       - name: Run continuation policy
         run: |
           xvfb-run -a -s '-screen 0 1280x1024x24'             python -m experiments.mario_continual.run               --output /tmp/mario-continuation               --device cpu               --exploration-policy continuation               --max-episodes 8               --checkpoint-every 100000
