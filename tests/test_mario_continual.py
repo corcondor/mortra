@@ -5,6 +5,7 @@ from types import MethodType, SimpleNamespace
 import numpy as np
 
 from experiments.continual_tools import ProgramLibrary
+from experiments.continual_tools.conditional import ConditionalProgramModel, PREDICTED, UNRESOLVED
 from experiments.mario_continual.evidence import LiveRGBRegistry
 from experiments.mario_continual.port import BUTTON_MASKS, MarioRGBPort
 from experiments.mario_continual.predictive import PredictiveBelief, PredictiveRegistry
@@ -247,3 +248,75 @@ def test_transfer_program_keeps_code_and_context_evidence_separate():
     # 99 must not incorrectly refute that certificate.
     assert runner.tools.records[token]["status"] == "candidate"
     assert not any(e["event"] == "tool_counterexample" for e in runner.tools.events)
+
+
+def _build_two_context_program_runner():
+    runner = object.__new__(ContinualMario)
+    runner.args = SimpleNamespace(tool_policy="conditional_frontier")
+    runner.tools = ProgramLibrary(3)
+    runner.program_context_counts = Counter()
+    runner.program_use_counts = Counter()
+    runner.program_complete_counts = Counter()
+    runner.conditional_model = ConditionalProgramModel()
+    runner.conditional_stats = Counter()
+    runner.memory = PredictiveRegistry(3)
+
+    # Build two structurally equivalent source contexts with the same program
+    # effect relation but different predictive-state IDs/observation labels.
+    for obs in ("A","B","C","D","E","F","G","H"):
+        runner.memory.add_state(obs, (), reason="fixture")
+
+    # q0 --1--> q1 --2--> q2
+    runner.memory.record_transition(0, 1, 1)
+    runner.memory.record_transition(1, 2, 2)
+    # q3 --1--> q4 --2--> q5
+    runner.memory.record_transition(3, 1, 4)
+    runner.memory.record_transition(4, 2, 5)
+    runner.tools.register((1,2), guard=0, expected_states=(1,2),
+                          source="repeated_resolved_transition")
+    runner.tools.register((1,2), guard=3, expected_states=(4,5),
+                          source="repeated_resolved_transition")
+    return runner
+
+
+def test_conditional_model_predicts_same_effect_in_unseen_structural_context():
+    runner = _build_two_context_program_runner()
+
+    # Unseen q6 has the same known first-edge relation as q0/q3.
+    runner.memory.record_transition(6, 1, 7)
+    pred = runner.conditional_model.predict(runner.tools, runner.memory, 6, (1,2))
+    assert pred.status == PREDICTED
+    assert pred.support == 2
+    assert pred.effect == ((False, False), (False, False))
+
+
+def test_conditional_model_stays_unresolved_with_one_support_context():
+    runner = object.__new__(ContinualMario)
+    runner.tools = ProgramLibrary(3)
+    runner.memory = PredictiveRegistry(3)
+    for obs in ("A","B","C","D","E"):
+        runner.memory.add_state(obs, (), reason="fixture")
+    runner.memory.record_transition(0, 1, 1)
+    runner.memory.record_transition(1, 2, 2)
+    runner.memory.record_transition(3, 1, 4)
+    runner.tools.register((1,2), guard=0, expected_states=(1,2),
+                          source="repeated_resolved_transition")
+    model = ConditionalProgramModel()
+    pred = model.predict(runner.tools, runner.memory, 3, (1,2))
+    assert pred.status == UNRESOLVED
+
+
+def test_conditional_frontier_filters_unpredicted_portable_programs():
+    runner = _build_two_context_program_runner()
+    runner.memory.record_transition(6, 1, 7)
+    novel = PredictiveBelief("G", (6,), False)
+    chosen = runner.choose_transfer_program(novel, 1)
+    assert chosen is not None and chosen[1] == (1,2)
+
+    # A second portable program with only a different first edge must not be
+    # selected from q6 when its applicability is unresolved there.
+    runner.tools.register((0,2), guard=0, expected_states=(1,2),
+                          source="repeated_resolved_transition")
+    runner.tools.register((0,2), guard=3, expected_states=(4,5),
+                          source="repeated_resolved_transition")
+    assert runner.choose_transfer_program(novel, 0) is None
