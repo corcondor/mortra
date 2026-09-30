@@ -46,6 +46,10 @@ class PredictiveRegistry:
         # manufacturing fresh predictive states when a visual class is aliased.
         self.history_index = {}
         self.observation_first_depth = {}
+        # Visual displacement is inferred from RGB edge-profile translation.
+        # The origin is the reset frame.  No engine coordinate is stored here.
+        self.history_visual_position = {(): 0.0}
+        self.history_visual_motion_count = {(): 0}
 
     @staticmethod
     def state_token(q):
@@ -57,6 +61,12 @@ class PredictiveRegistry:
             self.history_index = {}
         if not hasattr(self, "observation_first_depth"):
             self.observation_first_depth = {}
+        if not hasattr(self, "history_visual_position"):
+            self.history_visual_position = {(): 0.0}
+        if not hasattr(self, "history_visual_motion_count"):
+            self.history_visual_motion_count = {(): 0}
+        self.history_visual_position.setdefault((), 0.0)
+        self.history_visual_motion_count.setdefault((), 0)
         indexed = len(self.history_index)
         if indexed < len(self.id_to_state):
             self.history_index = {}
@@ -81,6 +91,24 @@ class PredictiveRegistry:
         observation = self.state_observation[q]
         return int(self.observation_first_depth.get(
             observation, len(self.representative_history[q])))
+
+    def visual_position(self, q):
+        """Signed RGB-inferred camera displacement for q's representative history."""
+        self._ensure_context_indexes()
+        history = tuple(self.representative_history[int(q)])
+        return float(self.history_visual_position.get(history, 0.0))
+
+    def visual_motion_count(self, q):
+        self._ensure_context_indexes()
+        history = tuple(self.representative_history[int(q)])
+        return int(self.history_visual_motion_count.get(history, 0))
+
+    def visual_extent(self):
+        self._ensure_context_indexes()
+        values = list(self.history_visual_position.values())
+        if not values:
+            return 0.0
+        return float(max(values) - min(values))
 
     def add_state(self, observation, history, *, reason):
         history = tuple(history)
@@ -145,9 +173,20 @@ class PredictiveRegistry:
         return {v for v in row if self.state_observation[v] == observation}
 
     def update(self, source, action, target_observation, source_history, target_history,
-               *, terminal_status=None):
+               *, terminal_status=None, visual_delta=0.0, visual_reliable=False):
         """Update after one real action and return the target predictive belief."""
         action = int(action)
+        source_history = tuple(source_history)
+        target_history = tuple(target_history)
+        self._ensure_context_indexes()
+        source_visual = self.history_visual_position.get(source_history)
+        if source_visual is not None:
+            delta = float(visual_delta) if visual_reliable else 0.0
+            target_visual = source_visual + delta
+            self.history_visual_position.setdefault(target_history, target_visual)
+            source_motion = self.history_visual_motion_count.get(source_history, 0)
+            self.history_visual_motion_count.setdefault(
+                target_history, source_motion + int(bool(visual_reliable and delta != 0.0)))
         source_candidates = set(source.candidates)
         compatible_sources, unknown_sources, contradicted_sources = set(), set(), set()
         predicted_targets = set()
