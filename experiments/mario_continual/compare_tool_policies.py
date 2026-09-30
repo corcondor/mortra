@@ -68,12 +68,15 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--legacy", type=Path, required=True)
     p.add_argument("--program-frontier", type=Path, required=True)
+    p.add_argument("--conditional-frontier", type=Path)
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
     result = {
         "legacy": summarize(args.legacy),
         "program_frontier": summarize(args.program_frontier),
     }
+    if args.conditional_frontier is not None:
+        result["conditional_frontier"] = summarize(args.conditional_frontier)
     l = result["legacy"]
     pfr = result["program_frontier"]
     result["delta_program_frontier_minus_legacy"] = {
@@ -90,6 +93,17 @@ def main():
         "observation_classes":
             pfr["status"]["observation_classes"] - l["status"]["observation_classes"],
     }
+    if "conditional_frontier" in result:
+        cfr = result["conditional_frontier"]
+        result["delta_conditional_minus_legacy"] = {
+            "completion_max": (None if l["completion_max"] is None or cfr["completion_max"] is None else cfr["completion_max"] - l["completion_max"]),
+            "episode_primitive_actions_max": cfr["episode_primitive_actions_max"] - l["episode_primitive_actions_max"],
+            "predictive_states": cfr["status"]["predictive_states"] - l["status"]["predictive_states"],
+            "observation_classes": cfr["status"]["observation_classes"] - l["status"]["observation_classes"],
+            "conditional_precision": cfr["status"].get("conditional_precision"),
+            "conditional_predictions": cfr["status"].get("conditional_predictions"),
+            "conditional_unresolved": cfr["status"].get("conditional_unresolved"),
+        }
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf8")
     print(json.dumps(result, indent=2))
 
